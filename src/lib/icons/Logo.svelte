@@ -1,5 +1,5 @@
 <svg
-	class="h-full w-auto"
+	class="h-12 w-12"
 	aria-hidden="true"
 	xmlns="http://www.w3.org/2000/svg"
 	fill="none"
