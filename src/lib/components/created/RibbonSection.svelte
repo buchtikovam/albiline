@@ -1,5 +1,4 @@
 <script lang="ts">
-	// export let name;
 </script>
 
 <div class="w-fit flex flex-col ">
@@ -9,6 +8,5 @@
 
 	<div>
 		<p class="ml-auto text-xs"></p>
-		<!--		{name}-->
 	</div>
 </div>

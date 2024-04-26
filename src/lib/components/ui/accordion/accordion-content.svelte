@@ -19,7 +19,7 @@
 	{transitionConfig}
 	{...$$restProps}
 >
-	<div class="pl-8 py-2 flex flex-col gap-2 text-sm">
+	<div class="pl-8 py-2 flex h-full flex-col gap-2 text-sm">
 		<slot />
 	</div>
 </AccordionPrimitive.Content>
