@@ -10,9 +10,11 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
+	import * as Command from '$lib/components/ui/command';
 	import { Separator } from '$lib/components/ui/separator';
 	import type { ComponentType } from 'svelte';
 	import type { Icon } from 'lucide-svelte';
+	import Search from 'lucide-svelte/icons/search';
 
 	type SingleItem = {
 		name: string;
@@ -38,6 +40,19 @@
 			name: 'Průvodní list',
 			href: '/',
 			icon: TableProperties
+		},
+		// {
+		// 	name: 'Průvodní list 2',
+		// 	href: '/',
+		// 	icon: TableProperties
+		// }
+	];
+
+	const recentSingleItems: SingleItem[] = [
+		{
+			name: 'Průvodní nedávný list',
+			href: '/',
+			icon: TableProperties
 		}
 	];
 
@@ -49,17 +64,8 @@
 		}
 	];
 
-	const recentSingleItems: SingleItem[] = [
-		{
-			name: 'Průvodní nedávný list',
-			href: '/',
-			icon: TableProperties
-		}
-	];
 
-	let singleItems = allSingleItems;
-
-	let parentItems: ParentItem[] = [
+	const allParentItems: ParentItem[] = [
 		{
 			name: 'Sklad',
 			value: 'sklad',
@@ -102,24 +108,156 @@
 		}
 	];
 
+	const recentParentItems: ParentItem[] = [
+		{
+			name: 'Sklad',
+			value: 'sklad',
+			href: '/',
+			icon: Warehouse,
+			children: [
+				{
+					name: 'Hodinovka',
+					href: '/'
+				},
+				{
+					name: 'Příjem a výdej',
+					href: '/'
+				},
+				{
+					name: 'Stav skladu',
+					href: '/'
+				}
+			]
+		},
+		{
+			name: 'Sklad 2',
+			value: 'sklad2',
+			href: '/',
+			icon: ShoppingBasket,
+			children: [
+				{
+					name: 'test',
+					href: '/'
+				},
+				{
+					name: 'Příjem a výdej',
+					href: '/'
+				},
+				{
+					name: 'Stav skladu',
+					href: '/'
+				}
+			]
+		}
+	];
+
+	const favoriteParentItems: ParentItem[] = [
+		{
+			name: 'Sklad',
+			value: 'sklad',
+			href: '/',
+			icon: Warehouse,
+			children: [
+				{
+					name: 'Hodinovka',
+					href: '/'
+				},
+				{
+					name: 'Příjem a výdej',
+					href: '/'
+				},
+				{
+					name: 'Stav skladu',
+					href: '/'
+				}
+			]
+		},
+		{
+			name: 'Sklad 2',
+			value: 'sklad2',
+			href: '/',
+			icon: ShoppingBasket,
+			children: [
+				{
+					name: 'test',
+					href: '/'
+				},
+				{
+					name: 'Příjem a výdej',
+					href: '/'
+				},
+				{
+					name: 'Stav skladu',
+					href: '/'
+				}
+			]
+		}
+	];
+
+	let singleItems = allSingleItems;
+	let parentItems = allParentItems;
+
 	let show: boolean = true;
+	let open: boolean = false;
+
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
 		if (category === 'all') {
 			singleItems = allSingleItems;
+			parentItems = allParentItems;
+
+			let buttons = document.getElementsByClassName('button');
+
+			Array.from(buttons).forEach((button) => {
+				button.classList.remove('border-b-2');
+			});
+
+			let activeButton = document.querySelector('.all');
+			if (activeButton) {
+				activeButton.classList.add('border-b-2');
+			}
 		}
 
 		if (category === 'recent') {
 			singleItems = recentSingleItems;
+			parentItems = recentParentItems;
+
+			let buttons = document.getElementsByClassName('button');
+
+			Array.from(buttons).forEach((button) => {
+				button.classList.remove('border-b-2');
+			});
+
+			let activeButton = document.querySelector('.recent');
+			if (activeButton) {
+				activeButton.classList.add('border-b-2');
+			}
 		}
 
 		if (category === 'favorite') {
 			singleItems = favoriteSingleItems;
+			parentItems = favoriteParentItems;
+
+			let buttons = document.getElementsByClassName('button');
+
+			Array.from(buttons).forEach((button) => {
+				button.classList.remove('border-b-2');
+			});
+
+			let activeButton = document.querySelector('.favorite');
+			if (activeButton) {
+				activeButton.classList.add('border-b-2');
+			}
 		}
 	}
 
-	function toggleFn() {
+	function toggleSidebarFn() {
 		show = !show;
+		console.log(show);
+	}
+
+	function toggleCommandFn() {
+		open = !open;
 		console.log(show);
 	}
 
@@ -128,18 +266,27 @@
 <div class="flex h-full max-h-screen flex-col">
 	{#if show === true}
 		<div class="flex items-start pt-4 gap-4 mx-auto text-sm">
-			<button class="border-b-2" on:click={() => setCategory("all")}>Všechny</button>
-			<button on:click={() => setCategory("recent")}>Nedávné</button>
-			<button on:click={() => setCategory("favorite")}>Oblíbené</button>
+			<button class="button all border-b-2 hover:bg-muted/40 transition-all" on:click={() => setCategory("all")}>
+				Všechny
+			</button>
+			<button class="button recent hover:bg-muted/40 transition-all" on:click={() => setCategory("recent")}>
+				Nedávné
+			</button>
+			<button class="button favorite hover:bg-muted/40 transition-all" on:click={() => setCategory("favorite")}>
+				Oblíbené
+			</button>
+			<button on:click={toggleCommandFn} class="w-fit hover:bg-muted/40 transition-all">
+				<Search class="h-4 pt-0.5" />
+			</button>
 		</div>
 	{/if}
 
 
 	{#if show === true}
-		<div class="flex-1 w-[320px]">
-			<Accordion.Root>
-				<nav class="grid p-4 gap-2">
-					<div class="flex flex-col gap-2 flex-grow">
+		<div class="flex-1 w-[320px] h-full">
+			<Accordion.Root class="h-full overflow-y-auto" multiple>
+				<nav class="flex flex-col p-4 pb-2 gap-2 h-full">
+					<div class="flex flex-col gap-2">
 						{#each singleItems as item}
 							<a
 								href={item.href}
@@ -157,15 +304,15 @@
 						{#each parentItems as parent}
 							<Accordion.Item value={parent.value}>
 
-								<Accordion.Trigger>
+								<Accordion.Trigger class="hover:bg-muted/40 rounded-md">
 									<div
-										class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/40 text-muted-foreground transition-all hover:text-primary">
+										class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
 										<svelte:component this={parent.icon} />
 										{parent.name}
 									</div>
 								</Accordion.Trigger>
 
-								<Accordion.Content>
+								<Accordion.Content class="">
 									{#each parent.children as child}
 										<a href={child.href}>{child.name}</a>
 									{/each}
@@ -174,28 +321,36 @@
 
 						{/each}
 					</div>
+					<div class="ml-auto pb-2">
+						<Button
+							variant="ghost"
+							size="icon"
+							class=""
+							on:click={toggleSidebarFn}
+						>
+							<Menu class="h-5 w-5" />
+							<span class="sr-only">Toggle navigation menu</span>
+						</Button>
+					</div>
 				</nav>
 			</Accordion.Root>
 
-			<div class="flex justify-center">
-				<Button
-					variant="ghost"
-					size="icon"
-					class=""
-					on:click={toggleFn}
-				>
-					<Menu class="h-5 w-5" />
-					<span class="sr-only">Toggle navigation menu</span>
-				</Button>
-			</div>
+
 		</div>
 	{:else}
 		<div class="flex-1 w-[60px]">
 			<nav class="grid pt-4 gap-2 justify-center">
+				<button on:click={toggleCommandFn}
+						class="m-auto mb-2 text-muted-foreground hover:bg-muted/40 transition-all hover:text-primary">
+					<Search />
+				</button>
+
+				<Separator />
+
 
 				{#each singleItems as item}
 
-					<Tooltip.Root>
+					<Tooltip.Root openDelay={100}>
 						<Tooltip.Trigger>
 							<a href={item.href}
 							   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted/40 transition-all hover:text-primary">
@@ -212,7 +367,7 @@
 				<Separator />
 
 				{#each parentItems as parent}
-					<Tooltip.Root>
+					<Tooltip.Root openDelay={100}>
 						<Tooltip.Trigger>
 
 							<Popover.Root>
@@ -239,12 +394,11 @@
 				{/each}
 			</nav>
 		</div>
-		<div class="flex justify-center">
+		<div class="flex justify-center pb-2">
 			<Button
 				variant="ghost"
 				size="icon"
-				class=""
-				on:click={toggleFn}
+				on:click={toggleSidebarFn}
 			>
 				<Menu class="h-5 w-5" />
 				<span class="sr-only">Toggle navigation menu</span>
@@ -252,3 +406,33 @@
 		</div>
 	{/if}
 </div>
+
+<Command.Dialog bind:open>
+	<Command.Input placeholder="Vyhledat..." />
+	<Command.List>
+		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>
+		<div class="m-2">
+			{#each allSingleItems as item}
+				<Command.Item>
+					<a href={item.href} class="w-full" on:click={() => toggleCommandFn()}>
+						{item.name}
+					</a>
+				</Command.Item>
+			{/each}
+		</div>
+
+
+		{#each allParentItems as item}
+			<Command.Separator/>
+			<Command.Group heading="{item.name}" class="my-2">
+				{#each item.children as child}
+					<Command.Item>
+						<a href={child.href} class="w-full" on:click={() => toggleCommandFn()}>
+							{child.name}
+						</a>
+					</Command.Item>
+				{/each}
+			</Command.Group>
+		{/each}
+	</Command.List>
+</Command.Dialog>

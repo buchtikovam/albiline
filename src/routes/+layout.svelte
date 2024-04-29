@@ -3,7 +3,8 @@
 	import Sidebar from '$lib/components/created/Sidebar.svelte';
 	import Ribbon from '$lib/components/created/Ribbon.svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import Logo from '$lib/icons/Logo.svelte';
+	// import Logo from '$lib/icons/Logo.svelte';
+	import Header from '$lib/components/created/Header.svelte';
 
 	// import { Button } from '$lib/components/ui/button';
 	// import { Menu } from 'lucide-svelte';
@@ -14,8 +15,8 @@
 <div class="grid h-dvh w-full">
 	<div class="flex flex-col">
 		<header class="flex flex-col  border-b lg:h-fit">
-			<div class="h-10 bg-muted/40 ml-4 flex items-center">
-				<Logo/>
+			<div class="pl-2">
+				<Header/>
 			</div>
 			<Separator/>
 			<Ribbon />
@@ -35,33 +36,5 @@
 </div>
 
 
-<!--<Command.Dialog bind:open>&ndash;-->
-	<!--	<Command.Input placeholder="Vyhledat..." />-->
-	<!--	<Command.List>-->
-	<!--		<Command.Empty>Nic nenalezeno</Command.Empty>-->
-	<!--		<Command.Group heading="Průvodní list">-->
-	<!--			<Command.Item>-->
-	<!--				<span>1 Položka</span>-->
-	<!--			</Command.Item>-->
-	<!--			<Command.Item>-->
-	<!--				<span>2 Položka</span>-->
-	<!--			</Command.Item>-->
-	<!--			<Command.Item>-->
-	<!--				<span>3 Položka</span>-->
-	<!--			</Command.Item>-->
-	<!--		</Command.Group>-->
-	<!--		<Command.Separator />-->
-	<!--		<Command.Group heading="Sklad">-->
-	<!--			<Command.Item>-->
-	<!--				<span>4 Položka</span>-->
-	<!--			</Command.Item>-->
-	<!--			<Command.Item>-->
-	<!--				<span>5 Položka</span>-->
-	<!--			</Command.Item>-->
-	<!--			<Command.Item>-->
-	<!--				<span>6 Položka</span>-->
-	<!--			</Command.Item>-->
-	<!--		</Command.Group>-->
-	<!--	</Command.List>-->
-	<!--</Command.Dialog>-->
+
 

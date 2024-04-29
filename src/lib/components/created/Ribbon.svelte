@@ -16,7 +16,6 @@
 
 <div class="flex gap-4 items-center px-4 py-2 h-full">
 	<RibbonSection>
-
 		<RibbonItem name="Import">
 			<FolderDown class="h-4 w-4" />
 		</RibbonItem>

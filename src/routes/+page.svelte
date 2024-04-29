@@ -1,6 +1,4 @@
 <script lang="ts">
-	// import { Button } from '$lib/components/ui/button';
-	// import { Download, Filter, Printer, Upload } from 'lucide-svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import Table from '$lib/components/created/Table.svelte';
 </script>
@@ -17,9 +15,8 @@
 		<Tabs.Trigger value="editace-pozic">Editace pozic</Tabs.Trigger>
 	</Tabs.List>
 
-
 	<Tabs.Content value="seznam" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-2 flex">
+		<div class="h-full rounded-lg bg-card text-card-foreground shadow-sm flex">
 			<div class="flex-1">
 				<Table/>
 			</div>
@@ -27,7 +24,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="detail" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+		<div class="h-full rounded-lg rounded-tl-none border bg-card text-card-foreground shadow-sm p-4">
 			<div class="p-4">
 				// detail
 			</div>
@@ -35,7 +32,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="zpracovani" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+		<div class="h-full rounded-lg rounded-tl-none border bg-card text-card-foreground shadow-sm p-4">
 			<div class="p-4">
 				// zpracování
 			</div>
@@ -43,7 +40,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="cas-naklady" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+		<div class="h-full rounded-lg rounded-tl-none border bg-card text-card-foreground shadow-sm p-4">
 			<div class="p-4">
 				// časové náklady
 			</div>
@@ -51,7 +48,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="historie" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+		<div class="h-full rounded-lg rounded-tl-none border bg-card text-card-foreground shadow-sm p-4">
 			<div class="p-4">
 				// historie
 			</div>
@@ -59,7 +56,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="cast-vyrobku" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+		<div class="h-full rounded-lg rounded-tl-none border bg-card text-card-foreground shadow-sm p-4">
 			<div class="p-4">
 				// historie
 			</div>
@@ -67,7 +64,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="preview" class="flex-1">
-		<div class="h-full rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+		<div class="h-full rounded-lg rounded-tl-none border bg-card text-card-foreground shadow-sm p-4">
 			<div class="p-4">
 				// preview
 			</div>

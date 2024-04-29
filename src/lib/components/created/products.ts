@@ -79,19 +79,20 @@ export const data: Product[] = [
 		'skladem': 5,
 		'vyrobeno': 321
 	},
+	{
+		'id': '6',
+		'ksp': 81040,
+		'jmeno': 'Horské kolo',
+		'typ': 'Produkt',
+		'linie': 'Sport',
+		'koncepce': 'Kola',
+		'klp': 'S',
+		'listovaciPolozka': 'Sportovní vybavení',
+		'prodCena': 14999,
+		'skladem': 2,
+		'vyrobeno': 100
+	},
 	// {
-	// 	'id': '6',
-	// 	'ksp': 81040,
-	// 	'jmeno': 'Horské kolo',
-	// 	'typ': 'Produkt',
-	// 	'linie': 'Sport',
-	// 	'koncepce': 'Kola',
-	// 	'klp': 'S',
-	// 	'listovaciPolozka': 'Sportovní vybavení',
-	// 	'prodCena': 14999,
-	// 	'skladem': 2,
-	// 	'vyrobeno': 100
-	// }, {
 	// 	'id': '7',
 	// 	'ksp': 81041,
 	// 	'jmeno': 'Sada LEGO® City Vesmírná raketa',
