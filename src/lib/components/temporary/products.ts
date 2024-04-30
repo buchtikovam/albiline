@@ -1,4 +1,3 @@
-
 type Product = {
 	id: string
 	ksp: number;
@@ -92,45 +91,45 @@ export const data: Product[] = [
 		'skladem': 2,
 		'vyrobeno': 100
 	},
-	// {
-	// 	'id': '7',
-	// 	'ksp': 81041,
-	// 	'jmeno': 'Sada LEGO® City Vesmírná raketa',
-	// 	'typ': 'Produkt',
-	// 	'linie': 'Dětský svět',
-	// 	'koncepce': 'Hračky',
-	// 	'klp': 'D',
-	// 	'listovaciPolozka': 'Hračky',
-	// 	'prodCena': 599,
-	// 	'skladem': 150,
-	// 	'vyrobeno': 7890
-	// },
-	// {
-	// 	'id': '8',
-	// 	'ksp': 81042,
-	// 	'jmeno': 'Dámské kožené boty na podpatku',
-	// 	'typ': 'Produkt',
-	// 	'linie': 'Dámská móda',
-	// 	'koncepce': 'Obuv',
-	// 	'klp': 'O',
-	// 	'listovaciPolozka': 'Dámská obuv',
-	// 	'prodCena': 1499,
-	// 	'skladem': 32,
-	// 	'vyrobeno': 4321
-	// },
-	// {
-	// 	'id': '9',
-	// 	'ksp': 81043,
-	// 	'jmeno': 'Mikrovlnná trouba s grilem',
-	// 	'typ': 'Produkt',
-	// 	'linie': 'Domácnost',
-	// 	'koncepce': 'Malé spotřebiče',
-	// 	'klp': 'H',
-	// 	'listovaciPolozka': 'Malé spotřebiče',
-	// 	'prodCena': 2499,
-	// 	'skladem': 8,
-	// 	'vyrobeno': 1234
-	// },
+	{
+		'id': '7',
+		'ksp': 81041,
+		'jmeno': 'Sada LEGO® City Vesmírná raketa',
+		'typ': 'Produkt',
+		'linie': 'Dětský svět',
+		'koncepce': 'Hračky',
+		'klp': 'D',
+		'listovaciPolozka': 'Hračky',
+		'prodCena': 599,
+		'skladem': 150,
+		'vyrobeno': 7890
+	},
+	{
+		'id': '8',
+		'ksp': 81042,
+		'jmeno': 'Dámské kožené boty na podpatku',
+		'typ': 'Produkt',
+		'linie': 'Dámská móda',
+		'koncepce': 'Obuv',
+		'klp': 'O',
+		'listovaciPolozka': 'Dámská obuv',
+		'prodCena': 1499,
+		'skladem': 32,
+		'vyrobeno': 4321
+	},
+	{
+		'id': '9',
+		'ksp': 81043,
+		'jmeno': 'Mikrovlnná trouba s grilem',
+		'typ': 'Produkt',
+		'linie': 'Domácnost',
+		'koncepce': 'Malé spotřebiče',
+		'klp': 'H',
+		'listovaciPolozka': 'Malé spotřebiče',
+		'prodCena': 2499,
+		'skladem': 8,
+		'vyrobeno': 1234
+	}
 	// {
 	// 	'id': '10',
 	// 	'ksp': 81044,

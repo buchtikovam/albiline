@@ -1,205 +1,26 @@
 <script lang="ts">
+	import { Menu } from 'lucide-svelte';
+	import Search from 'lucide-svelte/icons/search';
 	import {
-		Menu,
-		ShoppingBasket,
-		TableProperties,
-		Warehouse
-	} from 'lucide-svelte';
-
+		allParentItems,
+		allSingleItems,
+		recentSingleItems,
+		recentParentItems,
+		favoriteParentItems,
+		favoriteSingleItems
+	} from '../temporary/sidebar';
 	import { Button } from '$lib/components/ui/button';
+	import { Separator } from '$lib/components/ui/separator';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
-	import { Separator } from '$lib/components/ui/separator';
-	import type { ComponentType } from 'svelte';
-	import type { Icon } from 'lucide-svelte';
-	import Search from 'lucide-svelte/icons/search';
-
-	type SingleItem = {
-		name: string;
-		href: string;
-		icon: ComponentType<Icon>;
-	}
-
-	type ChildItem = {
-		name: string;
-		href: string;
-	}
-
-	type ParentItem = {
-		name: string;
-		value: string;
-		href: string;
-		icon: ComponentType<Icon>;
-		children: ChildItem[]
-	}
-
-	const allSingleItems: SingleItem[] = [
-		{
-			name: 'Průvodní list',
-			href: '/',
-			icon: TableProperties
-		},
-		// {
-		// 	name: 'Průvodní list 2',
-		// 	href: '/',
-		// 	icon: TableProperties
-		// }
-	];
-
-	const recentSingleItems: SingleItem[] = [
-		{
-			name: 'Průvodní nedávný list',
-			href: '/',
-			icon: TableProperties
-		}
-	];
-
-	const favoriteSingleItems: SingleItem[] = [
-		{
-			name: 'Průvodní oblíbený list',
-			href: '/',
-			icon: TableProperties
-		}
-	];
-
-
-	const allParentItems: ParentItem[] = [
-		{
-			name: 'Sklad',
-			value: 'sklad',
-			href: '/',
-			icon: Warehouse,
-			children: [
-				{
-					name: 'Hodinovka',
-					href: '/'
-				},
-				{
-					name: 'Příjem a výdej',
-					href: '/'
-				},
-				{
-					name: 'Stav skladu',
-					href: '/'
-				}
-			]
-		},
-		{
-			name: 'Sklad 2',
-			value: 'sklad2',
-			href: '/',
-			icon: ShoppingBasket,
-			children: [
-				{
-					name: 'test',
-					href: '/'
-				},
-				{
-					name: 'Příjem a výdej',
-					href: '/'
-				},
-				{
-					name: 'Stav skladu',
-					href: '/'
-				}
-			]
-		}
-	];
-
-	const recentParentItems: ParentItem[] = [
-		{
-			name: 'Sklad',
-			value: 'sklad',
-			href: '/',
-			icon: Warehouse,
-			children: [
-				{
-					name: 'Hodinovka',
-					href: '/'
-				},
-				{
-					name: 'Příjem a výdej',
-					href: '/'
-				},
-				{
-					name: 'Stav skladu',
-					href: '/'
-				}
-			]
-		},
-		{
-			name: 'Sklad 2',
-			value: 'sklad2',
-			href: '/',
-			icon: ShoppingBasket,
-			children: [
-				{
-					name: 'test',
-					href: '/'
-				},
-				{
-					name: 'Příjem a výdej',
-					href: '/'
-				},
-				{
-					name: 'Stav skladu',
-					href: '/'
-				}
-			]
-		}
-	];
-
-	const favoriteParentItems: ParentItem[] = [
-		{
-			name: 'Sklad',
-			value: 'sklad',
-			href: '/',
-			icon: Warehouse,
-			children: [
-				{
-					name: 'Hodinovka',
-					href: '/'
-				},
-				{
-					name: 'Příjem a výdej',
-					href: '/'
-				},
-				{
-					name: 'Stav skladu',
-					href: '/'
-				}
-			]
-		},
-		{
-			name: 'Sklad 2',
-			value: 'sklad2',
-			href: '/',
-			icon: ShoppingBasket,
-			children: [
-				{
-					name: 'test',
-					href: '/'
-				},
-				{
-					name: 'Příjem a výdej',
-					href: '/'
-				},
-				{
-					name: 'Stav skladu',
-					href: '/'
-				}
-			]
-		}
-	];
 
 	let singleItems = allSingleItems;
 	let parentItems = allParentItems;
 
 	let show: boolean = true;
 	let open: boolean = false;
-
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
 		if (category === 'all') {
@@ -263,20 +84,23 @@
 
 </script>
 
-<div class="flex h-full max-h-screen flex-col">
+<div class="flex h-full max-h-screen flex-col border-r">
 	{#if show === true}
-		<div class="flex items-start pt-4 gap-4 mx-auto text-sm">
-			<button class="button all border-b-2 hover:bg-muted/40 transition-all" on:click={() => setCategory("all")}>
+		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
+			<button class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
+					on:click={() => setCategory("all")}>
 				Všechny
 			</button>
-			<button class="button recent hover:bg-muted/40 transition-all" on:click={() => setCategory("recent")}>
+			<button class="button recent border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
+					on:click={() => setCategory("recent")}>
 				Nedávné
 			</button>
-			<button class="button favorite hover:bg-muted/40 transition-all" on:click={() => setCategory("favorite")}>
+			<button class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
+					on:click={() => setCategory("favorite")}>
 				Oblíbené
 			</button>
-			<button on:click={toggleCommandFn} class="w-fit hover:bg-muted/40 transition-all">
-				<Search class="h-4 pt-0.5" />
+			<button on:click={toggleCommandFn} class="w-fit p-1 pb-0 rounded-t-md hover:bg-muted/50">
+				<Search class="h-4 " />
 			</button>
 		</div>
 	{/if}
@@ -285,12 +109,12 @@
 	{#if show === true}
 		<div class="flex-1 w-[320px] h-full">
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
-				<nav class="flex flex-col p-4 pb-2 gap-2 h-full">
+				<nav class="flex flex-col p-4 pb-2 gap-2 h-full ">
 					<div class="flex flex-col gap-2">
 						{#each singleItems as item}
 							<a
 								href={item.href}
-								class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/40 text-muted-foreground transition-all hover:text-primary"
+								class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
 							>
 								<svelte:component this={item.icon} />
 								{item.name}
@@ -304,17 +128,17 @@
 						{#each parentItems as parent}
 							<Accordion.Item value={parent.value}>
 
-								<Accordion.Trigger class="hover:bg-muted/40 rounded-md">
+								<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 									<div
-										class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
+										class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 										<svelte:component this={parent.icon} />
 										{parent.name}
 									</div>
 								</Accordion.Trigger>
 
-								<Accordion.Content class="">
+								<Accordion.Content class="px-4 py-2 ">
 									{#each parent.children as child}
-										<a href={child.href}>{child.name}</a>
+										<a href={child.href} class="hover:bg-muted/50 px-4 py-1">{child.name}</a>
 									{/each}
 								</Accordion.Content>
 							</Accordion.Item>
@@ -325,7 +149,7 @@
 						<Button
 							variant="ghost"
 							size="icon"
-							class=""
+							class="hover:bg-muted/50"
 							on:click={toggleSidebarFn}
 						>
 							<Menu class="h-5 w-5" />
@@ -340,10 +164,15 @@
 	{:else}
 		<div class="flex-1 w-[60px]">
 			<nav class="grid pt-4 gap-2 justify-center">
-				<button on:click={toggleCommandFn}
-						class="m-auto mb-2 text-muted-foreground hover:bg-muted/40 transition-all hover:text-primary">
-					<Search />
-				</button>
+				<Tooltip.Root openDelay={100}>
+					<Tooltip.Trigger>
+						<button on:click={toggleCommandFn}
+								class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+							<Search />
+						</button>
+					</Tooltip.Trigger>
+					<Tooltip.Content class="ml-10 mt-10">Vyhledat</Tooltip.Content>
+				</Tooltip.Root>
 
 				<Separator />
 
@@ -353,7 +182,7 @@
 					<Tooltip.Root openDelay={100}>
 						<Tooltip.Trigger>
 							<a href={item.href}
-							   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted/40 transition-all hover:text-primary">
+							   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 								<svelte:component this={item.icon} />
 							</a>
 						</Tooltip.Trigger>
@@ -373,14 +202,14 @@
 							<Popover.Root>
 								<Popover.Trigger>
 									<div
-										class="flex text-sm font-medium  items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted/40 transition-all hover:text-primary">
+										class="flex text-sm font-medium  items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 										<svelte:component this={parent.icon} />
 									</div>
 								</Popover.Trigger>
 
 								<Popover.Content class="flex flex-col p-2 ml-12 w-fit text-sm">
 									{#each parent.children as child}
-										<a href={child.href} class="hover:bg-muted/40 rounded p-2">{child.name}</a>
+										<a href={child.href} class="hover:bg-muted/50 rounded p-2">{child.name}</a>
 									{/each}
 								</Popover.Content>
 							</Popover.Root>
@@ -398,6 +227,7 @@
 			<Button
 				variant="ghost"
 				size="icon"
+				class="hover:bg-muted/50"
 				on:click={toggleSidebarFn}
 			>
 				<Menu class="h-5 w-5" />
@@ -423,7 +253,7 @@
 
 
 		{#each allParentItems as item}
-			<Command.Separator/>
+			<Command.Separator />
 			<Command.Group heading="{item.name}" class="my-2">
 				{#each item.children as child}
 					<Command.Item>

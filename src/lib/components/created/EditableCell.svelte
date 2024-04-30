@@ -1,11 +1,8 @@
 <script lang="ts">
 	export let row;
-	//BodyRow<Item>
 	export let column;
-	// DataColumn<Item>
 	export let value: unknown;
 	export let onUpdateValue;
-	// (rowDataId: string, columnId: string, newValue: unknown) => void
 
 	let isEditing = false;
 
@@ -33,7 +30,7 @@
     </span>
 	{:else}
 		<form on:submit|preventDefault={handleSubmit}>
-			<input bind:this={inputElement} type="text" bind:value/>
+			<input bind:this={inputElement} type="text" bind:value />
 			<button type="submit">✅</button>
 			<button on:click={handleCancel}>❌</button>
 		</form>

@@ -1,5 +1,5 @@
 export const textPrefixFilter = ({ filterValue, value }) => {
-	return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
+	return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
 };
 
 export const minFilter = ({ filterValue, value }) => {

@@ -1,8 +1,5 @@
-<script lang="ts">
-</script>
-
 <div class="w-fit flex flex-col ">
-	<div class="flex gap-2">
+	<div class="flex">
 		<slot />
 	</div>
 

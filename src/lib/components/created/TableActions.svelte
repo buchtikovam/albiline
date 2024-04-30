@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Ellipsis from 'lucide-svelte/icons/ellipsis';
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-	import { Button } from "$lib/components/ui/button";
+	import { Button } from '$lib/components/ui/button';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	export let id: string;
 </script>
@@ -15,9 +15,10 @@
 			class="relative h-8 w-8 p-0"
 		>
 			<span class="sr-only">Open menu</span>
-			<Ellipsis/>
+			<Ellipsis />
 		</Button>
 	</DropdownMenu.Trigger>
+
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
@@ -25,6 +26,7 @@
 				Copy payment ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
+
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item>View customer</DropdownMenu.Item>
 		<DropdownMenu.Item>View payment details</DropdownMenu.Item>

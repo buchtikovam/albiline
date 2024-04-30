@@ -1,12 +1,10 @@
 <script lang="ts">
-	import * as Tabs from '$lib/components/ui/tabs';
-	// import Logo from '$lib/icons/Logo.svelte';
-	import * as Avatar from '$lib/components/ui/avatar';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { goto } from '$app/navigation';
+	import Avatar from '$lib/components/created/Avatar.svelte';
+	import * as Tabs from '$lib/components/ui/tabs';
 </script>
 
-<div class="flex justify-between">
+<div class="flex justify-between bg-muted">
 	<Tabs.Root class="w-fit h-fit pt-2">
 		<Tabs.List>
 			<Tabs.Trigger value="pruvodni-list" on:click={() => goto("/")}>Průvodní list</Tabs.Trigger>
@@ -15,24 +13,8 @@
 	</Tabs.Root>
 
 
-	<div class="pt-1 pr-2">
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger>
-				<Avatar.Root class="w-8 h-8 ">
-					<Avatar.Image src="" alt="icon" />
-					<Avatar.Fallback>AB</Avatar.Fallback>
-				</Avatar.Root>
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content>
-				<DropdownMenu.Group>
-					<DropdownMenu.Label>Albi</DropdownMenu.Label>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Item>Profil</DropdownMenu.Item>
-					<DropdownMenu.Item>Nastavení</DropdownMenu.Item>
-					<DropdownMenu.Item>Odhlásit se</DropdownMenu.Item>
-				</DropdownMenu.Group>
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
+	<div class="my-auto pr-2">
+		<Avatar />
 	</div>
 </div>
 
