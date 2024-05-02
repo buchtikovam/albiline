@@ -16,7 +16,7 @@
 	import { writable } from 'svelte/store';
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { textPrefixFilter } from '$lib/components/filters/filters.js';
-	import { data } from '$lib/components/temporary/products.js';
+	import { data } from '$lib/components/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';

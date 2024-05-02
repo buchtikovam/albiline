@@ -8,7 +8,7 @@
 		recentParentItems,
 		favoriteParentItems,
 		favoriteSingleItems
-	} from '../temporary/sidebar';
+	} from '$lib/components/temporary-data/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Accordion from '$lib/components/ui/accordion';
@@ -107,7 +107,7 @@
 
 
 	{#if show === true}
-		<div class="flex-1 w-[320px] h-full">
+		<div class="flex-1 w-[320px] h-full" >
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
 				<nav class="flex flex-col p-4 pb-2 gap-2 h-full ">
 					<div class="flex flex-col gap-2">
@@ -162,9 +162,9 @@
 
 		</div>
 	{:else}
-		<div class="flex-1 w-[60px]">
+		<div class="flex-1 w-[60px]" >
 			<nav class="grid pt-4 gap-2 justify-center">
-				<Tooltip.Root openDelay={100}>
+				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
 						<button on:click={toggleCommandFn}
 								class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
@@ -179,7 +179,7 @@
 
 				{#each singleItems as item}
 
-					<Tooltip.Root openDelay={100}>
+					<Tooltip.Root openDelay={250}>
 						<Tooltip.Trigger>
 							<a href={item.href}
 							   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
@@ -207,7 +207,7 @@
 									</div>
 								</Popover.Trigger>
 
-								<Popover.Content class="flex flex-col p-2 ml-12 w-fit text-sm">
+								<Popover.Content class="flex flex-col px-2 py-1.5 ml-12 w-fit text-sm">
 									{#each parent.children as child}
 										<a href={child.href} class="hover:bg-muted/50 rounded p-2">{child.name}</a>
 									{/each}

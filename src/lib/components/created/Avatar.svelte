@@ -17,9 +17,9 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Albi</DropdownMenu.Label>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item>Profil</DropdownMenu.Item>
-			<DropdownMenu.Item>Nastavení</DropdownMenu.Item>
-			<DropdownMenu.Item>Odhlásit se</DropdownMenu.Item>
+			<DropdownMenu.Item><a href="/">Profil</a></DropdownMenu.Item>
+			<DropdownMenu.Item><a href="/">Nastavení</a></DropdownMenu.Item>
+			<DropdownMenu.Item><a href="/">Odhlásit se</a></DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
