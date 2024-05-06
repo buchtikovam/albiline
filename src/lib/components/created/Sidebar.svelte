@@ -15,11 +15,12 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
+	import { SidebarStateStore } from '$lib/components/stores/store';
+	import { onMount } from 'svelte';
 
 	let singleItems = allSingleItems;
 	let parentItems = allParentItems;
 
-	let show: boolean = true;
 	let open: boolean = false;
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
@@ -72,20 +73,45 @@
 		}
 	}
 
-	function toggleSidebarFn() {
-		show = !show;
-		console.log(show);
+	// TODO: add local storage
+
+	let show: unknown;
+
+	SidebarStateStore.subscribe((data) => {
+		show = data;
+	});
+
+	function setSidebar() {
+		const value = localStorage.getItem('sidebarState')?.trim();
+
+		if (value === 'true' || value === 'false') {
+			SidebarStateStore.set(value);
+		} else {
+			localStorage.setItem('sidebarState', 'true');
+		}
 	}
 
+	function toggleShow() {
+		if (show === 'true') {
+			SidebarStateStore.update(() => 'false');
+			localStorage.setItem('sidebarState', 'false');
+		} else {
+			SidebarStateStore.update(() => 'true');
+			localStorage.setItem('sidebarState', 'true');
+		}
+	}
+
+	// TODO: add keyboard shortcut
 	function toggleCommandFn() {
 		open = !open;
 		console.log(show);
 	}
 
+	onMount(() => setSidebar())
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
-	{#if show === true}
+	{#if show === "true"}
 		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
 			<button class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
 					on:click={() => setCategory("all")}>
@@ -106,7 +132,7 @@
 	{/if}
 
 
-	{#if show === true}
+	{#if show === "true"}
 		<div class="flex-1 w-[320px] h-full" >
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
 				<nav class="flex flex-col p-4 pb-2 gap-2 h-full ">
@@ -136,9 +162,9 @@
 									</div>
 								</Accordion.Trigger>
 
-								<Accordion.Content class="px-4 py-2 ">
+								<Accordion.Content class="px-4 py-2">
 									{#each parent.children as child}
-										<a href={child.href} class="hover:bg-muted/50 px-4 py-1">{child.name}</a>
+										<a href={child.href} class="hover:bg-muted/50 px-4 py-0.5">{child.name}</a>
 									{/each}
 								</Accordion.Content>
 							</Accordion.Item>
@@ -150,7 +176,7 @@
 							variant="ghost"
 							size="icon"
 							class="hover:bg-muted/50"
-							on:click={toggleSidebarFn}
+							on:click={toggleShow}
 						>
 							<Menu class="h-5 w-5" />
 							<span class="sr-only">Toggle navigation menu</span>
@@ -228,7 +254,7 @@
 				variant="ghost"
 				size="icon"
 				class="hover:bg-muted/50"
-				on:click={toggleSidebarFn}
+				on:click={toggleShow}
 			>
 				<Menu class="h-5 w-5" />
 				<span class="sr-only">Toggle navigation menu</span>

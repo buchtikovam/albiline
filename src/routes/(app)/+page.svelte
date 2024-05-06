@@ -16,7 +16,7 @@
 	</Tabs.List>
 
 	<Tabs.Content value="seznam" class="flex-1">
-		<div class="h-full rounded-lg rounded-tl-none bg-background border flex">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="flex-1">
 				<Table/>
 			</div>
@@ -24,7 +24,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="detail" class="flex-1">
-		<div class="h-full rounded-lg border rounded-tl-none bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// detail
 			</div>
@@ -32,7 +32,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="zpracovani" class="flex-1">
-		<div class="h-full rounded-lg border rounded-tl-none bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// zpracování
 			</div>
@@ -40,7 +40,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="cas-naklady" class="flex-1">
-		<div class="h-full rounded-lg rounded-tl-none border bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// časové náklady
 			</div>
@@ -48,7 +48,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="historie" class="flex-1">
-		<div class="h-full rounded-lg rounded-tl-none border bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// historie
 			</div>
@@ -56,7 +56,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="cast-vyrobku" class="flex-1">
-		<div class="h-full rounded-lg rounded-tl-none border bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// historie
 			</div>
@@ -64,7 +64,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="preview" class="flex-1">
-		<div class="h-full rounded-lg rounded-tl-none border bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// preview
 			</div>
@@ -72,7 +72,7 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="editace-pozic" class="flex-1">
-		<div class="h-full rounded-lg rounded-tl-none border bg-background shadow-sm flex p-4">
+		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
 			<div class="p-4">
 				// editace-pozic
 			</div>

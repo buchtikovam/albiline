@@ -1,0 +1,42 @@
+table: editable cell
+
+	// const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
+	// 	if (['age', 'visits', 'progress'].includes(columnId)) {
+	// 		if (typeof newValue === 'string') {
+	// 			newValue = parseInt(newValue);
+	// 		}
+	// 		if (isNaN(newValue)) {
+	// 			$productData = $productData;
+	// 			return;
+	// 		}
+	// 	}
+	// 	if (columnId === 'status') {
+	// 		if (!['relationship', 'single', 'complicated'].includes(<string>newValue)) {
+	// 			$productData = $productData;
+	// 			return;
+	// 		}
+	// 	}
+	// };
+	//
+
+	// const EditableCellLabel = ({ column, row, value }) =>
+    	// 	createRender(EditableCell, {
+    	// 		row,
+    	// 		column,
+    	// 		value,
+    	// 		onUpdateValue: updateData
+    	// 	});
+
+
+
+table: hide columns
+
+	// const { filterValue } = pluginStates.filter;
+	// const { hiddenColumnIds } = pluginStates.hide;
+
+	// const ids = flatColumns.map((col) => col.id);
+    	// let hideForId = Object.fromEntries(ids.map((id) => [id, true]));
+
+    	// $: $hiddenColumnIds = Object.entries(hideForId)
+    	// 	.filter(([, hide]) => !hide)
+    	// 	.map(([id]) => id);

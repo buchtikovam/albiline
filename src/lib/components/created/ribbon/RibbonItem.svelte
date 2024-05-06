@@ -1,13 +1,16 @@
 <script lang="ts">
 	import * as Tooltip from "$lib/components/ui/tooltip";
+	import { RibbonStateStore } from '$lib/components/stores/store';
 	export let name: string = 'Item';
 
-	export let isOpen: boolean;
+	let isOpen: unknown;
 
-
+	RibbonStateStore.subscribe((data) => {
+		isOpen = data
+	})
 </script>
 
-{#if isOpen}
+{#if isOpen === "true"}
 	<div
 		class="p-2 w-min h-[60px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
 		<button class="text-[11px] flex flex-col gap-1 leading-3 content-center items-center m-auto">

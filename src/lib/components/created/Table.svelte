@@ -24,25 +24,6 @@
 
 	const productData = writable(data);
 
-	// const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
-	// 	if (['age', 'visits', 'progress'].includes(columnId)) {
-	// 		if (typeof newValue === 'string') {
-	// 			newValue = parseInt(newValue);
-	// 		}
-	// 		if (isNaN(newValue)) {
-	// 			$productData = $productData;
-	// 			return;
-	// 		}
-	// 	}
-	// 	if (columnId === 'status') {
-	// 		if (!['relationship', 'single', 'complicated'].includes(<string>newValue)) {
-	// 			$productData = $productData;
-	// 			return;
-	// 		}
-	// 	}
-	// };
-	//
-
 	const table = createTable(productData, {
 		sort: addSortBy(),
 		filter: addTableFilter({
@@ -55,13 +36,9 @@
 		colFilter: addColumnFilters()
 	});
 
-	// const EditableCellLabel = ({ column, row, value }) =>
-	// 	createRender(EditableCell, {
-	// 		row,
-	// 		column,
-	// 		value,
-	// 		onUpdateValue: updateData
-	// 	});
+	// TODO: make columns based on JSON | object
+
+	// TODO: make column width vary based on content
 
 	const columns = table.createColumns([
 		table.column({
@@ -153,6 +130,19 @@
 		}),
 
 		table.column({
+			accessor: 'klp',
+			header: 'KLP',
+			plugins: {
+				colFilter: {
+					fn: textPrefixFilter,
+					initialFilterValue: '',
+					render: ({ filterValue, values, preFilteredValues }) =>
+						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				}
+			}
+		}),
+
+		table.column({
 			accessor: 'listovaciPolozka',
 			header: 'Listovací Položka',
 			plugins: {
@@ -218,23 +208,13 @@
 		tableAttrs,
 		tableBodyAttrs,
 		pluginStates,
-		// flatColumns,
 		rows
 	} = table.createViewModel(columns);
 
-	// const { filterValue } = pluginStates.filter;
-	// const { hiddenColumnIds } = pluginStates.hide;
+
 	const { selectedDataIds } = pluginStates.select;
-
-	// const ids = flatColumns.map((col) => col.id);
-	// let hideForId = Object.fromEntries(ids.map((id) => [id, true]));
-
-	// $: $hiddenColumnIds = Object.entries(hideForId)
-	// 	.filter(([, hide]) => !hide)
-	// 	.map(([id]) => id);
-
-
 	const { columnIdOrder } = pluginStates.colOrder;
+
 	$columnIdOrder = [
 		'id',
 		'ksp',
@@ -244,18 +224,21 @@
 		'koncepce',
 		'listovaciPolozka',
 		'prodCena',
+		'skladem',
 		'vyrobeno',
-		'vyrobeno'
+		'klp'
 	];
 </script>
 
 <div class="flex flex-col h-full bg-background rounded-lg">
 	<div class="rounded-md rounded-tl-none flex-1">
-		<Table.Root {...$tableAttrs} class="overflow-x-auto">
+		<Table.Root {...$tableAttrs}>
 
 			<Table.Header>
 				{#each $headerRows as headerRow (headerRow.id)}
 					<Subscribe rowAttrs={headerRow.attrs()} let:rowAttrs>
+
+<!--						TODO: fix checkbox cell width bug -->
 
 						<Table.Row {...rowAttrs}>
 							{#each headerRow.cells as cell (cell.id)}
@@ -266,7 +249,7 @@
 										{#if cell.id !== "id" && cell.id !== ""}
 											<Button
 												variant="ghost" on:click={props.sort.toggle}
-												class="h-6 my-1 hover:bg-muted/90">
+												class="h-6 my-1 hover:bg-muted/85">
 												<Render of={cell.render()} />
 												<ArrowUpDown class="h-4 w-4 pl-1 " />
 											</Button>
@@ -285,6 +268,9 @@
 				{/each}
 			</Table.Header>
 
+			<!--			TODO: make header fixed -->
+
+			<!--			TODO: max cell size -->
 
 			<Table.Body {...$tableBodyAttrs} class="">
 
@@ -307,7 +293,6 @@
 					</Subscribe>
 				{/each}
 			</Table.Body>
-
 		</Table.Root>
 
 	</div>

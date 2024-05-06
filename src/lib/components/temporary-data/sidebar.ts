@@ -64,8 +64,8 @@ export const allParentItems: ParentItem[] = [
 		]
 	},
 	{
-		name: 'Sklad 2',
-		value: 'sklad2',
+		name: 'Produkty',
+		value: 'products',
 		href: '/',
 		icon: ShoppingBasket,
 		children: [
@@ -107,8 +107,8 @@ export const recentParentItems: ParentItem[] = [
 		]
 	},
 	{
-		name: 'Sklad 2',
-		value: 'sklad2',
+		name: 'Produkty',
+		value: 'products',
 		href: '/',
 		icon: ShoppingBasket,
 		children: [
@@ -150,8 +150,8 @@ export const favoriteParentItems: ParentItem[] = [
 		]
 	},
 	{
-		name: 'Sklad 2',
-		value: 'sklad2',
+		name: 'Produkty',
+		value: 'products',
 		href: '/',
 		icon: ShoppingBasket,
 		children: [

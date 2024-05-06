@@ -1,15 +1,20 @@
 <script lang="ts">
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { Check, ChevronsDown, ChevronsUpDown } from 'lucide-svelte';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { Button } from '$lib/components/ui/button';
-	import { cn } from '$lib/utils.js';
 	import { tick } from 'svelte';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import { RibbonStateStore } from '$lib/components/stores/store';
 
 	export let name: string = 'Item';
-	export let isOpen: boolean;
+
+	let isOpen: unknown;
+
+	RibbonStateStore.subscribe((data) => {
+		isOpen = data
+	})
+
 
 	const exportOptions = [
 		{
@@ -33,9 +38,6 @@
 		exportOptions.find((f) => f.value === value)?.label ??
 		'formát';
 
-	// We want to refocus the trigger button when the user selects
-	// an item from the list so users can continue navigating the
-	// rest of the form with the keyboard.
 	function closeAndFocusTrigger(triggerId: string) {
 		open = false;
 		tick().then(() => {
@@ -45,7 +47,7 @@
 </script>
 
 
-{#if isOpen}
+{#if isOpen === "true"}
 	<div class="flex flex-col hover:bg-muted/50 items-center">
 		<div
 			class="p-1 w-min h-fit rounded-md flex content-center items-center mx-auto text-muted-foreground ">
