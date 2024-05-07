@@ -5,4 +5,5 @@
 	export let checked: Writable<boolean>;
 </script>
 
-<Checkbox bind:checked={$checked}/>
+<Checkbox bind:checked={$checked} class="flex ml-0.5" />
+

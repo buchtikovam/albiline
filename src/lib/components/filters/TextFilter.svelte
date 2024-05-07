@@ -7,7 +7,7 @@
 	import  ArrowLeftRight from 'lucide-svelte/icons/arrow-left-right';
 	import  ArrowRightFromLine from 'lucide-svelte/icons/arrow-right-from-line';
 	import  Grip from 'lucide-svelte/icons/grip';
-	// import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 
 	import { Button } from '$lib/components/ui/button';
 
@@ -59,7 +59,7 @@
 			>
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
-						<svelte:component this={selectedValue?.icon ?? Grip} class="h-3 w-3 mr-2" />
+						<svelte:component this={selectedValue?.icon ?? ChevronDown} class="h-3 w-3" />
 					</Tooltip.Trigger>
 					{#if selectedValue?.label === undefined}
 						<Tooltip.Content class="mt-16">Vyberte filtr</Tooltip.Content>
@@ -97,7 +97,7 @@
 		id="filter-input"
 		type="text"
 		bind:value={$filterValue}
-		class="focus:outline-none w-auto text-xs p-0.5 rounded-md"
+		class="focus:outline-none w-fit text-xs p-0.5 rounded-md"
 	>
 </div>
 

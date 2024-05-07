@@ -5,7 +5,7 @@
 		addHiddenColumns,
 		addSelectedRows,
 		addColumnOrder,
-		addColumnFilters,
+		addColumnFilters
 	} from 'svelte-headless-table/plugins';
 
 	import { addResizedColumns } from 'svelte-headless-table/plugins';
@@ -19,13 +19,14 @@
 	import { writable } from 'svelte/store';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import { textPrefixFilter } from '$lib/components/filters/filters.js';
-	import { data } from '$lib/components/temporary-data/products.js';
+	import { data } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
-	// import * as Table from '$lib/components/ui/table';
+	import CellWidth, { CELL_WIDTH } from '$lib/enums/cellWidth.ts';
 
 	const productData = writable(data);
+
 
 	const table = createTable(productData, {
 		sort: addSortBy(),
@@ -35,14 +36,14 @@
 		}),
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
-		colOrder: addColumnOrder(),
+		colOrder: addColumnOrder({
+			initialColumnIdOrder: ['id']
+		}),
 		colFilter: addColumnFilters(),
 		resize: addResizedColumns()
 	});
 
 	// TODO: make columns based on JSON | object
-
-	// TODO: make column width vary based on content - resizable columns
 
 	const columns = table.createColumns([
 		table.column({
@@ -66,9 +67,9 @@
 					disable: true
 				},
 				resize: {
-					initialWidth: 20,
-					maxWidth: 20,
-					disable: true
+					minWidth: CELL_WIDTH.CHECKBOX,
+					initialWidth: CELL_WIDTH.CHECKBOX,
+					maxWidth: CELL_WIDTH.LIMIT
 				}
 			}
 		}),
@@ -80,9 +81,14 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.SMALL,
+					maxWidth: CELL_WIDTH.LIMIT
+				}
 			}
 		}),
 
@@ -93,9 +99,14 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.MEDIUM,
+					// initialWidth: CELL_WIDTH.XLARGE,
+					maxWidth: CELL_WIDTH.LIMIT
+				}
 			}
 		}),
 
@@ -106,9 +117,14 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.SMALL,
+					maxWidth: CELL_WIDTH.LIMIT
+				}
 			}
 		}),
 
@@ -119,9 +135,14 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.MEDIUM,
+					maxWidth: CELL_WIDTH.LIMIT
+				}
 			}
 		}),
 
@@ -132,9 +153,15 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.LARGE,
+					maxWidth: CELL_WIDTH.LIMIT
+
+				}
 			}
 		}),
 
@@ -145,9 +172,14 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.SMALL,
+					maxWidth: CELL_WIDTH.LIMIT
+				}
 			}
 		}),
 
@@ -158,9 +190,15 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.LARGE,
+					maxWidth: CELL_WIDTH.LIMIT
+
+				}
 			}
 		}),
 
@@ -178,9 +216,15 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.MEDIUM,
+					maxWidth: CELL_WIDTH.LIMIT
+
+				}
 			}
 		}),
 
@@ -191,9 +235,15 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.MEDIUM,
+					maxWidth: CELL_WIDTH.LIMIT
+
+				}
 			}
 		}),
 
@@ -204,9 +254,15 @@
 				colFilter: {
 					fn: textPrefixFilter,
 					initialFilterValue: '',
-					render: ( filterValue ) =>
+					render: (filterValue) =>
 						createRender(TextFilter, filterValue)
 				},
+				resize: {
+					minWidth: CELL_WIDTH.SMALL,
+					// initialWidth: CELL_WIDTH.MEDIUM,
+					maxWidth: CELL_WIDTH.LIMIT
+
+				}
 			}
 		})
 	]);
@@ -222,36 +278,21 @@
 
 
 	const { selectedDataIds } = pluginStates.select;
-	const { columnWidths } = pluginStates.resize;
-	const { columnIdOrder } = pluginStates.colOrder;
-
-	$columnIdOrder = [
-		'id',
-		'ksp',
-		'jmeno',
-		'typ',
-		'linie',
-		'koncepce',
-		'listovaciPolozka',
-		'prodCena',
-		'skladem',
-		'vyrobeno',
-		'klp'
-	];
 </script>
 
 
 <!--TODO: checkbox for all rows -->
 
 <div class="flex flex-col h-full bg-background rounded-lg">
-	<div class="rounded-md rounded-tl-none overflow-auto flex-1">
+	<div class="rounded-md rounded-tl-none overflow-x-auto overflow-y-auto flex-1">
 
-		<table {...$tableAttrs}>
+		<table {...$tableAttrs} class="">
 
-			<thead class="sticky top-0 z-10">
+<!--		TODO: make table full width -->
+			<thead class="">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<tr {...attrs}>
+					<tr {...attrs} class="">
 
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
@@ -290,12 +331,12 @@
 
 			<!--			TODO: max cell height -->
 
-			<tbody {...$tableBodyAttrs} class="h-full overflow-y-auto">
+			<tbody {...$tableBodyAttrs} class="h-full text-sm">
 
 			{#each $pageRows as row (row.id)}
 				<Subscribe attrs={row.attrs()} let:attrs>
 
-					<tr {...attrs} data-state={$selectedDataIds[row.id] && "selected"} class="hover:bg-muted/40">
+					<tr {...attrs} data-state={$selectedDataIds[row.id] && "selected"} class="hover:bg-muted/40 w-full">
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
 								<td {...attrs}>
@@ -320,15 +361,14 @@
 
 
 <style>
+
+
 	table {
 		border-spacing: 0;
-		/*border-top: 1px solid black;*/
-		/*border-left: 1px solid black;*/
 	}
 
 	th, td {
-		/*border-bottom: 1px solid black;*/
-		/*border-right: 1px solid black;*/
+		border-bottom: 1px #eaeaea solid;
 		padding: 0.5rem;
 	}
 
@@ -343,7 +383,6 @@
 		right: -4px;
 		width: 8px;
 		z-index: 1;
-		background: rgba(200, 200, 200, 0.5);
 		cursor: col-resize;
 	}
 </style>

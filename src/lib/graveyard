@@ -42,7 +42,8 @@ table: hide columns
     	// 	.map(([id]) => id);
 
 
-table column filter with other attributes:
+
+table: column filter with other attributes
 
 	// colFilter: {
 			// 	fn: textPrefixFilter,
@@ -50,3 +51,23 @@ table column filter with other attributes:
 			// 	render: ({ filterValue, values, preFilteredValues }) =>
 			// 		createRender(TextFilter, { filterValue, values, preFilteredValues })
 		// },
+
+
+table: column order
+
+	// const { columnIdOrder } = pluginStates.colOrder;
+
+	// $columnIdOrder = [
+	// 	'id',
+	// 	'ksp',
+	// 	'jmeno',
+	// 	'typ',
+	// 	'linie',
+	// 	'koncepce',
+	// 	'listovaciPolozka',
+	// 	'prodCena',
+	// 	'skladem',
+	// 	'vyrobeno',
+	// 	'klp'
+	// ];
+

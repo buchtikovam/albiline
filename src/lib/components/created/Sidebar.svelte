@@ -8,7 +8,7 @@
 		recentParentItems,
 		favoriteParentItems,
 		favoriteSingleItems
-	} from '$lib/components/temporary-data/sidebar';
+	} from '$lib/temporary-data/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Accordion from '$lib/components/ui/accordion';
