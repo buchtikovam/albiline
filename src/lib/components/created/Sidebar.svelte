@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Menu } from 'lucide-svelte';
+	import Menu from 'lucide-svelte/icons/menu';
 	import Search from 'lucide-svelte/icons/search';
 	import {
 		allParentItems,

@@ -1,5 +1,8 @@
 import type { ComponentType } from 'svelte';
-import { type Icon, ShoppingBasket, TableProperties, Warehouse } from 'lucide-svelte';
+import type { Icon } from 'lucide-svelte';
+import ShoppingBasket from 'lucide-svelte/icons/shopping-basket';
+import TableProperties from 'lucide-svelte/icons/table-properties';
+import Warehouse from 'lucide-svelte/icons/warehouse';
 
 type SingleItem = {
 	name: string;

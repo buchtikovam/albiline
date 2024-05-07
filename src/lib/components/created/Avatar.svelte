@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { User } from 'lucide-svelte';
+	import User from 'lucide-svelte/icons/user';
 </script>
 
 <DropdownMenu.Root>

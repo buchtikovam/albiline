@@ -1,34 +1,32 @@
 <script lang="ts">
-	import {
-		ArrowDownWideNarrow,
-		Filter,
-		FilterX,
-		FolderUp,
-		ListFilter,
-		Printer,
-		ChevronDown,
-		ChevronUp,
-		FilePlus,
-		FileX2,
-		Pencil,
-		FileUp,
-		FileDown,
-		FolderDown,
-		Scan,
-		Undo2,
-		ListPlus,
-		Columns3,
-		BarChart3,
-		Save,
-		RefreshCcw
-	} from 'lucide-svelte';
-	import { Separator } from '$lib/components/ui/separator';
+	import ArrowDownWideNarrow from 'lucide-svelte/icons/arrow-down-wide-narrow';
+	import Filter from 'lucide-svelte/icons/filter';
+	import FilterX from 'lucide-svelte/icons/filter-x';
+	import FolderUp from 'lucide-svelte/icons/folder-up';
+	import ListFilter from 'lucide-svelte/icons/list-filter';
+	import Printer from 'lucide-svelte/icons/printer';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import ChevronUp from 'lucide-svelte/icons/chevron-up';
+	import FilePlus from 'lucide-svelte/icons/file-plus';
+	import FileX2 from 'lucide-svelte/icons/file-x-2';
+	import Pencil from 'lucide-svelte/icons/pencil';
+	import FileUp from 'lucide-svelte/icons/file-up';
+	import FileDown from 'lucide-svelte/icons/file-down';
+	import FolderDown from 'lucide-svelte/icons/folder-down';
+	import Scan from 'lucide-svelte/icons/scan';
+	import Undo2 from 'lucide-svelte/icons/undo-2';
+	import ListPlus from 'lucide-svelte/icons/list-plus';
+	import Columns3 from 'lucide-svelte/icons/columns-3';
+	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
+	import Save from 'lucide-svelte/icons/save';
+	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 	import RibbonSection from '$lib/components/created/ribbon/RibbonSection.svelte';
 	import RibbonItem from '$lib/components/created/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/created/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/created/ribbon/RibbonItemsNarrow.svelte';
-	import { onMount } from 'svelte';
+	import { Separator } from '$lib/components/ui/separator';
 	import { RibbonStateStore } from '$lib/components/stores/store';
+	import { onMount } from 'svelte';
 
 	let isOpen: unknown;
 

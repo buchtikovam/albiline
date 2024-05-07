@@ -2,7 +2,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import type { ComponentType } from 'svelte';
 	import type { Icon } from 'lucide-svelte';
-	import { Brackets } from 'lucide-svelte';
+	import Brackets from 'lucide-svelte/icons/brackets';
 	import { RibbonStateStore } from '$lib/components/stores/store';
 
 	type Item = {
