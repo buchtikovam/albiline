@@ -5,7 +5,8 @@
 		addHiddenColumns,
 		addSelectedRows,
 		addColumnOrder,
-		addColumnFilters
+		addColumnFilters,
+		addResizedColumns
 	} from 'svelte-headless-table/plugins';
 	import {
 		createTable,
@@ -33,12 +34,18 @@
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
 		colOrder: addColumnOrder(),
-		colFilter: addColumnFilters()
+		colFilter: addColumnFilters(),
+		resize: addResizedColumns({
+			// onResize: async (resizedWidths) => {
+			// 	ColumnWidths.set(resizedWidths);
+			// 	console.log(ColumnWidths.get('test', resizedWidths));
+			// }
+		}),
 	});
 
 	// TODO: make columns based on JSON | object
 
-	// TODO: make column width vary based on content
+	// TODO: make column width vary based on content - resizable columns
 
 	const columns = table.createColumns([
 		table.column({
@@ -59,6 +66,11 @@
 			},
 			plugins: {
 				sort: {
+					disable: true,
+				},
+				resize: {
+					initialWidth: 20,
+					maxWidth: 20,
 					disable: true
 				}
 			}
@@ -73,6 +85,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -86,6 +103,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 200,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -99,6 +121,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -112,6 +139,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -125,6 +157,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -138,6 +175,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -151,6 +193,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -171,6 +218,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -184,6 +236,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		}),
@@ -197,6 +254,11 @@
 					initialFilterValue: '',
 					render: ({ filterValue, values, preFilteredValues }) =>
 						createRender(TextFilter, { filterValue, values, preFilteredValues })
+				},
+				resize: {
+					minWidth: 50,
+					initialWidth: 100,
+					maxWidth: 200,
 				}
 			}
 		})
@@ -212,7 +274,9 @@
 	} = table.createViewModel(columns);
 
 
+	// const  columnWidths  = pluginStates.resize;
 	const { selectedDataIds } = pluginStates.select;
+
 	const { columnIdOrder } = pluginStates.colOrder;
 
 	$columnIdOrder = [
@@ -230,36 +294,44 @@
 	];
 </script>
 
+
+<!--TODO: checkbox for all rows -->
+
 <div class="flex flex-col h-full bg-background rounded-lg">
 	<div class="rounded-md rounded-tl-none flex-1">
+
 		<Table.Root {...$tableAttrs}>
 
 			<Table.Header>
 				{#each $headerRows as headerRow (headerRow.id)}
-					<Subscribe rowAttrs={headerRow.attrs()} let:rowAttrs>
-
-<!--						TODO: fix checkbox cell width bug -->
-
+					<Subscribe rowAttrs={headerRow.attrs()} let:rowAttrs >
 						<Table.Row {...rowAttrs}>
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+									<Table.Head {...attrs}>
+<!--										style="width: {$ColumnWidths[cell.id]}px" use:props.resize.drag-->
+										<div class="[&:has([role=checkbox])]:pl-3" >
+											{#if cell.id !== "id" && cell.id !== ""}
+												<Button
+													variant="ghost"
+													on:click={props.sort.toggle}
+													class="h-6 my-1 hover:bg-muted/85"
+												>
+													<Render of={cell.render()} />
+													<ArrowUpDown class="h-4 w-4 pl-1 " />
+												</Button>
+											{/if}
 
-									<Table.Head {...attrs} class="[&:has([role=checkbox])]:pl-3">
+											{#if props.colFilter?.render}
+												<div>
+													<Render of={props.colFilter.render} />
+												</div>
+											{/if}
 
-										{#if cell.id !== "id" && cell.id !== ""}
-											<Button
-												variant="ghost" on:click={props.sort.toggle}
-												class="h-6 my-1 hover:bg-muted/85">
-												<Render of={cell.render()} />
-												<ArrowUpDown class="h-4 w-4 pl-1 " />
-											</Button>
-										{/if}
-
-										{#if props.colFilter?.render}
-											<div>
-												<Render of={props.colFilter.render} />
-											</div>
-										{/if}
+											<!--{#if !props.resize.disabled}-->
+											<!--	<div class="resizer  w-[8px] h-[20px] bg-gray-600 cursor-col-resize" use:props.resize.drag></div>-->
+											<!--{/if}-->
+										</div>
 									</Table.Head>
 								</Subscribe>
 							{/each}
@@ -270,7 +342,7 @@
 
 			<!--			TODO: make header fixed -->
 
-			<!--			TODO: max cell size -->
+			<!--			TODO: max cell height -->
 
 			<Table.Body {...$tableBodyAttrs} class="">
 

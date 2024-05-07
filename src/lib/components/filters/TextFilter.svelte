@@ -5,6 +5,7 @@
 	import { tick } from 'svelte';
 	import { ArrowLeftFromLine, ArrowLeftRight, ArrowRightFromLine, Grip } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 
 	export let filterValue;
 
@@ -41,7 +42,7 @@
 	}
 </script>
 
-<div class="flex items-center border rounded-md mb-2 ">
+<div class="w-auto flex items-center border rounded-md mb-2 ">
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
 
@@ -54,7 +55,7 @@
 			>
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
-						<svelte:component this={selectedValue?.icon ?? Grip} class="h-3 w-3" />
+						<svelte:component this={selectedValue?.icon ?? Grip} class="h-3 w-3 mr-2" />
 					</Tooltip.Trigger>
 					{#if selectedValue?.label === undefined}
 						<Tooltip.Content class="mt-16">Vyberte filtr</Tooltip.Content>
@@ -92,7 +93,7 @@
 		id="filter-input"
 		type="text"
 		bind:value={$filterValue}
-		class="focus:outline-none text-xs p-0.5 rounded-md"
+		class="focus:outline-none w-auto text-xs p-0.5 rounded-md"
 	>
 </div>
 

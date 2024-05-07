@@ -73,8 +73,6 @@
 		}
 	}
 
-	// TODO: add local storage
-
 	let show: unknown;
 
 	SidebarStateStore.subscribe((data) => {
@@ -101,13 +99,24 @@
 		}
 	}
 
-	// TODO: add keyboard shortcut
 	function toggleCommandFn() {
 		open = !open;
-		console.log(show);
 	}
 
-	onMount(() => setSidebar())
+	onMount(() => {
+		setSidebar()
+		function handleKeydown(e: KeyboardEvent) {
+			if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				open = !open;
+			}
+		}
+
+		document.addEventListener("keydown", handleKeydown);
+		return () => {
+			document.removeEventListener("keydown", handleKeydown);
+		};
+	})
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
