@@ -12,6 +12,12 @@ type Product = {
 	vyrobeno: number;
 };
 
+type Column = {
+	accessor: string,
+	header: string,
+	type: 'id' | 'string' | 'currency' | 'checkbox';
+	cellSize: 'SMALL' | 'MEDIUM' | 'LARGE' | 'XLARGE' | 'CHECKBOX';
+}
 
 export const data: Product[] = [
 	{
@@ -210,7 +216,7 @@ export const data: Product[] = [
 	{
 		'id': '16',
 		'ksp': 81050,
-		'jmeno': 'Pánské hodinky s chronografem',
+		'jmeno': 'Pánské hodinky s chronografem ',
 		'typ': 'Produkt',
 		'linie': 'Móda',
 		'koncepce': 'Hodinky',
@@ -326,7 +332,7 @@ export const data: Product[] = [
 	{
 		'id': '25',
 		'ksp': 81059,
-		'jmeno': 'Pánská košile s dlouhým rukávem test  test test test test test test test test test test test test',
+		'jmeno': 'Pánská košile s dlouhým rukávem',
 		'typ': 'Produkt',
 		'linie': 'Móda',
 		'koncepce': 'Oblečení',
@@ -337,3 +343,83 @@ export const data: Product[] = [
 		'vyrobeno': 4321
 	}
 ];
+
+// TODO: change cell width based on cellSize prop
+
+export const columnsData: Column[] = [
+	{
+		accessor: 'id',
+		header: 'id',
+		type: 'id',
+		cellSize: 'CHECKBOX'
+	},
+	{
+		accessor: 'ksp',
+		header: 'KSP',
+		type: 'string',
+		cellSize: 'SMALL'
+
+	},
+	{
+		accessor: 'jmeno',
+		header: 'Jméno',
+		type: 'string',
+		cellSize: 'XLARGE'
+
+	},
+	{
+		accessor: 'typ',
+		header: 'Typ',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+	},
+	{
+		accessor: 'linie',
+		header: 'Linie',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+
+	},
+	{
+		accessor: 'koncepce',
+		header: 'Koncepce',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+
+	},
+	{
+		accessor: 'klp',
+		header: 'KLP',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+
+	},
+	{
+		accessor: 'listovaciPolozka',
+		header: 'Listovací položka',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+
+	},
+	{
+		accessor: 'prodCena',
+		header: 'Cena',
+		type: 'currency',
+		cellSize: 'CHECKBOX'
+
+	},
+	{
+		accessor: 'skladem',
+		header: 'Skladem',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+
+	},
+	{
+		accessor: 'vyrobeno',
+		header: 'Vyrobeno',
+		type: 'string',
+		cellSize: 'CHECKBOX'
+
+	},
+]

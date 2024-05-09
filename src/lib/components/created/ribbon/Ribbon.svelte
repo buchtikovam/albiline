@@ -20,13 +20,13 @@
 	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
 	import Save from 'lucide-svelte/icons/save';
 	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
+	import { onMount } from 'svelte';
+	import { Separator } from '$lib/components/ui/separator';
+	import { RibbonStateStore } from '$lib/components/stores/store';
 	import RibbonSection from '$lib/components/created/ribbon/RibbonSection.svelte';
 	import RibbonItem from '$lib/components/created/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/created/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/created/ribbon/RibbonItemsNarrow.svelte';
-	import { Separator } from '$lib/components/ui/separator';
-	import { RibbonStateStore } from '$lib/components/stores/store';
-	import { onMount } from 'svelte';
 
 	let isOpen: unknown;
 
@@ -197,7 +197,7 @@
 </div>
 
 {#if isOpen === "true"}
-	<div class="absolute mt-[102px] w-full flex justify-end items-center">
+	<div class="absolute mt-[100px] w-full flex justify-end items-center">
 		<button on:click={() => toggleOpen()}>
 			<ChevronUp class="h-4 w-4 bg-background" />
 		</button>

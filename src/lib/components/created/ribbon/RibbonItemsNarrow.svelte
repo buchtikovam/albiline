@@ -36,7 +36,7 @@
 	<div class="flex flex-col self-center pr-1">
 		{#each items as item}
 			<div
-				class="p-0.5 w-full h-fit rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
+				class="p-[1px] w-full h-fit rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
 				<button class="text-[11px] flex gap-2 items-center">
 
 					<svelte:component this={item.icon} class="h-3.5 w-3.5 muted-foreground hover:bg-muted/50" />

@@ -16,17 +16,16 @@
 		Subscribe,
 		createRender
 	} from 'svelte-headless-table';
-	import { writable } from 'svelte/store';
+	import { get, readable } from 'svelte/store';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import { textPrefixFilter } from '$lib/components/filters/filters.js';
-	import { data } from '$lib/temporary-data/products.js';
+	import { data, columnsData } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
 	import { CELL_WIDTH } from '$lib/enums/cellWidth.js';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
 
-	const productData = writable(data);
-
+	const productData = readable(data);
 
 	const table = createTable(productData, {
 		sort: addSortBy(),
@@ -37,235 +36,109 @@
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
 		colOrder: addColumnOrder({
-			initialColumnIdOrder: ['id']
+			initialColumnIdOrder: [
+				'id',
+				'ksp',
+				'jmeno',
+				'typ',
+				'linie',
+				'koncepce',
+				'listovaciPolozka',
+				'prodCena',
+				'vyrobeno',
+				'skladem'
+			]
 		}),
 		colFilter: addColumnFilters(),
-		resize: addResizedColumns()
+		resize: addResizedColumns(),
 	});
 
-	// TODO: make columns based on JSON | object
+	// TODO: drag and drop for columns, save order in local storage
 
-	const columns = table.createColumns([
-		table.column({
-			accessor: 'id',
-			header: (_, { pluginStates }) => {
-				const { allPageRowsSelected } = pluginStates.select;
-				return createRender(TableCheckbox, {
-					checked: allPageRowsSelected
-				});
-			},
-			cell: ({ row }, { pluginStates }) => {
-				const { getRowState } = pluginStates.select;
-				const { isSelected } = getRowState(row);
+	const createdColumns = [];
 
-				return createRender(TableCheckbox, {
-					checked: isSelected
-				});
-			},
-			plugins: {
-				sort: {
-					disable: true
+	columnsData.map((column) => {
+		if (column.type === 'id') {
+			createdColumns.push(table.column({
+				accessor: column.accessor,
+				header: (_, { pluginStates }) => {
+					const { allPageRowsSelected } = pluginStates.select;
+					return createRender(TableCheckbox, {
+						checked: allPageRowsSelected
+					});
 				},
-				resize: {
-					minWidth: CELL_WIDTH.CHECKBOX,
-					initialWidth: CELL_WIDTH.CHECKBOX,
-					maxWidth: CELL_WIDTH.LIMIT
-				}
-			}
-		}),
+				cell: ({ row }, { pluginStates }) => {
+					const { getRowState } = pluginStates.select;
+					const { isSelected } = getRowState(row);
 
-		table.column({
-			accessor: 'ksp',
-			header: 'KSP',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
+					return createRender(TableCheckbox, {
+						checked: isSelected
+					});
 				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					initialWidth: CELL_WIDTH.SMALL,
-					maxWidth: CELL_WIDTH.LIMIT
+				plugins: {
+					sort: {
+						disable: true
+					},
+					resize: {
+						minWidth: CELL_WIDTH.CHECKBOX,
+						initialWidth: CELL_WIDTH.CHECKBOX,
+						maxWidth: CELL_WIDTH.LIMIT
+					}
 				}
-			}
-		}),
+			}))
+		}
 
-		table.column({
-			accessor: 'jmeno',
-			header: 'Jméno',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
+		if (column.type === 'string') {
+			createdColumns.push(table.column({
+				accessor: column.accessor,
+				header: column.header,
+				plugins: {
+					colFilter: {
+						fn: textPrefixFilter,
+						initialFilterValue: '',
+						render: (filterValue) => createRender(TextFilter, filterValue)
+					},
+					resize: {
+						minWidth: CELL_WIDTH.SMALL,
+						initialWidth: CELL_WIDTH.MEDIUM,
+						maxWidth: CELL_WIDTH.LIMIT
+					}
+				}
+			}));
+		}
+
+		if (column.type === 'currency') {
+			createdColumns.push(table.column({
+				accessor: column.accessor,
+				header: column.header,
+				cell: ({ value }) => {
+					const formatted = new Intl.NumberFormat('cz', {
+						style: 'currency',
+						currency: 'CZK'
+					}).format(value);
+					return formatted;
 				},
-				resize: {
-					minWidth: CELL_WIDTH.MEDIUM,
-					initialWidth: CELL_WIDTH.XLARGE,
-					maxWidth: CELL_WIDTH.LIMIT
+				plugins: {
+					colFilter: {
+						fn: textPrefixFilter,
+						initialFilterValue: '',
+						render: (filterValue) =>
+							createRender(TextFilter, filterValue)
+					},
+					resize: {
+						minWidth: CELL_WIDTH.SMALL,
+						initialWidth: CELL_WIDTH.MEDIUM,
+						maxWidth: CELL_WIDTH.LIMIT
+
+					}
 				}
-			}
-		}),
+			}))
+		}
+	});
 
-		table.column({
-			accessor: 'typ',
-			header: 'Typ',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.SMALL,
-					maxWidth: CELL_WIDTH.LIMIT
-				}
-			}
-		}),
+	// TODO: typescript for columns
 
-		table.column({
-			accessor: 'linie',
-			header: 'Linie',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.MEDIUM,
-					maxWidth: CELL_WIDTH.LIMIT
-				}
-			}
-		}),
-
-		table.column({
-			accessor: 'koncepce',
-			header: 'Koncepce',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					initialWidth: CELL_WIDTH.LARGE,
-					maxWidth: CELL_WIDTH.LIMIT
-
-				}
-			}
-		}),
-
-		table.column({
-			accessor: 'klp',
-			header: 'KLP',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					initialWidth: CELL_WIDTH.SMALL,
-					maxWidth: CELL_WIDTH.LIMIT
-				}
-			}
-		}),
-
-		table.column({
-			accessor: 'listovaciPolozka',
-			header: 'Listovací Položka',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.LARGE,
-					maxWidth: CELL_WIDTH.LIMIT
-
-				}
-			}
-		}),
-
-		table.column({
-			accessor: 'prodCena',
-			header: 'Cena',
-			cell: ({ value }) => {
-				const formatted = new Intl.NumberFormat('cz', {
-					style: 'currency',
-					currency: 'CZK'
-				}).format(value);
-				return formatted;
-			},
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.MEDIUM,
-					maxWidth: CELL_WIDTH.LIMIT
-
-				}
-			}
-		}),
-
-		table.column({
-			accessor: 'skladem',
-			header: 'Skladem',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.MEDIUM,
-					maxWidth: CELL_WIDTH.LIMIT
-
-				}
-			}
-		}),
-
-		table.column({
-			accessor: 'vyrobeno',
-			header: 'Vyrobeno',
-			plugins: {
-				colFilter: {
-					fn: textPrefixFilter,
-					initialFilterValue: '',
-					render: (filterValue) =>
-						createRender(TextFilter, filterValue)
-				},
-				resize: {
-					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.MEDIUM,
-					maxWidth: CELL_WIDTH.LIMIT
-
-				}
-			}
-		})
-	]);
+	const tableColumns = table.createColumns(createdColumns);
 
 	const {
 		headerRows,
@@ -274,13 +147,18 @@
 		tableBodyAttrs,
 		pluginStates,
 		rows
-	} = table.createViewModel(columns);
+	} = table.createViewModel(tableColumns);
 
 	const { selectedDataIds } = pluginStates.select;
+	// const { columnWidths } = pluginStates.resize;
+	// console.log($columnWidths);
 </script>
 
+<!--TODO: save column widths to local storage, can't resize while reading values?  -->
 
 <!--TODO: checkbox for all rows -->
+
+<!--<pre>$columnWidths = {JSON.stringify($columnWidths, null, 2)}</pre>-->
 
 <div class="flex flex-col h-full bg-background rounded-lg">
 	<div class="rounded-md rounded-tl-none overflow-auto h-[100%]">
@@ -288,7 +166,7 @@
 			<thead class="flex">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<tr {...attrs} class="flex-1 border-b ">
+					<tr {...attrs} class="flex-1 border-b  ">
 
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
@@ -329,10 +207,10 @@
 				<Subscribe attrs={row.attrs()} let:attrs>
 					<tr {...attrs}
 						data-state={$selectedDataIds[row.id] && "selected"}
-						class="hover:bg-muted/40 flex-1 border-b flex items-center max-h-[74px]">
+						class="hover:bg-muted/40 flex-1 border-b flex items-center ">
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
-								<td {...attrs} class="line-clamp-3 ">
+								<td {...attrs} class="line-clamp-3 max-h-[73px]">
 									<Render of={cell.render()} />
 								</td>
 							</Subscribe>
@@ -376,6 +254,4 @@
 		z-index: 1;
 		cursor: col-resize;
 	}
-
-
 </style>
