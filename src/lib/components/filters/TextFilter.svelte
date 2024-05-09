@@ -46,7 +46,7 @@
 	}
 </script>
 
-<div class="w-auto flex items-center border rounded-md mb-2 ">
+<div class="w-auto flex items-center border rounded-md mb-1 ">
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
 
@@ -55,11 +55,11 @@
 				variant="ghost"
 				role="combobox"
 				aria-expanded={open}
-				class="w-fit h-fit justify-between text-[10px] p-0.5 hover:bg-muted/75"
+				class="w-fit h-fit min-w-[15px] justify-between text-[15px] p-0.5 hover:bg-muted/75"
 			>
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
-						<svelte:component this={selectedValue?.icon ?? ChevronDown} class="h-3 w-3" />
+						<svelte:component this={selectedValue?.icon ?? ChevronDown} class="h-3 w-3 min-w-3" />
 					</Tooltip.Trigger>
 					{#if selectedValue?.label === undefined}
 						<Tooltip.Content class="mt-16">Vyberte filtr</Tooltip.Content>
@@ -97,7 +97,7 @@
 		id="filter-input"
 		type="text"
 		bind:value={$filterValue}
-		class="focus:outline-none w-fit text-xs p-0.5 rounded-md"
+		class="focus:outline-none w-fit min-w-fit text-xs p-0.5 rounded-md"
 	>
 </div>
 

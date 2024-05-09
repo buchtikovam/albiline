@@ -1,5 +1,5 @@
 export const CELL_WIDTH = {
-	LIMIT: 500,
+	LIMIT: 400,
 	XLARGE: 280,
 	LARGE: 190,
 	MEDIUM: 120,

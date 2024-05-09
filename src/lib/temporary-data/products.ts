@@ -326,7 +326,7 @@ export const data: Product[] = [
 	{
 		'id': '25',
 		'ksp': 81059,
-		'jmeno': 'Pánská košile s dlouhým rukávem',
+		'jmeno': 'Pánská košile s dlouhým rukávem test  test test test test test test test test test test test test',
 		'typ': 'Produkt',
 		'linie': 'Móda',
 		'koncepce': 'Oblečení',

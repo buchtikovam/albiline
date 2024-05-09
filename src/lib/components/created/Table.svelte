@@ -21,9 +21,9 @@
 	import { textPrefixFilter } from '$lib/components/filters/filters.js';
 	import { data } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
+	import { CELL_WIDTH } from '$lib/enums/cellWidth.js';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
-	import CellWidth, { CELL_WIDTH } from '$lib/enums/cellWidth.ts';
 
 	const productData = writable(data);
 
@@ -86,7 +86,7 @@
 				},
 				resize: {
 					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.SMALL,
+					initialWidth: CELL_WIDTH.SMALL,
 					maxWidth: CELL_WIDTH.LIMIT
 				}
 			}
@@ -104,7 +104,7 @@
 				},
 				resize: {
 					minWidth: CELL_WIDTH.MEDIUM,
-					// initialWidth: CELL_WIDTH.XLARGE,
+					initialWidth: CELL_WIDTH.XLARGE,
 					maxWidth: CELL_WIDTH.LIMIT
 				}
 			}
@@ -158,7 +158,7 @@
 				},
 				resize: {
 					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.LARGE,
+					initialWidth: CELL_WIDTH.LARGE,
 					maxWidth: CELL_WIDTH.LIMIT
 
 				}
@@ -177,7 +177,7 @@
 				},
 				resize: {
 					minWidth: CELL_WIDTH.SMALL,
-					// initialWidth: CELL_WIDTH.SMALL,
+					initialWidth: CELL_WIDTH.SMALL,
 					maxWidth: CELL_WIDTH.LIMIT
 				}
 			}
@@ -276,7 +276,6 @@
 		rows
 	} = table.createViewModel(columns);
 
-
 	const { selectedDataIds } = pluginStates.select;
 </script>
 
@@ -284,38 +283,33 @@
 <!--TODO: checkbox for all rows -->
 
 <div class="flex flex-col h-full bg-background rounded-lg">
-	<div class="rounded-md rounded-tl-none overflow-x-auto overflow-y-auto flex-1">
-
-		<table {...$tableAttrs} class="">
-
-<!--		TODO: make table full width -->
-			<thead class="">
+	<div class="rounded-md rounded-tl-none overflow-auto h-[100%]">
+		<table {...$tableAttrs} class="w-full">
+			<thead class="flex">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<tr {...attrs} class="">
+					<tr {...attrs} class="flex-1 border-b ">
 
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<th {...attrs} use:props.resize>
-									<div class="[&:has([role=checkbox])]:pl-3">
-										{#if cell.id !== "id" && cell.id !== ""}
-											<Button
-												variant="ghost"
-												on:click={props.sort.toggle}
-												class="h-6 my-1 hover:bg-muted/85"
-											>
-												<Render of={cell.render()} />
-												<ArrowUpDown class="h-4 w-4 pl-1 " />
-											</Button>
-										{/if}
+								<th {...attrs} use:props.resize class="[&:has([role=checkbox])]:pl-3">
+									{#if cell.id !== "id" && cell.id !== ""}
+										<Button
+											variant="ghost"
+											on:click={props.sort.toggle}
+											class="h-6  hover:bg-muted/85"
+										>
+											<Render of={cell.render()} />
+											<ArrowUpDown class="h-4 w-4 pl-1 " />
+										</Button>
+									{/if}
 
-										{#if props.colFilter?.render}
-											<div>
-												<Render of={props.colFilter.render} />
-											</div>
-										{/if}
+									{#if props.colFilter?.render}
+										<div>
+											<Render of={props.colFilter.render} />
+										</div>
+									{/if}
 
-									</div>
 									{#if !props.resize.disabled}
 										<div class="resizer" use:props.resize.drag />
 									{/if}
@@ -329,22 +323,22 @@
 
 			<!--			TODO: make header fixed -->
 
-			<!--			TODO: max cell height -->
-
-			<tbody {...$tableBodyAttrs} class="h-full text-sm">
+			<tbody {...$tableBodyAttrs} class="h-full text-sm flex flex-col">
 
 			{#each $pageRows as row (row.id)}
 				<Subscribe attrs={row.attrs()} let:attrs>
-
-					<tr {...attrs} data-state={$selectedDataIds[row.id] && "selected"} class="hover:bg-muted/40 w-full">
+					<tr {...attrs}
+						data-state={$selectedDataIds[row.id] && "selected"}
+						class="hover:bg-muted/40 flex-1 border-b flex items-center max-h-[74px]">
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
-								<td {...attrs}>
+								<td {...attrs} class="line-clamp-3 ">
 									<Render of={cell.render()} />
 								</td>
 							</Subscribe>
 						{/each}
 					</tr>
+
 				</Subscribe>
 			{/each}
 			</tbody>
@@ -361,14 +355,11 @@
 
 
 <style>
-
-
 	table {
 		border-spacing: 0;
 	}
 
 	th, td {
-		border-bottom: 1px #eaeaea solid;
 		padding: 0.5rem;
 	}
 
@@ -385,4 +376,6 @@
 		z-index: 1;
 		cursor: col-resize;
 	}
+
+
 </style>
