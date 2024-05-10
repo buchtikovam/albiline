@@ -151,6 +151,7 @@
 	const { selectedDataIds } = pluginStates.select;
 	const { columnWidths } = pluginStates.resize;
 
+
 	columnWidths.subscribe((data) => {
 		try {
 			localStorage.setItem('columnWidths', JSON.stringify(data));
@@ -168,6 +169,7 @@
 		window.location.reload(); // Manual reload
 
 	}
+
 
 	onMount(() => {
 		try {

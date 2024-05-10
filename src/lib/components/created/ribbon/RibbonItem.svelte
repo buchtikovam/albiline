@@ -1,6 +1,7 @@
 <script lang="ts">
-	import * as Tooltip from "$lib/components/ui/tooltip";
 	import { ribbonStateStore } from '$lib/stores/store';
+	import * as Tooltip from "$lib/components/ui/tooltip";
+
 	export let name: string = 'Item';
 
 	let isOpen: unknown;

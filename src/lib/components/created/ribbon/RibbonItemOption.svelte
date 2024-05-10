@@ -1,20 +1,19 @@
 <script lang="ts">
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as Command from '$lib/components/ui/command';
-	import * as Popover from '$lib/components/ui/popover';
+	import { ribbonStateStore } from '$lib/stores/store';
 	import { Button } from '$lib/components/ui/button';
 	import { tick } from 'svelte';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import { ribbonStateStore } from '$lib/stores/store';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Command from '$lib/components/ui/command';
+	import * as Popover from '$lib/components/ui/popover';
 
 	export let name: string = 'Item';
 
 	let isOpen: unknown;
 
 	ribbonStateStore.subscribe((data) => {
-		isOpen = data
-	})
-
+		isOpen = data;
+	});
 
 	const exportOptions = [
 		{
@@ -89,7 +88,6 @@
 				</Command.Root>
 			</Popover.Content>
 		</Popover.Root>
-
 	</div>
 
 {:else}

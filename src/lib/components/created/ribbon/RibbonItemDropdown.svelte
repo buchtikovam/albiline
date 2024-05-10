@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { ribbonStateStore } from '$lib/stores/store';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import { ribbonStateStore } from '$lib/stores/store';
 
 	export let name: string = 'Item';
 	let isOpen: unknown;

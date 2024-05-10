@@ -104,19 +104,20 @@
 	}
 
 	onMount(() => {
-		setSidebar()
+		setSidebar();
+
 		function handleKeydown(e: KeyboardEvent) {
-			if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
+			if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
 				open = !open;
 			}
 		}
 
-		document.addEventListener("keydown", handleKeydown);
+		document.addEventListener('keydown', handleKeydown);
 		return () => {
-			document.removeEventListener("keydown", handleKeydown);
+			document.removeEventListener('keydown', handleKeydown);
 		};
-	})
+	});
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
@@ -142,7 +143,7 @@
 
 
 	{#if show === "true"}
-		<div class="flex-1 w-[320px] h-full" >
+		<div class="flex-1 w-[320px] h-full">
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
 				<nav class="flex flex-col p-4 pb-2 gap-2 h-full ">
 					<div class="flex flex-col gap-2">
@@ -197,7 +198,7 @@
 
 		</div>
 	{:else}
-		<div class="flex-1 w-[60px]" >
+		<div class="flex-1 w-[60px]">
 			<nav class="grid pt-4 gap-2 justify-center">
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>

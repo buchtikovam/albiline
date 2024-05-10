@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { ribbonStateStore } from '$lib/stores/store';
 
-	// export let name: string = 'Section name';
-
 	let isOpen: unknown;
 
 	ribbonStateStore.subscribe((data) => {
-		isOpen = data
-	})
+		isOpen = data;
+	});
 </script>
 
 {#if isOpen === "true"}
@@ -15,10 +13,6 @@
 		<div class="flex gap-2">
 			<slot />
 		</div>
-
-<!--		<div> -->
-<!--			<p class="flex justify-center text-[10px] text-muted-foreground/75 pt-0.5">{name}</p>-->
-<!--		</div> -->
 	</div>
 {:else}
 	<div class="w-fit flex flex-col ">

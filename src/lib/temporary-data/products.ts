@@ -1,4 +1,4 @@
-import type { Product, Column } from '$lib/types/table'
+import type { Product, Column } from '$lib/types/table';
 
 export const data: Product[] = [
 	{
@@ -400,5 +400,5 @@ export const columnsData: Column[] = [
 		type: 'string',
 		cellSize: 'medium'
 
-	},
-]
+	}
+];

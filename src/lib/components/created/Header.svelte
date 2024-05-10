@@ -17,4 +17,3 @@
 		<Avatar />
 	</div>
 </div>
-

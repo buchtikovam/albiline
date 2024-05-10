@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { ribbonStateStore } from '$lib/stores/store';
 	import type { ComponentType } from 'svelte';
 	import type { Icon } from 'lucide-svelte';
 	import Brackets from 'lucide-svelte/icons/brackets';
-	import { ribbonStateStore } from '$lib/stores/store';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	type Item = {
 		name: string;
@@ -28,11 +28,11 @@
 	let isOpen: unknown;
 
 	ribbonStateStore.subscribe((data) => {
-		isOpen = data
-	})
+		isOpen = data;
+	});
 </script>
 
-	{#if isOpen === "true"}
+{#if isOpen === "true"}
 	<div class="flex flex-col self-center pr-1">
 		{#each items as item}
 			<div

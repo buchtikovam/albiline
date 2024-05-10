@@ -88,29 +88,14 @@
 </script>
 
 <div class="flex gap-2 items-center px-4 py-2 h-fit bg-background">
-	<!--	name="Záznam" -->
 	<RibbonSection>
 		<RibbonItemsNarrow items={fileItems} />
-
-		<!--		<RibbonItem name="Nový" >-->
-		<!--			<FilePlus class="h-4 w-4" />-->
-		<!--		</RibbonItem>-->
-
-		<!--		<RibbonItem name="Smazat" >-->
-		<!--			<FileX2 class="h-4 w-4" />-->
-		<!--		</RibbonItem>-->
-
-		<!--		<RibbonItem name="Editovat" >-->
-		<!--			<Pencil class="h-4 w-4" />-->
-		<!--		</RibbonItem>-->
-
 		<RibbonItem name="Vyplň dolů">
 			<ArrowDownWideNarrow class="h-4 w-4" />
 		</RibbonItem>
 	</RibbonSection>
 	<Separator orientation="vertical" />
 
-	<!--name="Export a tisk" -->
 	<RibbonSection>
 		<RibbonDropdownItem name="Tisk sestav">
 			<Printer class="h-4 w-4" />
@@ -126,7 +111,6 @@
 	</RibbonSection>
 	<Separator orientation="vertical" />
 
-	<!--name="Import" -->
 	<RibbonSection>
 		<RibbonItem name="Import">
 			<FileDown class="h-4 w-4" />
@@ -138,7 +122,6 @@
 	</RibbonSection>
 	<Separator orientation="vertical" />
 
-	<!--name="Statistika"-->
 	<RibbonSection>
 		<RibbonItem name="Statistika">
 			<BarChart3 class="h-4 w-4" />
@@ -146,7 +129,6 @@
 	</RibbonSection>
 	<Separator orientation="vertical" />
 
-	<!--name="Filtry" -->
 	<RibbonSection>
 		<RibbonItem name="Rychlý filtr">
 			<ListFilter class="h-4 w-4" />
@@ -174,7 +156,6 @@
 	</RibbonSection>
 	<Separator orientation="vertical" />
 
-	<!--name="Šablona" -->
 	<RibbonSection>
 		<RibbonDropdownItem name="Moje šablony">
 			<Columns3 class="h-4 w-4" />
@@ -183,7 +164,6 @@
 	</RibbonSection>
 	<Separator orientation="vertical" />
 
-	<!-- name="Data"-->
 	<RibbonSection>
 		<RibbonItem name="Uložit">
 			<Save class="h-4 w-4" />
@@ -209,5 +189,4 @@
 			<ChevronDown class="h-4 w-4 bg-background" />
 		</button>
 	</div>
-
 {/if}
