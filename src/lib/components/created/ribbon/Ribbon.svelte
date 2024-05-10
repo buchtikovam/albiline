@@ -22,7 +22,7 @@
 	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 	import { onMount } from 'svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import { RibbonStateStore } from '$lib/components/stores/store';
+	import { ribbonStateStore } from '$lib/stores/store';
 	import RibbonSection from '$lib/components/created/ribbon/RibbonSection.svelte';
 	import RibbonItem from '$lib/components/created/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/created/ribbon/RibbonItemDropdown.svelte';
@@ -30,7 +30,7 @@
 
 	let isOpen: unknown;
 
-	RibbonStateStore.subscribe((data) => {
+	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
 	});
 
@@ -38,7 +38,7 @@
 		const value = localStorage.getItem('ribbonState')?.trim();
 
 		if (value === 'true' || value === 'false') {
-			RibbonStateStore.set(value);
+			ribbonStateStore.set(value);
 		} else {
 			localStorage.setItem('ribbonState', 'true');
 		}
@@ -46,10 +46,10 @@
 
 	function toggleOpen() {
 		if (isOpen === 'true') {
-			RibbonStateStore.update(() => 'false');
+			ribbonStateStore.update(() => 'false');
 			localStorage.setItem('ribbonState', 'false');
 		} else {
-			RibbonStateStore.update(() => 'true');
+			ribbonStateStore.update(() => 'true');
 			localStorage.setItem('ribbonState', 'true');
 		}
 	}

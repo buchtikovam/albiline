@@ -16,18 +16,19 @@
 		Subscribe,
 		createRender
 	} from 'svelte-headless-table';
-	import { get, readable } from 'svelte/store';
+	import { readable } from 'svelte/store';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import { textPrefixFilter } from '$lib/components/filters/filters.js';
 	import { data, columnsData } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
-	import { CELL_WIDTH } from '$lib/enums/cellWidth.js';
+	import { cellWidths } from '$lib/constants';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
+	import { onMount } from 'svelte';
 
-	const productData = readable(data);
+	const tableData = readable(data);
 
-	const table = createTable(productData, {
+	const table = createTable(tableData, {
 		sort: addSortBy(),
 		filter: addTableFilter({
 			fn: ({ filterValue, value }) =>
@@ -55,18 +56,20 @@
 
 	// TODO: drag and drop for columns, save order in local storage
 
+
 	const createdColumns = [];
+
 
 	columnsData.map((column) => {
 		if (column.type === 'id') {
 			createdColumns.push(table.column({
-				accessor: column.accessor,
 				header: (_, { pluginStates }) => {
 					const { allPageRowsSelected } = pluginStates.select;
 					return createRender(TableCheckbox, {
 						checked: allPageRowsSelected
 					});
 				},
+				accessor: column.accessor,
 				cell: ({ row }, { pluginStates }) => {
 					const { getRowState } = pluginStates.select;
 					const { isSelected } = getRowState(row);
@@ -80,15 +83,15 @@
 						disable: true
 					},
 					resize: {
-						minWidth: CELL_WIDTH.CHECKBOX,
-						initialWidth: CELL_WIDTH.CHECKBOX,
-						maxWidth: CELL_WIDTH.LIMIT
+						initialWidth: cellWidths.get(column.cellSize),
+						disable: true,
+
 					}
 				}
 			}))
 		}
-
 		if (column.type === 'string') {
+
 			createdColumns.push(table.column({
 				accessor: column.accessor,
 				header: column.header,
@@ -99,15 +102,15 @@
 						render: (filterValue) => createRender(TextFilter, filterValue)
 					},
 					resize: {
-						minWidth: CELL_WIDTH.SMALL,
-						initialWidth: CELL_WIDTH.MEDIUM,
-						maxWidth: CELL_WIDTH.LIMIT
+						minWidth: cellWidths.get('small'),
+						initialWidth: cellWidths.get(column.cellSize),
+						maxWidth: cellWidths.get('limit')
 					}
 				}
 			}));
 		}
-
 		if (column.type === 'currency') {
+
 			createdColumns.push(table.column({
 				accessor: column.accessor,
 				header: column.header,
@@ -126,17 +129,14 @@
 							createRender(TextFilter, filterValue)
 					},
 					resize: {
-						minWidth: CELL_WIDTH.SMALL,
-						initialWidth: CELL_WIDTH.MEDIUM,
-						maxWidth: CELL_WIDTH.LIMIT
-
+						minWidth: cellWidths.get('small'),
+						initialWidth: cellWidths.get(column.cellSize),
+						maxWidth: cellWidths.get('limit')
 					}
 				}
-			}))
+			}));
 		}
 	});
-
-	// TODO: typescript for columns
 
 	const tableColumns = table.createColumns(createdColumns);
 
@@ -150,15 +150,18 @@
 	} = table.createViewModel(tableColumns);
 
 	const { selectedDataIds } = pluginStates.select;
-	// const { columnWidths } = pluginStates.resize;
-	// console.log($columnWidths);
+
+
+	const { columnWidths } = pluginStates.resize;
+
+	columnWidths.subscribe((data) => {
+		console.log('columnWidth', data);
+	})
+
+
 </script>
 
-<!--TODO: save column widths to local storage, can't resize while reading values?  -->
-
-<!--TODO: checkbox for all rows -->
-
-<!--<pre>$columnWidths = {JSON.stringify($columnWidths, null, 2)}</pre>-->
+<!--<pre class="text-xs">$columnWidths = {JSON.stringify($columnWidths, null, 2)}</pre>-->
 
 <div class="flex flex-col h-full bg-background rounded-lg">
 	<div class="rounded-md rounded-tl-none overflow-auto h-[100%]">
@@ -170,7 +173,7 @@
 
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<th {...attrs} use:props.resize class="[&:has([role=checkbox])]:pl-3">
+								<th {...attrs} use:props.resize  class="cell [&:has([role=checkbox])]:pl-3">
 									{#if cell.id !== "id" && cell.id !== ""}
 										<Button
 											variant="ghost"
@@ -182,15 +185,22 @@
 										</Button>
 									{/if}
 
-									{#if props.colFilter?.render}
-										<div>
-											<Render of={props.colFilter.render} />
+									<!--{#if props.colFilter?.render}-->
+									<!--	<div>-->
+									<!--		<Render of={props.colFilter.render} />-->
+									<!--	</div>-->
+									<!--{/if}-->
+
+									{#if !props.resize.disabled}
+										<div class="resizer bg-gray-600" use:props.resize.drag />
+									{/if}
+
+									{#if cell.id === 'id'}
+										<div class="mt-5">
+											<Render of={cell.render()} />
 										</div>
 									{/if}
 
-									{#if !props.resize.disabled}
-										<div class="resizer" use:props.resize.drag />
-									{/if}
 								</th>
 							</Subscribe>
 						{/each}
@@ -233,9 +243,6 @@
 
 
 <style>
-	table {
-		border-spacing: 0;
-	}
 
 	th, td {
 		padding: 0.5rem;

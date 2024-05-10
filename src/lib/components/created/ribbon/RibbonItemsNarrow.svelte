@@ -3,7 +3,7 @@
 	import type { ComponentType } from 'svelte';
 	import type { Icon } from 'lucide-svelte';
 	import Brackets from 'lucide-svelte/icons/brackets';
-	import { RibbonStateStore } from '$lib/components/stores/store';
+	import { ribbonStateStore } from '$lib/stores/store';
 
 	type Item = {
 		name: string;
@@ -27,7 +27,7 @@
 
 	let isOpen: unknown;
 
-	RibbonStateStore.subscribe((data) => {
+	ribbonStateStore.subscribe((data) => {
 		isOpen = data
 	})
 </script>

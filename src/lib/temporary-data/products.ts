@@ -1,23 +1,4 @@
-type Product = {
-	id: string
-	ksp: number;
-	jmeno: string
-	typ: string;
-	linie: string;
-	koncepce: string;
-	klp: string;
-	listovaciPolozka: string;
-	prodCena: number;
-	skladem: number;
-	vyrobeno: number;
-};
-
-type Column = {
-	accessor: string,
-	header: string,
-	type: 'id' | 'string' | 'currency' | 'checkbox';
-	cellSize: 'SMALL' | 'MEDIUM' | 'LARGE' | 'XLARGE' | 'CHECKBOX';
-}
+import type { Product, Column } from '$lib/types/table'
 
 export const data: Product[] = [
 	{
@@ -344,82 +325,80 @@ export const data: Product[] = [
 	}
 ];
 
-// TODO: change cell width based on cellSize prop
-
 export const columnsData: Column[] = [
 	{
 		accessor: 'id',
 		header: 'id',
 		type: 'id',
-		cellSize: 'CHECKBOX'
+		cellSize: 'checkbox'
 	},
 	{
 		accessor: 'ksp',
 		header: 'KSP',
 		type: 'string',
-		cellSize: 'SMALL'
+		cellSize: 'small'
 
 	},
 	{
 		accessor: 'jmeno',
 		header: 'Jméno',
 		type: 'string',
-		cellSize: 'XLARGE'
+		cellSize: 'xlarge'
 
 	},
 	{
 		accessor: 'typ',
 		header: 'Typ',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'small'
 	},
 	{
 		accessor: 'linie',
 		header: 'Linie',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'medium'
 
 	},
 	{
 		accessor: 'koncepce',
 		header: 'Koncepce',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'large'
 
 	},
 	{
 		accessor: 'klp',
 		header: 'KLP',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'small'
 
 	},
 	{
 		accessor: 'listovaciPolozka',
 		header: 'Listovací položka',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'large'
 
 	},
 	{
 		accessor: 'prodCena',
 		header: 'Cena',
 		type: 'currency',
-		cellSize: 'CHECKBOX'
+		cellSize: 'medium'
 
 	},
 	{
 		accessor: 'skladem',
 		header: 'Skladem',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'small'
 
 	},
 	{
 		accessor: 'vyrobeno',
 		header: 'Vyrobeno',
 		type: 'string',
-		cellSize: 'CHECKBOX'
+		cellSize: 'medium'
 
 	},
 ]

@@ -5,13 +5,13 @@
 	import { Button } from '$lib/components/ui/button';
 	import { tick } from 'svelte';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import { RibbonStateStore } from '$lib/components/stores/store';
+	import { ribbonStateStore } from '$lib/stores/store';
 
 	export let name: string = 'Item';
 
 	let isOpen: unknown;
 
-	RibbonStateStore.subscribe((data) => {
+	ribbonStateStore.subscribe((data) => {
 		isOpen = data
 	})
 

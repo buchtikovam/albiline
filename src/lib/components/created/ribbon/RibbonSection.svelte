@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { RibbonStateStore } from '$lib/components/stores/store';
+	import { ribbonStateStore } from '$lib/stores/store';
 
 	// export let name: string = 'Section name';
 
 	let isOpen: unknown;
 
-	RibbonStateStore.subscribe((data) => {
+	ribbonStateStore.subscribe((data) => {
 		isOpen = data
 	})
 </script>

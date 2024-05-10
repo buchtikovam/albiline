@@ -15,7 +15,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
-	import { SidebarStateStore } from '$lib/components/stores/store';
+	import { sidebarStateStore } from '$lib/stores/store';
 	import { onMount } from 'svelte';
 
 	let singleItems = allSingleItems;
@@ -75,7 +75,7 @@
 
 	let show: unknown;
 
-	SidebarStateStore.subscribe((data) => {
+	sidebarStateStore.subscribe((data) => {
 		show = data;
 	});
 
@@ -83,7 +83,7 @@
 		const value = localStorage.getItem('sidebarState')?.trim();
 
 		if (value === 'true' || value === 'false') {
-			SidebarStateStore.set(value);
+			sidebarStateStore.set(value);
 		} else {
 			localStorage.setItem('sidebarState', 'true');
 		}
@@ -91,10 +91,10 @@
 
 	function toggleShow() {
 		if (show === 'true') {
-			SidebarStateStore.update(() => 'false');
+			sidebarStateStore.update(() => 'false');
 			localStorage.setItem('sidebarState', 'false');
 		} else {
-			SidebarStateStore.update(() => 'true');
+			sidebarStateStore.update(() => 'true');
 			localStorage.setItem('sidebarState', 'true');
 		}
 	}

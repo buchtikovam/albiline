@@ -97,12 +97,6 @@
 		id="filter-input"
 		type="text"
 		bind:value={$filterValue}
-		class="focus:outline-none w-fit min-w-fit text-xs p-0.5 rounded-md"
+		class="focus:outline-none w-fit min-w-fit max-w-fit text-xs p-0.5 rounded-md font-semibold"
 	>
 </div>
-
-<style>
-	input {
-		width: 8rem;
-	}
-</style>
