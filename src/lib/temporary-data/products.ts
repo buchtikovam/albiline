@@ -391,7 +391,7 @@ export const columnsData: Column[] = [
 		accessor: 'skladem',
 		header: 'Skladem',
 		type: 'string',
-		cellSize: 'small'
+		cellSize: 'medium'
 
 	},
 	{

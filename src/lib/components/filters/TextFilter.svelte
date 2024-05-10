@@ -6,7 +6,6 @@
 	import  ArrowLeftFromLine from 'lucide-svelte/icons/arrow-left-from-line';
 	import  ArrowLeftRight from 'lucide-svelte/icons/arrow-left-right';
 	import  ArrowRightFromLine from 'lucide-svelte/icons/arrow-right-from-line';
-	import  Grip from 'lucide-svelte/icons/grip';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 
 	import { Button } from '$lib/components/ui/button';

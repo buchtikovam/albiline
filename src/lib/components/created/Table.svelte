@@ -5,26 +5,20 @@
 		addHiddenColumns,
 		addSelectedRows,
 		addColumnOrder,
-		addColumnFilters
+		addColumnFilters,
+		addResizedColumns
 	} from 'svelte-headless-table/plugins';
-
-	import { addResizedColumns } from 'svelte-headless-table/plugins';
-
-	import {
-		createTable,
-		Render,
-		Subscribe,
-		createRender
-	} from 'svelte-headless-table';
-	import { readable } from 'svelte/store';
+	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
+	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
+	import { readable } from 'svelte/store';
 	import { textPrefixFilter } from '$lib/components/filters/filters.js';
+	import { onMount } from 'svelte';
 	import { data, columnsData } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
 	import { cellWidths } from '$lib/constants';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
-	import { onMount } from 'svelte';
 
 	const tableData = readable(data);
 
@@ -51,16 +45,25 @@
 			]
 		}),
 		colFilter: addColumnFilters(),
-		resize: addResizedColumns(),
+		resize: addResizedColumns()
 	});
 
 	// TODO: drag and drop for columns, save order in local storage
 
-
 	const createdColumns = [];
 
-
 	columnsData.map((column) => {
+		let initialWidth;
+		try {
+			const storedWidths = localStorage.getItem('columnWidths');
+			if (storedWidths) {
+				const widths = JSON.parse(storedWidths);
+				initialWidth = widths[column.accessor];
+			}
+		} catch (error) {
+			console.error('Error loading column widths from local storage:', error);
+		}
+
 		if (column.type === 'id') {
 			createdColumns.push(table.column({
 				header: (_, { pluginStates }) => {
@@ -83,15 +86,13 @@
 						disable: true
 					},
 					resize: {
-						initialWidth: cellWidths.get(column.cellSize),
-						disable: true,
-
+						initialWidth: initialWidth || cellWidths.get(column.cellSize),
+						disable: true
 					}
 				}
-			}))
+			}));
 		}
 		if (column.type === 'string') {
-
 			createdColumns.push(table.column({
 				accessor: column.accessor,
 				header: column.header,
@@ -103,14 +104,13 @@
 					},
 					resize: {
 						minWidth: cellWidths.get('small'),
-						initialWidth: cellWidths.get(column.cellSize),
+						initialWidth: initialWidth || cellWidths.get(column.cellSize),
 						maxWidth: cellWidths.get('limit')
 					}
 				}
 			}));
 		}
 		if (column.type === 'currency') {
-
 			createdColumns.push(table.column({
 				accessor: column.accessor,
 				header: column.header,
@@ -130,7 +130,7 @@
 					},
 					resize: {
 						minWidth: cellWidths.get('small'),
-						initialWidth: cellWidths.get(column.cellSize),
+						initialWidth: initialWidth || cellWidths.get(column.cellSize),
 						maxWidth: cellWidths.get('limit')
 					}
 				}
@@ -145,23 +145,42 @@
 		pageRows,
 		tableAttrs,
 		tableBodyAttrs,
-		pluginStates,
-		rows
+		pluginStates
 	} = table.createViewModel(tableColumns);
 
 	const { selectedDataIds } = pluginStates.select;
-
-
 	const { columnWidths } = pluginStates.resize;
 
 	columnWidths.subscribe((data) => {
-		console.log('columnWidth', data);
-	})
+		try {
+			localStorage.setItem('columnWidths', JSON.stringify(data));
+		} catch (error) {
+			console.error('Error saving column widths to local storage:', error);
+		}
+	});
 
+	let selectedRows = 0;
+	selectedDataIds.subscribe((rows) => selectedRows = Object.keys(rows).length);
 
+	function resetColumns() {
+		localStorage.removeItem('columnWidths');
+
+		window.location.reload(); // Manual reload
+
+	}
+
+	onMount(() => {
+		try {
+			const storedWidths = localStorage.getItem('columnWidths');
+			if (storedWidths) {
+				columnWidths.set(JSON.parse(storedWidths));
+			}
+		} catch (error) {
+			console.error('Error loading column widths from local storage:', error);
+		}
+	});
 </script>
 
-<!--<pre class="text-xs">$columnWidths = {JSON.stringify($columnWidths, null, 2)}</pre>-->
 
 <div class="flex flex-col h-full bg-background rounded-lg">
 	<div class="rounded-md rounded-tl-none overflow-auto h-[100%]">
@@ -173,7 +192,7 @@
 
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<th {...attrs} use:props.resize  class="cell [&:has([role=checkbox])]:pl-3">
+								<th {...attrs} use:props.resize class="cell [&:has([role=checkbox])]:pl-3">
 									{#if cell.id !== "id" && cell.id !== ""}
 										<Button
 											variant="ghost"
@@ -185,14 +204,14 @@
 										</Button>
 									{/if}
 
-									<!--{#if props.colFilter?.render}-->
-									<!--	<div>-->
-									<!--		<Render of={props.colFilter.render} />-->
-									<!--	</div>-->
-									<!--{/if}-->
+									{#if props.colFilter?.render}
+										<div>
+											<Render of={props.colFilter.render} />
+										</div>
+									{/if}
 
 									{#if !props.resize.disabled}
-										<div class="resizer bg-gray-600" use:props.resize.drag />
+										<div class="resizer " use:props.resize.drag />
 									{/if}
 
 									{#if cell.id === 'id'}
@@ -200,7 +219,6 @@
 											<Render of={cell.render()} />
 										</div>
 									{/if}
-
 								</th>
 							</Subscribe>
 						{/each}
@@ -216,7 +234,7 @@
 			{#each $pageRows as row (row.id)}
 				<Subscribe attrs={row.attrs()} let:attrs>
 					<tr {...attrs}
-						data-state={$selectedDataIds[row.id] && "selected"}
+						data-state={"selected"}
 						class="hover:bg-muted/40 flex-1 border-b flex items-center ">
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
@@ -235,12 +253,17 @@
 	</div>
 
 
-	<div class="text-sm text-muted-foreground/75 p-2 border-t">
-		{Object.keys($selectedDataIds).length} z{" "}
-		{$rows.length} řad označeno.
-	</div>
-</div>
+	<div class="flex w-full justify-between border-t">
+		<div class="text-sm text-muted-foreground/75 p-2 ">
+			{selectedRows} řad označeno.
+		</div>
 
+		<Button variant="ghost" size="sm" class="hover:bg-muted/50" on:click={resetColumns}>
+			<RotateCcw class="h-4 w-4" />
+		</Button>
+	</div>
+
+</div>
 
 <style>
 
