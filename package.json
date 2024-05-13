@@ -46,6 +46,8 @@
 		"lucide-svelte": "^0.373.0",
 		"mode-watcher": "^0.3.0",
 		"paneforge": "^0.0.4",
+		"svelte-dnd-list": "^0.1.8",
+		"svelte-drag-and-drop-actions": "^1.0.1",
 		"svelte-sonner": "^0.3.22",
 		"sveltekit-superforms": "^2.12.6",
 		"tailwind-merge": "^2.3.0",

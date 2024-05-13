@@ -53,20 +53,34 @@ table: column filter with other attributes
 		// },
 
 
-table: column order
 
-	// const { columnIdOrder } = pluginStates.colOrder;
+sidebar: search with sidebar options:
 
-	// $columnIdOrder = [
-	// 	'id',
-	// 	'ksp',
-	// 	'jmeno',
-	// 	'typ',
-	// 	'linie',
-	// 	'koncepce',
-	// 	'listovaciPolozka',
-	// 	'prodCena',
-	// 	'skladem',
-	// 	'vyrobeno',
-	// 	'klp'
-	// ];
+	<button on:click={toggleCommandFn} class="w-fit p-1 pb-0 rounded-t-md hover:bg-muted/50">-->
+<!--			<Search class="h-4 " />-->
+<!--			</button>
+
+
+table: drop function
+
+/ function drop(event: DragEvent) {
+	// 	event.preventDefault();
+	//
+	// 	const droppedItemValue = event.dataTransfer?.getData('text/plain');
+	// 	console.log('drop droppeditem: ', droppedItemValue);
+	//
+	// 	const dragIndex = order.indexOf(draggingItemValue);
+	// 	console.log('drop dragIndex: ', dragIndex);
+	//
+	// 	const dropIndex = order.indexOf(droppedItemValue);
+	// 	console.log('drop dropIndex: ', dropIndex);
+	//
+	// 	if (dragIndex !== -1 && dropIndex !== -1 && dragIndex !== dropIndex) {
+	// 		[order[dragIndex], order[dropIndex]] = [order[dropIndex], order[dragIndex]];
+	// 		console.log(order);
+	// 		columnIdOrder.set(order);
+	// 	}
+	//
+	// 	console.log('  ');
+	// 	draggingItemValue = null;
+	// }

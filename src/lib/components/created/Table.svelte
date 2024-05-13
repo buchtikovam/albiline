@@ -6,19 +6,18 @@
 		addSelectedRows,
 		addColumnOrder,
 		addColumnFilters,
-		addResizedColumns
+		addResizedColumns, textPrefixFilter
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
 	import { readable } from 'svelte/store';
-	import { textPrefixFilter } from '$lib/components/filters/filters.js';
 	import { onMount } from 'svelte';
 	import { data, columnsData } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
-	import { cellWidths } from '$lib/constants';
-	import TextFilter from '$lib/components/filters/TextFilter.svelte';
+	import { cellWidths } from '$lib/constants/constants';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
+	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 
 	const tableData = readable(data);
 
@@ -51,6 +50,8 @@
 	// TODO: drag and drop for columns, save order in local storage
 
 	const createdColumns = [];
+
+	const tableColumns = table.createColumns(createdColumns);
 
 	columnsData.map((column) => {
 		let initialWidth;
@@ -100,7 +101,8 @@
 					colFilter: {
 						fn: textPrefixFilter,
 						initialFilterValue: '',
-						render: (filterValue) => createRender(TextFilter, filterValue)
+						render: (filterValue) =>
+							createRender(TextFilter, filterValue)
 					},
 					resize: {
 						minWidth: cellWidths.get('small'),
@@ -138,8 +140,6 @@
 		}
 	});
 
-	const tableColumns = table.createColumns(createdColumns);
-
 	const {
 		headerRows,
 		pageRows,
@@ -150,7 +150,6 @@
 
 	const { selectedDataIds } = pluginStates.select;
 	const { columnWidths } = pluginStates.resize;
-
 
 	columnWidths.subscribe((data) => {
 		try {
@@ -165,11 +164,48 @@
 
 	function resetColumns() {
 		localStorage.removeItem('columnWidths');
-
-		window.location.reload(); // Manual reload
-
+		window.location.reload();
 	}
 
+
+	let order: string[];
+
+	const { columnIdOrder } = pluginStates.colOrder;
+
+	columnIdOrder.subscribe((data) => {
+		order = data;
+		console.log(data);
+	});
+
+	function dragStart(e: DragEvent, itemValue: string) {
+		console.log('dragStart itemValue:', itemValue);
+		e.dataTransfer?.setData('text/plain', itemValue);
+	}
+
+	function dragoverHandler(e: DragEvent) {
+		e.preventDefault();
+		console.log("dragover handler");
+	}
+
+	function dropHandler(e: DragEvent) {
+		e.preventDefault();
+		const draggingItemValue: string | undefined = e.dataTransfer?.getData("text/plain");
+
+
+		console.log('drop droppeditem: ', draggingItemValue);
+
+		const dragIndex = order.indexOf(draggingItemValue);
+		console.log('drop dragIndex: ', dragIndex);
+
+
+		// if (dragIndex !== -1 && dropIndex !== -1 && dragIndex !== dropIndex) {
+		// 	[order[dragIndex], order[dropIndex]] = [order[dropIndex], order[dragIndex]];
+		// 	console.log(order);
+		// 	columnIdOrder.set(order);
+		// }
+
+		// console.log('  ');
+	}
 
 	onMount(() => {
 		try {
@@ -177,6 +213,7 @@
 			if (storedWidths) {
 				columnWidths.set(JSON.parse(storedWidths));
 			}
+
 		} catch (error) {
 			console.error('Error loading column widths from local storage:', error);
 		}
@@ -190,11 +227,22 @@
 			<thead class="flex">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<tr {...attrs} class="flex-1 border-b  ">
-
+					<tr
+						{...attrs}
+						id="target"
+						class="flex-1 border-b"
+						on:drop={(e) => dropHandler(e)}
+						on:dragover={(e) => dragoverHandler(e)}
+					>
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<th {...attrs} use:props.resize class="cell [&:has([role=checkbox])]:pl-3">
+								<th
+									{...attrs}
+									use:props.resize
+									draggable="true"
+									on:dragstart={(e) => dragStart(e, cell.id)}
+									class="cell [&:has([role=checkbox])]:pl-3 hover:cursor-grabbing"
+								>
 									{#if cell.id !== "id" && cell.id !== ""}
 										<Button
 											variant="ghost"

@@ -120,6 +120,8 @@
 	});
 </script>
 
+<!--TODO: search bar with responsive sidebar content. Using reduce when input in search bar ?-->
+
 <div class="flex h-full max-h-screen flex-col border-r">
 	{#if show === "true"}
 		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
@@ -134,9 +136,6 @@
 			<button class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
 					on:click={() => setCategory("favorite")}>
 				Oblíbené
-			</button>
-			<button on:click={toggleCommandFn} class="w-fit p-1 pb-0 rounded-t-md hover:bg-muted/50">
-				<Search class="h-4 " />
 			</button>
 		</div>
 	{/if}
@@ -280,7 +279,7 @@
 		<div class="m-2">
 			{#each allSingleItems as item}
 				<Command.Item>
-					<a href={item.href} class="w-full" on:click={() => toggleCommandFn()}>
+					<a href={item.href} class="w-full" on:click={toggleCommandFn}>
 						{item.name}
 					</a>
 				</Command.Item>
@@ -293,7 +292,7 @@
 			<Command.Group heading="{item.name}" class="my-2">
 				{#each item.children as child}
 					<Command.Item>
-						<a href={child.href} class="w-full" on:click={() => toggleCommandFn()}>
+						<a href={child.href} class="w-full" on:click={toggleCommandFn}>
 							{child.name}
 						</a>
 					</Command.Item>
