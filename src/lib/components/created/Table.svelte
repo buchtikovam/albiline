@@ -6,7 +6,8 @@
 		addSelectedRows,
 		addColumnOrder,
 		addColumnFilters,
-		addResizedColumns, textPrefixFilter
+		addResizedColumns,
+		textPrefixFilter
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
@@ -17,7 +18,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { cellWidths } from '$lib/constants/constants';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
-	import TextFilter from '$lib/components/filters/TextFilter.svelte';
+	// import TextFilter from '$lib/components/filters/TextFilter.svelte';
 
 	const tableData = readable(data);
 
@@ -44,7 +45,12 @@
 			]
 		}),
 		colFilter: addColumnFilters(),
-		resize: addResizedColumns()
+		resize: addResizedColumns({
+			onResizeEnd: (event: Event) => {
+				// update localStorage here
+				//console.log(event);
+			},
+		}),
 	});
 
 	// TODO: drag and drop for columns, save order in local storage
@@ -98,12 +104,12 @@
 				accessor: column.accessor,
 				header: column.header,
 				plugins: {
-					colFilter: {
-						fn: textPrefixFilter,
-						initialFilterValue: '',
-						render: (filterValue) =>
-							createRender(TextFilter, filterValue)
-					},
+					// colFilter: {
+					// 	fn: textPrefixFilter,
+					// 	initialFilterValue: '',
+					// 	render: (filterValue) =>
+					// 		createRender(TextFilter, filterValue)
+					// },
 					resize: {
 						minWidth: cellWidths.get('small'),
 						initialWidth: initialWidth || cellWidths.get(column.cellSize),
@@ -124,12 +130,12 @@
 					return formatted;
 				},
 				plugins: {
-					colFilter: {
-						fn: textPrefixFilter,
-						initialFilterValue: '',
-						render: (filterValue) =>
-							createRender(TextFilter, filterValue)
-					},
+					// colFilter: {
+					// 	fn: textPrefixFilter,
+					// 	initialFilterValue: '',
+					// 	render: (filterValue) =>
+					// 		createRender(TextFilter, filterValue)
+					// },
 					resize: {
 						minWidth: cellWidths.get('small'),
 						initialWidth: initialWidth || cellWidths.get(column.cellSize),
@@ -190,7 +196,9 @@
 	function dropHandler(e: DragEvent) {
 		e.preventDefault();
 		const draggingItemValue: string | undefined = e.dataTransfer?.getData("text/plain");
-
+		if (draggingItemValue === undefined) {
+			return;
+		}
 
 		console.log('drop droppeditem: ', draggingItemValue);
 
@@ -231,16 +239,12 @@
 						{...attrs}
 						id="target"
 						class="flex-1 border-b"
-						on:drop={(e) => dropHandler(e)}
-						on:dragover={(e) => dragoverHandler(e)}
 					>
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 								<th
 									{...attrs}
 									use:props.resize
-									draggable="true"
-									on:dragstart={(e) => dragStart(e, cell.id)}
 									class="cell [&:has([role=checkbox])]:pl-3 hover:cursor-grabbing"
 								>
 									{#if cell.id !== "id" && cell.id !== ""}
@@ -261,7 +265,7 @@
 									{/if}
 
 									{#if !props.resize.disabled}
-										<div class="resizer " use:props.resize.drag />
+										<div class="resizer bg-primary" use:props.resize.drag />
 									{/if}
 
 									{#if cell.id === 'id'}
