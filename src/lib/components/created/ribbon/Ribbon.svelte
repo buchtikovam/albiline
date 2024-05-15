@@ -34,6 +34,8 @@
 		isOpen = data;
 	});
 
+	// TODO: use persist storage
+
 	function setRibbon() {
 		const value = localStorage.getItem('ribbonState')?.trim();
 

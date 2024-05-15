@@ -2,31 +2,26 @@
 	import Menu from 'lucide-svelte/icons/menu';
 	import Search from 'lucide-svelte/icons/search';
 	import {
-		allParentItems,
-		allSingleItems,
-		recentSingleItems,
-		recentParentItems,
-		favoriteParentItems,
-		favoriteSingleItems
+		allItems,
+		recentItems,
+		favoriteItems
 	} from '$lib/temporary-data/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
-	import * as Command from '$lib/components/ui/command';
 	import { sidebarStateStore } from '$lib/stores/store';
 	import { onMount } from 'svelte';
-
-	let singleItems = allSingleItems;
-	let parentItems = allParentItems;
+	import { Input } from '$lib/components/ui/input';
+	import type { Item } from '$lib/temporary-data/sidebar';
 
 	let open: boolean = false;
+	let items: Item[] = allItems;
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
 		if (category === 'all') {
-			singleItems = allSingleItems;
-			parentItems = allParentItems;
+			items = allItems;
 
 			let buttons = document.getElementsByClassName('button');
 
@@ -41,8 +36,8 @@
 		}
 
 		if (category === 'recent') {
-			singleItems = recentSingleItems;
-			parentItems = recentParentItems;
+			items = recentItems;
+
 
 			let buttons = document.getElementsByClassName('button');
 
@@ -57,8 +52,7 @@
 		}
 
 		if (category === 'favorite') {
-			singleItems = favoriteSingleItems;
-			parentItems = favoriteParentItems;
+			items = favoriteItems;
 
 			let buttons = document.getElementsByClassName('button');
 
@@ -103,6 +97,30 @@
 		open = !open;
 	}
 
+	let searchTerm = "";
+	function searchItems(searchTerm: string) {
+		const filteredItems: Item[] = [];
+		console.log('searchTerm', searchTerm);
+
+		const searchRecursive = (item: Item) => {
+			const lowerSearchTerm = searchTerm.toLowerCase();
+			const itemName = item.name.toLowerCase();
+
+			if (itemName.includes(lowerSearchTerm)) {
+				filteredItems.push(item);
+			}
+
+			if (item.children) {
+				item.children.forEach(child => searchRecursive(child));
+			}
+		};
+
+		items.forEach(searchRecursive);
+		filteredItems.forEach((item) => console.log(item));
+		console.log(" ")
+		return filteredItems
+	}
+
 	onMount(() => {
 		setSidebar();
 
@@ -119,8 +137,6 @@
 		};
 	});
 </script>
-
-<!--TODO: search bar with responsive sidebar content. Using reduce when input in search bar ?-->
 
 <div class="flex h-full max-h-screen flex-col border-r">
 	{#if show === "true"}
@@ -141,46 +157,81 @@
 	{/if}
 
 
+	<!--TODO: use persist storage -->
 	{#if show === "true"}
-		<div class="flex-1 w-[320px] h-full">
+		<div class="flex-1 w-[320px] h-full p-4">
+			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => searchItems(searchTerm)} />
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
-				<nav class="flex flex-col p-4 pb-2 gap-2 h-full ">
-					<div class="flex flex-col gap-2">
-						{#each singleItems as item}
-							<a
-								href={item.href}
-								class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
-							>
-								<svelte:component this={item.icon} />
-								{item.name}
-							</a>
-						{/each}
-					</div>
+				<nav class="flex flex-col py-4 gap-2 h-full ">
+					{#each items as item}
+						<div class="flex flex-col gap-2 ">
 
-					<Separator />
+							<!--						if sidebar element has children elements -->
+							{#if item.children}
+								<Accordion.Item value={item.value}>
+									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+										<div
+											class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+											<svelte:component this={item.icon} />
+											{item.name}
+										</div>
+									</Accordion.Trigger>
 
-					<div class="flex flex-col gap-2 flex-grow">
-						{#each parentItems as parent}
-							<Accordion.Item value={parent.value}>
+									<Accordion.Content class="px-2 my-2">
+										<!-- if child element has children elements -->
+										<Accordion.Root multiple>
+											{#each item.children as secondChild}
 
-								<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
-									<div
-										class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
-										<svelte:component this={parent.icon} />
-										{parent.name}
-									</div>
-								</Accordion.Trigger>
+												{#if secondChild.children}
+													<Accordion.Item value={secondChild.value}>
+														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+															<div
+																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																{secondChild.name}
+															</div>
+														</Accordion.Trigger>
 
-								<Accordion.Content class="px-4 py-2">
-									{#each parent.children as child}
-										<a href={child.href} class="hover:bg-muted/50 px-4 py-0.5">{child.name}</a>
-									{/each}
-								</Accordion.Content>
-							</Accordion.Item>
+														<Accordion.Content>
+															<div class="flex flex-col px-2 py-2 gap-2 ">
+																{#each secondChild.children as thirdChild}
+																	<a href={thirdChild.href} class="text-muted-foreground/75 hover:text-primary hover:bg-muted/50 p-2 px-6 rounded-md">{thirdChild.name}</a>
+																{/each}
+															</div>
 
-						{/each}
-					</div>
-					<div class="ml-auto pb-2">
+
+														</Accordion.Content>
+													</Accordion.Item>
+												{:else}
+													<Accordion.Item value={secondChild.value} class="hover:bg-muted/50 rounded-md">
+															<a
+																href="{secondChild.href}"
+																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																{secondChild.name}
+															</a>
+
+													</Accordion.Item>
+
+
+												{/if}
+											{/each}
+										</Accordion.Root>
+									</Accordion.Content>
+								</Accordion.Item>
+
+							{:else}
+								<a
+									href={item.href}
+									class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
+								>
+									<svelte:component this={item.icon} />
+									{item.name}
+								</a>
+							{/if}
+						</div>
+					{/each}
+
+
+					<div class="mt-auto ml-auto pb-4">
 						<Button
 							variant="ghost"
 							size="icon"
@@ -212,49 +263,48 @@
 				<Separator />
 
 
-				{#each singleItems as item}
+				{#each items as item}
+					{#if item.children}
+						<Tooltip.Root openDelay={100}>
+							<Tooltip.Trigger>
 
-					<Tooltip.Root openDelay={250}>
-						<Tooltip.Trigger>
-							<a href={item.href}
-							   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
-								<svelte:component this={item.icon} />
-							</a>
-						</Tooltip.Trigger>
+								<Popover.Root>
+									<Popover.Trigger>
+										<div
+											class="flex text-sm font-medium  items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+											<svelte:component this={item.icon} />
+										</div>
+									</Popover.Trigger>
 
-						<Tooltip.Content class="ml-10 mt-10">
-							{item.name}
-						</Tooltip.Content>
-					</Tooltip.Root>
-				{/each}
+									<Popover.Content class="flex flex-col px-2 py-1.5 ml-12 w-fit text-sm">
+										{#each item.children as child}
+											<a href={child.href} class="hover:bg-muted/50 rounded p-2">{child.name}</a>
+										{/each}
+									</Popover.Content>
+								</Popover.Root>
 
-				<Separator />
+							</Tooltip.Trigger>
 
-				{#each parentItems as parent}
-					<Tooltip.Root openDelay={100}>
-						<Tooltip.Trigger>
+							<Tooltip.Content class="ml-10 mt-10">
+								{item.name}
+							</Tooltip.Content>
+						</Tooltip.Root>
 
-							<Popover.Root>
-								<Popover.Trigger>
-									<div
-										class="flex text-sm font-medium  items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
-										<svelte:component this={parent.icon} />
-									</div>
-								</Popover.Trigger>
 
-								<Popover.Content class="flex flex-col px-2 py-1.5 ml-12 w-fit text-sm">
-									{#each parent.children as child}
-										<a href={child.href} class="hover:bg-muted/50 rounded p-2">{child.name}</a>
-									{/each}
-								</Popover.Content>
-							</Popover.Root>
+					{:else }
+						<Tooltip.Root openDelay={250}>
+							<Tooltip.Trigger>
+								<a href={item.href}
+								   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+									<svelte:component this={item.icon} />
+								</a>
+							</Tooltip.Trigger>
 
-						</Tooltip.Trigger>
-
-						<Tooltip.Content class="ml-10 mt-10">
-							{parent.name}
-						</Tooltip.Content>
-					</Tooltip.Root>
+							<Tooltip.Content class="ml-10 mt-10">
+								{item.name}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					{/if}
 				{/each}
 			</nav>
 		</div>
@@ -272,32 +322,32 @@
 	{/if}
 </div>
 
-<Command.Dialog bind:open>
-	<Command.Input placeholder="Vyhledat..." />
-	<Command.List>
-		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>
-		<div class="m-2">
-			{#each allSingleItems as item}
-				<Command.Item>
-					<a href={item.href} class="w-full" on:click={toggleCommandFn}>
-						{item.name}
-					</a>
-				</Command.Item>
-			{/each}
-		</div>
+<!--<Command.Dialog bind:open>-->
+<!--	<Command.Input placeholder="Vyhledat..." />-->
+<!--	<Command.List>-->
+<!--		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>-->
+<!--		<div class="m-2">-->
+<!--			{#each allSingleItems as item}-->
+<!--				<Command.Item>-->
+<!--					<a href={item.href} class="w-full" on:click={toggleCommandFn}>-->
+<!--						{item.name}-->
+<!--					</a>-->
+<!--				</Command.Item>-->
+<!--			{/each}-->
+<!--		</div>-->
 
 
-		{#each allParentItems as item}
-			<Command.Separator />
-			<Command.Group heading="{item.name}" class="my-2">
-				{#each item.children as child}
-					<Command.Item>
-						<a href={child.href} class="w-full" on:click={toggleCommandFn}>
-							{child.name}
-						</a>
-					</Command.Item>
-				{/each}
-			</Command.Group>
-		{/each}
-	</Command.List>
-</Command.Dialog>
+<!--		{#each allParentItems as item}-->
+<!--			<Command.Separator />-->
+<!--			<Command.Group heading="{item.name}" class="my-2">-->
+<!--				{#each item.children as child}-->
+<!--					<Command.Item>-->
+<!--						<a href={child.href} class="w-full" on:click={toggleCommandFn}>-->
+<!--							{child.name}-->
+<!--						</a>-->
+<!--					</Command.Item>-->
+<!--				{/each}-->
+<!--			</Command.Group>-->
+<!--		{/each}-->
+<!--	</Command.List>-->
+<!--</Command.Dialog>-->

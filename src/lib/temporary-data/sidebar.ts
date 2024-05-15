@@ -4,48 +4,29 @@ import ShoppingBasket from 'lucide-svelte/icons/shopping-basket';
 import TableProperties from 'lucide-svelte/icons/table-properties';
 import Warehouse from 'lucide-svelte/icons/warehouse';
 
-type SingleItem = {
-	name: string;
-	href: string;
-	icon: ComponentType<Icon>;
-}
 type ChildItem = {
-	name: string;
-	href: string;
-}
-type ParentItem = {
 	name: string;
 	value: string;
 	href: string;
-	icon: ComponentType<Icon>;
-	children: ChildItem[]
+	children?: ChildItem[]
 }
 
-export const allSingleItems: SingleItem[] = [
+export type Item = {
+	name: string;
+	value: string
+	href: string;
+	icon: ComponentType<Icon>;
+	children?: ChildItem[],
+}
+
+
+export const allItems: Item[] = [
 	{
 		name: 'Průvodní list',
+		value: 'pruvodni-list',
 		href: '/',
 		icon: TableProperties
-	}
-];
-
-export const recentSingleItems: SingleItem[] = [
-	{
-		name: 'Průvodní nedávný list',
-		href: '/',
-		icon: TableProperties
-	}
-];
-
-export const favoriteSingleItems: SingleItem[] = [
-	{
-		name: 'Průvodní oblíbený list',
-		href: '/',
-		icon: TableProperties
-	}
-];
-
-export const allParentItems: ParentItem[] = [
+	},
 	{
 		name: 'Sklad',
 		value: 'sklad',
@@ -54,14 +35,110 @@ export const allParentItems: ParentItem[] = [
 		children: [
 			{
 				name: 'Hodinovka',
-				href: '/hodinovka'
+				value: 'hodinovka',
+				href: '/hodinovka',
+				children: [
+					{
+						name: "test",
+						value: "test",
+						href: "/test"
+					},
+					{
+						name: "test",
+						value: "test",
+						href: "/test"
+					},
+					{
+						name: "test",
+						value: "test",
+						href: "/test"
+					}
+				]
 			},
 			{
 				name: 'Příjem a výdej',
+				value: 'prijem-a-vydej',
 				href: '/'
 			},
 			{
 				name: 'Stav skladu',
+				value: 'stav-skladu',
+				href: '/sklad',
+				children: [
+					{
+						name: "test",
+						value: "test",
+						href: "/test"
+					},
+					{
+						name: "test",
+						value: "test",
+						href: "/test"
+					}
+				]
+			}
+		]
+	},
+	{
+		name: 'Produkty',
+		value: 'products',
+		href: '/',
+		icon: ShoppingBasket,
+		children: [
+			{
+				name: 'test',
+				value: 'test',
+				href: '/'
+			},
+			{
+				name: 'Příjem a výdej',
+				value: 'prijem-a-vydej',
+				href: '/'
+			},
+			{
+				name: 'Stav skladu',
+				value: 'stav-skladu',
+				href: '/sklad'
+			}
+		]
+	}
+];
+
+export const recentItems: Item[] = [
+	{
+		name: 'Průvodní nedávný list',
+		value: 'pruvodni-list',
+		href: '/',
+		icon: TableProperties
+	},
+];
+
+export const favoriteItems: Item[] = [
+	{
+		name: 'Průvodní oblíbený list',
+		value: 'pruvodni-list',
+		href: '/',
+		icon: TableProperties
+	},
+	{
+		name: 'Sklad',
+		value: 'sklad',
+		href: '/',
+		icon: Warehouse,
+		children: [
+			{
+				name: 'Hodinovka',
+				value: 'hodinovka',
+				href: '/hodinovka'
+			},
+			{
+				name: 'Příjem a výdej',
+				value: 'prijem-a-vydej',
+				href: '/'
+			},
+			{
+				name: 'Stav skladu',
+				value: 'stav-skladu',
 				href: '/sklad'
 			}
 		]
@@ -74,102 +151,20 @@ export const allParentItems: ParentItem[] = [
 		children: [
 			{
 				name: 'test',
+				value: 'test',
 				href: '/'
 			},
 			{
 				name: 'Příjem a výdej',
+				value: 'prijem-a-vydej',
 				href: '/'
 			},
 			{
 				name: 'Stav skladu',
-				href: '/'
+				value: 'stav-skladu',
+				href: '/sklad'
 			}
 		]
 	}
 ];
 
-export const recentParentItems: ParentItem[] = [
-	{
-		name: 'Sklad',
-		value: 'sklad',
-		href: '/',
-		icon: Warehouse,
-		children: [
-			{
-				name: 'Hodinovka',
-				href: '/'
-			},
-			{
-				name: 'Příjem a výdej',
-				href: '/'
-			},
-			{
-				name: 'Stav skladu',
-				href: '/'
-			}
-		]
-	},
-	{
-		name: 'Produkty',
-		value: 'products',
-		href: '/',
-		icon: ShoppingBasket,
-		children: [
-			{
-				name: 'test',
-				href: '/'
-			},
-			{
-				name: 'Příjem a výdej',
-				href: '/'
-			},
-			{
-				name: 'Stav skladu',
-				href: '/'
-			}
-		]
-	}
-];
-
-export const favoriteParentItems: ParentItem[] = [
-	{
-		name: 'Sklad',
-		value: 'sklad',
-		href: '/',
-		icon: Warehouse,
-		children: [
-			{
-				name: 'Hodinovka',
-				href: '/'
-			},
-			{
-				name: 'Příjem a výdej',
-				href: '/'
-			},
-			{
-				name: 'Stav skladu',
-				href: '/'
-			}
-		]
-	},
-	{
-		name: 'Produkty',
-		value: 'products',
-		href: '/',
-		icon: ShoppingBasket,
-		children: [
-			{
-				name: 'test',
-				href: '/'
-			},
-			{
-				name: 'Příjem a výdej',
-				href: '/'
-			},
-			{
-				name: 'Stav skladu',
-				href: '/'
-			}
-		]
-	}
-];

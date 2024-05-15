@@ -84,3 +84,48 @@ table: drop function
 	// 	console.log('  ');
 	// 	draggingItemValue = null;
 	// }
+
+
+
+table: column dnd
+
+// let order: string[];
+	//
+	// const { columnIdOrder } = pluginStates.colOrder;
+	//
+	// columnIdOrder.subscribe((data) => {
+	// 	order = data;
+	// 	console.log(data);
+	// });
+	//
+	// function dragStart(e: DragEvent, itemValue: string) {
+	// 	console.log('dragStart itemValue:', itemValue);
+	// 	e.dataTransfer?.setData('text/plain', itemValue);
+	// }
+	//
+	// function dragoverHandler(e: DragEvent) {
+	// 	e.preventDefault();
+	// 	console.log("dragover handler");
+	// }
+	//
+	// function dropHandler(e: DragEvent) {
+	// 	e.preventDefault();
+	// 	const draggingItemValue: string | undefined = e.dataTransfer?.getData("text/plain");
+	// 	if (draggingItemValue === undefined) {
+	// 		return;
+	// 	}
+	//
+	// 	console.log('drop droppeditem: ', draggingItemValue);
+	//
+	// 	const dragIndex = order.indexOf(draggingItemValue);
+	// 	console.log('drop dragIndex: ', dragIndex);
+
+
+		// if (dragIndex !== -1 && dropIndex !== -1 && dragIndex !== dropIndex) {
+		// 	[order[dragIndex], order[dropIndex]] = [order[dropIndex], order[dragIndex]];
+		// 	console.log(order);
+		// 	columnIdOrder.set(order);
+		// }
+
+		// console.log('  ');
+	// }
