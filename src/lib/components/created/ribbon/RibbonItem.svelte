@@ -4,14 +4,14 @@
 
 	export let name: string = 'Item';
 
-	let isOpen: unknown;
+	let isOpen: boolean;
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data
 	})
 </script>
 
-{#if isOpen === "true"}
+{#if isOpen === true}
 	<div
 		class="p-2 w-min h-[60px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50"
 	>

@@ -20,7 +20,6 @@
 	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
 	import Save from 'lucide-svelte/icons/save';
 	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
-	import { onMount } from 'svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { ribbonStateStore } from '$lib/stores/store';
 	import RibbonSection from '$lib/components/created/ribbon/RibbonSection.svelte';
@@ -28,31 +27,17 @@
 	import RibbonDropdownItem from '$lib/components/created/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/created/ribbon/RibbonItemsNarrow.svelte';
 
-	let isOpen: unknown;
+	let isOpen: boolean;
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
 	});
 
-	// TODO: use persist storage
-
-	function setRibbon() {
-		const value = localStorage.getItem('ribbonState')?.trim();
-
-		if (value === 'true' || value === 'false') {
-			ribbonStateStore.set(value);
-		} else {
-			localStorage.setItem('ribbonState', 'true');
-		}
-	}
-
 	function toggleOpen() {
-		if (isOpen === 'true') {
-			ribbonStateStore.update(() => 'false');
-			localStorage.setItem('ribbonState', 'false');
+		if (isOpen === true) {
+			ribbonStateStore.update(() => false);
 		} else {
-			ribbonStateStore.update(() => 'true');
-			localStorage.setItem('ribbonState', 'true');
+			ribbonStateStore.update(() => true);
 		}
 	}
 
@@ -85,8 +70,6 @@
 			icon: Pencil
 		}
 	];
-
-	onMount(() => setRibbon());
 </script>
 
 <div class="flex gap-2 items-center px-4 py-2 h-fit bg-background">
@@ -178,7 +161,7 @@
 	<Separator orientation="vertical" />
 </div>
 
-{#if isOpen === "true"}
+{#if isOpen === true}
 	<div class="absolute mt-[100px] w-full flex justify-end items-center">
 		<button on:click={() => toggleOpen()}>
 			<ChevronUp class="h-4 w-4 bg-background" />

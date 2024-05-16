@@ -9,20 +9,21 @@
 		addResizedColumns,
 		textPrefixFilter
 	} from 'svelte-headless-table/plugins';
-	import { createTable, Render, Subscribe, createRender, DataColumn } from 'svelte-headless-table';
+	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
-	import { readable } from 'svelte/store';
+	import { readable, get } from 'svelte/store';
 	import { data, columnsData } from '$lib/temporary-data/products.js';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import { cellWidths } from '$lib/constants/constants';
 	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-
 	import { columnWidthStore } from '$lib/stores/store';
-	import Pencil from 'lucide-svelte/icons/pencil';
+	import ArrowDownAZ  from 'lucide-svelte/icons/arrow-down-a-z';
+	import ArrowUpAZ  from 'lucide-svelte/icons/arrow-up-a-z';
+	import { columnOrderStore } from '$lib/stores/store';
+
 
 	const tableData = readable(data);
 
@@ -33,28 +34,40 @@
 		}),
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
-		colOrder: addColumnOrder(),
+		colOrder: addColumnOrder(
+			{
+				initialColumnIdOrder: [
+					'id',
+					'ksp',
+					'jmeno',
+					'typ',
+					'linie',
+					'koncepce',
+					'listovaciPolozka',
+					'prodCena',
+					'vyrobeno',
+					'skladem',
+					'klp'
+				] }
+		),
 		colFilter: addColumnFilters(),
 		resize: addResizedColumns({
 			onResizeEnd: () => {
 				const { columnWidths } = pluginStates.resize;
 				columnWidths.subscribe((data) => {
-					console.log('columnWidths subscribed');
 					columnWidthStore.set(data);
 				});
-
-				console.log('resize end');
 			}
 		})
 	});
 
 	const createdColumns = [];
+	const tableColumns = table.createColumns(createdColumns);
 
 	columnWidthStore.subscribe((colWidthData) => {
-		console.log('changed');
 		columnsData.map((column) => {
 			let initialWidth;
-			if (colWidthData !== undefined || null) {
+			if (colWidthData !== null) {
 				initialWidth = colWidthData[column.accessor];
 			} else {
 				initialWidth = cellWidths.get(column.cellSize);
@@ -115,7 +128,7 @@
 							'cz',
 							{
 								style: 'currency',
-								currency: 'CZK',
+								currency: 'CZK'
 							}
 						).format(Number(cell.value));
 					},
@@ -142,47 +155,106 @@
 		pageRows,
 		tableAttrs,
 		tableBodyAttrs,
-		pluginStates,
-	} = table.createViewModel(
-		table.createColumns(createdColumns)
-	);
-
-	const { columnIdOrder } = pluginStates.colOrder;
-	columnIdOrder.subscribe((data) => {
-		console.log(data);
-	})
+		pluginStates
+	} = table.createViewModel(tableColumns);
 
 	function resetColumns() {
-		columnWidthStore.set([]);
+		columnWidthStore.set(null);
 	}
+
+
+	// checkbox plugin
 
 	let selectedRows = 0;
 	const { selectedDataIds } = pluginStates.select;
 	selectedDataIds.subscribe(
 		(rows) => selectedRows = Object.keys(rows).length
 	);
+
+
+	// column drag and drop functions
+
+	let hovering: number | null;
+	let start: number;
+
+	const drag = (event, index) => {
+		event.dataTransfer.effectAllowed = 'move';
+		event.dataTransfer.dropEffect = 'move';
+		start = index;
+	};
+
+	const drop = (event, target) => {
+		event.dataTransfer.dropEffect = 'move';
+
+		const { columnIdOrder } = pluginStates.colOrder;
+		let columnOrderData: string[];
+
+		columnIdOrder.subscribe((data) => {
+			columnOrderData = data;
+		});
+
+		if (columnOrderData) {
+			if (start < target) {
+				columnOrderData.splice(target + 1, 0, columnOrderData[start]);
+				columnOrderData.splice(start, 1);
+			} else {
+				columnOrderData.splice(target, 0, columnOrderData[start]);
+				columnOrderData.splice(start + 1, 1);
+			}
+			hovering = null
+		}
+
+		columnIdOrder.update(() => columnOrderData);
+	};
+
+	function setHovering(index: number) {
+		hovering = index;
+	}
+
+
+	// check for stored colOrder, subscribe to colOrder changes
+
+	const { columnIdOrder } = pluginStates.colOrder;
+
+	let columnStore = get(columnOrderStore)
+
+	if (columnStore !== null) {
+		columnIdOrder.update(() => columnStore)
+	}
+
+	columnIdOrder.subscribe((data) => {
+		columnOrderStore.update(() => data)
+	})
 </script>
+
+<!--TODO: fix table width to full-->
 
 <div class="flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative">
-		<Table.Header class="top-0 sticky bg-white border-1 border-b">
+		<Table.Header class="top-0 sticky bg-white border-1">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<Table.Row {...attrs}>
-						{#each headerRow.cells as cell (cell.id)}
+					<tr {...attrs}>
+						{#each headerRow.cells as cell, index (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 								<th
 									{...attrs}
 									use:props.resize
-									class="relative p-2 hover:bg-muted/85 cursor-pointer"
+									draggable="true"
+									on:dragstart={(e) => drag(e, index)}
+									on:dragover={() => setHovering(index)}
+									on:dragend|preventDefault={(e) => drop(e, hovering)}
+									class="relative p-2 "
 								>
+
 									{#if cell.id !== "id"}
-										<button class="flex w-full items-center justify-center font-semibold" on:click={props.sort.toggle}>
+										<button class="flex w-full items-center justify-center font-semibold hover:bg-accent"
+														on:click={props.sort.toggle}>
 											<Render of={cell.render()} />
 											{#if props.sort.order === 'asc'}
-												TODO:up
+												<ArrowDownAZ class="h-4 w-4 ml-2" />
 											{:else if props.sort.order === 'desc'}
-												TODO:down
+												<ArrowUpAZ class="h-4 w-4 ml-2" />
 											{:else}
 												<ArrowUpDown class="h-4 w-4 ml-2" />
 											{/if}
@@ -196,12 +268,13 @@
 									{/if}
 
 									{#if !props.resize.disabled}
-										<div class="absolute hover:bg-primary inset-y-0 -right-2 w-4 z-10 cursor-col-resize" use:props.resize.drag />
+										<div class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
+												 use:props.resize.drag />
 									{/if}
 								</th>
 							</Subscribe>
 						{/each}
-					</Table.Row>
+					</tr>
 				</Subscribe>
 			{/each}
 		</Table.Header>
@@ -217,7 +290,7 @@
 							<Subscribe attrs={cell.attrs()} let:attrs>
 								<Table.Cell {...attrs}>
 									<div class="line-clamp-1">
-										<Render of={cell.render()}/>
+										<Render of={cell.render()} />
 									</div>
 								</Table.Cell>
 							</Subscribe>
@@ -232,20 +305,11 @@
 		<div class="text-sm text-muted-foreground/75 p-2 ">
 			{selectedRows} řad označeno.
 		</div>
+
 		<div>
 			<Button variant="ghost" size="sm" class="hover:bg-muted/50" on:click={resetColumns}>
 				<RotateCcw class="h-4 w-4" />
 			</Button>
-			<Dialog.Root>
-				<Dialog.Trigger>
-					<Button variant="ghost" size="sm" class="hover:bg-muted/50">
-						<Pencil class="h-4 w-4" />
-					</Button>
-				</Dialog.Trigger>
-				<Dialog.Content>
-
-				</Dialog.Content>
-			</Dialog.Root>
 		</div>
 	</div>
 </div>

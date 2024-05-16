@@ -11,6 +11,7 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
+	import * as Command from '$lib/components/ui/command';
 	import { sidebarStateStore } from '$lib/stores/store';
 	import { onMount } from 'svelte';
 	import { Input } from '$lib/components/ui/input';
@@ -18,6 +19,7 @@
 
 	let open: boolean = false;
 	let items: Item[] = allItems;
+	let initialItems = items;
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
 		if (category === 'all') {
@@ -69,27 +71,17 @@
 
 	let show: unknown;
 
+	// TODO: fix command
+
 	sidebarStateStore.subscribe((data) => {
 		show = data;
 	});
 
-	function setSidebar() {
-		const value = localStorage.getItem('sidebarState')?.trim();
-
-		if (value === 'true' || value === 'false') {
-			sidebarStateStore.set(value);
-		} else {
-			localStorage.setItem('sidebarState', 'true');
-		}
-	}
-
 	function toggleShow() {
-		if (show === 'true') {
-			sidebarStateStore.update(() => 'false');
-			localStorage.setItem('sidebarState', 'false');
+		if (show === true) {
+			sidebarStateStore.update(() => false);
 		} else {
-			sidebarStateStore.update(() => 'true');
-			localStorage.setItem('sidebarState', 'true');
+			sidebarStateStore.update(() => true);
 		}
 	}
 
@@ -97,17 +89,22 @@
 		open = !open;
 	}
 
-	let searchTerm = "";
+	let searchTerm = '';
+
+	// TODO: change displaying of filtered items
+
 	function searchItems(searchTerm: string) {
-		const filteredItems: Item[] = [];
 		console.log('searchTerm', searchTerm);
 
+		const filteredItems: Item[] = [];
 		const searchRecursive = (item: Item) => {
 			const lowerSearchTerm = searchTerm.toLowerCase();
 			const itemName = item.name.toLowerCase();
 
 			if (itemName.includes(lowerSearchTerm)) {
-				filteredItems.push(item);
+				if (!filteredItems.includes(item)) {
+					filteredItems.push(item);
+				}
 			}
 
 			if (item.children) {
@@ -116,16 +113,20 @@
 		};
 
 		items.forEach(searchRecursive);
-		filteredItems.forEach((item) => console.log(item));
-		console.log(" ")
-		return filteredItems
+
+		if (searchTerm) {
+			items = filteredItems;
+		} else {
+			items = initialItems;
+		}
+
+		console.log(items);
+		return items;
 	}
 
 	onMount(() => {
-		setSidebar();
-
 		function handleKeydown(e: KeyboardEvent) {
-			if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
+			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
 				open = !open;
 			}
@@ -139,37 +140,38 @@
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
-	{#if show === "true"}
+	{#if show === true}
 		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
 			<button class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
-					on:click={() => setCategory("all")}>
+							on:click={() => setCategory("all")}>
 				Všechny
 			</button>
 			<button class="button recent border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
-					on:click={() => setCategory("recent")}>
+							on:click={() => setCategory("recent")}>
 				Nedávné
 			</button>
 			<button class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
-					on:click={() => setCategory("favorite")}>
+							on:click={() => setCategory("favorite")}>
 				Oblíbené
 			</button>
 		</div>
 	{/if}
 
-
-	<!--TODO: use persist storage -->
-	{#if show === "true"}
+	{#if show === true}
 		<div class="flex-1 w-[320px] h-full p-4">
-			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => searchItems(searchTerm)} />
+			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm}
+						 on:input={() => searchItems(searchTerm)} />
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
+
+
 				<nav class="flex flex-col py-4 gap-2 h-full ">
 					{#each items as item}
 						<div class="flex flex-col gap-2 ">
 
-							<!--						if sidebar element has children elements -->
+							<!-- if sidebar element has children elements -->
 							{#if item.children}
-								<Accordion.Item value={item.value}>
-									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+								<Accordion.Item value={item.value} >
+									<Accordion.Trigger class="hover:bg-muted/50 rounded-md" >
 										<div
 											class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 											<svelte:component this={item.icon} />
@@ -177,11 +179,10 @@
 										</div>
 									</Accordion.Trigger>
 
-									<Accordion.Content class="px-2 my-2">
-										<!-- if child element has children elements -->
+									<Accordion.Content class="px-2 my-2" >
 										<Accordion.Root multiple>
 											{#each item.children as secondChild}
-
+												<!-- if child element has children elements -->
 												{#if secondChild.children}
 													<Accordion.Item value={secondChild.value}>
 														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
@@ -192,9 +193,10 @@
 														</Accordion.Trigger>
 
 														<Accordion.Content>
-															<div class="flex flex-col px-2 py-2 gap-2 ">
+															<div class="flex flex-col px-2 py-1">
 																{#each secondChild.children as thirdChild}
-																	<a href={thirdChild.href} class="text-muted-foreground/75 hover:text-primary hover:bg-muted/50 p-2 px-6 rounded-md">{thirdChild.name}</a>
+																	<a href={thirdChild.href}
+																		 class="text-muted-foreground/75 hover:text-primary hover:bg-muted/50 p-1 px-6 rounded-md">{thirdChild.name}</a>
 																{/each}
 															</div>
 
@@ -202,16 +204,14 @@
 														</Accordion.Content>
 													</Accordion.Item>
 												{:else}
-													<Accordion.Item value={secondChild.value} class="hover:bg-muted/50 rounded-md">
-															<a
-																href="{secondChild.href}"
-																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
-																{secondChild.name}
-															</a>
-
+													<Accordion.Item value={secondChild.value}
+																					class="hover:bg-muted/50 rounded-md">
+														<a
+															href="{secondChild.href}"
+															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+															{secondChild.name}
+														</a>
 													</Accordion.Item>
-
-
 												{/if}
 											{/each}
 										</Accordion.Root>
@@ -253,7 +253,7 @@
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
 						<button on:click={toggleCommandFn}
-								class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+										class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 							<Search />
 						</button>
 					</Tooltip.Trigger>
@@ -295,7 +295,7 @@
 						<Tooltip.Root openDelay={250}>
 							<Tooltip.Trigger>
 								<a href={item.href}
-								   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+									 class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 									<svelte:component this={item.icon} />
 								</a>
 							</Tooltip.Trigger>
@@ -322,32 +322,36 @@
 	{/if}
 </div>
 
-<!--<Command.Dialog bind:open>-->
-<!--	<Command.Input placeholder="Vyhledat..." />-->
-<!--	<Command.List>-->
-<!--		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>-->
-<!--		<div class="m-2">-->
-<!--			{#each allSingleItems as item}-->
-<!--				<Command.Item>-->
-<!--					<a href={item.href} class="w-full" on:click={toggleCommandFn}>-->
-<!--						{item.name}-->
-<!--					</a>-->
-<!--				</Command.Item>-->
-<!--			{/each}-->
-<!--		</div>-->
+<Command.Dialog bind:open>
+	<Command.Input placeholder="Vyhledat..." />
+	<Command.List>
+		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>
+		<div class="m-2">
+			{#each items as item}
+				{#if !item.children}
+				<Command.Item>
+					<a href={item.href} class="w-full" on:click={toggleCommandFn}>
+						{item.name}
+					</a>
+				</Command.Item>
+					{/if}
+			{/each}
+		</div>
 
 
-<!--		{#each allParentItems as item}-->
-<!--			<Command.Separator />-->
-<!--			<Command.Group heading="{item.name}" class="my-2">-->
-<!--				{#each item.children as child}-->
-<!--					<Command.Item>-->
-<!--						<a href={child.href} class="w-full" on:click={toggleCommandFn}>-->
-<!--							{child.name}-->
-<!--						</a>-->
-<!--					</Command.Item>-->
-<!--				{/each}-->
-<!--			</Command.Group>-->
-<!--		{/each}-->
-<!--	</Command.List>-->
-<!--</Command.Dialog>-->
+		{#each items as item}
+			<Command.Separator />
+			{#if item.children}
+			<Command.Group heading="{item.name}" class="my-2">
+					{#each item.children as child}
+						<Command.Item>
+							<a href={child.href} class="w-full" on:click={toggleCommandFn}>
+								{child.name}
+							</a>
+						</Command.Item>
+					{/each}
+			</Command.Group>
+			{/if}
+		{/each}
+	</Command.List>
+</Command.Dialog>

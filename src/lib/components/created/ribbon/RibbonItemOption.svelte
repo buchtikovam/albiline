@@ -9,7 +9,7 @@
 
 	export let name: string = 'Item';
 
-	let isOpen: unknown;
+	let isOpen: boolean;
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
@@ -46,7 +46,7 @@
 </script>
 
 
-{#if isOpen === "true"}
+{#if isOpen === true}
 	<div class="flex flex-col hover:bg-muted/50 items-center">
 		<div
 			class="p-1 w-min h-fit rounded-md flex content-center items-center mx-auto text-muted-foreground ">

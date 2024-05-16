@@ -25,14 +25,14 @@
 		}
 	];
 
-	let isOpen: unknown;
+	let isOpen: boolean;
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
 	});
 </script>
 
-{#if isOpen === "true"}
+{#if isOpen === true}
 	<div class="flex flex-col self-center pr-1">
 		{#each items as item}
 			<div

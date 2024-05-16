@@ -1,9 +1,9 @@
-import { writable } from 'svelte/store';
-import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
-// TODO: Přidat https://www.npmjs.com/package/svelte-persisted-store
+import { persisted } from 'svelte-persisted-store';
 
-export const ribbonStateStore = writable();
+export const ribbonStateStore = persisted("ribbonState", true)
 
-export const sidebarStateStore = writable();
+export const sidebarStateStore = persisted("sidebarState", true)
 
-export const columnWidthStore = persist(writable(), createLocalStorage(), "columnWidths")
+export const columnWidthStore = persisted("columnWidths", null)
+
+export const columnOrderStore = persisted("columnOrder", null)

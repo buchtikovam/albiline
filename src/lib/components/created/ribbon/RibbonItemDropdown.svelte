@@ -5,7 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	export let name: string = 'Item';
-	let isOpen: unknown;
+	let isOpen: boolean;
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
@@ -32,7 +32,7 @@
 	];
 </script>
 
-{#if isOpen === "true"}
+{#if isOpen === true}
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger>
 			<div
