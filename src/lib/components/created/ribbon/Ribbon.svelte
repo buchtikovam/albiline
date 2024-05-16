@@ -162,19 +162,19 @@
 		<RibbonDropdownItem name="Moje šablony">
 			<Columns3 class="h-4 w-4" />
 		</RibbonDropdownItem>
-
 	</RibbonSection>
+
 	<Separator orientation="vertical" />
 
 	<RibbonSection>
 		<RibbonItem name="Uložit">
 			<Save class="h-4 w-4" />
 		</RibbonItem>
-
 		<RibbonItem name="Načíst">
 			<RefreshCcw class="h-4 w-4" />
 		</RibbonItem>
 	</RibbonSection>
+
 	<Separator orientation="vertical" />
 </div>
 
@@ -186,7 +186,6 @@
 	</div>
 {:else}
 	<div class="absolute mt-[73px] w-full  flex justify-end items-center">
-
 		<button on:click={() => toggleOpen()}>
 			<ChevronDown class="h-4 w-4 bg-background" />
 		</button>

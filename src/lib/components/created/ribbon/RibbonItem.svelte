@@ -13,7 +13,8 @@
 
 {#if isOpen === "true"}
 	<div
-		class="p-2 w-min h-[60px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
+		class="p-2 w-min h-[60px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50"
+	>
 		<button class="text-[11px] flex flex-col gap-1 leading-3 content-center items-center m-auto">
 			<slot />
 			{name}
@@ -24,6 +25,7 @@
 		<Tooltip.Trigger>
 			<div
 				class="p-2 w-[32px] h-[32px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
+				<!-- <button> způsobuje problém:  Placing %sveltekit.body% directly inside <body> is not recommended -->
 				<button class="text-xs flex flex-col content-center items-center m-auto">
 					<slot />
 				</button>

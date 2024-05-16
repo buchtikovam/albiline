@@ -97,5 +97,5 @@
 		type="text"
 		bind:value={$filterValue}
 		class="focus:outline-none w-full min-w-fit max-w-full text-xs p-0.5 rounded-md font-semibold"
-	>
+	/>
 </div>
