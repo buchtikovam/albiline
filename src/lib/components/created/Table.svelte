@@ -23,9 +23,36 @@
 	import ArrowDownAZ  from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ  from 'lucide-svelte/icons/arrow-up-a-z';
 	import { columnOrderStore } from '$lib/stores/store';
-
+	import EditableCell from '$lib/components/created/EditableCell.svelte';
 
 	const tableData = readable(data);
+
+	const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
+		if (['age', 'visits', 'progress'].includes(columnId)) {
+			if (typeof newValue === 'string') {
+				newValue = parseInt(newValue);
+			}
+			if (isNaN(newValue)) {
+				$tableData = $tableData;
+				return;
+			}
+		}
+		if (columnId === 'status') {
+			if (!['relationship', 'single', 'complicated'].includes(<string>newValue)) {
+				$tableData = $tableData;
+				return;
+			}
+		}
+	};
+
+	const EditableCellLabel = ({ column, row, value }) =>
+		createRender(EditableCell, {
+			row,
+			column,
+			value,
+			onUpdateValue: updateData
+		});
+
 
 	const table = createTable(tableData, {
 		sort: addSortBy(),
@@ -97,7 +124,7 @@
 							initialWidth: initialWidth,
 							disable: true
 						}
-					}
+					},
 				}));
 			}
 			if (column.type === 'string') {
@@ -116,7 +143,8 @@
 							initialWidth: initialWidth,
 							maxWidth: cellWidths.get('limit')
 						}
-					}
+					},
+					cell: EditableCellLabel
 				}));
 			}
 			if (column.type === 'currency') {
@@ -230,7 +258,7 @@
 <!--TODO: fix table width to full-->
 
 <div class="flex flex-col">
-	<Table.Root {...$tableAttrs} class="overflow-auto relative">
+	<Table.Root {...$tableAttrs} class="overflow-auto relative ">
 		<Table.Header class="top-0 sticky bg-white border-1">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
@@ -246,10 +274,11 @@
 									on:dragend|preventDefault={(e) => drop(e, hovering)}
 									class="relative p-2 "
 								>
-
 									{#if cell.id !== "id"}
-										<button class="flex w-full items-center justify-center font-semibold hover:bg-accent"
-														on:click={props.sort.toggle}>
+										<button
+											class="flex w-full items-center justify-center font-semibold rounded-md hover:bg-muted/70"
+											on:click={props.sort.toggle}
+										>
 											<Render of={cell.render()} />
 											{#if props.sort.order === 'asc'}
 												<ArrowDownAZ class="h-4 w-4 ml-2" />
@@ -284,7 +313,7 @@
 					<Table.Row
 						{...attrs}
 						data-state={$selectedDataIds[row.id] && "selected"}
-						class="hover:bg-muted/95 data-[state=selected]:bg-muted/85"
+						class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
 					>
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>

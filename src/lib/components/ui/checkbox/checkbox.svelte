@@ -27,7 +27,7 @@
 		let:isIndeterminate
 	>
 		{#if isChecked}
-			<Check class="h-3.5 w-3.5 mb-1 " />
+			<Check class="h-3.5 w-3.5 mr-1 mb-1" />
 		{:else if isIndeterminate}
 			<Minus class="h-3.5 w-3.5" />
 		{/if}

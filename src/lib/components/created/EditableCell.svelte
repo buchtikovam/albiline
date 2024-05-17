@@ -12,40 +12,27 @@
 		inputElement?.focus();
 	}
 
-	const handleCancel = () => {
-		isEditing = false;
-	};
 	const handleSubmit = () => {
 		isEditing = false;
 		if (row.isData()) {
 			onUpdateValue(row.dataId, column.id, value);
 		}
 	};
+
 </script>
 
 <div>
 	{#if !isEditing}
-    <span on:click={() => (isEditing = true)} aria-hidden="true">
+    <span on:dblclick={() => (isEditing = true)} aria-hidden="true" class="line-clamp-1">
       {value}
     </span>
 	{:else}
-		<form on:submit|preventDefault={handleSubmit}>
-			<input bind:this={inputElement} type="text" bind:value />
-			<button type="submit">✅</button>
-			<button on:click={handleCancel}>❌</button>
+		<form on:submit|preventDefault={handleSubmit} on:focusout={handleSubmit} class="rounded-md p-0.5 flex">
+			<input
+				bind:this={inputElement}
+				type="text"
+				bind:value
+				class="rounded-md w-full px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" />
 		</form>
 	{/if}
 </div>
-
-<style>
-	form {
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	button {
-		padding: 0;
-		border: none;
-		background: transparent;
-	}
-</style>

@@ -1,7 +1,12 @@
 <script lang="ts">
 	import Table from '$lib/components/created/Table.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import { page } from '$app/stores';
 </script>
+
+<svelte:head>
+	<title>Albiline</title>
+</svelte:head>
 
 <Tabs.Root value="seznam" class="flex flex-col flex-1">
 	<Tabs.List class="w-fit">

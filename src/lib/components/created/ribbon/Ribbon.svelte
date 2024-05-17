@@ -41,6 +41,8 @@
 		}
 	}
 
+	// TODO: make ribbon responsive
+
 	let exportOptions = [
 		{
 			name: 'excel',

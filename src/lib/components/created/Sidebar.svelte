@@ -163,15 +163,14 @@
 						 on:input={() => searchItems(searchTerm)} />
 			<Accordion.Root class="h-full overflow-y-auto" multiple>
 
-
 				<nav class="flex flex-col py-4 gap-2 h-full ">
 					{#each items as item}
 						<div class="flex flex-col gap-2 ">
 
 							<!-- if sidebar element has children elements -->
 							{#if item.children}
-								<Accordion.Item value={item.value} >
-									<Accordion.Trigger class="hover:bg-muted/50 rounded-md" >
+								<Accordion.Item value={item.value}>
+									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 										<div
 											class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 											<svelte:component this={item.icon} />
@@ -179,7 +178,7 @@
 										</div>
 									</Accordion.Trigger>
 
-									<Accordion.Content class="px-2 my-2" >
+									<Accordion.Content class="px-2 my-2">
 										<Accordion.Root multiple>
 											{#each item.children as secondChild}
 												<!-- if child element has children elements -->
@@ -329,28 +328,44 @@
 		<div class="m-2">
 			{#each items as item}
 				{#if !item.children}
-				<Command.Item>
-					<a href={item.href} class="w-full" on:click={toggleCommandFn}>
-						{item.name}
-					</a>
-				</Command.Item>
-					{/if}
+					<Command.Item>
+						<a href={item.href} class="w-full" on:click={toggleCommandFn}>
+							{item.name}
+						</a>
+					</Command.Item>
+				{/if}
 			{/each}
 		</div>
 
+		<Command.Separator />
+
 
 		{#each items as item}
-			<Command.Separator />
 			{#if item.children}
-			<Command.Group heading="{item.name}" class="my-2">
+				<Command.Group heading="{item.name}" class="my-2">
 					{#each item.children as child}
 						<Command.Item>
-							<a href={child.href} class="w-full" on:click={toggleCommandFn}>
-								{child.name}
-							</a>
+								<a href={child.href} class="w-full" on:click={toggleCommandFn}>
+									{child.name}
+								</a>
 						</Command.Item>
+
+
+						<div class="">
+							{#if child.children}
+								{#each child.children as secondChild}
+									<Command.Item>
+										<a href={secondChild.href} class="w-full pl-4 text-sm" on:click={toggleCommandFn}>
+											{secondChild.name}
+										</a>
+									</Command.Item>
+								{/each}
+							{/if}
+						</div>
 					{/each}
-			</Command.Group>
+				</Command.Group>
+
+				<Command.Separator />
 			{/if}
 		{/each}
 	</Command.List>
