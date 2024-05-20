@@ -132,12 +132,12 @@
 					accessor: column.accessor,
 					header: column.header,
 					plugins: {
-						// colFilter: {
-						// 	fn: textPrefixFilter,
-						// 	initialFilterValue: '',
-						// 	render: (filterValue) =>
-						// 		createRender(TextFilter, filterValue)
-						// },
+						colFilter: {
+							fn: textPrefixFilter,
+							initialFilterValue: '',
+							render: ({ filterValue, values, preFilteredValues }) =>
+								createRender(TextFilter, { filterValue, values, preFilteredValues })
+						},
 						resize: {
 							minWidth: cellWidths.get('small'),
 							initialWidth: initialWidth,
@@ -161,12 +161,12 @@
 						).format(Number(cell.value));
 					},
 					plugins: {
-						// colFilter: {
-						// 	fn: textPrefixFilter,
-						// 	initialFilterValue: '',
-						// 	render: (filterValue) =>
-						// 		createRender(TextFilter, filterValue)
-						// },
+						colFilter: {
+							fn: textPrefixFilter,
+							initialFilterValue: '',
+							render: ({ filterValue, values, preFilteredValues }) =>
+								createRender(TextFilter, { filterValue, values, preFilteredValues })
+						},
 						resize: {
 							minWidth: cellWidths.get('small'),
 							initialWidth: initialWidth,
@@ -206,13 +206,20 @@
 	let start: number;
 
 	const drag = (event, index) => {
-		event.dataTransfer.effectAllowed = 'move';
-		event.dataTransfer.dropEffect = 'move';
+		event.dataTransfer.effectAllowed = 'copy';
+		event.dataTransfer.dropEffect = 'copy';
+		event.dataTransfer.setData('text/plain', '');
 		start = index;
 	};
 
+
+		document.addEventListener("dragover", (event) => {
+			event.preventDefault();
+		});
+
+
 	const drop = (event, target) => {
-		event.dataTransfer.dropEffect = 'move';
+		event.dataTransfer.dropEffect = 'copy';
 
 		const { columnIdOrder } = pluginStates.colOrder;
 		let columnOrderData: string[];
@@ -253,7 +260,12 @@
 	columnIdOrder.subscribe((data) => {
 		columnOrderStore.update(() => data)
 	})
+
+
 </script>
+
+<!--TODO: document is not defined error-->
+
 
 <!--TODO: fix table width to full-->
 
@@ -272,7 +284,7 @@
 									on:dragstart={(e) => drag(e, index)}
 									on:dragover={() => setHovering(index)}
 									on:dragend|preventDefault={(e) => drop(e, hovering)}
-									class="relative p-2 "
+									class="relative p-2 cursor-grab active:cursor-grabbing"
 								>
 									{#if cell.id !== "id"}
 										<button

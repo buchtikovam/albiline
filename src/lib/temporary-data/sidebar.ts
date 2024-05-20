@@ -1,24 +1,8 @@
-import type { ComponentType } from 'svelte';
-import type { Icon } from 'lucide-svelte';
 import ShoppingBasket from 'lucide-svelte/icons/shopping-basket';
 import TableProperties from 'lucide-svelte/icons/table-properties';
 import Warehouse from 'lucide-svelte/icons/warehouse';
 
-type ChildItem = {
-	name: string;
-	value: string;
-	href: string;
-	children?: ChildItem[]
-}
-
-export type Item = {
-	name: string;
-	value: string
-	href: string;
-	icon: ComponentType<Icon>;
-	children?: ChildItem[],
-}
-
+import type { Item } from '$lib/types/sidebar';
 
 export const allItems: Item[] = [
 	{
@@ -37,6 +21,7 @@ export const allItems: Item[] = [
 				name: 'Hodinovka',
 				value: 'hodinovka',
 				href: '/hodinovka',
+				parentValue: 'sklad',
 				children: [
 					{
 						name: "test",
@@ -61,7 +46,7 @@ export const allItems: Item[] = [
 				href: '/'
 			},
 			{
-				name: 'Stav skladu',
+				name: 'Pohyby',
 				value: 'stav-skladu',
 				href: '/sklad',
 				children: [

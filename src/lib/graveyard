@@ -10,13 +10,3 @@ table: hide columns
     	// 	.filter(([, hide]) => !hide)
     	// 	.map(([id]) => id);
 
-
-
-table: column filter with other attributes
-
-	// colFilter: {
-			// 	fn: textPrefixFilter,
-			// 	initialFilterValue: '',
-			// 	render: ({ filterValue, values, preFilteredValues }) =>
-			// 		createRender(TextFilter, { filterValue, values, preFilteredValues })
-		// },

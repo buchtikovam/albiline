@@ -54,7 +54,7 @@
 				<div
 					class="p-2 w-[32px] h-[32px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
 					<button class="text-xs flex flex-col content-center items-center m-auto">
-						<svelte:component this={item.icon} class="h-3.5 w-3.5 muted-foreground hover:bg-muted/50" />
+						<svelte:component this={item.icon} class="h-4 w-4 muted-foreground hover:bg-muted/50" />
 					</button>
 				</div>
 			</Tooltip.Trigger>

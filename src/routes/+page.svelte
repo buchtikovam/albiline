@@ -21,7 +21,7 @@
 	</Tabs.List>
 
 	<Tabs.Content value="seznam" class="flex-1">
-		<div class="h-full rounded-bl-lg rounded-none bg-background border flex">
+		<div class="h-full w-full max-w-full rounded-bl-lg rounded-none bg-background border flex">
 			<Table />
 		</div>
 	</Tabs.Content>

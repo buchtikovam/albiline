@@ -41,8 +41,6 @@
 		}
 	}
 
-	// TODO: make ribbon responsive
-
 	let exportOptions = [
 		{
 			name: 'excel',
@@ -74,7 +72,7 @@
 	];
 </script>
 
-<div class="flex gap-2 items-center px-4 py-2 h-fit bg-background">
+<div class="flex gap-2 items-center px-4 py-2 h-fit bg-background ">
 	<RibbonSection>
 		<RibbonItemsNarrow items={fileItems} />
 		<RibbonItem name="Vyplň dolů">

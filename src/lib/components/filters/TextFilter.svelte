@@ -11,6 +11,9 @@
 	import { Button } from '$lib/components/ui/button';
 
 	export let filterValue;
+	export let preFilteredValues;
+	export let values;
+
 
 	// TODO: add checkboxes with unique row values, to filter out data
 
@@ -47,7 +50,7 @@
 	}
 </script>
 
-<div class="w-auto flex items-center border rounded-md mb-1 ">
+<div class="w-auto flex items-center border rounded-md my-0.5 ">
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
 

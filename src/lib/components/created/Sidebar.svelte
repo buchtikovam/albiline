@@ -1,23 +1,25 @@
 <script lang="ts">
 	import Menu from 'lucide-svelte/icons/menu';
 	import Search from 'lucide-svelte/icons/search';
+	import { onMount } from 'svelte';
 	import {
 		allItems,
 		recentItems,
 		favoriteItems
 	} from '$lib/temporary-data/sidebar';
+	import type { Item } from '$lib/types/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
+	import { Input } from '$lib/components/ui/input';
+	import { sidebarStateStore } from '$lib/stores/store';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
-	import { sidebarStateStore } from '$lib/stores/store';
-	import { onMount } from 'svelte';
-	import { Input } from '$lib/components/ui/input';
-	import type { Item } from '$lib/temporary-data/sidebar';
+	import { openAccordionsStore } from '$lib/stores/store';
 
 	let open: boolean = false;
+	let show: boolean;
 	let items: Item[] = allItems;
 	let initialItems = items;
 
@@ -69,10 +71,6 @@
 		}
 	}
 
-	let show: unknown;
-
-	// TODO: fix command
-
 	sidebarStateStore.subscribe((data) => {
 		show = data;
 	});
@@ -90,8 +88,8 @@
 	}
 
 	let searchTerm = '';
+	let openAccordions: string[] = [];
 
-	// TODO: change displaying of filtered items
 
 	function searchItems(searchTerm: string) {
 		console.log('searchTerm', searchTerm);
@@ -102,7 +100,17 @@
 			const itemName = item.name.toLowerCase();
 
 			if (itemName.includes(lowerSearchTerm)) {
+
 				if (!filteredItems.includes(item)) {
+
+					if (item.parentValue) {
+
+						if (!openAccordions.includes(item.parentValue)) {
+							openAccordions.push(item.parentValue);
+
+							console.log('openAccordions', openAccordions);
+						}
+					}
 					filteredItems.push(item);
 				}
 			}
@@ -111,32 +119,40 @@
 				item.children.forEach(child => searchRecursive(child));
 			}
 		};
-
 		items.forEach(searchRecursive);
 
 		if (searchTerm) {
-			items = filteredItems;
+			// items = filteredItems;
 		} else {
-			items = initialItems;
+			// items = initialItems;
+			openAccordions = [];
 		}
 
 		console.log(items);
 		return items;
 	}
 
-	onMount(() => {
-		function handleKeydown(e: KeyboardEvent) {
-			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				open = !open;
-			}
-		}
 
-		document.addEventListener('keydown', handleKeydown);
-		return () => {
-			document.removeEventListener('keydown', handleKeydown);
-		};
-	});
+
+
+
+
+
+	onMount(() => {
+			function handleKeydown(e: KeyboardEvent) {
+				if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
+					e.preventDefault();
+					open = !open;
+				}
+			}
+
+			document.addEventListener('keydown', handleKeydown);
+
+
+		}
+	);
+
+
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
@@ -161,7 +177,10 @@
 		<div class="flex-1 w-[320px] h-full p-4">
 			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm}
 						 on:input={() => searchItems(searchTerm)} />
-			<Accordion.Root class="h-full overflow-y-auto" multiple>
+
+
+			<!--	TODO: make responsive search updating "value" -->
+			<Accordion.Root class="h-full overflow-y-auto" multiple value={openAccordions}>
 
 				<nav class="flex flex-col py-4 gap-2 h-full ">
 					{#each items as item}
@@ -172,22 +191,28 @@
 								<Accordion.Item value={item.value}>
 									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 										<div
-											class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+											class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+										>
 											<svelte:component this={item.icon} />
-											{item.name}
+											<a href={item.href}>
+												{item.name}
+											</a>
 										</div>
 									</Accordion.Trigger>
 
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple>
+										<Accordion.Root multiple value={openAccordions}>
 											{#each item.children as secondChild}
 												<!-- if child element has children elements -->
 												{#if secondChild.children}
 													<Accordion.Item value={secondChild.value}>
 														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 															<div
-																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
-																{secondChild.name}
+																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+															>
+																<a href={secondChild.href}>
+																	{secondChild.name}
+																</a>
 															</div>
 														</Accordion.Trigger>
 
@@ -325,48 +350,54 @@
 	<Command.Input placeholder="Vyhledat..." />
 	<Command.List>
 		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>
-		<div class="m-2">
-			{#each items as item}
-				{#if !item.children}
-					<Command.Item>
-						<a href={item.href} class="w-full" on:click={toggleCommandFn}>
-							{item.name}
-						</a>
-					</Command.Item>
-				{/if}
-			{/each}
-		</div>
 
-		<Command.Separator />
-
-
-		{#each items as item}
-			{#if item.children}
-				<Command.Group heading="{item.name}" class="my-2">
-					{#each item.children as child}
-						<Command.Item>
-								<a href={child.href} class="w-full" on:click={toggleCommandFn}>
-									{child.name}
+			<div class="m-2">
+				{#each items as item}
+						{#if !item.children}
+							<Command.Item>
+								<a href={item.href} class="w-full" on:click={toggleCommandFn}>
+									{item.name}
 								</a>
-						</Command.Item>
+							</Command.Item>
+						{/if}
+				{/each}
+			</div>
 
+			<Command.Separator />
 
-						<div class="">
-							{#if child.children}
-								{#each child.children as secondChild}
+			{#each items as item}
+				{#if item.children}
+					<Command.Separator />
+
+					<Command.Group heading="{item.name}" class="my-2 ">
+						{#each item.children as child}
+							{#if !child.children}
 									<Command.Item>
-										<a href={secondChild.href} class="w-full pl-4 text-sm" on:click={toggleCommandFn}>
-											{secondChild.name}
+										<a href={child.href} class="" on:click={toggleCommandFn}>
+											{child.name}
 										</a>
 									</Command.Item>
-								{/each}
-							{/if}
-						</div>
-					{/each}
-				</Command.Group>
 
-				<Command.Separator />
-			{/if}
-		{/each}
+							{:else}
+									<Command.Item class="decoration-0">
+										<a href={child.href} class="" on:click={toggleCommandFn}>
+											{child.name}
+										</a>
+									</Command.Item>
+
+										{#if child.children}
+											{#each child.children as secondChild}
+												<Command.Item>
+													<a href={secondChild.href} class="text-sm pl-2" on:click={toggleCommandFn}>
+														{secondChild.name}
+													</a>
+												</Command.Item>
+											{/each}
+										{/if}
+							{/if}
+						{/each}
+					</Command.Group>
+				{/if}
+			{/each}
 	</Command.List>
 </Command.Dialog>
