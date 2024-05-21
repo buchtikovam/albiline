@@ -86,51 +86,28 @@
 	}
 
 	let searchTerm = '';
-	let openAccordions: string[] = [];
-	let foundValues: string[] = [];
+	// let isSearching: boolean = false;
+	// let accordionValues: string[] = [];
 
 
-	function searchItems(searchTerm: string) {
-		openAccordions = [];
-		foundValues = [];
+	let filteredItems: Item[];
 
-		const searchRecursive = (item: Item) => {
-			const lowerSearchTerm = searchTerm.toLowerCase();
-			const itemName = item.name.toLowerCase();
-
-			if (itemName.includes(lowerSearchTerm)) {
-
-				if (item.grandParentValue) {
-					openAccordions.push(item.grandParentValue);
-				}
-
-				if (item.parentValue) {
-					openAccordions.push(item.parentValue);
-					foundValues.push(item.value);
-				}
-
-				if (!item.parentValue) {
-					foundValues.push(item.value);
-				}
-			}
-
-			if (item.children) {
-				item.children.forEach(child => searchRecursive(child));
-			}
-		}
-
-		items.forEach(searchRecursive);
-
-		if (!searchTerm) {
-			openAccordions = [];
-			foundValues = [];
-		}
-
-		console.log('open accordions: ', openAccordions)
-		console.log('found values', foundValues)
-		return openAccordions;
+	function filterItems(items: Item[], term: string): Item[] {
+		return items.filter((item) => {
+			const nameMatch = item.name.toLowerCase().includes(term.toLowerCase());
+			const childrenMatch = item.children?.length && filterItems(item.children, term).length > 0;
+			return nameMatch || childrenMatch;
+		});
 	}
 
+	function search(searchTerm) {
+		if (searchTerm === "") {
+			filteredItems = items
+			return
+		}
+
+		filteredItems = filterItems(items, searchTerm)
+	}
 
 	onMount(() => {
 			function handleKeydown(e: KeyboardEvent) {
@@ -165,15 +142,16 @@
 
 	{#if show === true}
 		<div class="flex-1 w-[320px] h-full p-4">
-			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm}
-						 on:input={() => searchItems(searchTerm)} />
+			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:change={() => search(searchTerm)}/>
 
 
 			<!--	TODO: make responsive search updating "value" -->
-			<Accordion.Root class="h-full overflow-y-auto" multiple value={openAccordions}>
+			<Accordion.Root class="h-full overflow-y-auto" multiple value={filteredItems.map((item) => item.value)}
+			>
+<!--		value={filteredItems.map(filteredItem)=> filteredItem.children.value}-->
 
 				<nav class="flex flex-col py-4 gap-2 h-full ">
-					{#each items as item}
+					{#each filterItems(items, searchTerm) as item}
 						<div class="flex flex-col gap-2 ">
 
 							<!-- if sidebar element has children elements -->
@@ -191,7 +169,7 @@
 									</Accordion.Trigger>
 
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple value={openAccordions}>
+										<Accordion.Root multiple >
 											{#each item.children as secondChild}
 												<!-- if child element has children elements -->
 												{#if secondChild.children}
@@ -341,53 +319,53 @@
 	<Command.List>
 		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>
 
-			<div class="m-2">
-				{#each items as item}
-						{#if !item.children}
-							<Command.Item>
-								<a href={item.href} class="w-full" on:click={toggleCommandFn}>
-									{item.name}
-								</a>
-							</Command.Item>
-						{/if}
-				{/each}
-			</div>
-
-			<Command.Separator />
-
+		<div class="m-2">
 			{#each items as item}
-				{#if item.children}
-					<Command.Separator />
-
-					<Command.Group heading="{item.name}" class="my-2 ">
-						{#each item.children as child}
-							{#if !child.children}
-									<Command.Item>
-										<a href={child.href} class="" on:click={toggleCommandFn}>
-											{child.name}
-										</a>
-									</Command.Item>
-
-							{:else}
-									<Command.Item class="decoration-0">
-										<a href={child.href} class="" on:click={toggleCommandFn}>
-											{child.name}
-										</a>
-									</Command.Item>
-
-										{#if child.children}
-											{#each child.children as secondChild}
-												<Command.Item>
-													<a href={secondChild.href} class="text-sm pl-2" on:click={toggleCommandFn}>
-														{secondChild.name}
-													</a>
-												</Command.Item>
-											{/each}
-										{/if}
-							{/if}
-						{/each}
-					</Command.Group>
+				{#if !item.children}
+					<Command.Item>
+						<a href={item.href} class="w-full" on:click={toggleCommandFn}>
+							{item.name}
+						</a>
+					</Command.Item>
 				{/if}
 			{/each}
+		</div>
+
+		<Command.Separator />
+
+		{#each items as item}
+			{#if item.children}
+				<Command.Separator />
+
+				<Command.Group heading="{item.name}" class="my-2 ">
+					{#each item.children as child}
+						{#if !child.children}
+							<Command.Item>
+								<a href={child.href} class="" on:click={toggleCommandFn}>
+									{child.name}
+								</a>
+							</Command.Item>
+
+						{:else}
+							<Command.Item class="decoration-0">
+								<a href={child.href} class="" on:click={toggleCommandFn}>
+									{child.name}
+								</a>
+							</Command.Item>
+
+							{#if child.children}
+								{#each child.children as secondChild}
+									<Command.Item>
+										<a href={secondChild.href} class="text-sm pl-2" on:click={toggleCommandFn}>
+											{secondChild.name}
+										</a>
+									</Command.Item>
+								{/each}
+							{/if}
+						{/if}
+					{/each}
+				</Command.Group>
+			{/if}
+		{/each}
 	</Command.List>
 </Command.Dialog>

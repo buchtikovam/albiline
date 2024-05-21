@@ -10,3 +10,44 @@ table: hide columns
     	// 	.filter(([, hide]) => !hide)
     	// 	.map(([id]) => id);
 
+
+
+	// function searchItems(searchTerm: string) {
+	// 	openAccordions = [];
+	// 	foundValues = [];
+	//
+	// 	const searchRecursive = (item: Item) => {
+	// 		const lowerSearchTerm = searchTerm.toLowerCase();
+	// 		const itemName = item.name.toLowerCase();
+	//
+	// 		if (itemName.includes(lowerSearchTerm)) {
+	//
+	// 			if (item.grandParentValue) {
+	// 				openAccordions.push(item.grandParentValue);
+	// 			}
+	//
+	// 			if (item.parentValue) {
+	// 				openAccordions.push(item.parentValue);
+	// 				foundValues.push(item.value);
+	// 			}
+	//
+	// 			if (!item.parentValue) {
+	// 				foundValues.push(item.value);
+	// 			}
+	// 		}
+	//
+	// 		if (item.children) {
+	// 			item.children.forEach(child => searchRecursive(child));
+	// 		}
+	// 	}
+	//
+	// 	items.forEach(searchRecursive);
+	//
+	// 	console.log(openAccordions);
+	// 	console.log(foundValues);
+	//
+	// 	if (!searchTerm) {
+	// 		openAccordions = [];
+	// 		foundValues = [];
+	// 	}
+	// }
