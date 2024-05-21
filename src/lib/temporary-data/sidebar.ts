@@ -26,16 +26,22 @@ export const allItems: Item[] = [
 					{
 						name: "test",
 						value: "test",
+						parentValue: 'hodinovka',
+						grandParentValue: "sklad",
 						href: "/test"
 					},
 					{
 						name: "test",
 						value: "test",
+						parentValue: 'hodinovka',
+						grandParentValue: "sklad",
 						href: "/test"
 					},
 					{
 						name: "test",
 						value: "test",
+						parentValue: 'hodinovka',
+						grandParentValue: "sklad",
 						href: "/test"
 					}
 				]
@@ -43,21 +49,27 @@ export const allItems: Item[] = [
 			{
 				name: 'Příjem a výdej',
 				value: 'prijem-a-vydej',
+				parentValue: 'sklad',
 				href: '/'
 			},
 			{
 				name: 'Pohyby',
-				value: 'stav-skladu',
+				value: 'pohyby',
+				parentValue: 'sklad',
 				href: '/sklad',
 				children: [
 					{
 						name: "test",
 						value: "test",
+						parentValue: 'pohyby',
+						grandParentValue: "sklad",
 						href: "/test"
 					},
 					{
 						name: "test",
 						value: "test",
+						parentValue: 'pohyby',
+						grandParentValue: "sklad",
 						href: "/test"
 					}
 				]
@@ -66,23 +78,26 @@ export const allItems: Item[] = [
 	},
 	{
 		name: 'Produkty',
-		value: 'products',
+		value: 'produkty',
 		href: '/',
 		icon: ShoppingBasket,
 		children: [
 			{
 				name: 'test',
 				value: 'test',
+				parentValue: 'produkty',
 				href: '/'
 			},
 			{
 				name: 'Příjem a výdej',
 				value: 'prijem-a-vydej',
+				parentValue: 'produkty',
 				href: '/'
 			},
 			{
 				name: 'Stav skladu',
 				value: 'stav-skladu',
+				parentValue: 'produkty',
 				href: '/sklad'
 			}
 		]

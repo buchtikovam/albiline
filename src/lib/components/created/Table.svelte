@@ -24,6 +24,7 @@
 	import ArrowUpAZ  from 'lucide-svelte/icons/arrow-up-a-z';
 	import { columnOrderStore } from '$lib/stores/store';
 	import EditableCell from '$lib/components/created/EditableCell.svelte';
+	import { onMount } from 'svelte';
 
 	const tableData = readable(data);
 
@@ -212,12 +213,6 @@
 		start = index;
 	};
 
-
-		document.addEventListener("dragover", (event) => {
-			event.preventDefault();
-		});
-
-
 	const drop = (event, target) => {
 		event.dataTransfer.dropEffect = 'copy';
 
@@ -261,6 +256,12 @@
 		columnOrderStore.update(() => data)
 	})
 
+
+	onMount(() => {
+		document.addEventListener("dragover", (event) => {
+			event.preventDefault();
+		});
+	})
 
 </script>
 

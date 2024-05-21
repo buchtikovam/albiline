@@ -16,12 +16,10 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
-	import { openAccordionsStore } from '$lib/stores/store';
 
 	let open: boolean = false;
 	let show: boolean;
 	let items: Item[] = allItems;
-	let initialItems = items;
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
 		if (category === 'all') {
@@ -89,53 +87,49 @@
 
 	let searchTerm = '';
 	let openAccordions: string[] = [];
+	let foundValues: string[] = [];
 
 
 	function searchItems(searchTerm: string) {
-		console.log('searchTerm', searchTerm);
+		openAccordions = [];
+		foundValues = [];
 
-		const filteredItems: Item[] = [];
 		const searchRecursive = (item: Item) => {
 			const lowerSearchTerm = searchTerm.toLowerCase();
 			const itemName = item.name.toLowerCase();
 
 			if (itemName.includes(lowerSearchTerm)) {
 
-				if (!filteredItems.includes(item)) {
+				if (item.grandParentValue) {
+					openAccordions.push(item.grandParentValue);
+				}
 
-					if (item.parentValue) {
+				if (item.parentValue) {
+					openAccordions.push(item.parentValue);
+					foundValues.push(item.value);
+				}
 
-						if (!openAccordions.includes(item.parentValue)) {
-							openAccordions.push(item.parentValue);
-
-							console.log('openAccordions', openAccordions);
-						}
-					}
-					filteredItems.push(item);
+				if (!item.parentValue) {
+					foundValues.push(item.value);
 				}
 			}
 
 			if (item.children) {
 				item.children.forEach(child => searchRecursive(child));
 			}
-		};
-		items.forEach(searchRecursive);
-
-		if (searchTerm) {
-			// items = filteredItems;
-		} else {
-			// items = initialItems;
-			openAccordions = [];
 		}
 
-		console.log(items);
-		return items;
+		items.forEach(searchRecursive);
+
+		if (!searchTerm) {
+			openAccordions = [];
+			foundValues = [];
+		}
+
+		console.log('open accordions: ', openAccordions)
+		console.log('found values', foundValues)
+		return openAccordions;
 	}
-
-
-
-
-
 
 
 	onMount(() => {
@@ -147,12 +141,8 @@
 			}
 
 			document.addEventListener('keydown', handleKeydown);
-
-
 		}
 	);
-
-
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
