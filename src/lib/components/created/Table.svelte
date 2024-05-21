@@ -265,9 +265,6 @@
 
 </script>
 
-<!--TODO: document is not defined error-->
-
-
 <!--TODO: fix table width to full-->
 
 <div class="flex flex-col">

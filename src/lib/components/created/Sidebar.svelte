@@ -22,6 +22,7 @@
 	let items: Item[] = allItems;
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
+
 		if (category === 'all') {
 			items = allItems;
 
@@ -86,11 +87,8 @@
 	}
 
 	let searchTerm = '';
-	// let isSearching: boolean = false;
-	// let accordionValues: string[] = [];
 
-
-	let filteredItems: Item[];
+	let filteredItems: Item[] = items;
 
 	function filterItems(items: Item[], term: string): Item[] {
 		return items.filter((item) => {
@@ -105,8 +103,6 @@
 			filteredItems = items
 			return
 		}
-
-		filteredItems = filterItems(items, searchTerm)
 	}
 
 	onMount(() => {
@@ -142,11 +138,11 @@
 
 	{#if show === true}
 		<div class="flex-1 w-[320px] h-full p-4">
-			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:change={() => search(searchTerm)}/>
+			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => search(searchTerm)}/>
 
 
 			<!--	TODO: make responsive search updating "value" -->
-			<Accordion.Root class="h-full overflow-y-auto" multiple value={filteredItems.map((item) => item.value)}
+			<Accordion.Root class="h-full overflow-y-auto" multiple value={searchTerm !== "" ? filteredItems.map((item) => item.value) : []}
 			>
 <!--		value={filteredItems.map(filteredItem)=> filteredItem.children.value}-->
 
@@ -169,7 +165,7 @@
 									</Accordion.Trigger>
 
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple >
+										<Accordion.Root multiple value={searchTerm !== "" ? [] : []}>
 											{#each item.children as secondChild}
 												<!-- if child element has children elements -->
 												{#if secondChild.children}

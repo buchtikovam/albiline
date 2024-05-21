@@ -44,6 +44,7 @@
 		"cmdk-sv": "^0.0.17",
 		"embla-carousel-svelte": "^8.0.2",
 		"formsnap": "^1.0.0",
+		"json-server": "^1.0.0-beta.0",
 		"lucide-svelte": "^0.373.0",
 		"mode-watcher": "^0.3.0",
 		"paneforge": "^0.0.4",

@@ -399,6 +399,5 @@ export const columnsData: Column[] = [
 		header: 'Vyrobeno',
 		type: 'string',
 		cellSize: 'medium'
-
 	}
 ];
