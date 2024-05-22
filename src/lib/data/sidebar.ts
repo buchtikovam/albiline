@@ -1,6 +1,8 @@
 import ShoppingBasket from 'lucide-svelte/icons/shopping-basket';
 import TableProperties from 'lucide-svelte/icons/table-properties';
 import Warehouse from 'lucide-svelte/icons/warehouse';
+import Hammer from 'lucide-svelte/icons/hammer';
+import HandCoins from 'lucide-svelte/icons/hand-coins';
 
 import type { Item } from '$lib/types/sidebar';
 
@@ -8,97 +10,104 @@ export const allItems: Item[] = [
 	{
 		name: 'Průvodní list',
 		value: 'pruvodni-list',
-		href: '/',
+		href: '/pruvodni-list',
 		icon: TableProperties
 	},
 	{
 		name: 'Sklad',
 		value: 'sklad',
-		href: '/',
+		href: '',
 		icon: Warehouse,
 		children: [
 			{
 				name: 'Hodinovka',
 				value: 'hodinovka',
 				href: '/hodinovka',
-				parentValue: 'sklad',
-				children: [
-					{
-						name: "test",
-						value: "test",
-						parentValue: 'hodinovka',
-						grandParentValue: "sklad",
-						href: "/test"
-					},
-					{
-						name: "test",
-						value: "test",
-						parentValue: 'hodinovka',
-						grandParentValue: "sklad",
-						href: "/test"
-					},
-					{
-						name: "test",
-						value: "test",
-						parentValue: 'hodinovka',
-						grandParentValue: "sklad",
-						href: "/test"
-					}
-				]
 			},
 			{
 				name: 'Příjem a výdej',
 				value: 'prijem-a-vydej',
-				parentValue: 'sklad',
-				href: '/'
-			},
-			{
-				name: 'Pohyby',
-				value: 'pohyby',
-				parentValue: 'sklad',
-				href: '/sklad',
-				children: [
-					{
-						name: "test",
-						value: "test",
-						parentValue: 'pohyby',
-						grandParentValue: "sklad",
-						href: "/test"
-					},
-					{
-						name: "test",
-						value: "test",
-						parentValue: 'pohyby',
-						grandParentValue: "sklad",
-						href: "/test"
-					}
-				]
-			}
-		]
-	},
-	{
-		name: 'Produkty',
-		value: 'produkty',
-		href: '/',
-		icon: ShoppingBasket,
-		children: [
-			{
-				name: 'test',
-				value: 'test',
-				parentValue: 'produkty',
-				href: '/'
-			},
-			{
-				name: 'Příjem a výdej',
-				value: 'prijem-a-vydej',
-				parentValue: 'produkty',
 				href: '/'
 			},
 			{
 				name: 'Stav skladu',
 				value: 'stav-skladu',
-				parentValue: 'produkty',
-				href: '/sklad'
+				href: '/stav-skladu',
+			},
+			{
+				name: 'Zásilky',
+				value: 'zasilky',
+				href: '/zasilky',
+				children: [
+					{
+						name: "zkouška",
+						value: "zkouska",
+						href: "/zkouska"
+					},
+				]
+			},
+		]
+	},
+	{
+		name: 'Výroba',
+		value: 'vyroba',
+		href: '',
+		icon: Hammer,
+		children: [
+			{
+				name: 'Motivy',
+				value: 'motivy',
+				href: '/motivy'
+			},
+			{
+				name: 'Raznice',
+				value: 'raznice',
+				href: '/raznice',
+				children: [
+					{
+						name: "test",
+						value: "test",
+						href: "/test"
+					},
+				]
+			},
+			{
+				name: 'Obálky',
+				value: 'obalky',
+				href: '/obalky'
+			},
+			{
+				name: 'Texty',
+				value: 'texty',
+				href: '/texty'
+			}
+		]
+	},
+	{
+		name: 'Prodej',
+		value: 'prodej',
+		href: '',
+		icon: HandCoins,
+		children: [
+			{
+				name: 'Zákazníci',
+				value: 'zakaznici',
+				href: '/zakaznici'
+			},
+			{
+				name: 'Zákazníci SK',
+				value: 'zakaznici-sk',
+				href: '/zakaznici-sk'
+			},
+			{
+				name: 'Přehledy',
+				value: 'prehledy',
+				href: '/prehledy'
+			},
+			{
+				name: 'Analýza prodejů',
+				value: 'analyza-prodeju',
+				href: '/analyza-prodeju'
 			}
 		]
 	}

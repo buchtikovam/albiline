@@ -1,7 +1,7 @@
 <script lang="ts">
-	import '../app.pcss';
+	import './../app.pcss';
 	import Sidebar from '$lib/components/created/Sidebar.svelte';
-	import Ribbon from '$lib/components/created/ribbon/Ribbon.svelte';
+	import Ribbon from '$lib/components/created/Ribbon.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import Header from '$lib/components/created/Header.svelte';
 </script>
@@ -26,10 +26,6 @@
 				</div>
 			</main>
 		</div>
-
 	</div>
 </div>
-
-
-
 

@@ -12,22 +12,23 @@
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
-	import { readable, get } from 'svelte/store';
-	import { data, columnsData } from '$lib/temporary-data/products.js';
-	import { Button } from '$lib/components/ui/button';
-	import * as Table from '$lib/components/ui/table';
-	import { cellWidths } from '$lib/constants/constants';
-	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
-	import TextFilter from '$lib/components/filters/TextFilter.svelte';
-	import { columnWidthStore } from '$lib/stores/store';
 	import ArrowDownAZ  from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ  from 'lucide-svelte/icons/arrow-up-a-z';
-	import { columnOrderStore } from '$lib/stores/store';
-	import EditableCell from '$lib/components/created/EditableCell.svelte';
+	import { readable, get } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button';
+	import { columnWidthStore } from '$lib/stores/store';
+	import { columnOrderStore } from '$lib/stores/store';
+	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
+	import TextFilter from '$lib/components/filters/TextFilter.svelte';
+	import EditableCell from '$lib/components/created/EditableCell.svelte';
+	import * as Table from '$lib/components/ui/table';
 
-	const tableData = readable(data);
+	export let data;
 
+	const tableData = readable(data.columnData);
+
+	// editable cell
 	const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
 		if (['age', 'visits', 'progress'].includes(columnId)) {
 			if (typeof newValue === 'string') {
@@ -93,12 +94,12 @@
 	const tableColumns = table.createColumns(createdColumns);
 
 	columnWidthStore.subscribe((colWidthData) => {
-		columnsData.map((column) => {
+		data.columnInfo.map((column) => {
 			let initialWidth;
 			if (colWidthData !== null) {
 				initialWidth = colWidthData[column.accessor];
 			} else {
-				initialWidth = cellWidths.get(column.cellSize);
+				initialWidth = 120;
 			}
 
 			if (column.type === 'id') {
@@ -122,7 +123,7 @@
 							disable: true
 						},
 						resize: {
-							initialWidth: initialWidth,
+							initialWidth: 40,
 							disable: true
 						}
 					},
@@ -140,9 +141,9 @@
 								createRender(TextFilter, { filterValue, values, preFilteredValues })
 						},
 						resize: {
-							minWidth: cellWidths.get('small'),
+							minWidth: 80,
 							initialWidth: initialWidth,
-							maxWidth: cellWidths.get('limit')
+							maxWidth: 400
 						}
 					},
 					cell: EditableCellLabel
@@ -169,9 +170,9 @@
 								createRender(TextFilter, { filterValue, values, preFilteredValues })
 						},
 						resize: {
-							minWidth: cellWidths.get('small'),
+							minWidth: 80,
 							initialWidth: initialWidth,
-							maxWidth: cellWidths.get('limit')
+							maxWidth: 400
 						}
 					}
 				}));
@@ -267,6 +268,8 @@
 
 <!--TODO: fix table width to full-->
 
+<!--TODO: move stuff out-->
+
 <div class="flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative ">
 		<Table.Header class="top-0 sticky bg-white border-1">
@@ -282,11 +285,11 @@
 									on:dragstart={(e) => drag(e, index)}
 									on:dragover={() => setHovering(index)}
 									on:dragend|preventDefault={(e) => drop(e, hovering)}
-									class="relative p-2 cursor-grab active:cursor-grabbing"
+									class="relative p-2 cursor-grab active:cursor-grabbing "
 								>
 									{#if cell.id !== "id"}
 										<button
-											class="flex w-full items-center justify-center font-semibold rounded-md hover:bg-muted/70"
+											class="flex w-full items-center justify-center font-semibold rounded-md hover:bg-muted/70 "
 											on:click={props.sort.toggle}
 										>
 											<Render of={cell.render()} />

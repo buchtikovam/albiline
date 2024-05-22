@@ -6,7 +6,7 @@
 		allItems,
 		recentItems,
 		favoriteItems
-	} from '$lib/temporary-data/sidebar';
+	} from '$lib/data/sidebar';
 	import type { Item } from '$lib/types/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
@@ -21,7 +21,13 @@
 	let show: boolean;
 	let items: Item[] = allItems;
 
+
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
+		// future: all routes will display only routes based on permission filter
+
+		// recent routes will store in session storage ?
+
+		// favorite routes will be stored by values on BE and filtered on FE.
 
 		if (category === 'all') {
 			items = allItems;
@@ -98,12 +104,45 @@
 		});
 	}
 
+	let openNestedAccordions: string[] = [];
+
 	function search(searchTerm) {
 		if (searchTerm === "") {
+			console.log("reset");
+			console.log("   ");
 			filteredItems = items
-			return
+			openNestedAccordions = [];
+			return;
 		}
+
+		filteredItems = filterItems(items, searchTerm);
+
+		// opening of nested accordions based on search
+		filteredItems.forEach((item) => {
+			// layer 1
+			if (item.children) {
+				item.children.forEach((child) => {
+					// layer 2
+					if (child.children) {
+						child.children.forEach((scndChild) => {
+
+							if (scndChild.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+								console.log("match", searchTerm, "to", scndChild.value);
+
+								if (!openNestedAccordions.includes(child.value)) {
+									console.log("including", child.value);
+									openNestedAccordions.push(child.value);
+									console.log(openNestedAccordions);
+								}
+							}
+						})
+					}
+				})
+			}
+		})
 	}
+
+	// TODO: move stuff out
 
 	onMount(() => {
 			function handleKeydown(e: KeyboardEvent) {
@@ -140,12 +179,7 @@
 		<div class="flex-1 w-[320px] h-full p-4">
 			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => search(searchTerm)}/>
 
-
-			<!--	TODO: make responsive search updating "value" -->
-			<Accordion.Root class="h-full overflow-y-auto" multiple value={searchTerm !== "" ? filteredItems.map((item) => item.value) : []}
-			>
-<!--		value={filteredItems.map(filteredItem)=> filteredItem.children.value}-->
-
+			<Accordion.Root class="h-full overflow-y-auto" multiple value={searchTerm !== "" ? filteredItems.map((item) => item.value) : []}>
 				<nav class="flex flex-col py-4 gap-2 h-full ">
 					{#each filterItems(items, searchTerm) as item}
 						<div class="flex flex-col gap-2 ">
@@ -165,7 +199,7 @@
 									</Accordion.Trigger>
 
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple value={searchTerm !== "" ? [] : []}>
+										<Accordion.Root multiple value={openNestedAccordions}>
 											{#each item.children as secondChild}
 												<!-- if child element has children elements -->
 												{#if secondChild.children}
@@ -352,7 +386,7 @@
 							{#if child.children}
 								{#each child.children as secondChild}
 									<Command.Item>
-										<a href={secondChild.href} class="text-sm pl-2" on:click={toggleCommandFn}>
+										<a href={secondChild.href} class="text-sm pl-4" on:click={toggleCommandFn}>
 											{secondChild.name}
 										</a>
 									</Command.Item>

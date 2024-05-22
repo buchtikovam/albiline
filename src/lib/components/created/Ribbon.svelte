@@ -22,10 +22,10 @@
 	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 	import { Separator } from '$lib/components/ui/separator';
 	import { ribbonStateStore } from '$lib/stores/store';
-	import RibbonSection from '$lib/components/created/ribbon/RibbonSection.svelte';
-	import RibbonItem from '$lib/components/created/ribbon/RibbonItem.svelte';
-	import RibbonDropdownItem from '$lib/components/created/ribbon/RibbonItemDropdown.svelte';
-	import RibbonItemsNarrow from '$lib/components/created/ribbon/RibbonItemsNarrow.svelte';
+	import RibbonSection from '$lib/components/created/RibbonSection.svelte';
+	import RibbonItem from '$lib/components/created/RibbonItem.svelte';
+	import RibbonDropdownItem from '$lib/components/created/RibbonItemDropdown.svelte';
+	import RibbonItemsNarrow from '$lib/components/created/RibbonItemsNarrow.svelte';
 
 	let isOpen: boolean;
 
