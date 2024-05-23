@@ -82,6 +82,17 @@
 	<Separator orientation="vertical" />
 
 	<RibbonSection>
+		<RibbonItem name="Uložit">
+			<Save class="h-4 w-4" />
+		</RibbonItem>
+		<RibbonItem name="Načíst">
+			<RefreshCcw class="h-4 w-4" />
+		</RibbonItem>
+	</RibbonSection>
+
+	<Separator orientation="vertical" />
+
+	<RibbonSection>
 		<RibbonDropdownItem name="Tisk sestav">
 			<Printer class="h-4 w-4" />
 		</RibbonDropdownItem>
@@ -149,16 +160,7 @@
 
 	<Separator orientation="vertical" />
 
-	<RibbonSection>
-		<RibbonItem name="Uložit">
-			<Save class="h-4 w-4" />
-		</RibbonItem>
-		<RibbonItem name="Načíst">
-			<RefreshCcw class="h-4 w-4" />
-		</RibbonItem>
-	</RibbonSection>
 
-	<Separator orientation="vertical" />
 </div>
 
 {#if isOpen === true}

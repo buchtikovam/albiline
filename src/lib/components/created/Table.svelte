@@ -12,8 +12,8 @@
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
-	import ArrowDownAZ  from 'lucide-svelte/icons/arrow-down-a-z';
-	import ArrowUpAZ  from 'lucide-svelte/icons/arrow-up-a-z';
+	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
+	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
 	import { readable, get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -29,24 +29,6 @@
 	const tableData = readable(data.columnData);
 
 	// editable cell
-	const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
-		if (['age', 'visits', 'progress'].includes(columnId)) {
-			if (typeof newValue === 'string') {
-				newValue = parseInt(newValue);
-			}
-			if (isNaN(newValue)) {
-				$tableData = $tableData;
-				return;
-			}
-		}
-		if (columnId === 'status') {
-			if (!['relationship', 'single', 'complicated'].includes(<string>newValue)) {
-				$tableData = $tableData;
-				return;
-			}
-		}
-	};
-
 	const EditableCellLabel = ({ column, row, value }) =>
 		createRender(EditableCell, {
 			row,
@@ -54,6 +36,18 @@
 			value,
 			onUpdateValue: updateData
 		});
+
+	const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
+		if (typeof newValue === 'string') {
+			console.log("rowDataId", rowDataId);
+			console.log("columnId", columnId);
+
+			newValue = parseInt(newValue);
+		}
+
+		$tableData = $tableData;
+		return;
+	};
 
 
 	const table = createTable(tableData, {
@@ -77,7 +71,8 @@
 					'vyrobeno',
 					'skladem',
 					'klp'
-				] }
+				]
+			}
 		),
 		colFilter: addColumnFilters(),
 		resize: addResizedColumns({
@@ -126,10 +121,9 @@
 							initialWidth: 40,
 							disable: true
 						}
-					},
+					}
 				}));
-			}
-			if (column.type === 'string') {
+			} else {
 				createdColumns.push(table.column({
 					accessor: column.accessor,
 					header: column.header,
@@ -149,34 +143,6 @@
 					cell: EditableCellLabel
 				}));
 			}
-			if (column.type === 'currency') {
-				createdColumns.push(table.column({
-					accessor: column.accessor,
-					header: column.header,
-					cell: (cell) => {
-						return new Intl.NumberFormat(
-							'cz',
-							{
-								style: 'currency',
-								currency: 'CZK'
-							}
-						).format(Number(cell.value));
-					},
-					plugins: {
-						colFilter: {
-							fn: textPrefixFilter,
-							initialFilterValue: '',
-							render: ({ filterValue, values, preFilteredValues }) =>
-								createRender(TextFilter, { filterValue, values, preFilteredValues })
-						},
-						resize: {
-							minWidth: 80,
-							initialWidth: initialWidth,
-							maxWidth: 400
-						}
-					}
-				}));
-			}
 		});
 	});
 
@@ -192,7 +158,6 @@
 		columnWidthStore.set(null);
 	}
 
-
 	// checkbox plugin
 
 	let selectedRows = 0;
@@ -200,7 +165,6 @@
 	selectedDataIds.subscribe(
 		(rows) => selectedRows = Object.keys(rows).length
 	);
-
 
 	// column drag and drop functions
 
@@ -232,7 +196,7 @@
 				columnOrderData.splice(target, 0, columnOrderData[start]);
 				columnOrderData.splice(start + 1, 1);
 			}
-			hovering = null
+			hovering = null;
 		}
 
 		columnIdOrder.update(() => columnOrderData);
@@ -247,22 +211,22 @@
 
 	const { columnIdOrder } = pluginStates.colOrder;
 
-	let columnStore = get(columnOrderStore)
+	let columnStore = get(columnOrderStore);
 
 	if (columnStore !== null) {
-		columnIdOrder.update(() => columnStore)
+		columnIdOrder.update(() => columnStore);
 	}
 
 	columnIdOrder.subscribe((data) => {
-		columnOrderStore.update(() => data)
-	})
+		columnOrderStore.update(() => data);
+	});
 
 
 	onMount(() => {
-		document.addEventListener("dragover", (event) => {
+		document.addEventListener('dragover', (event) => {
 			event.preventDefault();
 		});
-	})
+	});
 
 </script>
 
@@ -331,7 +295,7 @@
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
 								<Table.Cell {...attrs}>
-									<div class="line-clamp-1">
+									<div class="line-clamp-1 h-4 flex items-center">
 										<Render of={cell.render()} />
 									</div>
 								</Table.Cell>

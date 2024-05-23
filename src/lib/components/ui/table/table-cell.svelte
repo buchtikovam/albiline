@@ -9,7 +9,7 @@
 </script>
 
 <td
-	class={cn("p-2 align-middle border-b min-w-fit", className)}
+	class={cn("p-0.5 pl-2 align-middle border-b min-w-fit", className)}
 	{...$$restProps}
 	on:click
 	on:keydown

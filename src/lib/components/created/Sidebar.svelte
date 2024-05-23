@@ -96,6 +96,7 @@
 
 	let filteredItems: Item[] = items;
 
+	// TODO: exclude non-related children elements ?
 	function filterItems(items: Item[], term: string): Item[] {
 		return items.filter((item) => {
 			const nameMatch = item.name.toLowerCase().includes(term.toLowerCase());
@@ -107,15 +108,15 @@
 	let openNestedAccordions: string[] = [];
 
 	function search(searchTerm) {
-		if (searchTerm === "") {
-			console.log("reset");
-			console.log("   ");
-			filteredItems = items
+		if (searchTerm === '') {
+			filteredItems = items;
 			openNestedAccordions = [];
 			return;
 		}
 
 		filteredItems = filterItems(items, searchTerm);
+
+		openNestedAccordions = [];
 
 		// opening of nested accordions based on search
 		filteredItems.forEach((item) => {
@@ -127,19 +128,15 @@
 						child.children.forEach((scndChild) => {
 
 							if (scndChild.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-								console.log("match", searchTerm, "to", scndChild.value);
-
 								if (!openNestedAccordions.includes(child.value)) {
-									console.log("including", child.value);
 									openNestedAccordions.push(child.value);
-									console.log(openNestedAccordions);
 								}
 							}
-						})
+						});
 					}
-				})
+				});
 			}
-		})
+		});
 	}
 
 	// TODO: move stuff out
@@ -164,12 +161,14 @@
 							on:click={() => setCategory("all")}>
 				Všechny
 			</button>
-			<button class="button recent border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
-							on:click={() => setCategory("recent")}>
+			<button
+				class="button recent border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
+				on:click={() => setCategory("recent")}>
 				Nedávné
 			</button>
-			<button class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
-							on:click={() => setCategory("favorite")}>
+			<button
+				class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
+				on:click={() => setCategory("favorite")}>
 				Oblíbené
 			</button>
 		</div>
@@ -177,14 +176,18 @@
 
 	{#if show === true}
 		<div class="flex-1 w-[320px] h-full p-4">
-			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => search(searchTerm)}/>
+			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => search(searchTerm)} />
 
-			<Accordion.Root class="h-full overflow-y-auto" multiple value={searchTerm !== "" ? filteredItems.map((item) => item.value) : []}>
+			<Accordion.Root
+				class="h-full overflow-y-auto"
+				multiple
+				value={searchTerm !== "" ? filteredItems.map((item) => item.value) : []}
+			>
 				<nav class="flex flex-col py-4 gap-2 h-full ">
 					{#each filterItems(items, searchTerm) as item}
 						<div class="flex flex-col gap-2 ">
 
-							<!-- if sidebar element has children elements -->
+							<!-- item with children elements -->
 							{#if item.children}
 								<Accordion.Item value={item.value}>
 									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
@@ -201,7 +204,7 @@
 									<Accordion.Content class="px-2 my-2">
 										<Accordion.Root multiple value={openNestedAccordions}>
 											{#each item.children as secondChild}
-												<!-- if child element has children elements -->
+												<!-- child with children elements -->
 												{#if secondChild.children}
 													<Accordion.Item value={secondChild.value}>
 														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
@@ -226,8 +229,8 @@
 														</Accordion.Content>
 													</Accordion.Item>
 												{:else}
-													<Accordion.Item value={secondChild.value}
-																					class="hover:bg-muted/50 rounded-md">
+													<!-- child with no children -->
+													<Accordion.Item value={secondChild.value} class="hover:bg-muted/50 rounded-md">
 														<a
 															href="{secondChild.href}"
 															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
@@ -239,8 +242,8 @@
 										</Accordion.Root>
 									</Accordion.Content>
 								</Accordion.Item>
-
 							{:else}
+								<!--	item with no child-->
 								<a
 									href={item.href}
 									class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
