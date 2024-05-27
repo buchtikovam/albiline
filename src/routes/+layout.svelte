@@ -1,14 +1,18 @@
 <script lang="ts">
 	import './../app.pcss';
-	import Sidebar from '$lib/components/created/Sidebar.svelte';
-	import Ribbon from '$lib/components/created/Ribbon.svelte';
+	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
+	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import Header from '$lib/components/created/Header.svelte';
+	import Header from '$lib/components/header/Header.svelte';
 </script>
+
+<svelte:head>
+	<title>Albiline</title>
+</svelte:head>
 
 <div class="grid h-dvh w-full">
 	<div class="flex flex-col">
-		<header class="flex flex-col  border-b lg:h-fit">
+		<header class="flex flex-col border-b lg:h-fit">
 			<div class="pl-2">
 				<Header />
 			</div>

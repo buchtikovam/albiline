@@ -20,13 +20,13 @@
 	};
 </script>
 
-<div>
+<div class="w-full">
 	{#if !isEditing}
     <span on:dblclick={() => (isEditing = true)} aria-hidden="true" class="line-clamp-1">
       {value}
     </span>
 	{:else}
-		<form on:submit|preventDefault={handleSubmit} on:focusout={handleSubmit} class="rounded-md p-0.5 flex">
+		<form on:submit|preventDefault={handleSubmit} on:focusout={handleSubmit} class="rounded-md p-1 w-full">
 			<input
 				bind:this={inputElement}
 				type="text"

@@ -19,9 +19,9 @@
 	import { Button } from '$lib/components/ui/button';
 	import { columnWidthStore } from '$lib/stores/store';
 	import { columnOrderStore } from '$lib/stores/store';
-	import TableCheckbox from '$lib/components/created/TableCheckbox.svelte';
+	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
-	import EditableCell from '$lib/components/created/EditableCell.svelte';
+	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
 
 	export let data;
@@ -39,8 +39,8 @@
 
 	const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
 		if (typeof newValue === 'string') {
-			console.log("rowDataId", rowDataId);
-			console.log("columnId", columnId);
+			console.log('rowDataId', rowDataId);
+			console.log('columnId', columnId);
 
 			newValue = parseInt(newValue);
 		}
@@ -87,6 +87,7 @@
 
 	const createdColumns = [];
 	const tableColumns = table.createColumns(createdColumns);
+
 
 	columnWidthStore.subscribe((colWidthData) => {
 		data.columnInfo.map((column) => {
@@ -159,7 +160,6 @@
 	}
 
 	// checkbox plugin
-
 	let selectedRows = 0;
 	const { selectedDataIds } = pluginStates.select;
 	selectedDataIds.subscribe(
@@ -167,7 +167,6 @@
 	);
 
 	// column drag and drop functions
-
 	let hovering: number | null;
 	let start: number;
 
@@ -208,7 +207,6 @@
 
 
 	// check for stored colOrder, subscribe to colOrder changes
-
 	const { columnIdOrder } = pluginStates.colOrder;
 
 	let columnStore = get(columnOrderStore);
@@ -227,14 +225,11 @@
 			event.preventDefault();
 		});
 	});
-
 </script>
 
 <!--TODO: fix table width to full-->
 
-<!--TODO: move stuff out-->
-
-<div class="flex flex-col">
+<div class="h-full max-w-full rounded-bl-lg rounded-none bg-background border flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative ">
 		<Table.Header class="top-0 sticky bg-white border-1">
 			{#each $headerRows as headerRow (headerRow.id)}
@@ -274,8 +269,9 @@
 									{/if}
 
 									{#if !props.resize.disabled}
-										<div class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
-												 use:props.resize.drag />
+										<div
+											class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
+											use:props.resize.drag />
 									{/if}
 								</th>
 							</Subscribe>
@@ -295,7 +291,7 @@
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
 								<Table.Cell {...attrs}>
-									<div class="line-clamp-1 h-4 flex items-center">
+									<div class="line-clamp-1 h-5 flex items-center">
 										<Render of={cell.render()} />
 									</div>
 								</Table.Cell>

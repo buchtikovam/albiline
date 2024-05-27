@@ -17,11 +17,11 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
-	import { derived } from 'svelte/store';
 
 	let open: boolean = false;
 	let show: boolean;
 	let items: Item[] = allItems;
+	let filteredItems: Item[] = items;
 
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
@@ -33,6 +33,10 @@
 
 		if (category === 'all') {
 			items = allItems;
+			filteredItems = filterItems(
+				deepcopy(items),
+				searchTerm
+			);
 
 			let buttons = document.getElementsByClassName('button');
 
@@ -48,7 +52,10 @@
 
 		if (category === 'recent') {
 			items = recentItems;
-
+			filteredItems = filterItems(
+				deepcopy(items),
+				searchTerm
+			);
 
 			let buttons = document.getElementsByClassName('button');
 
@@ -64,6 +71,10 @@
 
 		if (category === 'favorite') {
 			items = favoriteItems;
+			filteredItems = filterItems(
+				deepcopy(items),
+				searchTerm
+			);
 
 			let buttons = document.getElementsByClassName('button');
 
@@ -95,7 +106,7 @@
 	}
 
 	let searchTerm = '';
-	let filteredItems: Item[] = items;
+	// let filteredItems: Item[] = items;
 
 	function filterItems(items: Item[], searchTerm: string): Item[] {
 		return items.map((item: Item): Item => {
@@ -117,6 +128,8 @@
 		});
 	}
 
+	// TODO(bug): after searching, accordions open in pairs - check after clearing
+
 	function search(searchTerm: string) {
 		if (searchTerm === '') {
 			filteredItems = items;
@@ -128,8 +141,6 @@
 			searchTerm
 		);
 	}
-
-	// TODO: move stuff out
 
 	onMount(() => {
 			function handleKeydown(e: KeyboardEvent) {
@@ -148,7 +159,7 @@
 	{#if show === true}
 		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
 			<button class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
-							on:click={() => setCategory("all")}>
+					on:click={() => setCategory("all")}>
 				Všechny
 			</button>
 			<button
@@ -166,7 +177,8 @@
 
 	{#if show === true}
 		<div class="flex-1 w-[320px] h-full p-4">
-			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm} on:input={() => search(searchTerm)} />
+			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm}
+				   on:input={() => search(searchTerm)} />
 
 			<Accordion.Root
 				class="h-full overflow-y-auto"
@@ -189,7 +201,8 @@
 										</div>
 									</Accordion.Trigger>
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple value={searchTerm !== "" ? item.children.map((child) => child.value) : []}>
+										<Accordion.Root multiple
+														value={searchTerm !== "" ? item.children.map((child) => child.value) : []}>
 											{#each item.children.filter((child) => !child.hide) as secondChild}
 												<!-- child with children elements -->
 												{#if secondChild.children.length > 0}
@@ -205,23 +218,26 @@
 														</Accordion.Trigger>
 														<Accordion.Content>
 															<div class="flex flex-col px-2 py-1">
-																<Accordion.Root multiple value={searchTerm !== "" ? secondChild.children.map((child) => child.value) : []}>
-																{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																	<Accordion.Item value={thirdChild.value} class="hover:bg-muted/50 rounded-md">
-																		<a
-																			href="{thirdChild.href}"
-																			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
-																			{thirdChild.name}
-																		</a>
-																	</Accordion.Item>
-																{/each}
+																<Accordion.Root multiple
+																				value={searchTerm !== "" ? secondChild.children.map((child) => child.value) : []}>
+																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
+																		<Accordion.Item value={thirdChild.value}
+																						class="hover:bg-muted/50 rounded-md">
+																			<a
+																				href="{thirdChild.href}"
+																				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																				{thirdChild.name}
+																			</a>
+																		</Accordion.Item>
+																	{/each}
 																</Accordion.Root>
 															</div>
 														</Accordion.Content>
 													</Accordion.Item>
 												{:else}
 													<!-- child with no children -->
-													<Accordion.Item value={secondChild.value} class="hover:bg-muted/50 rounded-md">
+													<Accordion.Item value={secondChild.value}
+																	class="hover:bg-muted/50 rounded-md">
 														<a
 															href="{secondChild.href}"
 															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
@@ -267,7 +283,7 @@
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
 						<button on:click={toggleCommandFn}
-										class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+								class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 							<Search />
 						</button>
 					</Tooltip.Trigger>
@@ -309,7 +325,7 @@
 						<Tooltip.Root openDelay={250}>
 							<Tooltip.Trigger>
 								<a href={item.href}
-									 class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+								   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 									<svelte:component this={item.icon} />
 								</a>
 							</Tooltip.Trigger>

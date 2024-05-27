@@ -6,4 +6,3 @@
 </script>
 
 <Checkbox bind:checked={$checked} class="flex "/>
-

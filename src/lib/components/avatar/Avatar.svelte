@@ -10,6 +10,8 @@
 		rowHeightStore.set(state);
 	}
 
+	export let userName: string = 'MBUC';
+
 	import User from 'lucide-svelte/icons/user';
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
@@ -27,19 +29,19 @@
 
 	<DropdownMenu.Content class="w-60">
 		<DropdownMenu.Label class="font-bold text-base">
-			Vítejte, <span class="text-albi-500">MBUC</span>
+			Vítejte, <span class="text-albi-500">{userName}</span>
 		</DropdownMenu.Label>
 		<DropdownMenu.Separator />
 
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>
-				<a href="/" class="flex items-center">
+				<a href="/static" class="flex items-center">
 					<User class="w-4 h-4 mr-2" />
 					Profil
 				</a>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item>
-				<a href="/" class="flex items-center">
+				<a href="/static" class="flex items-center">
 					<Settings class="w-4 h-4 mr-2" />
 					Nastavení
 				</a>
@@ -49,21 +51,20 @@
 
 		<DropdownMenu.RadioGroup bind:value={isCompact}>
 			<DropdownMenu.Label>Zobrazení</DropdownMenu.Label>
-			<DropdownMenu.RadioItem value="standard" on:click={() => setHeight("standard")}>Standardní
+			<DropdownMenu.RadioItem value="standard" class="cursor-pointer" on:click={() => setHeight("standard")}>Standardní
 			</DropdownMenu.RadioItem>
-			<DropdownMenu.RadioItem value="compact" on:click={() => setHeight("compact")}>Kompaktní</DropdownMenu.RadioItem>
+			<DropdownMenu.RadioItem value="compact" class="cursor-pointer" on:click={() => setHeight("compact")}>Kompaktní</DropdownMenu.RadioItem>
 		</DropdownMenu.RadioGroup>
 		<DropdownMenu.Separator />
 
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>
-				<a href="/" class="flex items-center">
+				<a href="/static" class="flex items-center">
 					<LogOut class="w-4 h-4 mr-2" />
 					Odhlásit se
 				</a>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
-
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 

@@ -32,27 +32,6 @@
 	];
 </script>
 
-<!--	<DropdownMenu.Root>-->
-<!--		<DropdownMenu.Trigger>-->
-<!--			<div-->
-<!--				class="">-->
-<!--				<div class="">-->
-<!--					<slot />-->
-<!--					<div class="flex">-->
-<!--						{name}-->
-<!--						<ChevronDown class="h-4 w-4" />-->
-<!--					</div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--		</DropdownMenu.Trigger>-->
-<!--		<DropdownMenu.Content class="w-fit p-1">-->
-<!--			{#each options as option}-->
-<!--				<DropdownMenu.Item class="text-xs w-full">-->
-<!--					{option.name}-->
-<!--				</DropdownMenu.Item>-->
-<!--			{/each}-->
-<!--		</DropdownMenu.Content>-->
-<!--	</DropdownMenu.Root>-->
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>
 
@@ -67,14 +46,14 @@
 							? "text-[11px] flex flex-col gap-1 leading-3 content-start items-center"
 							: "text-xs flex flex-col content-center items-center m-auto"}
 					>
-						{#if isOpen}
-							<div class="flex items-center pl-1">
-								<slot />
-								<ChevronDown class="w-2.5 h-2.5 "/>
-							</div>
-						{:else}
-							<slot />
-						{/if}
+						<!--{#if isOpen}-->
+						<!--							<div class="flex items-center">-->
+						<slot />
+						<!--								<ChevronDown class="w-2.5 h-2.5 "/>-->
+						<!--							</div>-->
+						<!--						{:else}-->
+						<!--							<slot />-->
+						<!--{/if}-->
 
 						{isOpen ? name : ""}
 					</button>

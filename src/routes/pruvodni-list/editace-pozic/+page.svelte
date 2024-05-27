@@ -1,0 +1,1 @@
+// editace pozic
