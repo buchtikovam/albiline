@@ -18,3 +18,5 @@ export default async function apiService(endpoint: string, method = 'GET', heade
 		throw error;
 	}
 }
+
+// TODO: create crud

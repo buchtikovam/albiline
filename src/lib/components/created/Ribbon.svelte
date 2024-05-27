@@ -72,7 +72,13 @@
 	];
 </script>
 
-<div class="flex gap-2 items-center px-4 py-2 h-fit bg-background ">
+<div class={
+	(isOpen
+		? "px-4"
+		: "px-2")
+		+ " flex gap-2 items-center py-2 h-fit bg-background"
+	}
+>
 	<RibbonSection>
 		<RibbonItemsNarrow items={fileItems} />
 		<RibbonItem name="Vyplň dolů">
@@ -163,16 +169,20 @@
 
 </div>
 
-{#if isOpen === true}
-	<div class="absolute mt-[100px] w-full flex justify-end items-center">
-		<button on:click={() => toggleOpen()}>
-			<ChevronUp class="h-4 w-4 bg-background" />
-		</button>
-	</div>
-{:else}
-	<div class="absolute mt-[73px] w-full  flex justify-end items-center">
-		<button on:click={() => toggleOpen()}>
+<div
+	class={
+		(isOpen
+			? "mt-[100px]"
+			: "mt-[73px]")
+			+ " absolute w-full flex justify-end items-center"
+	}
+>
+	<button on:click={() => toggleOpen()}>
+		{#if isOpen}
 			<ChevronDown class="h-4 w-4 bg-background" />
-		</button>
-	</div>
-{/if}
+		{:else}
+			<ChevronUp class="h-4 w-4 bg-background" />
+		{/if}
+	</button>
+</div>
+

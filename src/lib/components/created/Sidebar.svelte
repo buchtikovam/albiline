@@ -2,6 +2,7 @@
 	import Menu from 'lucide-svelte/icons/menu';
 	import Search from 'lucide-svelte/icons/search';
 	import { onMount } from 'svelte';
+	import deepcopy from 'deepcopy';
 	import {
 		allItems,
 		recentItems,
@@ -16,6 +17,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
+	import { derived } from 'svelte/store';
 
 	let open: boolean = false;
 	let show: boolean;
@@ -93,50 +95,38 @@
 	}
 
 	let searchTerm = '';
-
 	let filteredItems: Item[] = items;
 
-	// TODO: exclude non-related children elements ?
-	function filterItems(items: Item[], term: string): Item[] {
-		return items.filter((item) => {
-			const nameMatch = item.name.toLowerCase().includes(term.toLowerCase());
-			const childrenMatch = item.children?.length && filterItems(item.children, term).length > 0;
-			return nameMatch || childrenMatch;
+	function filterItems(items: Item[], searchTerm: string): Item[] {
+		return items.map((item: Item): Item => {
+			item.open = false;
+			item.hide = true;
+
+			if (item.name.toLowerCase().includes(searchTerm.toLowerCase()) === true) {
+				item.open = true;
+				item.hide = false;
+			}
+
+			item.children = filterItems(item.children, searchTerm);
+			if (item.children.some((child) => child.hide === false)) {
+				item.open = true;
+				item.hide = false;
+			}
+
+			return item;
 		});
 	}
 
-	let openNestedAccordions: string[] = [];
-
-	function search(searchTerm) {
+	function search(searchTerm: string) {
 		if (searchTerm === '') {
 			filteredItems = items;
-			openNestedAccordions = [];
 			return;
 		}
 
-		filteredItems = filterItems(items, searchTerm);
-
-		openNestedAccordions = [];
-
-		// opening of nested accordions based on search
-		filteredItems.forEach((item) => {
-			// layer 1
-			if (item.children) {
-				item.children.forEach((child) => {
-					// layer 2
-					if (child.children) {
-						child.children.forEach((scndChild) => {
-
-							if (scndChild.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-								if (!openNestedAccordions.includes(child.value)) {
-									openNestedAccordions.push(child.value);
-								}
-							}
-						});
-					}
-				});
-			}
-		});
+		filteredItems = filterItems(
+			deepcopy(items),
+			searchTerm
+		);
 	}
 
 	// TODO: move stuff out
@@ -181,14 +171,12 @@
 			<Accordion.Root
 				class="h-full overflow-y-auto"
 				multiple
-				value={searchTerm !== "" ? filteredItems.map((item) => item.value) : []}
+				value={searchTerm !== "" ? filteredItems.map((child) => child.value) : []}
 			>
 				<nav class="flex flex-col py-4 gap-2 h-full ">
-					{#each filterItems(items, searchTerm) as item}
+					{#each filteredItems.filter((child) => !child.hide) as item}
 						<div class="flex flex-col gap-2 ">
-
-							<!-- item with children elements -->
-							{#if item.children}
+							{#if item.children.length > 0 }
 								<Accordion.Item value={item.value}>
 									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 										<div
@@ -200,12 +188,11 @@
 											</a>
 										</div>
 									</Accordion.Trigger>
-
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple value={openNestedAccordions}>
-											{#each item.children as secondChild}
+										<Accordion.Root multiple value={searchTerm !== "" ? item.children.map((child) => child.value) : []}>
+											{#each item.children.filter((child) => !child.hide) as secondChild}
 												<!-- child with children elements -->
-												{#if secondChild.children}
+												{#if secondChild.children.length > 0}
 													<Accordion.Item value={secondChild.value}>
 														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 															<div
@@ -216,16 +203,20 @@
 																</a>
 															</div>
 														</Accordion.Trigger>
-
 														<Accordion.Content>
 															<div class="flex flex-col px-2 py-1">
-																{#each secondChild.children as thirdChild}
-																	<a href={thirdChild.href}
-																		 class="text-muted-foreground/75 hover:text-primary hover:bg-muted/50 p-1 px-6 rounded-md">{thirdChild.name}</a>
+																<Accordion.Root multiple value={searchTerm !== "" ? secondChild.children.map((child) => child.value) : []}>
+																{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
+																	<Accordion.Item value={thirdChild.value} class="hover:bg-muted/50 rounded-md">
+																		<a
+																			href="{thirdChild.href}"
+																			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																			{thirdChild.name}
+																		</a>
+																	</Accordion.Item>
 																{/each}
+																</Accordion.Root>
 															</div>
-
-
 														</Accordion.Content>
 													</Accordion.Item>
 												{:else}
@@ -255,7 +246,6 @@
 						</div>
 					{/each}
 
-
 					<div class="mt-auto ml-auto pb-4">
 						<Button
 							variant="ghost"
@@ -269,7 +259,6 @@
 					</div>
 				</nav>
 			</Accordion.Root>
-
 
 		</div>
 	{:else}
@@ -301,7 +290,7 @@
 										</div>
 									</Popover.Trigger>
 
-									<Popover.Content class="flex flex-col px-2 py-1.5 ml-12 w-fit text-sm">
+									<Popover.Content class="flex flex-col px-1 py-1 ml-12 w-fit text-sm">
 										{#each item.children as child}
 											<a href={child.href} class="hover:bg-muted/50 rounded p-2">{child.name}</a>
 										{/each}

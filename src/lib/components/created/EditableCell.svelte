@@ -18,7 +18,6 @@
 			onUpdateValue(row.dataId, column.id, value);
 		}
 	};
-
 </script>
 
 <div>

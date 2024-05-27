@@ -32,33 +32,35 @@
 	});
 </script>
 
-{#if isOpen === true}
-	<div class="flex flex-col self-center pr-1">
-		{#each items as item}
-			<div
-				class="p-[1px] w-full h-fit rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
-				<button class="text-[11px] flex gap-2 items-center">
 
-					<svelte:component this={item.icon} class="h-3.5 w-3.5 muted-foreground hover:bg-muted/50" />
-					{item.name}
+<div class={isOpen ? "flex flex-col self-center pr-1" : ""}>
+{#each items as item}
+	<Tooltip.Root openDelay={250}>
+		<Tooltip.Trigger>
+			<div
+				class={
+					(isOpen
+						? "w-full h-fit"
+						: "p-2 w-[32px] h-[32px]")
+						+ " rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/70"}
+			>
+				<button class={isOpen
+					? "text-[11px] flex gap-2 items-center"
+					: "text-xs flex flex-col content-center items-center m-auto"}
+				>
+					{#if isOpen}
+						<svelte:component this={item.icon} class="h-3.5 w-3.5 muted-foreground hover:bg-muted/70" />
+						{item.name}
+					{:else}
+						<svelte:component this={item.icon} class="h-4 w-4 muted-foreground hover:bg-muted/70" />
+					{/if}
+
 				</button>
 			</div>
-
-		{/each}
-	</div>
-
-{:else}
-	{#each items as item}
-		<Tooltip.Root openDelay={250}>
-			<Tooltip.Trigger>
-				<div
-					class="p-2 w-[32px] h-[32px] rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50">
-					<button class="text-xs flex flex-col content-center items-center m-auto">
-						<svelte:component this={item.icon} class="h-4 w-4 muted-foreground hover:bg-muted/50" />
-					</button>
-				</div>
-			</Tooltip.Trigger>
-			<Tooltip.Content class="mt-20">{item.name}</Tooltip.Content>
-		</Tooltip.Root>
-	{/each}
-{/if}
+		</Tooltip.Trigger>
+		<Tooltip.Content class={isOpen ? "hidden" : "mt-20"}>
+			{item.name}
+		</Tooltip.Content>
+	</Tooltip.Root>
+{/each}
+</div>

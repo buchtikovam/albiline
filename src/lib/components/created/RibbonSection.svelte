@@ -8,16 +8,8 @@
 	});
 </script>
 
-{#if isOpen === true}
-	<div class="w-fit flex flex-col ">
-		<div class="flex gap-2">
-			<slot />
-		</div>
+<div class="w-fit flex flex-col ">
+	<div class={isOpen ? "flex gap-2" : "flex"}>
+		<slot />
 	</div>
-{:else}
-	<div class="w-fit flex flex-col ">
-		<div class="flex">
-			<slot />
-		</div>
-	</div>
-{/if}
+</div>
