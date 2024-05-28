@@ -1,0 +1,1 @@
+// příjem a výdej

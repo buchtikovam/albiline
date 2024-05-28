@@ -25,7 +25,7 @@
 				<Sidebar />
 			</div>
 			<main class="flex flex-1 flex-col rounded-l-md bg-muted">
-				<div class="flex flex-1 flex-col rounded-md gap-4 p-4 pr-0">
+				<div class="flex flex-1 flex-col rounded-md p-4 pr-0">
 					<slot />
 				</div>
 			</main>

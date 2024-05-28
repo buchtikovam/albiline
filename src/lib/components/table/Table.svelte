@@ -22,7 +22,9 @@
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
+	import { cellWidths } from '$lib/constants/cellWidths';
 	import * as Table from '$lib/components/ui/table';
+	import type { Column } from '$lib/types/table';
 
 	export let data;
 
@@ -90,12 +92,12 @@
 
 
 	columnWidthStore.subscribe((colWidthData) => {
-		data.columnInfo.map((column) => {
+		data.columnInfo.map((column: Column) => {
 			let initialWidth;
 			if (colWidthData !== null) {
 				initialWidth = colWidthData[column.accessor];
 			} else {
-				initialWidth = 120;
+				initialWidth = cellWidths.get(column.size);
 			}
 
 			if (column.type === 'id') {
@@ -227,10 +229,8 @@
 	});
 </script>
 
-<!--TODO: fix table width to full-->
-
-<div class="h-full max-w-full rounded-bl-lg rounded-none bg-background border flex flex-col">
-	<Table.Root {...$tableAttrs} class="overflow-auto relative ">
+<div class="h-full flex flex-col">
+	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
 		<Table.Header class="top-0 sticky bg-white border-1">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
@@ -244,7 +244,7 @@
 									on:dragstart={(e) => drag(e, index)}
 									on:dragover={() => setHovering(index)}
 									on:dragend|preventDefault={(e) => drop(e, hovering)}
-									class="relative p-2 cursor-grab active:cursor-grabbing "
+									class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
 								>
 									{#if cell.id !== "id"}
 										<button
@@ -300,18 +300,24 @@
 					</Table.Row>
 				</Subscribe>
 			{/each}
+
 		</Table.Body>
 	</Table.Root>
 
-	<div class="flex w-full justify-between border-t">
-		<div class="text-sm text-muted-foreground/75 p-2 ">
+	<div class="flex justify-between items-center w-full border-t">
+
+		<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
 			{selectedRows} řad označeno.
 		</div>
 
-		<div>
-			<Button variant="ghost" size="sm" class="hover:bg-muted/50" on:click={resetColumns}>
-				<RotateCcw class="h-4 w-4" />
-			</Button>
-		</div>
+		<Button
+			variant="ghost"
+			size="sm"
+			class="hover:bg-muted/50"
+			on:click={resetColumns}
+		>
+			<RotateCcw class="h-4 w-4" />
+		</Button>
 	</div>
+
 </div>

@@ -10,3 +10,9 @@ export type Item = {
 	icon: null|ComponentType<Icon>;
 	children: Item[],
 }
+
+export type Tab = {
+	name: string;
+	url: string;
+	closingState: "hidden" | "";
+}

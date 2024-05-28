@@ -8,11 +8,11 @@
 		recentItems,
 		favoriteItems
 	} from '$lib/data/sidebar';
-	import type { Item } from '$lib/types/sidebar';
+	import type { Item, Tab } from '$lib/types/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
-	import { sidebarStateStore } from '$lib/stores/store';
+	import { sidebarStateStore, openedTabsStore } from '$lib/stores/store';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
@@ -23,14 +23,10 @@
 	let items: Item[] = allItems;
 	let filteredItems: Item[] = items;
 
+	// TODO: scrollable sidebar
+
 
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
-		// future: all routes will display only routes based on permission filter
-
-		// recent routes will store in session storage ?
-
-		// favorite routes will be stored by values on BE and filtered on FE.
-
 		if (category === 'all') {
 			items = allItems;
 			filteredItems = filterItems(
@@ -106,6 +102,7 @@
 	}
 
 	let searchTerm = '';
+
 	// let filteredItems: Item[] = items;
 
 	function filterItems(items: Item[], searchTerm: string): Item[] {
@@ -142,6 +139,22 @@
 		);
 	}
 
+	let openedTabs: Tab[];
+
+	openedTabsStore.subscribe((data) => {
+		openedTabs = data;
+	})
+
+	function addToTabs(item: Tab): void {
+		// if (!openedTabs.includes(item)) {
+		// 	console.log("doesnt include");
+			openedTabsStore.update((data) => data.concat(item));
+
+		// } else {
+			console.log(item);
+		// }
+	}
+
 	onMount(() => {
 			function handleKeydown(e: KeyboardEvent) {
 				if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
@@ -158,18 +171,24 @@
 <div class="flex h-full max-h-screen flex-col border-r">
 	{#if show === true}
 		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
-			<button class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
-					on:click={() => setCategory("all")}>
+			<button
+				class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
+				on:click={() => setCategory("all")}
+			>
 				Všechny
 			</button>
+
 			<button
 				class="button recent border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
-				on:click={() => setCategory("recent")}>
+				on:click={() => setCategory("recent")}
+			>
 				Nedávné
 			</button>
+
 			<button
 				class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
-				on:click={() => setCategory("favorite")}>
+				on:click={() => setCategory("favorite")}
+			>
 				Oblíbené
 			</button>
 		</div>
@@ -218,11 +237,15 @@
 														</Accordion.Trigger>
 														<Accordion.Content>
 															<div class="flex flex-col px-2 py-1">
-																<Accordion.Root multiple
-																				value={searchTerm !== "" ? secondChild.children.map((child) => child.value) : []}>
+																<Accordion.Root
+																	multiple
+																	value={searchTerm !== "" ? secondChild.children.map((child) => child.value) : []}
+																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<Accordion.Item value={thirdChild.value}
-																						class="hover:bg-muted/50 rounded-md">
+																		<Accordion.Item
+																			value={thirdChild.value}
+																			class="hover:bg-muted/50 rounded-md"
+																		>
 																			<a
 																				href="{thirdChild.href}"
 																				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
@@ -236,11 +259,15 @@
 													</Accordion.Item>
 												{:else}
 													<!-- child with no children -->
-													<Accordion.Item value={secondChild.value}
-																	class="hover:bg-muted/50 rounded-md">
+													<Accordion.Item
+														value={secondChild.value}
+														class="hover:bg-muted/50 rounded-md"
+													>
 														<a
 															href="{secondChild.href}"
-															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+															on:click={() => addToTabs({name: secondChild.name, url: secondChild.href, closingState: "hidden"})}
+															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+														>
 															{secondChild.name}
 														</a>
 													</Accordion.Item>

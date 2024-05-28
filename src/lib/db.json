@@ -331,57 +331,72 @@
 			{
 				"accessor": "id",
 				"header": "id",
-				"type": "id"
+				"type": "id",
+				"size": "checkbox"
 			},
 			{
 				"accessor": "ksp",
 				"header": "KSP",
-				"type": "string"
+				"type": "string",
+				"size": "small"
 			},
 			{
 				"accessor": "jmeno",
 				"header": "Jméno",
-				"type": "string"
+				"type": "string",
+				"size": "xlarge"
 			},
 			{
 				"accessor": "typ",
 				"header": "Typ",
-				"type": "string"
+				"type": "string",
+				"size": "small"
+
 			},
 			{
 				"accessor": "linie",
 				"header": "Linie",
-				"type": "string"
+				"type": "string",
+				"size": "medium"
+
 			},
 			{
 				"accessor": "koncepce",
 				"header": "Koncepce",
-				"type": "string"
+				"type": "string",
+				"size": "large"
+
 			},
 			{
 				"accessor": "klp",
 				"header": "KLP",
-				"type": "string"
+				"type": "string",
+				"size": "small"
 			},
 			{
 				"accessor": "listovaciPolozka",
 				"header": "Listovací položka",
-				"type": "string"
+				"type": "string",
+				"size": "large"
 			},
 			{
 				"accessor": "prodCena",
 				"header": "Cena",
-				"type": "currency"
+				"type": "currency",
+				"size": "medium"
 			},
 			{
 				"accessor": "skladem",
 				"header": "Skladem",
-				"type": "string"
+				"type": "string",
+				"size": "medium"
 			},
 			{
 				"accessor": "vyrobeno",
 				"header": "Vyrobeno",
-				"type": "string"
+				"type": "string",
+				"size": "small"
+
 			}
 		]
 	}
