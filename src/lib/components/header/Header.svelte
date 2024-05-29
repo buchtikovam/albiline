@@ -3,27 +3,59 @@
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Home } from 'lucide-svelte';
-	import { openedTabsStore } from '$lib/stores/store';
+	import { openedTabsStore, currentActiveTabStore } from '$lib/stores/store';
+	import { page } from '$app/stores';
+	import X from 'lucide-svelte/icons/x';
+	import type { Tab } from '$lib/types/sidebar';
 
 	let tabs: Tab[];
+	let activeTabValue: string;
+	let url = $page.url.pathname;
+	let urlLength = url.split('/').length;
 
 	openedTabsStore.subscribe((data) => {
 		tabs = data;
 	});
 
-	import { page } from '$app/stores';
-	import X from 'lucide-svelte/icons/x';
-	import { Button } from '$lib/components/ui/button';
-	import type { Tab } from '$lib/types/sidebar';
+	// Nastavování aktivního tabu
+	currentActiveTabStore.subscribe((value) => {
+		activeTabValue = value;
 
-	// pathname into root value
-	// default home tag
-	//
+		// Proběhne při načtění stránky:
+		if (value === '') {
+			activeTabValue = url;
 
-	let url = $page.url.pathname;
+			// Jelikož albiline má sekundární taby (např. /detail), které přidávají parametr do url,
+			// pro správné zobrazení hlavních tabů je potřeba poslední parametr z url smazat než
+			// se nastaví v Tabs.Root > value
+			for (let tab of tabs) {
+				// nalezena přímá shoda
+				if (tab.url === url) {
+					activeTabValue = url;
+					break;
+				}
+
+				let tabUrlLength = tab.url.split('/').length;
+
+				// nalezena částečná shoda
+				if (url.includes(tab.url)) {
+					if (tab.treeDepth === 0 && urlLength > 2 && tabUrlLength === urlLength - 1) {
+						activeTabValue = `/${url.split('/').slice(1, -1)[0]}`;
+					}
+
+					if (tab.treeDepth === 1 && urlLength > 3 && tabUrlLength === urlLength - 1) {
+						activeTabValue = `/${url.split('/').slice(1, -1).join('/')}`;
+					}
+
+					if (tab.treeDepth === 2 && urlLength > 4 && tabUrlLength === urlLength - 1) {
+						activeTabValue = `/${url.split('/').slice(1, -1).join('/')}`;
+					}
+				}
+			}
+		}
+	});
 
 	function removeTab(tabName: string) {
-		console.log('remove fn');
 		tabs.forEach((tab) => {
 			if (tab.name === tabName) {
 				tabs.splice(tabs.indexOf(tab), 1);
@@ -31,8 +63,6 @@
 			}
 		});
 	}
-
-	console.log(url);
 
 	function showClosingButton(tab: Tab) {
 		tab.closingState = '';
@@ -43,16 +73,12 @@
 		tab.closingState = 'hidden';
 		openedTabsStore.update(() => tabs);
 	}
-
 </script>
 
-<!--TODO: on open page, set value for tab to immediately trigger tab change-->
-
-<!--TODO: prevent duplicate tabs-->
-
 <div class="flex justify-between bg-muted">
-	<Tabs.Root class="w-fit h-fit pt-2" value={url}>
+	<Tabs.Root class="w-fit h-fit pt-2" value={activeTabValue}>
 		<Tabs.List>
+			<!-- Výchozí tab -->
 			<Tabs.Trigger
 				value="/"
 				on:click={() => goto("/")}
@@ -60,6 +86,7 @@
 				<Home class="w-4 h-4" />
 			</Tabs.Trigger>
 
+			<!-- Taby otevřené uživatelem -->
 			{#each tabs as tab}
 				<Tabs.Trigger
 					value={tab.url}
@@ -72,8 +99,9 @@
 						on:mouseleave={() => hideClosingButton(tab)}
 					>
 						{tab.name}
+						<!--TODO: add animation-->
 						<button on:click={() => removeTab(tab.name)} class="{tab.closingState}">
-							<X class="ml-1 text-red-600 w-4 h-4" />
+							<X class="ml-1 text-red-600 w-4 h-4"/>
 						</button>
 					</button>
 				</Tabs.Trigger>

@@ -19,7 +19,7 @@ export const allItems: Item[] = [
 	{
 		name: 'Sklad',
 		value: 'sklad',
-		href: '',
+		href: '/sklad',
 		open: false,
 		hide: false,
 		icon: Warehouse,
@@ -27,7 +27,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Hodinovka',
 				value: 'hodinovka',
-				href: '/hodinovka',
+				href: '/sklad/hodinovka',
 				open: false,
 				hide: false,
 				icon: null,
@@ -36,7 +36,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Příjem a výdej',
 				value: 'prijem-a-vydej',
-				href: '/prijem-a-vydej',
+				href: '/sklad/prijem-a-vydej',
 				open: false,
 				hide: false,
 				icon: null,
@@ -45,7 +45,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Stav skladu',
 				value: 'stav-skladu',
-				href: '/stav-skladu',
+				href: '/sklad/stav-skladu',
 				open: false,
 				hide: false,
 				icon: null,
@@ -54,51 +54,15 @@ export const allItems: Item[] = [
 			{
 				name: 'Zásilky',
 				value: 'zasilky',
-				href: '/zasilky',
+				href: '/sklad/zasilky',
 				open: false,
 				hide: false,
 				icon: null,
 				children: [
 					{
-						name: "zkouška",
+						name: "Zkouška",
 						value: "zkouska",
-						href: "/zasilky/zkouska",
-						open: false,
-						hide: false,
-						icon: null,
-						children: [],
-					},
-					{
-						name: "zkouška",
-						value: "zkouska",
-						href: "/zasilky/zkouska",
-						open: false,
-						hide: false,
-						icon: null,
-						children: [],
-					},
-					{
-						name: "zkouška",
-						value: "zkouska",
-						href: "/zasilky/zkouska",
-						open: false,
-						hide: false,
-						icon: null,
-						children: [],
-					},
-					{
-						name: "zkouška",
-						value: "zkouska",
-						href: "/zasilky/zkouska",
-						open: false,
-						hide: false,
-						icon: null,
-						children: [],
-					},
-					{
-						name: "zkouška",
-						value: "zkouska",
-						href: "/zasilky/zkouska",
+						href: "/sklad/zasilky/zkouska",
 						open: false,
 						hide: false,
 						icon: null,
@@ -111,7 +75,7 @@ export const allItems: Item[] = [
 	{
 		name: 'Výroba',
 		value: 'vyroba',
-		href: '',
+		href: '/vyroba',
 		open: false,
 		hide: false,
 		icon: Hammer,
@@ -119,7 +83,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Motivy',
 				value: 'motivy',
-				href: '/motivy',
+				href: '/vyroba/motivy',
 				open: false,
 				hide: false,
 				icon: null,
@@ -128,7 +92,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Raznice',
 				value: 'raznice',
-				href: '/raznice',
+				href: '/vyroba/raznice',
 				open: false,
 				hide: false,
 				icon: null,
@@ -136,7 +100,7 @@ export const allItems: Item[] = [
 					{
 						name: "test",
 						value: "test",
-						href: "/raznice/test",
+						href: "vyroba/raznice/test",
 						open: false,
 						hide: false,
 						icon: null,
@@ -147,7 +111,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Obálky',
 				value: 'obalky',
-				href: '/obalky',
+				href: '/vyroba/obalky',
 				open: false,
 				hide: false,
 				icon: null,
@@ -156,7 +120,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Texty',
 				value: 'texty',
-				href: '/texty',
+				href: '/vyroba/texty',
 				open: false,
 				hide: false,
 				icon: null,
@@ -167,7 +131,7 @@ export const allItems: Item[] = [
 	{
 		name: 'Prodej',
 		value: 'prodej',
-		href: '',
+		href: '/prodej',
 		open: false,
 		hide: false,
 		icon: HandCoins,
@@ -175,7 +139,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Zákazníci',
 				value: 'zakaznici',
-				href: '/zakaznici',
+				href: '/prodej/zakaznici',
 				open: false,
 				hide: false,
 				icon: null,
@@ -184,7 +148,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Zákazníci SK',
 				value: 'zakaznici-sk',
-				href: '/zakaznici-sk',
+				href: '/prodej/zakaznici-sk',
 				open: false,
 				hide: false,
 				icon: null,
@@ -193,7 +157,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Přehledy',
 				value: 'prehledy',
-				href: '/prehledy',
+				href: '/prodej/prehledy',
 				open: false,
 				hide: false,
 				icon: null,
@@ -202,7 +166,7 @@ export const allItems: Item[] = [
 			{
 				name: 'Analýza prodejů',
 				value: 'analyza-prodeju',
-				href: '/analyza-prodeju',
+				href: '/prodej/analyza-prodeju',
 				open: false,
 				hide: false,
 				icon: null,
@@ -237,7 +201,7 @@ export const favoriteItems: Item[] = [
 	{
 		name: 'Sklad',
 		value: 'sklad',
-		href: '/',
+		href: '/sklad',
 		open: false,
 		hide: false,
 		icon: Warehouse,
@@ -245,7 +209,7 @@ export const favoriteItems: Item[] = [
 			{
 				name: 'Hodinovka',
 				value: 'hodinovka',
-				href: '/hodinovka',
+				href: '/sklad/hodinovka',
 				open: false,
 				hide: false,
 				icon: null,
@@ -254,7 +218,7 @@ export const favoriteItems: Item[] = [
 			{
 				name: 'Příjem a výdej',
 				value: 'prijem-a-vydej',
-				href: '/',
+				href: '/sklad/prijem-a-vydej',
 				open: false,
 				hide: false,
 				icon: null,
@@ -263,44 +227,7 @@ export const favoriteItems: Item[] = [
 			{
 				name: 'Stav skladu',
 				value: 'stav-skladu',
-				href: '/sklad',
-				open: false,
-				hide: false,
-				icon: null,
-				children: [],
-			}
-		]
-	},
-	{
-		name: 'Produkty',
-		value: 'products',
-		href: '/',
-		open: false,
-		hide: false,
-		icon: ShoppingBasket,
-		children: [
-			{
-				name: 'test',
-				value: 'test',
-				href: '/',
-				open: false,
-				hide: false,
-				icon: null,
-				children: [],
-			},
-			{
-				name: 'Příjem a výdej',
-				value: 'prijem-a-vydej',
-				href: '/',
-				open: false,
-				hide: false,
-				icon: null,
-				children: [],
-			},
-			{
-				name: 'Stav skladu',
-				value: 'stav-skladu',
-				href: '/sklad',
+				href: '/sklad/stav-skladu',
 				open: false,
 				hide: false,
 				icon: null,

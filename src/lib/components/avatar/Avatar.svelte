@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { rowHeightStore } from '$lib/stores/store';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { rowHeightStore } from '$lib/stores/store';
 
 	let isCompact: string;
 	rowHeightStore.subscribe((data) => isCompact = data);
@@ -59,7 +59,7 @@
 
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>
-				<a href="/static" class="flex items-center">
+				<a href="/" class="flex items-center">
 					<LogOut class="w-4 h-4 mr-2" />
 					Odhlásit se
 				</a>

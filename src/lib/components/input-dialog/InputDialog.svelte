@@ -32,6 +32,8 @@
 	})
 </script>
 
+<!--TODO: finish input dialog - get params after submit and log them -->
+
 <Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Trigger class={buttonVariants({ variant: "outline" })}>
 		dialog

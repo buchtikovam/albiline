@@ -1,18 +1,14 @@
 <script lang="ts">
 	import Menu from 'lucide-svelte/icons/menu';
 	import Search from 'lucide-svelte/icons/search';
-	import { onMount } from 'svelte';
 	import deepcopy from 'deepcopy';
-	import {
-		allItems,
-		recentItems,
-		favoriteItems
-	} from '$lib/data/sidebar';
+	import { onMount } from 'svelte';
 	import type { Item, Tab } from '$lib/types/sidebar';
+	import { allItems, recentItems, favoriteItems } from '$lib/data/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
-	import { sidebarStateStore, openedTabsStore } from '$lib/stores/store';
+	import { sidebarStateStore, openedTabsStore, currentActiveTabStore } from '$lib/stores/store';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
@@ -23,10 +19,11 @@
 	let items: Item[] = allItems;
 	let filteredItems: Item[] = items;
 
-	// TODO: scrollable sidebar
 
-
+	// změna kontentu sidebaru na základě kategorií
+	// (později budou recent v session storage a favorite filtrované podle values z BE)
 	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
+		// TODO: recent - session storage, favorite - filter by values
 		if (category === 'all') {
 			items = allItems;
 			filteredItems = filterItems(
@@ -85,6 +82,8 @@
 		}
 	}
 
+
+	// otevírání sidebaru
 	sidebarStateStore.subscribe((data) => {
 		show = data;
 	});
@@ -97,13 +96,28 @@
 		}
 	}
 
+
+	// otevírání vyhledávání v dialogu
 	function toggleCommandFn() {
 		open = !open;
 	}
 
+
+	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
 	let searchTerm = '';
 
-	// let filteredItems: Item[] = items;
+	function search(searchTerm: string) {
+		if (searchTerm === '') {
+			filteredItems = items;
+			return;
+		}
+		// TODO(bug): after searching, accordions open in pairs - check after clearing
+
+		filteredItems = filterItems(
+			deepcopy(items),
+			searchTerm
+		);
+	}
 
 	function filterItems(items: Item[], searchTerm: string): Item[] {
 		return items.map((item: Item): Item => {
@@ -125,36 +139,26 @@
 		});
 	}
 
-	// TODO(bug): after searching, accordions open in pairs - check after clearing
 
-	function search(searchTerm: string) {
-		if (searchTerm === '') {
-			filteredItems = items;
-			return;
-		}
-
-		filteredItems = filterItems(
-			deepcopy(items),
-			searchTerm
-		);
-	}
-
+	// otevírání hlavních tabů po kliknutí na položku v sidebaru
 	let openedTabs: Tab[];
 
 	openedTabsStore.subscribe((data) => {
 		openedTabs = data;
-	})
+	});
 
 	function addToTabs(item: Tab): void {
-		// if (!openedTabs.includes(item)) {
-		// 	console.log("doesnt include");
-			openedTabsStore.update((data) => data.concat(item));
+		const containsObject = openedTabs.some(obj => obj.name === item.name);
 
-		// } else {
-			console.log(item);
-		// }
+		if (containsObject === false) {
+			openedTabsStore.update((data) => data.concat(item));
+		}
+
+		currentActiveTabStore.set(item.url);
 	}
 
+
+	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F
 	onMount(() => {
 			function handleKeydown(e: KeyboardEvent) {
 				if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
@@ -169,6 +173,7 @@
 </script>
 
 <div class="flex h-full max-h-screen flex-col border-r">
+	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if show === true}
 		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
 			<button
@@ -192,12 +197,16 @@
 				Oblíbené
 			</button>
 		</div>
-	{/if}
 
-	{#if show === true}
+		<!-- TODO: scrollable sidebar -->
+
 		<div class="flex-1 w-[320px] h-full p-4">
-			<Input class="h-fit" placeholder="Vyhledat..." bind:value={searchTerm}
-				   on:input={() => search(searchTerm)} />
+			<Input
+				class="h-fit"
+				placeholder="Vyhledat..."
+				bind:value={searchTerm}
+				on:input={() => search(searchTerm)}
+			/>
 
 			<Accordion.Root
 				class="h-full overflow-y-auto"
@@ -207,34 +216,57 @@
 				<nav class="flex flex-col py-4 gap-2 h-full ">
 					{#each filteredItems.filter((child) => !child.hide) as item}
 						<div class="flex flex-col gap-2 ">
+
+							<!-- accordiony první vrstvy (item má children položky) -->
 							{#if item.children.length > 0 }
 								<Accordion.Item value={item.value}>
 									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
-										<div
-											class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-										>
+										<div class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 											<svelte:component this={item.icon} />
-											<a href={item.href}>
+											<a
+												href={item.href}
+												on:click={() => addToTabs(
+													{
+														name: item.name,
+														url: item.href,
+														closingState: "hidden",
+														treeDepth: 0
+													}
+												)}
+											>
 												{item.name}
 											</a>
 										</div>
 									</Accordion.Trigger>
+
 									<Accordion.Content class="px-2 my-2">
-										<Accordion.Root multiple
-														value={searchTerm !== "" ? item.children.map((child) => child.value) : []}>
+										<!-- accordiony druhé vrstvy -->
+										<Accordion.Root
+											multiple
+											value={searchTerm !== "" ? item.children.map((child) => child.value) : []}
+										>
 											{#each item.children.filter((child) => !child.hide) as secondChild}
-												<!-- child with children elements -->
+												<!-- accordiony druhé vrstvy (child item má children položky) -->
 												{#if secondChild.children.length > 0}
 													<Accordion.Item value={secondChild.value}>
 														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
-															<div
-																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-															>
-																<a href={secondChild.href}>
+															<div class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																<a
+																	href={secondChild.href}
+																	on:click={() => addToTabs(
+																		{
+																			name: secondChild.name,
+																			url: secondChild.href,
+																			closingState: "hidden",
+																			treeDepth: 1
+																		}
+																	)}
+																>
 																	{secondChild.name}
 																</a>
 															</div>
 														</Accordion.Trigger>
+
 														<Accordion.Content>
 															<div class="flex flex-col px-2 py-1">
 																<Accordion.Root
@@ -248,7 +280,16 @@
 																		>
 																			<a
 																				href="{thirdChild.href}"
-																				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																				on:click={() => addToTabs(
+																					{
+																						name: thirdChild.name,
+																						url: thirdChild.href,
+																						closingState: "hidden",
+																						treeDepth: 2
+																					}
+																				)}
+																				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+																			>
 																				{thirdChild.name}
 																			</a>
 																		</Accordion.Item>
@@ -258,14 +299,21 @@
 														</Accordion.Content>
 													</Accordion.Item>
 												{:else}
-													<!-- child with no children -->
+													<!-- accordiony druhé vrstvy (child item nemá children položky) -->
 													<Accordion.Item
 														value={secondChild.value}
 														class="hover:bg-muted/50 rounded-md"
 													>
 														<a
 															href="{secondChild.href}"
-															on:click={() => addToTabs({name: secondChild.name, url: secondChild.href, closingState: "hidden"})}
+															on:click={() => addToTabs(
+																{
+																	name: secondChild.name,
+																	url: secondChild.href,
+																	closingState: "hidden",
+																	treeDepth: 1
+																}
+															)}
 															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
 														>
 															{secondChild.name}
@@ -277,9 +325,17 @@
 									</Accordion.Content>
 								</Accordion.Item>
 							{:else}
-								<!--	item with no child-->
+								<!-- accordiony první vrstvy (item nemá children položky) -->
 								<a
 									href={item.href}
+									on:click={() => addToTabs(
+										{
+											name: item.name,
+											url: item.href,
+											closingState: "hidden",
+											treeDepth: 0
+										}
+									)}
 									class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
 								>
 									<svelte:component this={item.icon} />
@@ -297,20 +353,22 @@
 							on:click={toggleShow}
 						>
 							<Menu class="h-5 w-5" />
-							<span class="sr-only">Toggle navigation menu</span>
 						</Button>
 					</div>
 				</nav>
 			</Accordion.Root>
-
 		</div>
+		<!-- konec otevřeného sidebaru-->
 	{:else}
+		<!-- zavřený sidebar (ikony s tooltipem a popoverem) -->
 		<div class="flex-1 w-[60px]">
 			<nav class="grid pt-4 gap-2 justify-center">
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
-						<button on:click={toggleCommandFn}
-								class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+						<button
+							on:click={toggleCommandFn}
+							class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
+						>
 							<Search />
 						</button>
 					</Tooltip.Trigger>
@@ -321,25 +379,57 @@
 
 
 				{#each items as item}
-					{#if item.children}
+					<!-- item s children položkami. Po najetí myši ukáže tooltip a po kliknutí popover se všemi children položkami -->
+					{#if item.children.length > 0}
 						<Tooltip.Root openDelay={100}>
 							<Tooltip.Trigger>
 
 								<Popover.Root>
 									<Popover.Trigger>
 										<div
-											class="flex text-sm font-medium  items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+											class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
 											<svelte:component this={item.icon} />
 										</div>
 									</Popover.Trigger>
 
-									<Popover.Content class="flex flex-col px-1 py-1 ml-12 w-fit text-sm">
+									<Popover.Content class="flex flex-col px-1 py-1 ml-12 -mt-10 text-sm w-fit ">
 										{#each item.children as child}
-											<a href={child.href} class="hover:bg-muted/50 rounded p-2">{child.name}</a>
+											<a
+												href={child.href}
+												class="hover:bg-muted/50 rounded px-2 py-1.5"
+												on:click={() => addToTabs(
+													{
+														name: child.name,
+														url: child.href,
+														closingState: "hidden",
+														treeDepth: 1
+													}
+												)}
+											>
+												{child.name}
+											</a>
+
+											{#if child.children.length > 0}
+												{#each child.children as scndChild}
+													<a
+														href={scndChild.href}
+														class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
+														on:click={() => addToTabs(
+															{
+																name: scndChild.name,
+																url: scndChild.href,
+																closingState: "hidden",
+																treeDepth: 2
+															}
+														)}
+													>
+														{scndChild.name}
+													</a>
+												{/each}
+											{/if}
 										{/each}
 									</Popover.Content>
 								</Popover.Root>
-
 							</Tooltip.Trigger>
 
 							<Tooltip.Content class="ml-10 mt-10">
@@ -347,12 +437,22 @@
 							</Tooltip.Content>
 						</Tooltip.Root>
 
-
+						<!-- item bez children položek. Po najetí myši ukáže tooltip -->
 					{:else }
 						<Tooltip.Root openDelay={250}>
 							<Tooltip.Trigger>
-								<a href={item.href}
-								   class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+								<a
+									href={item.href}
+									class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
+									on:click={() => addToTabs(
+										{
+											name: item.name,
+											url: item.href,
+											closingState: "hidden",
+											treeDepth: 0
+										}
+									)}
+								>
 									<svelte:component this={item.icon} />
 								</a>
 							</Tooltip.Trigger>
@@ -373,62 +473,51 @@
 				on:click={toggleShow}
 			>
 				<Menu class="h-5 w-5" />
-				<span class="sr-only">Toggle navigation menu</span>
 			</Button>
 		</div>
 	{/if}
 </div>
 
+<!-- hledání v sidebaru pomocí dialogu -->
 <Command.Dialog bind:open>
 	<Command.Input placeholder="Vyhledat..." />
-	<Command.List>
-		<Command.Empty>Nic nebylo nalezeno.</Command.Empty>
 
-		<div class="m-2">
-			{#each items as item}
-				{#if !item.children}
-					<Command.Item>
-						<a href={item.href} class="w-full" on:click={toggleCommandFn}>
+	<Command.List class="mt-2">
+		<Command.Empty class="-mt-2">
+			Nic nebylo nalezeno.
+		</Command.Empty>
+
+		{#each items as item}
+			{#if item.children.length > 0}
+				<Command.Separator class="my-2" />
+				<!-- items s children položkami -->
+				<Command.Group heading="{item.name}" class="my-2">
+					{#each item.children as child}
+						<Command.Item class="decoration-0">
+							<a href={child.href} on:click={toggleCommandFn}>
+								{child.name}
+							</a>
+						</Command.Item>
+
+						{#if child.children}
+							{#each child.children as secondChild}
+								<Command.Item>
+									<a href={secondChild.href} class="text-sm pl-4" on:click={toggleCommandFn}>
+										{secondChild.name}
+									</a>
+								</Command.Item>
+							{/each}
+						{/if}
+					{/each}
+				</Command.Group>
+			{:else}
+				<!-- items bez children položek -->
+				<Command.Group>
+					<Command.Item class="decoration-0">
+						<a href={item.href} on:click={toggleCommandFn} class="">
 							{item.name}
 						</a>
 					</Command.Item>
-				{/if}
-			{/each}
-		</div>
-
-		<Command.Separator />
-
-		{#each items as item}
-			{#if item.children}
-				<Command.Separator />
-
-				<Command.Group heading="{item.name}" class="my-2 ">
-					{#each item.children as child}
-						{#if !child.children}
-							<Command.Item>
-								<a href={child.href} class="" on:click={toggleCommandFn}>
-									{child.name}
-								</a>
-							</Command.Item>
-
-						{:else}
-							<Command.Item class="decoration-0">
-								<a href={child.href} class="" on:click={toggleCommandFn}>
-									{child.name}
-								</a>
-							</Command.Item>
-
-							{#if child.children}
-								{#each child.children as secondChild}
-									<Command.Item>
-										<a href={secondChild.href} class="text-sm pl-4" on:click={toggleCommandFn}>
-											{secondChild.name}
-										</a>
-									</Command.Item>
-								{/each}
-							{/if}
-						{/if}
-					{/each}
 				</Command.Group>
 			{/if}
 		{/each}

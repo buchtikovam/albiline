@@ -14,5 +14,6 @@ export type Item = {
 export type Tab = {
 	name: string;
 	url: string;
-	closingState: "hidden" | "";
+	closingState: string;
+	treeDepth: number;
 }

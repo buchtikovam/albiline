@@ -1,4 +1,5 @@
 import { persisted } from 'svelte-persisted-store';
+import { type Writable, writable } from 'svelte/store';
 
 export const ribbonStateStore = persisted('ribbonState', true);
 
@@ -15,6 +16,10 @@ export const openedTabsStore = persisted(
 		{
 			name: 'Průvodní list',
 			url: '/pruvodni-list',
-			closingState: "hidden"
+			closingState: "hidden",
+			treeDepth: 0
 		}
-	]);
+	]
+);
+
+export const currentActiveTabStore: Writable<string> = writable("");
