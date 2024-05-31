@@ -100,7 +100,7 @@ export const allItems: Item[] = [
 					{
 						name: "test",
 						value: "test",
-						href: "vyroba/raznice/test",
+						href: "/vyroba/raznice/test",
 						open: false,
 						hide: false,
 						icon: null,

@@ -48,6 +48,7 @@
 					}
 
 					if (tab.treeDepth === 2 && urlLength > 4 && tabUrlLength === urlLength - 1) {
+						console.log("case 2");
 						activeTabValue = `/${url.split('/').slice(1, -1).join('/')}`;
 					}
 				}

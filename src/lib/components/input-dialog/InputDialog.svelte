@@ -1,8 +1,6 @@
 <script lang="ts">
-	// on page load, display dialog with form, input fields will go to GET request to get desired data
 	import {
 		Button,
-		buttonVariants
 	} from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Label } from '$lib/components/ui/label';
@@ -12,33 +10,25 @@
 	let name: string;
 	let userName: string;
 	let dialogOpen: boolean = false;
+	export let objects;
 
-	// function dialogClose() {
-	// 	dialogOpen = false;
-	// }
+	function handleSubmit(event: Event) {
+		event.preventDefault();
+
+		objects = {
+			name: name,
+			userName: userName
+		};
+
+		dialogOpen = false;
+	}
 
 	onMount(() => {
-		dialogOpen = true
-
-		// document.addEventListener("submit", (e) => {
-		// 	// e.preventDefault();
-		// 	dialogOpen = false;
-		// 	console.log("closing");
-		// })
-
-		// get params
-
-		// fetch data
-	})
+		dialogOpen = true;
+	});
 </script>
 
-<!--TODO: finish input dialog - get params after submit and log them -->
-
 <Dialog.Root bind:open={dialogOpen}>
-	<Dialog.Trigger class={buttonVariants({ variant: "outline" })}>
-		dialog
-	</Dialog.Trigger>
-
 	<Dialog.Content class="w-120">
 		<Dialog.Header>
 			<Dialog.Title class="h-6">Test dialog</Dialog.Title>
@@ -46,7 +36,7 @@
 				Make changes to your profile here. Click save when you're done.
 			</Dialog.Description>
 		</Dialog.Header>
-		<form class="">
+		<form on:submit={handleSubmit} class="">
 			<div class="mb-4">
 				<Label for="name" class="text-right">
 					Name
@@ -70,7 +60,6 @@
 					class="focus-visible:ring-0"
 				/>
 			</div>
-
 			<Dialog.Footer>
 				<Button type="submit" class="w-full mt-5 bg-albi-500 text-background font-bolder">
 					Save changes

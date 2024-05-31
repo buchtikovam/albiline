@@ -111,12 +111,8 @@
 			filteredItems = items;
 			return;
 		}
-		// TODO(bug): after searching, accordions open in pairs - check after clearing
 
-		filteredItems = filterItems(
-			deepcopy(items),
-			searchTerm
-		);
+		filteredItems = filterItems(deepcopy(items), searchTerm);
 	}
 
 	function filterItems(items: Item[], searchTerm: string): Item[] {
@@ -211,12 +207,11 @@
 			<Accordion.Root
 				class="h-full overflow-y-auto"
 				multiple
-				value={searchTerm !== "" ? filteredItems.map((child) => child.value) : []}
+				value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.value) : []}
 			>
 				<nav class="flex flex-col py-4 gap-2 h-full ">
-					{#each filteredItems.filter((child) => !child.hide) as item}
-						<div class="flex flex-col gap-2 ">
-
+					{#each filteredItems as item}
+						<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2 "}>
 							<!-- accordiony první vrstvy (item má children položky) -->
 							{#if item.children.length > 0 }
 								<Accordion.Item value={item.value}>
@@ -243,7 +238,7 @@
 										<!-- accordiony druhé vrstvy -->
 										<Accordion.Root
 											multiple
-											value={searchTerm !== "" ? item.children.map((child) => child.value) : []}
+											value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.value) : []}
 										>
 											{#each item.children.filter((child) => !child.hide) as secondChild}
 												<!-- accordiony druhé vrstvy (child item má children položky) -->
@@ -271,7 +266,7 @@
 															<div class="flex flex-col px-2 py-1">
 																<Accordion.Root
 																	multiple
-																	value={searchTerm !== "" ? secondChild.children.map((child) => child.value) : []}
+																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
 																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
 																		<Accordion.Item
