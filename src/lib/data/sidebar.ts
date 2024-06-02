@@ -1,4 +1,3 @@
-import ShoppingBasket from 'lucide-svelte/icons/shopping-basket';
 import TableProperties from 'lucide-svelte/icons/table-properties';
 import Warehouse from 'lucide-svelte/icons/warehouse';
 import Hammer from 'lucide-svelte/icons/hammer';

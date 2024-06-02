@@ -168,10 +168,10 @@
 	);
 </script>
 
-<div class="flex h-full max-h-screen flex-col border-r">
+<div class="flex h-full flex-col border-r overflow-auto">
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if show === true}
-		<div class="w-full flex justify-center pt-3 px-4 gap-4 text-sm">
+		<div class="flex justify-center pt-3 px-4 gap-4 text-sm w-[320px]">
 			<button
 				class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
 				on:click={() => setCategory("all")}
@@ -194,22 +194,20 @@
 			</button>
 		</div>
 
-		<!-- TODO: scrollable sidebar -->
-
-		<div class="flex-1 w-[320px] h-full p-4">
+		<div class="flex-1 flex flex-col p-4">
 			<Input
-				class="h-fit"
+				class="mb-4"
 				placeholder="Vyhledat..."
 				bind:value={searchTerm}
 				on:input={() => search(searchTerm)}
 			/>
 
 			<Accordion.Root
-				class="h-full overflow-y-auto"
+				class="flex-1"
 				multiple
 				value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.value) : []}
 			>
-				<nav class="flex flex-col py-4 gap-2 h-full ">
+				<div class="gap-2 h-full overflow-auto">
 					{#each filteredItems as item}
 						<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2 "}>
 							<!-- accordiony první vrstvy (item má children položky) -->
@@ -339,19 +337,19 @@
 							{/if}
 						</div>
 					{/each}
-
-					<div class="mt-auto ml-auto pb-4">
-						<Button
-							variant="ghost"
-							size="icon"
-							class="hover:bg-muted/50"
-							on:click={toggleShow}
-						>
-							<Menu class="h-5 w-5" />
-						</Button>
-					</div>
-				</nav>
+				</div>
 			</Accordion.Root>
+
+			<div class="mt-auto ml-auto pt-4">
+				<Button
+					variant="ghost"
+					size="icon"
+					class="hover:bg-muted/50"
+					on:click={toggleShow}
+				>
+					<Menu class="h-5 w-5" />
+				</Button>
+			</div>
 		</div>
 		<!-- konec otevřeného sidebaru-->
 	{:else}
