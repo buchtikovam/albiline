@@ -1,12 +1,12 @@
 <script lang="ts">
 	import InputDialog from '$lib/components/input-dialog/InputDialog.svelte';
 
-	let objects: { name: string, userName: string };
+	let objects: { firstParam: string, scndParam: string };
 </script>
 
 <InputDialog bind:objects/>
 
 {#if objects !== undefined}
-	<p>{objects.name}</p>
-	<p>{objects.userName}</p>
+	<p>{objects.firstParam}</p>
+	<p>{objects.scndParam}</p>
 {/if}
