@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ribbonStateStore } from '$lib/stores/store';
+	import { ribbonStateStore } from '$lib/stores/ribbonStore';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	export let name: string = 'Item';

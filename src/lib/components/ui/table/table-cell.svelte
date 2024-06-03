@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLTdAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils.js";
-	import { rowHeightStore } from '$lib/stores/store';
+	import { rowHeightStore } from '$lib/stores/tableStore';
 
 	type $$Props = HTMLTdAttributes;
 

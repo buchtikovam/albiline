@@ -17,8 +17,7 @@
 	import { readable, get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { columnWidthStore } from '$lib/stores/store';
-	import { columnOrderStore } from '$lib/stores/store';
+	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';

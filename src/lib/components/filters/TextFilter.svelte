@@ -14,6 +14,9 @@
 	export let preFilteredValues;
 	export let values;
 
+	preFilteredValues = "";
+	values = "";
+
 	// TODO: add checkboxes with unique row values, to filter out data
 
 	let open = false;

@@ -4,84 +4,79 @@
 	import deepcopy from 'deepcopy';
 	import { onMount } from 'svelte';
 	import type { Item, Tab } from '$lib/types/sidebar';
-	import { allItems, recentItems, favoriteItems } from '$lib/data/sidebar';
+	import { allItems } from '$lib/data/sidebar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
-	import { sidebarStateStore, openedTabsStore, currentActiveTabStore } from '$lib/stores/store';
+	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
+	import {
+		sidebarStateStore,
+		recentSidebarStore,
+		favoriteSidebarStore,
+		activeCategoryStore
+	} from '$lib/stores/sidebarStore';
+	import { openedTabsStore, currentActiveTabStore } from '$lib/stores/tabStore';
+	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Command from '$lib/components/ui/command';
+	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
+	import ContextMenuContent from '$lib/components/sidebar/ContextMenuContent.svelte';
 
 	let open: boolean = false;
 	let show: boolean;
 	let items: Item[] = allItems;
 	let filteredItems: Item[] = items;
+	let searchTerm = '';
+
+	let openedTabs: Tab[];
+	openedTabsStore.subscribe(data => openedTabs = data);
+
+	let recentItemValues: string[] = [];
+	recentSidebarStore.subscribe(data => recentItemValues = data);
+
+	let favoriteItemValues: string[] = [];
+	favoriteSidebarStore.subscribe(data => {
+		favoriteItemValues = data;
+		// TODO: reactive content when deleting from favorites
+		// items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
+	});
 
 
 	// změna kontentu sidebaru na základě kategorií
-	// (později budou recent v session storage a favorite filtrované podle values z BE)
-	function setCategory(category: 'all' | 'recent' | 'favorite'): void {
-		// TODO: recent - session storage, favorite - filter by values
-		if (category === 'all') {
-			items = allItems;
-			filteredItems = filterItems(
-				deepcopy(items),
-				searchTerm
-			);
+	function filterItemsCategory(items: Item[], searchTerms: string[]): Item[] {
+		let results: Item[] = [];
 
-			let buttons = document.getElementsByClassName('button');
+		items.map((item: Item): Item => {
+			if (searchTerms.includes(item.value)) {
+				results.includes(item) ? [] : results.push(item);
+			}
 
-			Array.from(buttons).forEach((button) => {
-				button.classList.remove('border-b-2');
+			item.children.map((child: Item) => {
+				if (searchTerms.includes(child.value)) {
+					item.children = item.children.filter(child => searchTerms.includes(child.value));
+					results.includes(item) ? [] : results.push(item);
+				}
 			});
 
-			let activeButton = document.querySelector('.all');
-			if (activeButton) {
-				activeButton.classList.add('border-b-2');
-			}
-		}
+			item.children.forEach((filteredChild: Item) => {
+				filteredChild.children.map((scndChild) => {
+					if (searchTerms.includes(scndChild.value)) {
+						item.children = item.children.filter(child => child === filteredChild);
 
-		if (category === 'recent') {
-			items = recentItems;
-			filteredItems = filterItems(
-				deepcopy(items),
-				searchTerm
-			);
+						item.children.forEach((child: Item) => {
+							child.children = child.children.filter(child => searchTerms.includes(child.value));
+						});
 
-			let buttons = document.getElementsByClassName('button');
-
-			Array.from(buttons).forEach((button) => {
-				button.classList.remove('border-b-2');
+						results.includes(item) ? [] : results.push(item);
+					}
+				});
 			});
+		});
 
-			let activeButton = document.querySelector('.recent');
-			if (activeButton) {
-				activeButton.classList.add('border-b-2');
-			}
-		}
-
-		if (category === 'favorite') {
-			items = favoriteItems;
-			filteredItems = filterItems(
-				deepcopy(items),
-				searchTerm
-			);
-
-			let buttons = document.getElementsByClassName('button');
-
-			Array.from(buttons).forEach((button) => {
-				button.classList.remove('border-b-2');
-			});
-
-			let activeButton = document.querySelector('.favorite');
-			if (activeButton) {
-				activeButton.classList.add('border-b-2');
-			}
-		}
+		return results;
 	}
-
 
 	// otevírání sidebaru
 	sidebarStateStore.subscribe((data) => {
@@ -104,18 +99,17 @@
 
 
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
-	let searchTerm = '';
-
 	function search(searchTerm: string) {
 		if (searchTerm === '') {
 			filteredItems = items;
 			return;
 		}
 
-		filteredItems = filterItems(deepcopy(items), searchTerm);
+		filteredItems = filterItemsSearch(deepcopy(items), searchTerm);
+		console.log(filteredItems);
 	}
 
-	function filterItems(items: Item[], searchTerm: string): Item[] {
+	function filterItemsSearch(items: Item[], searchTerm: string): Item[] {
 		return items.map((item: Item): Item => {
 			item.open = false;
 			item.hide = true;
@@ -125,7 +119,8 @@
 				item.hide = false;
 			}
 
-			item.children = filterItems(item.children, searchTerm);
+			item.children = filterItemsSearch(item.children, searchTerm);
+
 			if (item.children.some((child) => child.hide === false)) {
 				item.open = true;
 				item.hide = false;
@@ -135,22 +130,53 @@
 		});
 	}
 
+	function setCategory(category: string) {
 
-	// otevírání hlavních tabů po kliknutí na položku v sidebaru
-	let openedTabs: Tab[];
+		if (category === 'all') {
+			items = allItems;
+			filteredItems = filterItemsSearch(
+				deepcopy(items),
+				searchTerm
+			);
 
-	openedTabsStore.subscribe((data) => {
-		openedTabs = data;
-	});
-
-	function addToTabs(item: Tab): void {
-		const containsObject = openedTabs.some(obj => obj.name === item.name);
-
-		if (containsObject === false) {
-			openedTabsStore.update((data) => data.concat(item));
+			buttonBorderSwitch('all');
 		}
 
-		currentActiveTabStore.set(item.url);
+		if (category === 'recent') {
+			items = filterItemsCategory(deepcopy(allItems), recentItemValues);
+			filteredItems = filterItemsSearch(items, searchTerm);
+
+			buttonBorderSwitch('recent');
+		}
+
+		if (category === 'favorite') {
+			items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
+			filteredItems = filterItemsSearch(items, searchTerm);
+
+			buttonBorderSwitch('favorite');
+		}
+	}
+
+	function handleTabClick(item: Item, treeDepth: number): void {
+		let tab: Tab = {
+			name: item.name,
+			url: item.href,
+			closingState: 'hidden',
+			treeDepth: treeDepth
+		};
+
+		const containsObject = openedTabs.some(obj => obj.name === tab.name);
+
+		if (containsObject === false) {
+			openedTabsStore.update((data) => data.concat(tab));
+		}
+
+		currentActiveTabStore.set(tab.url);
+
+		if (!recentItemValues.includes(item.value)) {
+			recentSidebarStore.update((data) => data.concat(item.value));
+			console.log(recentItemValues);
+		}
 	}
 
 
@@ -164,35 +190,51 @@
 			}
 
 			document.addEventListener('keydown', handleKeydown);
+
+		activeCategoryStore.subscribe((data) => {
+			if (data === null) {
+				data = "all";
+			}
+
+			if (data === 'all') {
+				items = allItems;
+				filteredItems = filterItemsSearch(
+					deepcopy(items),
+					searchTerm
+				);
+
+				buttonBorderSwitch('all');
+			}
+
+			if (data === 'recent') {
+				items = filterItemsCategory(deepcopy(allItems), recentItemValues);
+				filteredItems = filterItemsSearch(items, searchTerm);
+
+				buttonBorderSwitch('recent');
+			}
+
+			if (data === 'favorite') {
+				items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
+				filteredItems = filterItemsSearch(items, searchTerm);
+
+				buttonBorderSwitch('favorite');
+			}
+		})
 		}
 	);
 </script>
+
 
 <div class="flex h-full flex-col border-r overflow-auto">
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if show === true}
 		<div class="flex justify-center pt-3 px-4 gap-4 text-sm w-[320px]">
-			<button
-				class="button all border-b-albi-500 border-b-2 p-1 pb-0 rounded-t-md hover:bg-muted/50 "
-				on:click={() => setCategory("all")}
-			>
-				Všechny
-			</button>
-
-			<button
-				class="button recent border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
-				on:click={() => setCategory("recent")}
-			>
-				Nedávné
-			</button>
-
-			<button
-				class="button favorite border-b-albi-500 p-1 pb-0 rounded-t-md hover:bg-muted/50"
-				on:click={() => setCategory("favorite")}
-			>
-				Oblíbené
-			</button>
+			<CategoryButton buttonName="Všechny" category="all" />
+			<CategoryButton buttonName="Nedávné" category="recent" />
+			<CategoryButton buttonName="Oblíbené" category="favorite" />
 		</div>
+
+		<!--	TODO: make components to shorten code -->
 
 		<div class="flex-1 flex flex-col p-4">
 			<Input
@@ -212,128 +254,128 @@
 						<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2 "}>
 							<!-- accordiony první vrstvy (item má children položky) -->
 							{#if item.children.length > 0 }
-								<Accordion.Item value={item.value}>
-									<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
-										<div class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
-											<svelte:component this={item.icon} />
-											<a
-												href={item.href}
-												on:click={() => addToTabs(
-													{
-														name: item.name,
-														url: item.href,
-														closingState: "hidden",
-														treeDepth: 0
-													}
-												)}
-											>
-												{item.name}
-											</a>
-										</div>
-									</Accordion.Trigger>
+								<ContextMenu.Root>
 
-									<Accordion.Content class="px-2 my-2">
-										<!-- accordiony druhé vrstvy -->
-										<Accordion.Root
-											multiple
-											value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.value) : []}
-										>
-											{#each item.children.filter((child) => !child.hide) as secondChild}
-												<!-- accordiony druhé vrstvy (child item má children položky) -->
-												{#if secondChild.children.length > 0}
-													<Accordion.Item value={secondChild.value}>
-														<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
-															<div class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
-																<a
-																	href={secondChild.href}
-																	on:click={() => addToTabs(
-																		{
-																			name: secondChild.name,
-																			url: secondChild.href,
-																			closingState: "hidden",
-																			treeDepth: 1
-																		}
-																	)}
-																>
-																	{secondChild.name}
-																</a>
-															</div>
-														</Accordion.Trigger>
-
-														<Accordion.Content>
-															<div class="flex flex-col px-2 py-1">
-																<Accordion.Root
-																	multiple
-																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
-																>
-																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<Accordion.Item
-																			value={thirdChild.value}
-																			class="hover:bg-muted/50 rounded-md"
-																		>
-																			<a
-																				href="{thirdChild.href}"
-																				on:click={() => addToTabs(
-																					{
-																						name: thirdChild.name,
-																						url: thirdChild.href,
-																						closingState: "hidden",
-																						treeDepth: 2
-																					}
-																				)}
-																				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-																			>
-																				{thirdChild.name}
-																			</a>
-																		</Accordion.Item>
-																	{/each}
-																</Accordion.Root>
-															</div>
-														</Accordion.Content>
-													</Accordion.Item>
-												{:else}
-													<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-													<Accordion.Item
-														value={secondChild.value}
-														class="hover:bg-muted/50 rounded-md"
+									<Accordion.Item value={item.value}>
+										<ContextMenu.Trigger>
+											<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+												<div
+													class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+													<svelte:component this={item.icon} />
+													<a
+														href={item.href}
+														on:click={() => handleTabClick(item, 0)}
 													>
-														<a
-															href="{secondChild.href}"
-															on:click={() => addToTabs(
-																{
-																	name: secondChild.name,
-																	url: secondChild.href,
-																	closingState: "hidden",
-																	treeDepth: 1
-																}
-															)}
-															class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-														>
-															{secondChild.name}
-														</a>
-													</Accordion.Item>
-												{/if}
-											{/each}
-										</Accordion.Root>
-									</Accordion.Content>
-								</Accordion.Item>
+														{item.name}
+													</a>
+												</div>
+											</Accordion.Trigger>
+										</ContextMenu.Trigger>
+
+										<Accordion.Content class="px-2 ">
+											<!-- accordiony druhé vrstvy -->
+											<Accordion.Root
+												multiple
+												value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.value) : []}
+											>
+												{#each item.children.filter((child) => !child.hide) as secondChild}
+													<!-- accordiony druhé vrstvy (child item má children položky) -->
+													{#if secondChild.children.length > 0}
+														<ContextMenu.Root>
+															<Accordion.Item value={secondChild.value}>
+																<ContextMenu.Trigger>
+																	<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+																		<div
+																			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+																			<a
+																				href={secondChild.href}
+																				on:click={() => handleTabClick(secondChild, 1)}
+																			>
+																				{secondChild.name}
+																			</a>
+																		</div>
+																	</Accordion.Trigger>
+																</ContextMenu.Trigger>
+
+																<Accordion.Content>
+																	<div class="flex flex-col px-2">
+																		<!-- Accordiony třetí vrstvy -->
+																		<ContextMenu.Root>
+																			<Accordion.Root
+																			multiple
+																			value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
+																		>
+																				{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
+																					<ContextMenu.Trigger>
+																						<Accordion.Item
+																					value={thirdChild.value}
+																					class="hover:bg-muted/50 rounded-md"
+																				>
+																							<a
+																						href="{thirdChild.href}"
+																						on:click={() => handleTabClick(thirdChild, 2)}
+																						class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+																					>
+																								{thirdChild.name}
+																							</a>
+																						</Accordion.Item>
+																					</ContextMenu.Trigger>
+																					<ContextMenuContent itemValue={thirdChild.value}/>
+																				{/each}
+																		</Accordion.Root>
+																		</ContextMenu.Root>
+																	</div>
+																</Accordion.Content>
+															</Accordion.Item>
+
+															<ContextMenuContent itemValue={secondChild.value}/>
+														</ContextMenu.Root>
+													{:else}
+														<!-- accordiony druhé vrstvy (child item nemá children položky) -->
+														<ContextMenu.Root>
+															<ContextMenu.Trigger>
+																<Accordion.Item
+																	value={secondChild.value}
+																	class="hover:bg-muted/50 rounded-md"
+																>
+																	<a
+																		href="{secondChild.href}"
+																		on:click={() => handleTabClick(secondChild, 1)}
+																		class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+																	>
+																		{secondChild.name}
+																	</a>
+																</Accordion.Item>
+															</ContextMenu.Trigger>
+
+															<ContextMenuContent itemValue={secondChild.value}/>
+
+														</ContextMenu.Root>
+													{/if}
+												{/each}
+											</Accordion.Root>
+										</Accordion.Content>
+									</Accordion.Item>
+
+									<ContextMenuContent itemValue={item.value}/>
+								</ContextMenu.Root>
+
 							{:else}
 								<!-- accordiony první vrstvy (item nemá children položky) -->
-								<a
-									href={item.href}
-									on:click={() => addToTabs(
-										{
-											name: item.name,
-											url: item.href,
-											closingState: "hidden",
-											treeDepth: 0
-										}
-									)}
-									class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
-								>
-									<svelte:component this={item.icon} />
-									{item.name}
-								</a>
+								<ContextMenu.Root>
+									<ContextMenu.Trigger>
+										<a
+											href={item.href}
+											on:click={() => handleTabClick(item, 0)}
+											class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
+										>
+											<svelte:component this={item.icon} />
+											{item.name}
+										</a>
+									</ContextMenu.Trigger>
+
+									<ContextMenuContent itemValue={item.value}/>
+								</ContextMenu.Root>
 							{/if}
 						</div>
 					{/each}
@@ -370,7 +412,6 @@
 
 				<Separator />
 
-
 				{#each items as item}
 					<!-- item s children položkami. Po najetí myši ukáže tooltip a po kliknutí popover se všemi children položkami -->
 					{#if item.children.length > 0}
@@ -390,14 +431,7 @@
 											<a
 												href={child.href}
 												class="hover:bg-muted/50 rounded px-2 py-1.5"
-												on:click={() => addToTabs(
-													{
-														name: child.name,
-														url: child.href,
-														closingState: "hidden",
-														treeDepth: 1
-													}
-												)}
+												on:click={() => handleTabClick(child, 1)}
 											>
 												{child.name}
 											</a>
@@ -407,14 +441,7 @@
 													<a
 														href={scndChild.href}
 														class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
-														on:click={() => addToTabs(
-															{
-																name: scndChild.name,
-																url: scndChild.href,
-																closingState: "hidden",
-																treeDepth: 2
-															}
-														)}
+														on:click={() => handleTabClick(scndChild, 2)}
 													>
 														{scndChild.name}
 													</a>
@@ -437,14 +464,7 @@
 								<a
 									href={item.href}
 									class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
-									on:click={() => addToTabs(
-										{
-											name: item.name,
-											url: item.href,
-											closingState: "hidden",
-											treeDepth: 0
-										}
-									)}
+									on:click={() => handleTabClick(item, 0)}
 								>
 									<svelte:component this={item.icon} />
 								</a>

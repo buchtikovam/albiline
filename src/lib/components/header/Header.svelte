@@ -3,7 +3,7 @@
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import Home from 'lucide-svelte/icons/home';
-	import { openedTabsStore, currentActiveTabStore } from '$lib/stores/store';
+	import { openedTabsStore, currentActiveTabStore } from '$lib/stores/tabStore';
 	import { page } from '$app/stores';
 	import X from 'lucide-svelte/icons/x';
 	import type { Tab } from '$lib/types/sidebar';

@@ -21,7 +21,7 @@
 	import Save from 'lucide-svelte/icons/save';
 	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 	import { Separator } from '$lib/components/ui/separator';
-	import { ribbonStateStore } from '$lib/stores/store';
+	import { ribbonStateStore } from '$lib/stores/ribbonStore';
 	import RibbonSection from '$lib/components/ribbon/RibbonSection.svelte';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';

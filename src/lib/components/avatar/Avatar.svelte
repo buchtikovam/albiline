@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { rowHeightStore } from '$lib/stores/store';
+	import { rowHeightStore } from '$lib/stores/tableStore';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
