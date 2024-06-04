@@ -19,6 +19,8 @@
 
 	// TODO: add checkboxes with unique row values, to filter out data
 
+	// TODO: fix editing
+
 	let open = false;
 	let value = '';
 

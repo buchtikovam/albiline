@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import Heart from 'lucide-svelte/icons/heart';
-	import { favoriteSidebarStore, activeCategoryStore } from '$lib/stores/sidebarStore';
+	import { favoriteItemsStore, activeCategoryStore } from '$lib/stores/sidebarStore';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 
 	export let itemValue: string;
@@ -11,11 +11,11 @@
 	activeCategoryStore.subscribe((data) => category = data);
 
 	function handleAdd() {
-		favoriteSidebarStore.update(data => data.concat(itemValue));
+		favoriteItemsStore.update(data => data.concat(itemValue));
 	}
 
 	function handleRemove() {
-		favoriteSidebarStore.update(data => data.filter((item) => item.indexOf(itemValue) === -1));
+		favoriteItemsStore.update(data => data.filter((item) => item.indexOf(itemValue) === -1));
 	}
 </script>
 

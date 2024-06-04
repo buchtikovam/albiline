@@ -12,6 +12,10 @@
 		inputElement?.focus();
 	}
 
+	// TODO: error
+
+	// TODO: border isn't right ?
+
 	const handleSubmit = () => {
 		isEditing = false;
 		if (row.isData()) {

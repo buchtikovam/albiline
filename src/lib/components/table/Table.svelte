@@ -19,7 +19,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
-	import TextFilter from '$lib/components/filters/TextFilter.svelte';
+	import TextFilter from '$lib/components/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import { cellWidths } from '$lib/constants/cellWidths';
 	import * as Table from '$lib/components/ui/table';

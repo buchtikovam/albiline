@@ -1,21 +1,12 @@
 <script lang="ts">
 	import InputDialogDate from '$lib/components/input-dialog/InputDialogDate.svelte';
-	// import { Toaster } from "$lib/components/ui/sonner";
+	import { onMount } from 'svelte';
 
-	import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
+	let openDialog: boolean;
 
-	let dates: { startDate: DateValue, endDate: DateValue };
-
-	const df = new DateFormatter('cz', {
-		dateStyle: 'long'
-	});
+	onMount(() => {
+		openDialog = true;
+	})
 </script>
 
-<InputDialogDate bind:dates/>
-<!--<Toaster />-->
-
-
-{#if dates !== undefined}
-	<p>{df.format(dates.startDate.toDate(getLocalTimeZone()))}</p>
-	<p>{df.format(dates.endDate.toDate(getLocalTimeZone()))}</p>
-{/if}
+<InputDialogDate open={openDialog}/>

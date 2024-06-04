@@ -1,28 +1,27 @@
 <script lang="ts">
-	import Menu from 'lucide-svelte/icons/menu';
 	import Search from 'lucide-svelte/icons/search';
 	import deepcopy from 'deepcopy';
 	import { onMount } from 'svelte';
-	import type { Item, Tab } from '$lib/types/sidebar';
+	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
+	import type { Item } from '$lib/types/sidebar';
 	import { allItems } from '$lib/data/sidebar';
-	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
-	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
+	import { handleTabClick } from '$lib/utils/handleTabClick';
 	import {
 		sidebarStateStore,
-		recentSidebarStore,
-		favoriteSidebarStore,
+		recentItemsStore,
+		favoriteItemsStore,
 		activeCategoryStore
 	} from '$lib/stores/sidebarStore';
-	import { openedTabsStore, currentActiveTabStore } from '$lib/stores/tabStore';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
+	import ContextMenuContent from '$lib/components/sidebar/ContextMenuContent.svelte';
+	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';
+	import SidebarToggleButton from '$lib/components/sidebar/SidebarToggleButton.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
-	import * as Command from '$lib/components/ui/command';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
-	import ContextMenuContent from '$lib/components/sidebar/ContextMenuContent.svelte';
 
 	let open: boolean = false;
 	let show: boolean;
@@ -30,17 +29,21 @@
 	let filteredItems: Item[] = items;
 	let searchTerm = '';
 
-	let openedTabs: Tab[];
-	openedTabsStore.subscribe(data => openedTabs = data);
 
 	let recentItemValues: string[] = [];
-	recentSidebarStore.subscribe(data => recentItemValues = data);
+	recentItemsStore.subscribe(data => recentItemValues = data);
 
 	let favoriteItemValues: string[] = [];
-	favoriteSidebarStore.subscribe(data => {
+
+	favoriteItemsStore.subscribe(data => {
+		// znovu načtění itemů po odebrání položky z favorites
+		if (favoriteItemValues.length > data.length) {
+			favoriteItemValues = data;
+			items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
+			filteredItems = filterItemsSearch(items, searchTerm);
+		}
+
 		favoriteItemValues = data;
-		// TODO: reactive content when deleting from favorites
-		// items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
 	});
 
 
@@ -48,7 +51,7 @@
 	function filterItemsCategory(items: Item[], searchTerms: string[]): Item[] {
 		let results: Item[] = [];
 
-		items.map((item: Item): Item => {
+		items.map((item: Item) => {
 			if (searchTerms.includes(item.value)) {
 				results.includes(item) ? [] : results.push(item);
 			}
@@ -78,22 +81,15 @@
 		return results;
 	}
 
+
 	// otevírání sidebaru
 	sidebarStateStore.subscribe((data) => {
 		show = data;
 	});
 
-	function toggleShow() {
-		if (show === true) {
-			sidebarStateStore.update(() => false);
-		} else {
-			sidebarStateStore.update(() => true);
-		}
-	}
-
 
 	// otevírání vyhledávání v dialogu
-	function toggleCommandFn() {
+	function toggleCommand() {
 		open = !open;
 	}
 
@@ -106,7 +102,6 @@
 		}
 
 		filteredItems = filterItemsSearch(deepcopy(items), searchTerm);
-		console.log(filteredItems);
 	}
 
 	function filterItemsSearch(items: Item[], searchTerm: string): Item[] {
@@ -130,55 +125,6 @@
 		});
 	}
 
-	function setCategory(category: string) {
-
-		if (category === 'all') {
-			items = allItems;
-			filteredItems = filterItemsSearch(
-				deepcopy(items),
-				searchTerm
-			);
-
-			buttonBorderSwitch('all');
-		}
-
-		if (category === 'recent') {
-			items = filterItemsCategory(deepcopy(allItems), recentItemValues);
-			filteredItems = filterItemsSearch(items, searchTerm);
-
-			buttonBorderSwitch('recent');
-		}
-
-		if (category === 'favorite') {
-			items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
-			filteredItems = filterItemsSearch(items, searchTerm);
-
-			buttonBorderSwitch('favorite');
-		}
-	}
-
-	function handleTabClick(item: Item, treeDepth: number): void {
-		let tab: Tab = {
-			name: item.name,
-			url: item.href,
-			closingState: 'hidden',
-			treeDepth: treeDepth
-		};
-
-		const containsObject = openedTabs.some(obj => obj.name === tab.name);
-
-		if (containsObject === false) {
-			openedTabsStore.update((data) => data.concat(tab));
-		}
-
-		currentActiveTabStore.set(tab.url);
-
-		if (!recentItemValues.includes(item.value)) {
-			recentSidebarStore.update((data) => data.concat(item.value));
-			console.log(recentItemValues);
-		}
-	}
-
 
 	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F
 	onMount(() => {
@@ -191,35 +137,37 @@
 
 			document.addEventListener('keydown', handleKeydown);
 
-		activeCategoryStore.subscribe((data) => {
-			if (data === null) {
-				data = "all";
-			}
+			activeCategoryStore.subscribe((data) => {
+				if (data === null) {
+					data = 'all';
+				}
 
-			if (data === 'all') {
-				items = allItems;
-				filteredItems = filterItemsSearch(
-					deepcopy(items),
-					searchTerm
-				);
+				if (data === 'all') {
+					items = allItems;
+					filteredItems = filterItemsSearch(deepcopy(items), searchTerm);
+					buttonBorderSwitch();
+				}
 
-				buttonBorderSwitch('all');
-			}
+				if (data === 'recent') {
+					items = filterItemsCategory(deepcopy(allItems), recentItemValues);
+					filteredItems = filterItemsSearch(items, searchTerm);
+					buttonBorderSwitch();
+				}
 
-			if (data === 'recent') {
-				items = filterItemsCategory(deepcopy(allItems), recentItemValues);
-				filteredItems = filterItemsSearch(items, searchTerm);
+				if (data === 'favorite') {
+					items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
+					filteredItems = filterItemsSearch(items, searchTerm);
+					buttonBorderSwitch();
+				}
+			});
 
-				buttonBorderSwitch('recent');
-			}
-
-			if (data === 'favorite') {
-				items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
-				filteredItems = filterItemsSearch(items, searchTerm);
-
-				buttonBorderSwitch('favorite');
-			}
-		})
+			sidebarStateStore.subscribe((data) => {
+				if (data) {
+					setTimeout(() => {
+						buttonBorderSwitch();
+					}, 0);
+				}
+			});
 		}
 	);
 </script>
@@ -233,8 +181,6 @@
 			<CategoryButton buttonName="Nedávné" category="recent" />
 			<CategoryButton buttonName="Oblíbené" category="favorite" />
 		</div>
-
-		<!--	TODO: make components to shorten code -->
 
 		<div class="flex-1 flex flex-col p-4">
 			<Input
@@ -251,7 +197,7 @@
 			>
 				<div class="gap-2 h-full overflow-auto">
 					{#each filteredItems as item}
-						<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2 "}>
+						<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2"}>
 							<!-- accordiony první vrstvy (item má children položky) -->
 							{#if item.children.length > 0 }
 								<ContextMenu.Root>
@@ -302,33 +248,33 @@
 																		<!-- Accordiony třetí vrstvy -->
 																		<ContextMenu.Root>
 																			<Accordion.Root
-																			multiple
-																			value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
-																		>
+																				multiple
+																				value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
+																			>
 																				{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
 																					<ContextMenu.Trigger>
 																						<Accordion.Item
-																					value={thirdChild.value}
-																					class="hover:bg-muted/50 rounded-md"
-																				>
+																							value={thirdChild.value}
+																							class="hover:bg-muted/50 rounded-md"
+																						>
 																							<a
-																						href="{thirdChild.href}"
-																						on:click={() => handleTabClick(thirdChild, 2)}
-																						class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-																					>
+																								href="{thirdChild.href}"
+																								on:click={() => handleTabClick(thirdChild, 2)}
+																								class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+																							>
 																								{thirdChild.name}
 																							</a>
 																						</Accordion.Item>
 																					</ContextMenu.Trigger>
-																					<ContextMenuContent itemValue={thirdChild.value}/>
+																					<ContextMenuContent itemValue={thirdChild.value} />
 																				{/each}
-																		</Accordion.Root>
+																			</Accordion.Root>
 																		</ContextMenu.Root>
 																	</div>
 																</Accordion.Content>
 															</Accordion.Item>
 
-															<ContextMenuContent itemValue={secondChild.value}/>
+															<ContextMenuContent itemValue={secondChild.value} />
 														</ContextMenu.Root>
 													{:else}
 														<!-- accordiony druhé vrstvy (child item nemá children položky) -->
@@ -348,8 +294,7 @@
 																</Accordion.Item>
 															</ContextMenu.Trigger>
 
-															<ContextMenuContent itemValue={secondChild.value}/>
-
+															<ContextMenuContent itemValue={secondChild.value} />
 														</ContextMenu.Root>
 													{/if}
 												{/each}
@@ -357,7 +302,7 @@
 										</Accordion.Content>
 									</Accordion.Item>
 
-									<ContextMenuContent itemValue={item.value}/>
+									<ContextMenuContent itemValue={item.value} />
 								</ContextMenu.Root>
 
 							{:else}
@@ -374,7 +319,7 @@
 										</a>
 									</ContextMenu.Trigger>
 
-									<ContextMenuContent itemValue={item.value}/>
+									<ContextMenuContent itemValue={item.value} />
 								</ContextMenu.Root>
 							{/if}
 						</div>
@@ -383,14 +328,7 @@
 			</Accordion.Root>
 
 			<div class="mt-auto ml-auto pt-4">
-				<Button
-					variant="ghost"
-					size="icon"
-					class="hover:bg-muted/50"
-					on:click={toggleShow}
-				>
-					<Menu class="h-5 w-5" />
-				</Button>
+				<SidebarToggleButton bind:show />
 			</div>
 		</div>
 		<!-- konec otevřeného sidebaru-->
@@ -401,7 +339,7 @@
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
 						<button
-							on:click={toggleCommandFn}
+							on:click={toggleCommand}
 							class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
 						>
 							<Search />
@@ -479,60 +417,10 @@
 			</nav>
 		</div>
 		<div class="flex justify-center pb-2">
-			<Button
-				variant="ghost"
-				size="icon"
-				class="hover:bg-muted/50"
-				on:click={toggleShow}
-			>
-				<Menu class="h-5 w-5" />
-			</Button>
+			<SidebarToggleButton bind:show />
 		</div>
 	{/if}
 </div>
 
 <!-- hledání v sidebaru pomocí dialogu -->
-<Command.Dialog bind:open>
-	<Command.Input placeholder="Vyhledat..." />
-
-	<Command.List class="mt-2">
-		<Command.Empty class="-mt-2">
-			Nic nebylo nalezeno.
-		</Command.Empty>
-
-		{#each items as item}
-			{#if item.children.length > 0}
-				<Command.Separator class="my-2" />
-				<!-- items s children položkami -->
-				<Command.Group heading="{item.name}" class="my-2">
-					{#each item.children as child}
-						<Command.Item class="decoration-0">
-							<a href={child.href} on:click={toggleCommandFn}>
-								{child.name}
-							</a>
-						</Command.Item>
-
-						{#if child.children}
-							{#each child.children as secondChild}
-								<Command.Item>
-									<a href={secondChild.href} class="text-sm pl-4" on:click={toggleCommandFn}>
-										{secondChild.name}
-									</a>
-								</Command.Item>
-							{/each}
-						{/if}
-					{/each}
-				</Command.Group>
-			{:else}
-				<!-- items bez children položek -->
-				<Command.Group>
-					<Command.Item class="decoration-0">
-						<a href={item.href} on:click={toggleCommandFn} class="">
-							{item.name}
-						</a>
-					</Command.Item>
-				</Command.Group>
-			{/if}
-		{/each}
-	</Command.List>
-</Command.Dialog>
+<SidebarCommand items={allItems} bind:open />
