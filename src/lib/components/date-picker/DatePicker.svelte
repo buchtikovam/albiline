@@ -6,22 +6,18 @@
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
 	import type { DateValue } from '@internationalized/date';
 
-	function arrangeSegments(segments) {
-		let temp = segments[0];
-		segments[0] = segments[2];
-		segments[2] = temp;
-		return '';
-	}
-
-	let value: DateValue | undefined = undefined;
-	// console.log(value);
-	// TODO: pass value to parent (+page.svelte)
-
+	export let value: DateValue | undefined = undefined;
 
 	export let name;
 </script>
 
-<DatePicker.Root weekdayFormat="short" fixedWeeks={true} weekStartsOn={1} bind:value >
+<DatePicker.Root
+	weekdayFormat="short"
+	fixedWeeks={true}
+	weekStartsOn={1}
+	bind:value
+	locale="cz"
+>
 	<div class="flex w-full max-w-[232px] flex-col gap-0.5">
 		<DatePicker.Label class="block select-none text-sm font-medium">
 			{name}
@@ -32,12 +28,10 @@
 			class="flex h-input w-full max-w-[232px] select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground "
 			on:input={() => console.log(value)}
 		>
-			{arrangeSegments(segments)}
-
 			{#each segments as { part, value }}
 				<div class="inline-block select-none">
 					{#if part === "literal"}
-						<DatePicker.Segment {part} class="p-0.5">
+						<DatePicker.Segment {part} class="">
 							{value}
 						</DatePicker.Segment>
 					{:else}
@@ -45,7 +39,7 @@
 							{part}
 							class="p-1 focus:outline-none focus-visible:bg-muted rounded"
 						>
-							{value}
+							{value === "yyyy" ? "rrrr" : value}
 						</DatePicker.Segment>
 					{/if}
 				</div>
@@ -64,30 +58,28 @@
 			class="z-50"
 		>
 			<DatePicker.Calendar
-				class="rounded-[15px] border border-dark-10 bg-background-alt p-[22px] shadow-popover"
+				class="rounded-lg border bg-background p-4"
 				let:months
 				let:weekdays
 			>
 				<DatePicker.Header class="flex items-center justify-between">
 					<DatePicker.PrevButton
-						class="inline-flex size-10 items-center justify-center rounded-9px bg-background-alt transition-all hover:bg-muted active:scale-98">
-						<ChevronLeft />
+						class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">
+						<ChevronLeft class="mx-auto" />
 					</DatePicker.PrevButton>
 
-					<DatePicker.Heading class="text-[15px] font-medium" />
+					<DatePicker.Heading class="font-medium" />
 
 					<DatePicker.NextButton
-						class="inline-flex size-10 items-center justify-center rounded-9px bg-background-alt transition-all hover:bg-muted active:scale-98">
-						<ChevronRight />
+						class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">
+						<ChevronRight class="mx-auto"/>
 					</DatePicker.NextButton>
 				</DatePicker.Header>
 
-				<div
-					class="flex flex-col space-y-4 pt-4 sm:flex-row sm:space-x-4 sm:space-y-0"
-				>
+				<div class="pt-4">
 					{#each months as month}
 						<DatePicker.Grid
-							class="w-full border-collapse select-none space-y-1"
+							class="w-full select-none"
 						>
 							<DatePicker.GridHead>
 								<DatePicker.GridRow class="mb-1 flex w-full justify-between">
@@ -100,6 +92,7 @@
 									{/each}
 								</DatePicker.GridRow>
 							</DatePicker.GridHead>
+
 							<DatePicker.GridBody>
 								{#each month.weeks as weekDates}
 									<DatePicker.GridRow class="flex w-full">
@@ -111,11 +104,8 @@
 												<DatePicker.Day
 													{date}
 													month={month.value}
-													class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
+													class="inline-flex size-10 items-center justify-center rounded-md border border-transparent bg-transparent text-sm hover:bg-muted data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-albi-500 data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
 												>
-													<div
-														class="absolute top-[5px] hidden size-1 rounded-full bg-foreground transition-all group-data-[today]:block group-data-[selected]:bg-background"
-													/>
 													{date.day}
 												</DatePicker.Day>
 											</DatePicker.Cell>

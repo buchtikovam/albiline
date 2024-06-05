@@ -14,20 +14,29 @@
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
-	import { readable, get } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
+	import { columnWidthStore, columnOrderStore, tableData } from '$lib/stores/tableStore';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import { cellWidths } from '$lib/constants/cellWidths';
 	import * as Table from '$lib/components/ui/table';
 	import type { Column } from '$lib/types/table';
+	// import { tableData } from '$lib/stores/tableStore';
 
 	export let data;
+	const columnData = writable(data.columnData);
 
-	const tableData = readable(data.columnData);
+
+
+	tableData.subscribe((data) => {
+
+
+	})
+
+	let tempData = data.columnData;
 
 	// editable cell
 	const EditableCellLabel = ({ column, row, value }) =>
@@ -35,23 +44,20 @@
 			row,
 			column,
 			value,
+			tempData,
 			onUpdateValue: updateData
 		});
 
-	const updateData = (rowDataId: unknown, columnId: string, newValue: string | number) => {
-		if (typeof newValue === 'string') {
-			console.log('rowDataId', rowDataId);
-			console.log('columnId', columnId);
+	const updateData = (newData) => {
+		console.log("from table data", newData);
 
-			newValue = parseInt(newValue);
-		}
+		columnData.set(newData)
 
-		$tableData = $tableData;
-		return;
+		// 	TODO: save data
 	};
 
 
-	const table = createTable(tableData, {
+	const table = createTable(columnData, {
 		sort: addSortBy(),
 		filter: addTableFilter({
 			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
@@ -80,11 +86,12 @@
 			onResizeEnd: () => {
 				const { columnWidths } = pluginStates.resize;
 				columnWidths.subscribe((data) => {
-					columnWidthStore.set(data);
+						columnWidthStore.set(data);
 				});
 			}
 		})
 	});
+
 
 	const createdColumns = [];
 	const tableColumns = table.createColumns(createdColumns);
@@ -93,7 +100,7 @@
 	columnWidthStore.subscribe((colWidthData) => {
 		data.columnInfo.map((column: Column) => {
 			let initialWidth;
-			if (colWidthData !== null) {
+			if (colWidthData && Object.keys(colWidthData).length > 0) {
 				initialWidth = colWidthData[column.accessor];
 			} else {
 				initialWidth = cellWidths.get(column.size);
@@ -157,7 +164,7 @@
 	} = table.createViewModel(tableColumns);
 
 	function resetColumns() {
-		columnWidthStore.set(null);
+		columnWidthStore.set({ });
 	}
 
 	// checkbox plugin
@@ -171,36 +178,43 @@
 	let hovering: number | null;
 	let start: number;
 
-	const drag = (event, index) => {
-		event.dataTransfer.effectAllowed = 'copy';
-		event.dataTransfer.dropEffect = 'copy';
-		event.dataTransfer.setData('text/plain', '');
-		start = index;
-	};
-
-	const drop = (event, target) => {
-		event.dataTransfer.dropEffect = 'copy';
-
-		const { columnIdOrder } = pluginStates.colOrder;
-		let columnOrderData: string[];
-
-		columnIdOrder.subscribe((data) => {
-			columnOrderData = data;
-		});
-
-		if (columnOrderData) {
-			if (start < target) {
-				columnOrderData.splice(target + 1, 0, columnOrderData[start]);
-				columnOrderData.splice(start, 1);
-			} else {
-				columnOrderData.splice(target, 0, columnOrderData[start]);
-				columnOrderData.splice(start + 1, 1);
-			}
-			hovering = null;
+	const drag = (event: DragEvent, index: number) => {
+		if (event.dataTransfer) {
+			event.dataTransfer.effectAllowed = 'copy';
+			event.dataTransfer.dropEffect = 'copy';
+			event.dataTransfer.setData('text/plain', '');
+			start = index;
 		}
-
-		columnIdOrder.update(() => columnOrderData);
 	};
+
+	const drop = (event: DragEvent, target: number | null) => {
+		if (event.dataTransfer && target !== null) {
+			event.dataTransfer.dropEffect = 'copy';
+
+			const { columnIdOrder } = pluginStates.colOrder;
+			let columnOrderData: string[];
+
+			columnIdOrder.subscribe((data) => {
+				columnOrderData = data;
+			});
+
+			setTimeout(() => {
+				if (columnOrderData) {
+					if (start < target) {
+						columnOrderData.splice(target + 1, 0, columnOrderData[start]);
+						columnOrderData.splice(start, 1);
+					} else {
+						columnOrderData.splice(target, 0, columnOrderData[start]);
+						columnOrderData.splice(start + 1, 1);
+					}
+					hovering = null;
+				}
+			}, 0)
+
+			columnIdOrder.update(() => columnOrderData);
+		}
+	};
+
 
 	function setHovering(index: number) {
 		hovering = index;
@@ -212,7 +226,7 @@
 
 	let columnStore = get(columnOrderStore);
 
-	if (columnStore !== null) {
+	if (columnStore.length > 0) {
 		columnIdOrder.update(() => columnStore);
 	}
 
@@ -290,7 +304,7 @@
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
 								<Table.Cell {...attrs}>
-									<div class="line-clamp-1 h-5 flex items-center">
+									<div class="line-clamp-1 h-6 flex items-center">
 										<Render of={cell.render()} />
 									</div>
 								</Table.Cell>

@@ -26,6 +26,7 @@
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
+	import SaveButton from '$lib/components/ribbon/ribbon-items/SaveButton.svelte';
 
 	let isOpen: boolean;
 
@@ -88,9 +89,7 @@
 	<Separator orientation="vertical" />
 
 	<RibbonSection>
-		<RibbonItem name="Uložit">
-			<Save class="h-4 w-4" />
-		</RibbonItem>
+		<SaveButton/>
 		<RibbonItem name="Načíst">
 			<RefreshCcw class="h-4 w-4" />
 		</RibbonItem>

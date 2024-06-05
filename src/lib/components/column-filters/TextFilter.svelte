@@ -19,7 +19,7 @@
 
 	// TODO: add checkboxes with unique row values, to filter out data
 
-	// TODO: fix editing
+	// TODO: think functionality of filter switches
 
 	let open = false;
 	let value = '';

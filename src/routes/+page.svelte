@@ -2,6 +2,4 @@
 	<h1 class="mb-2 text-xl font-bold text-albi-500 dark:text-albi-500">
 		// landing page
 	</h1>
-	<p class="text-2xl font-bold text-albi-800 dark:text-albi-100">
-	</p>
 </div>

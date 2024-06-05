@@ -2,6 +2,7 @@
 	export let row;
 	export let column;
 	export let value: unknown;
+	export let tempData;
 	export let onUpdateValue;
 
 	let isEditing = false;
@@ -12,14 +13,18 @@
 		inputElement?.focus();
 	}
 
-	// TODO: error
+	const handleSubmit = (event) => {
+		event.preventDefault();
 
-	// TODO: border isn't right ?
+		console.log(tempData[row.id]);
+		tempData[row.id][column.id] = value;
 
-	const handleSubmit = () => {
+		console.log(tempData[row.id]);
+
 		isEditing = false;
+
 		if (row.isData()) {
-			onUpdateValue(row.dataId, column.id, value);
+			onUpdateValue(tempData);
 		}
 	};
 </script>
@@ -30,12 +35,12 @@
       {value}
     </span>
 	{:else}
-		<form on:submit|preventDefault={handleSubmit} on:focusout={handleSubmit} class="rounded-md p-1 w-full">
+		<form on:submit|preventDefault={handleSubmit} on:focusout={(e) => handleSubmit(e)} class="p-1 w-full">
 			<input
 				bind:this={inputElement}
 				type="text"
 				bind:value
-				class="rounded-md w-full px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" />
+				class="rounded w-full px-1 outline-none focus:border focus:border-albi-500" />
 		</form>
 	{/if}
 </div>
