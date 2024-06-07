@@ -8,6 +8,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { handleTabClick } from '$lib/utils/handleTabClick';
+	import { get } from 'svelte/store'
 	import {
 		sidebarStateStore,
 		recentItemsStore,
@@ -25,8 +26,7 @@
 
 	let open: boolean = false;
 	let show: boolean;
-	let items: Item[] = allItems;
-	let filteredItems: Item[] = items;
+	let filteredItems: Item[] = deepcopy(allItems);
 	let searchTerm = '';
 
 
@@ -34,13 +34,13 @@
 	recentItemsStore.subscribe(data => recentItemValues = data);
 
 	let favoriteItemValues: string[] = [];
-
 	favoriteItemsStore.subscribe(data => {
 		// znovu načtění itemů po odebrání položky z favorites
 		if (favoriteItemValues.length > data.length) {
-			favoriteItemValues = data;
-			items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
-			filteredItems = filterItemsSearch(items, searchTerm);
+			filteredItems = deepcopy(filterItemsSearch(
+				deepcopy(filterItemsCategory(deepcopy(allItems), data)),
+				searchTerm,
+			));
 		}
 
 		favoriteItemValues = data;
@@ -48,42 +48,26 @@
 
 
 	// změna kontentu sidebaru na základě kategorií
-	function filterItemsCategory(items: Item[], searchTerms: string[]): Item[] {
-		let results: Item[] = [];
+	function filterItemsCategory(items: Item[], itemsValues: string[]): Item[] {
+		if (itemsValues.length === 0) {
+			return items;
+		}
 
-		items.map((item: Item) => {
-			if (searchTerms.includes(item.value)) {
-				results.includes(item) ? [] : results.push(item);
-			}
-
-			item.children.map((child: Item) => {
-				if (searchTerms.includes(child.value)) {
-					item.children = item.children.filter(child => searchTerms.includes(child.value));
-					results.includes(item) ? [] : results.push(item);
+		return items
+			.filter((item: Item): boolean => {
+				item.open = false;
+				item.hide = itemsValues.includes(item.value) !== true;
+				item.children = filterItemsCategory(item.children, itemsValues);
+				if (item.children.some((child) => child.hide === false)) {
+					item.hide = false;
 				}
+
+				return item.hide === false;
 			});
-
-			item.children.forEach((filteredChild: Item) => {
-				filteredChild.children.map((scndChild) => {
-					if (searchTerms.includes(scndChild.value)) {
-						item.children = item.children.filter(child => child === filteredChild);
-
-						item.children.forEach((child: Item) => {
-							child.children = child.children.filter(child => searchTerms.includes(child.value));
-						});
-
-						results.includes(item) ? [] : results.push(item);
-					}
-				});
-			});
-		});
-
-		return results;
 	}
 
-
 	// otevírání sidebaru
-	sidebarStateStore.subscribe((data) => {
+	sidebarStateStore.subscribe(data => {
 		show = data;
 	});
 
@@ -95,16 +79,36 @@
 
 
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
-	function search(searchTerm: string) {
-		if (searchTerm === '') {
-			filteredItems = items;
-			return;
+	function search(searchTerm: string): void {
+		const activeCategoryStoreData = get(activeCategoryStore);
+
+		if (activeCategoryStoreData === '' || activeCategoryStoreData === 'all') {
+			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
+			buttonBorderSwitch();
 		}
 
-		filteredItems = filterItemsSearch(deepcopy(items), searchTerm);
+		if (activeCategoryStoreData === 'recent') {
+			filteredItems = deepcopy(filterItemsSearch(
+				deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
+				searchTerm,
+			));
+			buttonBorderSwitch();
+		}
+
+		if (activeCategoryStoreData === 'favorite') {
+			filteredItems = deepcopy(filterItemsSearch(
+				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
+				searchTerm,
+			));
+			buttonBorderSwitch();
+		}
 	}
 
 	function filterItemsSearch(items: Item[], searchTerm: string): Item[] {
+		if (searchTerm === '') {
+			return items;
+		}
+
 		return items.map((item: Item): Item => {
 			item.open = false;
 			item.hide = true;
@@ -137,31 +141,30 @@
 
 			document.addEventListener('keydown', handleKeydown);
 
-			activeCategoryStore.subscribe((data) => {
-				if (data === null) {
-					data = 'all';
-				}
-
-				if (data === 'all') {
-					items = allItems;
-					filteredItems = filterItemsSearch(deepcopy(items), searchTerm);
+			activeCategoryStore.subscribe(data => {
+				if (data === '' || data === 'all') {
+					filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
 					buttonBorderSwitch();
 				}
 
 				if (data === 'recent') {
-					items = filterItemsCategory(deepcopy(allItems), recentItemValues);
-					filteredItems = filterItemsSearch(items, searchTerm);
+					filteredItems = deepcopy(filterItemsSearch(
+						deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
+						searchTerm,
+					));
 					buttonBorderSwitch();
 				}
 
 				if (data === 'favorite') {
-					items = filterItemsCategory(deepcopy(allItems), favoriteItemValues);
-					filteredItems = filterItemsSearch(items, searchTerm);
+					filteredItems = deepcopy(filterItemsSearch(
+						deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
+						searchTerm,
+					));
 					buttonBorderSwitch();
 				}
 			});
 
-			sidebarStateStore.subscribe((data) => {
+			sidebarStateStore.subscribe(data => {
 				if (data) {
 					setTimeout(() => {
 						buttonBorderSwitch();
@@ -350,7 +353,7 @@
 
 				<Separator />
 
-				{#each items as item}
+				{#each filteredItems as item}
 					<!-- item s children položkami. Po najetí myši ukáže tooltip a po kliknutí popover se všemi children položkami -->
 					{#if item.children.length > 0}
 						<Tooltip.Root openDelay={100}>

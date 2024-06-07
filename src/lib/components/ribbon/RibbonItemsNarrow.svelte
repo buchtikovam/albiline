@@ -25,7 +25,7 @@
 		}
 	];
 
-	let isOpen: boolean;
+	let isOpen: boolean = false;
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
@@ -33,7 +33,7 @@
 </script>
 
 
-<div class={isOpen ? "flex flex-col self-center pr-1" : ""}>
+<div class={isOpen ? "flex flex-col self-center pr-1" : "flex gap-0"}>
 {#each items as item}
 	<Tooltip.Root openDelay={250}>
 		<Tooltip.Trigger>
@@ -41,12 +41,12 @@
 				class={
 					(isOpen
 						? "w-full h-fit"
-						: "p-2 w-[32px] h-[32px]")
+						: "p-2 h-[32px]")
 						+ " rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/70"}
 			>
 				<button class={isOpen
 					? "text-[11px] flex gap-2 items-center"
-					: "text-xs flex flex-col content-center items-center m-auto"}
+					: "text-xs flex flex-col content-center items-center"}
 				>
 					{#if isOpen}
 						<svelte:component this={item.icon} class="h-3.5 w-3.5 muted-foreground hover:bg-muted/70" />
@@ -54,13 +54,9 @@
 					{:else}
 						<svelte:component this={item.icon} class="h-4 w-4 muted-foreground hover:bg-muted/70" />
 					{/if}
-
 				</button>
 			</div>
 		</Tooltip.Trigger>
-		<Tooltip.Content class={isOpen ? "hidden" : "mt-20"}>
-			{item.name}
-		</Tooltip.Content>
 	</Tooltip.Root>
 {/each}
 </div>
