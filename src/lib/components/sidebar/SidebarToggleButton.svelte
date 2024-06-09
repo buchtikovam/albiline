@@ -1,19 +1,13 @@
 <script lang="ts">
-import { Button } from '$lib/components/ui/button/index.js';
-import Menu from 'lucide-svelte/icons/menu';
-import { sidebarStateStore } from '$lib/stores/sidebarStore';
+	import Menu from 'lucide-svelte/icons/menu';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { sidebarStateStore } from '$lib/stores/sidebarStore';
 
-export let show: boolean;
+	export let show: boolean;
 
-function toggleOpen() {
-	if (show === true) {
-		sidebarStateStore.update(() => false);
-
-	} else {
-		sidebarStateStore.update(() => true);
+	function toggleOpen() {
+		sidebarStateStore.update(() => !show)
 	}
-}
-
 </script>
 
 <Button

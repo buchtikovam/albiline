@@ -1,20 +1,20 @@
 <script lang="ts">
-	import Search from 'lucide-svelte/icons/search';
-	import deepcopy from 'deepcopy';
-	import { onMount } from 'svelte';
-	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
-	import type { Item } from '$lib/types/sidebar';
 	import { allItems } from '$lib/data/sidebar';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
-	import { handleTabClick } from '$lib/utils/handleTabClick';
-	import { get } from 'svelte/store'
 	import {
 		sidebarStateStore,
 		recentItemsStore,
 		favoriteItemsStore,
 		activeCategoryStore
 	} from '$lib/stores/sidebarStore';
+	import { onMount } from 'svelte';
+	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
+	import { handleTabClick } from '$lib/utils/handleTabClick';
+	import { get } from 'svelte/store';
+	import deepcopy from 'deepcopy';
+	import Search from 'lucide-svelte/icons/search';
+	import type { Item } from '$lib/types/sidebar';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuContent.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';
@@ -29,7 +29,6 @@
 	let filteredItems: Item[] = deepcopy(allItems);
 	let searchTerm = '';
 
-
 	let recentItemValues: string[] = [];
 	recentItemsStore.subscribe(data => recentItemValues = data);
 
@@ -39,7 +38,7 @@
 		if (favoriteItemValues.length > data.length) {
 			filteredItems = deepcopy(filterItemsSearch(
 				deepcopy(filterItemsCategory(deepcopy(allItems), data)),
-				searchTerm,
+				searchTerm
 			));
 		}
 
@@ -50,7 +49,7 @@
 	// změna kontentu sidebaru na základě kategorií
 	function filterItemsCategory(items: Item[], itemsValues: string[]): Item[] {
 		if (itemsValues.length === 0) {
-			return items;
+			return [];
 		}
 
 		return items
@@ -65,6 +64,7 @@
 				return item.hide === false;
 			});
 	}
+
 
 	// otevírání sidebaru
 	sidebarStateStore.subscribe(data => {
@@ -84,23 +84,20 @@
 
 		if (activeCategoryStoreData === '' || activeCategoryStoreData === 'all') {
 			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
-			buttonBorderSwitch();
 		}
 
 		if (activeCategoryStoreData === 'recent') {
 			filteredItems = deepcopy(filterItemsSearch(
 				deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
-				searchTerm,
+				searchTerm
 			));
-			buttonBorderSwitch();
 		}
 
 		if (activeCategoryStoreData === 'favorite') {
 			filteredItems = deepcopy(filterItemsSearch(
 				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
-				searchTerm,
+				searchTerm
 			));
-			buttonBorderSwitch();
 		}
 	}
 
@@ -130,7 +127,7 @@
 	}
 
 
-	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F
+	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F, nastavení sidebaru podle aktivní kategorie
 	onMount(() => {
 			function handleKeydown(e: KeyboardEvent) {
 				if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
@@ -150,7 +147,7 @@
 				if (data === 'recent') {
 					filteredItems = deepcopy(filterItemsSearch(
 						deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
-						searchTerm,
+						searchTerm
 					));
 					buttonBorderSwitch();
 				}
@@ -158,7 +155,7 @@
 				if (data === 'favorite') {
 					filteredItems = deepcopy(filterItemsSearch(
 						deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
-						searchTerm,
+						searchTerm
 					));
 					buttonBorderSwitch();
 				}
@@ -233,7 +230,8 @@
 														<ContextMenu.Root>
 															<Accordion.Item value={secondChild.value}>
 																<ContextMenu.Trigger>
-																	<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+																	<Accordion.Trigger
+																		class="hover:bg-muted/50 rounded-md">
 																		<div
 																			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 																			<a
@@ -269,7 +267,8 @@
 																							</a>
 																						</Accordion.Item>
 																					</ContextMenu.Trigger>
-																					<ContextMenuContent itemValue={thirdChild.value} />
+																					<ContextMenuContent
+																						itemValue={thirdChild.value} />
 																				{/each}
 																			</Accordion.Root>
 																		</ContextMenu.Root>

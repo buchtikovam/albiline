@@ -1,31 +1,15 @@
 <script lang="ts">
-	import ArrowDownWideNarrow from 'lucide-svelte/icons/arrow-down-wide-narrow';
-	import Filter from 'lucide-svelte/icons/filter';
-	import FilterX from 'lucide-svelte/icons/filter-x';
-	import FolderUp from 'lucide-svelte/icons/folder-up';
-	import ListFilter from 'lucide-svelte/icons/list-filter';
-	import Printer from 'lucide-svelte/icons/printer';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import ChevronUp from 'lucide-svelte/icons/chevron-up';
-	import FilePlus from 'lucide-svelte/icons/file-plus';
-	import FileX2 from 'lucide-svelte/icons/file-x-2';
-	import Pencil from 'lucide-svelte/icons/pencil';
-	import FileUp from 'lucide-svelte/icons/file-up';
-	import FileDown from 'lucide-svelte/icons/file-down';
-	import FolderDown from 'lucide-svelte/icons/folder-down';
-	import Scan from 'lucide-svelte/icons/scan';
-	import Undo2 from 'lucide-svelte/icons/undo-2';
-	import ListPlus from 'lucide-svelte/icons/list-plus';
-	import Columns3 from 'lucide-svelte/icons/columns-3';
-	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
-	import Save from 'lucide-svelte/icons/save';
-	import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
-	import { Separator } from '$lib/components/ui/separator';
 	import { ribbonStateStore } from '$lib/stores/ribbonStore';
-	import RibbonSection from '$lib/components/ribbon/RibbonSection.svelte';
+	import { ribbonItems } from '$lib/data/ribbon';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
+	import type { Item } from '$lib/types/ribbon';
+	import { RibbonType } from '$lib/enums/ribbonType';
+	import { Separator } from '$lib/components/ui/separator';
+
 
 	let isOpen: boolean;
 
@@ -36,136 +20,39 @@
 	});
 
 	function toggleOpen() {
-		if (isOpen === true) {
-			ribbonStateStore.update(() => false);
-		} else {
-			ribbonStateStore.update(() => true);
-		}
+		ribbonStateStore.update(() => !isOpen);
 	}
 
-	let exportOptions = ['Excel', 'PDF', 'CSV'];
 
-	const fileItems = [
-		{
-			name: 'Nový',
-			icon: FilePlus
-		},
-		{
-			name: 'Smazat',
-			icon: FileX2
-		},
-		{
-			name: 'Editovat',
-			icon: Pencil
-		}
-	];
 </script>
-
-<div class={
-	(isOpen
-		? "px-4"
-		: "px-2")
-		+ " flex gap-2 items-center py-2 h-fit bg-background"
-	}
->
-	<RibbonSection>
-		<RibbonItemsNarrow items={fileItems} />
-		<RibbonItem name="Vyplň dolů">
-			<ArrowDownWideNarrow class="h-4 w-4" />
-		</RibbonItem>
-	</RibbonSection>
-	<Separator orientation="vertical" />
-
-	<RibbonSection>
-		<RibbonItem name="Uložit" >
-			<Save class="h-4 w-4" />
-		</RibbonItem>		<RibbonItem name="Načíst">
-			<RefreshCcw class="h-4 w-4" />
-		</RibbonItem>
-	</RibbonSection>
-
-	<Separator orientation="vertical" />
-
-	<RibbonSection>
-		<RibbonDropdownItem name="Tisk sestav">
-			<Printer class="h-4 w-4" />
-		</RibbonDropdownItem>
-
-		<RibbonDropdownItem name="Export jako" options={exportOptions}>
-			<FileUp class="h-4 w-4" />
-		</RibbonDropdownItem>
-
-		<RibbonItem name="Hromadný export">
-			<FolderUp class="h-4 w-4" />
-		</RibbonItem>
-	</RibbonSection>
-	<Separator orientation="vertical" />
-
-	<RibbonSection>
-		<RibbonItem name="Import">
-			<FileDown class="h-4 w-4" />
-		</RibbonItem>
-
-		<RibbonDropdownItem name="Import šablony">
-			<FolderDown class="h-4 w-4" />
-		</RibbonDropdownItem>
-	</RibbonSection>
-	<Separator orientation="vertical" />
-
-	<RibbonSection>
-		<RibbonItem name="Statistika">
-			<BarChart3 class="h-4 w-4" />
-		</RibbonItem>
-	</RibbonSection>
-	<Separator orientation="vertical" />
-
-	<RibbonSection>
-		<RibbonItem name="Rychlý filtr">
-			<ListFilter class="h-4 w-4" />
-		</RibbonItem>
-
-		<RibbonItem name="Mimo výběr">
-			<Filter class="h-4 w-4" />
-		</RibbonItem>
-
-		<RibbonItem name="Filtr v rozmezí">
-			<Scan class="h-4 w-4" />
-		</RibbonItem>
-
-		<RibbonItem name="Krok zpět">
-			<Undo2 class="h-4 w-4" />
-		</RibbonItem>
-
-		<RibbonItem name="Zrušit filtry">
-			<FilterX class="h-4 w-4" />
-		</RibbonItem>
-
-		<RibbonDropdownItem name="Moje filtry">
-			<ListPlus class="h-4 w-4" />
-		</RibbonDropdownItem>
-	</RibbonSection>
-	<Separator orientation="vertical" />
-
-	<RibbonSection>
-		<RibbonDropdownItem name="Moje šablony">
-			<Columns3 class="h-4 w-4" />
-		</RibbonDropdownItem>
-	</RibbonSection>
-
-	<Separator orientation="vertical" />
-
-
+<div class="flex p-2 px-4">
+	{#each ribbonItems as item}
+		{#if Array.isArray(item)}
+			<RibbonItemsNarrow item={item} isOpen={isOpen} />
+		{:else}
+			{#if item.type === RibbonType.ITEM}
+				<RibbonItem item={item} isOpen={isOpen} />
+			{/if}
+			{#if item.type === RibbonType.DROPDOWN}
+				<RibbonDropdownItem item={item} isOpen={isOpen} />
+			{/if}
+			{#if item.type === RibbonType.SEPARATOR}
+				<Separator orientation="vertical" class="mx-2"/>
+			{/if}
+		{/if}
+	{/each}
 </div>
+
 
 <div
 	class={
 		(isOpen
-			? "mt-[100px]"
-			: "mt-[73px]")
+			? "mt-[91px]"
+			: "mt-[67px]")
 			+ " absolute w-full flex justify-end items-center"
 	}
 >
-	<button on:click={() => toggleOpen()}>
+	<button on:click={toggleOpen}>
 		{#if isOpen}
 			<ChevronDown class="h-4 w-4 bg-background" />
 		{:else}

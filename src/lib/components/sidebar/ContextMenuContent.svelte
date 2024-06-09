@@ -1,13 +1,12 @@
 <script lang="ts">
-	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import Heart from 'lucide-svelte/icons/heart';
-	import { favoriteItemsStore, activeCategoryStore } from '$lib/stores/sidebarStore';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
+	import { favoriteItemsStore, activeCategoryStore } from '$lib/stores/sidebarStore';
+	import * as ContextMenu from '$lib/components/ui/context-menu';
 
 	export let itemValue: string;
 
 	let category: string;
-
 	activeCategoryStore.subscribe((data) => category = data);
 
 	function handleAdd() {
@@ -18,7 +17,6 @@
 		favoriteItemsStore.update(data => data.filter((item) => item.indexOf(itemValue) === -1));
 	}
 </script>
-
 
 <ContextMenu.Content>
 	{#if category !== "favorite"}

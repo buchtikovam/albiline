@@ -1,38 +1,27 @@
 <script lang="ts">
-	import { ribbonStateStore } from '$lib/stores/ribbonStore';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import type { Item } from '$lib/types/ribbon';
 
-	export let name: string = 'Item';
-
-	let isOpen: boolean;
-
-	ribbonStateStore.subscribe((data) => {
-		isOpen = data;
-	});
+	export let item: Item;
+	export let isOpen: boolean = false;
 </script>
 
-<Tooltip.Root openDelay={250}>
-	<Tooltip.Trigger>
-		<div
-			class={
-				(isOpen
-						? "w-min h-[60px] min-w-[55px]"
-						: "w-[32px] h-[32px]")
-						+ " p-2 rounded-md flex content-center items-center mx-auto text-muted-foreground hover:bg-muted/50"
-			}
-		>
-			<button
-				class={
-					(isOpen
-						? "text-[11px] gap-1 leading-3"
-						: "text-xs")
-						+ " flex flex-col content-center items-center m-auto"
-				}
-			>
-				<slot />
-				{isOpen ? name : ""}
+{#if isOpen === true}
+	<button
+		class="text-[11px] w-12 h-12 leading-3">
+		<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground hover:bg-muted" />
+		{item.name}
+	</button>
+{:else}
+	<Tooltip.Root openDelay={250}>
+		<Tooltip.Trigger>
+			<button class="size-6 hover:bg-muted/70 rounded-md">
+				<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground hover:bg-muted" />
 			</button>
-		</div>
-	</Tooltip.Trigger>
-	<Tooltip.Content class={isOpen ? "hidden" : "mt-20"}>{name}</Tooltip.Content>
-</Tooltip.Root>
+		</Tooltip.Trigger>
+
+		<Tooltip.Content class="mt-20">
+			{item.name}
+		</Tooltip.Content>
+	</Tooltip.Root>
+{/if}
