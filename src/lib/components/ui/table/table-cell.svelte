@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLTdAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils.js";
-	import { rowHeightStore } from '$lib/stores/tableStore';
+	import { pageCompactStore } from '$lib/stores/tableStore';
 
 	type $$Props = HTMLTdAttributes;
 
@@ -9,7 +9,7 @@
 
 	let isCompact: string;
 
-	rowHeightStore.subscribe((data) => {
+	pageCompactStore.subscribe((data) => {
 		isCompact = data;
 	})
 

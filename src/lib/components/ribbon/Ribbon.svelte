@@ -1,19 +1,15 @@
 <script lang="ts">
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import ChevronUp from 'lucide-svelte/icons/chevron-up';
+	import { RibbonType } from '$lib/enums/ribbonType';
 	import { ribbonStateStore } from '$lib/stores/ribbonStore';
 	import { ribbonItems } from '$lib/data/ribbon';
+	import { Separator } from '$lib/components/ui/separator';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
-	import type { Item } from '$lib/types/ribbon';
-	import { RibbonType } from '$lib/enums/ribbonType';
-	import { Separator } from '$lib/components/ui/separator';
-
 
 	let isOpen: boolean;
-
-	// TODO: save updated data on ribbon item click
 
 	ribbonStateStore.subscribe((data) => {
 		isOpen = data;
@@ -22,10 +18,8 @@
 	function toggleOpen() {
 		ribbonStateStore.update(() => !isOpen);
 	}
-
-
 </script>
-<div class="flex p-2 px-4">
+<div class="flex p-2 px-4 overflow-auto">
 	{#each ribbonItems as item}
 		{#if Array.isArray(item)}
 			<RibbonItemsNarrow item={item} isOpen={isOpen} />
@@ -47,7 +41,7 @@
 <div
 	class={
 		(isOpen
-			? "mt-[91px]"
+			? "mt-[89px]"
 			: "mt-[67px]")
 			+ " absolute w-full flex justify-end items-center"
 	}

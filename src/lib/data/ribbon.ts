@@ -183,7 +183,7 @@ export const ribbonItems: Items[] = [
 		action: Action.FILTER_IN_RANGE,
 	},
 	{
-		name: "Krok zpět",
+		name: "Filtr krok zpět",
 		type: RibbonType.ITEM,
 		icon: Undo2,
 		action: Action.FILTER_UNDO,

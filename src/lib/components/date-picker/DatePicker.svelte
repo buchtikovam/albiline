@@ -7,7 +7,6 @@
 	import type { DateValue } from '@internationalized/date';
 
 	export let value: DateValue | undefined = undefined;
-
 	export let name;
 </script>
 

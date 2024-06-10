@@ -8,13 +8,6 @@
 	import CircleX from 'lucide-svelte/icons/circle-x';
 	import X from 'lucide-svelte/icons/x';
 
-
-	// import InfoIcon from './icons/info.svelte'
-	// import WarningIcon from './icons/warning.svelte'
-	// import SuccessIcon from './icons/success.svelte'
-	// import CriticalIcon from './icons/critical.svelte'
-	// import CloseIcon from './icons/close.svelte'
-
 	export let type: 'InfoToast' | 'Warning' | 'Critical' | 'Success';
 	export let content: string;
 

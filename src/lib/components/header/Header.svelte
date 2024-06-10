@@ -94,7 +94,7 @@
 					class=""
 				>
 					<button
-						class="flex transition-all"
+						class="flex "
 						on:mouseenter={() => showClosingButton(tab)}
 						on:mouseleave={() => hideClosingButton(tab)}
 					>

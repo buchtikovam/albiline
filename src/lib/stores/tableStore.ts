@@ -5,6 +5,6 @@ export const columnWidthStore: Writable<Record<string, number>> = persisted('col
 
 export const columnOrderStore: Writable<string[]> = persisted('columnOrder', []);
 
-export const rowHeightStore: Writable<string> = persisted('rowHeight', 'standard');
+export const pageCompactStore: Writable<'standard' | 'compact'> = persisted('rowHeight', 'standard');
 
-export const tableData = writable()
+export const columnFilterStore: Writable<string> = writable()

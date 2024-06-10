@@ -7,7 +7,6 @@
 		addColumnOrder,
 		addColumnFilters,
 		addResizedColumns,
-		textPrefixFilter
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
@@ -17,24 +16,21 @@
 	import { get, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { columnWidthStore, columnOrderStore, tableData } from '$lib/stores/tableStore';
+	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import { cellWidths } from '$lib/constants/cellWidths';
 	import * as Table from '$lib/components/ui/table';
 	import type { Column } from '$lib/types/table';
-	// import { tableData } from '$lib/stores/tableStore';
+	import {
+		textFilterEndsWith,
+		textFilterIncludes,
+		textFilterStartsWith
+	} from '$lib/components/column-filters/filters';
 
 	export let data;
 	const columnData = writable(data.columnData);
-
-
-
-	tableData.subscribe((data) => {
-
-
-	})
 
 	let tempData = data.columnData;
 
@@ -49,11 +45,7 @@
 		});
 
 	const updateData = (newData) => {
-		console.log("from table data", newData);
-
 		columnData.set(newData)
-
-		// 	TODO: save data
 	};
 
 
@@ -96,6 +88,21 @@
 	const createdColumns = [];
 	const tableColumns = table.createColumns(createdColumns);
 
+	// function getFilter(currentFilter: string) {
+	// 	console.log("run");
+	// 	switch (currentFilter) {
+	// 		case 'contains':
+	// 			return textFilterIncludes;
+	// 		case 'starts-with':
+	// 			return textFilterStartsWith;
+	// 		case 'ends-with':
+	// 			return textFilterEndsWith;
+	// 		default:
+	// 			return textFilterIncludes
+	// 	}
+	// }
+
+
 
 	columnWidthStore.subscribe((colWidthData) => {
 		data.columnInfo.map((column: Column) => {
@@ -133,15 +140,17 @@
 					}
 				}));
 			} else {
+				let columnFilter = writable("contains")
+
 				createdColumns.push(table.column({
 					accessor: column.accessor,
 					header: column.header,
 					plugins: {
 						colFilter: {
-							fn: textPrefixFilter,
+							fn: textFilterIncludes,
 							initialFilterValue: '',
 							render: ({ filterValue, values, preFilteredValues }) =>
-								createRender(TextFilter, { filterValue, values, preFilteredValues })
+								createRender(TextFilter, { filterValue, values, preFilteredValues, columnFilter })
 						},
 						resize: {
 							minWidth: 80,
@@ -284,7 +293,8 @@
 									{#if !props.resize.disabled}
 										<div
 											class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
-											use:props.resize.drag />
+											use:props.resize.drag
+										/>
 									{/if}
 								</th>
 							</Subscribe>
@@ -318,7 +328,6 @@
 	</Table.Root>
 
 	<div class="flex justify-between items-center w-full border-t">
-
 		<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
 			{selectedRows} řad označeno.
 		</div>
@@ -332,5 +341,4 @@
 			<RotateCcw class="h-4 w-4" />
 		</Button>
 	</div>
-
 </div>

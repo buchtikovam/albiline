@@ -7,12 +7,13 @@
 	import ArrowLeftRight from 'lucide-svelte/icons/arrow-left-right';
 	import ArrowRightFromLine from 'lucide-svelte/icons/arrow-right-from-line';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-
 	import { Button } from '$lib/components/ui/button';
+	import type { Writable } from 'svelte/store';
 
 	export let filterValue;
 	export let preFilteredValues;
 	export let values;
+	export let columnFilter: Writable<string>;
 
 	preFilteredValues = "";
 	values = "";
@@ -26,7 +27,7 @@
 
 	const filters = [
 		{
-			value: 'starts-from',
+			value: 'starts-with',
 			label: 'Začíná na',
 			icon: ArrowRightFromLine
 		},
@@ -46,8 +47,10 @@
 		filters.find((f) => f.value === value)
 	;
 
-	function closeAndFocusTrigger(triggerId: string) {
+	function closeAndFocusTrigger(triggerId: string, value: string) {
 		open = false;
+			columnFilter.set(value);
+
 		tick().then(() => {
 			document.getElementById(triggerId)?.focus();
 		});
@@ -57,7 +60,6 @@
 <div class="w-auto flex items-center border rounded-md my-0.5 ">
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
-
 			<Button
 				builders={[builder]}
 				variant="ghost"
@@ -87,11 +89,10 @@
 							value={filter.value}
 							onSelect={(currentValue) => {
 								value = currentValue;
-								closeAndFocusTrigger(ids.trigger);
+								closeAndFocusTrigger(ids.trigger, filter.value);
 							}}
-							class="text-xs hover:bg-muted/50 p-1.5"
+							class="text-xs hover:bg-muted/70 p-1.5 flex items-center"
 						>
-
 							<svelte:component this={filter.icon} class="h-3 w-3 mr-2" />
 							{filter.label}
 						</Command.Item>
