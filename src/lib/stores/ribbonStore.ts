@@ -4,4 +4,4 @@ import type { Action } from '$lib/enums/action';
 
 export const ribbonStateStore: Writable<boolean> = persisted('ribbonState', true);
 
-export const ribbonActionStore: Writable<Action> = writable()
+export const ribbonActionStore: Writable<Action | undefined> = writable()

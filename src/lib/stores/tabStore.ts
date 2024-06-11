@@ -13,3 +13,5 @@ export const openedTabsStore = persisted(
 );
 
 export const currentActiveTabStore: Writable<string> = writable("");
+
+export const allowTabAdding: Writable<boolean> = persisted("allowTabAdding", true)

@@ -8,31 +8,26 @@
 		addColumnFilters,
 		addResizedColumns,
 	} from 'svelte-headless-table/plugins';
-	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
+	import { createTable, Render, Subscribe, createRender, DataColumn } from 'svelte-headless-table';
+	import { textFilter } from '$lib/components/table/column-filters/filters';
+	import { get, writable } from 'svelte/store';
+	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
-	import { get, writable } from 'svelte/store';
-	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
-	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
-	import TextFilter from '$lib/components/column-filters/TextFilter.svelte';
-	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import { cellWidths } from '$lib/constants/cellWidths';
-	import * as Table from '$lib/components/ui/table';
+	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
 	import type { Column } from '$lib/types/table';
-	import {
-		textFilterEndsWith,
-		textFilterIncludes,
-		textFilterStartsWith
-	} from '$lib/components/column-filters/filters';
+	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
+	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
+	import EditableCell from '$lib/components/table/EditableCell.svelte';
+	import * as Table from '$lib/components/ui/table';
 
 	export let data;
 	const columnData = writable(data.columnData);
-
-	let tempData = data.columnData;
+	let storeData = get(columnData);
 
 	// editable cell
 	const EditableCellLabel = ({ column, row, value }) =>
@@ -40,7 +35,7 @@
 			row,
 			column,
 			value,
-			tempData,
+			storeData,
 			onUpdateValue: updateData
 		});
 
@@ -56,23 +51,7 @@
 		}),
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
-		colOrder: addColumnOrder(
-			{
-				initialColumnIdOrder: [
-					'id',
-					'ksp',
-					'jmeno',
-					'typ',
-					'linie',
-					'koncepce',
-					'listovaciPolozka',
-					'prodCena',
-					'vyrobeno',
-					'skladem',
-					'klp'
-				]
-			}
-		),
+		colOrder: addColumnOrder(),
 		colFilter: addColumnFilters(),
 		resize: addResizedColumns({
 			onResizeEnd: () => {
@@ -85,24 +64,8 @@
 	});
 
 
-	const createdColumns = [];
+	const createdColumns: DataColumn<any, any>[] = [];
 	const tableColumns = table.createColumns(createdColumns);
-
-	// function getFilter(currentFilter: string) {
-	// 	console.log("run");
-	// 	switch (currentFilter) {
-	// 		case 'contains':
-	// 			return textFilterIncludes;
-	// 		case 'starts-with':
-	// 			return textFilterStartsWith;
-	// 		case 'ends-with':
-	// 			return textFilterEndsWith;
-	// 		default:
-	// 			return textFilterIncludes
-	// 	}
-	// }
-
-
 
 	columnWidthStore.subscribe((colWidthData) => {
 		data.columnInfo.map((column: Column) => {
@@ -147,7 +110,7 @@
 					header: column.header,
 					plugins: {
 						colFilter: {
-							fn: textFilterIncludes,
+							fn: textFilter(columnFilter),
 							initialFilterValue: '',
 							render: ({ filterValue, values, preFilteredValues }) =>
 								createRender(TextFilter, { filterValue, values, preFilteredValues, columnFilter })
@@ -195,6 +158,8 @@
 			start = index;
 		}
 	};
+
+	// TODO: dnd bug
 
 	const drop = (event: DragEvent, target: number | null) => {
 		if (event.dataTransfer && target !== null) {

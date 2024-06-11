@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { pageCompactStore } from '$lib/stores/tableStore';
+	import { allowTabAdding } from '$lib/stores/tabStore';
 	import User from 'lucide-svelte/icons/user';
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
@@ -12,12 +13,19 @@
 	export let userImage: string = '';
 
 	let isCompact: 'standard' | 'compact';
+	let isChecked: boolean;
 
 	pageCompactStore.subscribe((data) => isCompact = data);
+	allowTabAdding.subscribe((data) => isChecked = data);
 
 	// Nastavení kompaktnosti stránky
 	function setHeight(state: 'standard' | 'compact') {
 		pageCompactStore.set(state);
+	}
+
+	// Povolení přidávání stránek do tabů
+	function setTabAllow() {
+		allowTabAdding.set(!isChecked)
 	}
 </script>
 
@@ -57,7 +65,10 @@
 
 		<!-- Nastavení kompaktnosti stránky -->
 		<DropdownMenu.RadioGroup bind:value={isCompact}>
-			<DropdownMenu.Label>Zobrazení</DropdownMenu.Label>
+			<DropdownMenu.Label>
+				Zobrazení
+			</DropdownMenu.Label>
+
 			<DropdownMenu.RadioItem value="standard" class="cursor-pointer" on:click={() => setHeight("standard")}>
 				Standardní
 			</DropdownMenu.RadioItem>
@@ -66,6 +77,15 @@
 			</DropdownMenu.RadioItem>
 		</DropdownMenu.RadioGroup>
 		<DropdownMenu.Separator />
+
+
+		<DropdownMenu.Group>
+			<DropdownMenu.CheckboxItem bind:checked={isChecked} on:click={setTabAllow}>
+				Povolit přidávání tabů
+			</DropdownMenu.CheckboxItem>
+		</DropdownMenu.Group>
+		<DropdownMenu.Separator />
+
 
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>

@@ -15,6 +15,8 @@
 			ribbonActionStore.set(itemAction);
 		}
 	}
+
+	// 	TODO: differ item with dropdown from normal item
 </script>
 
 {#if isOpen === true}

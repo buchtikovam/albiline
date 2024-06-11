@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { editedDataStore } from '$lib/stores/tableStore';
+	import { get } from 'svelte/store';
+
 	export let row;
 	export let column;
 	export let value: unknown;
-	export let tempData;
+	export let storeData;
 	export let onUpdateValue;
 
 	let isEditing = false;
@@ -13,15 +16,26 @@
 		inputElement?.focus();
 	}
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event: Event) => {
 		event.preventDefault();
 
-		tempData[row.id][column.id] = value;
+		storeData[row.id][column.id] = value;
+
+		let editedRow = storeData[row.id];
+
+		let rowIds: number[] = [];
+		get(editedDataStore).forEach((row) => {
+			rowIds.push(row.id);
+		})
+
+		if (!rowIds.includes(editedRow.id)) {
+			editedDataStore.update(data => data.concat(editedRow))
+		}
 
 		isEditing = false;
 
 		if (row.isData()) {
-			onUpdateValue(tempData);
+			onUpdateValue(storeData);
 		}
 	};
 </script>

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import X from 'lucide-svelte/icons/x';
+	import Home from 'lucide-svelte/icons/home';
+	import { openedTabsStore, currentActiveTabStore, allowTabAdding } from '$lib/stores/tabStore';
+	import { page } from '$app/stores';
+	import type { Tab } from '$lib/types/sidebar';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import Home from 'lucide-svelte/icons/home';
-	import { openedTabsStore, currentActiveTabStore } from '$lib/stores/tabStore';
-	import { page } from '$app/stores';
-	import X from 'lucide-svelte/icons/x';
-	import type { Tab } from '$lib/types/sidebar';
+	import { get } from 'svelte/store';
 
 	let tabs: Tab[];
 	let activeTabValue: string;
@@ -65,8 +66,11 @@
 	}
 
 	function showClosingButton(tab: Tab) {
-		tab.closingState = '';
-		openedTabsStore.update(() => tabs);
+		if (get(allowTabAdding)) {
+			tab.closingState = '';
+			openedTabsStore.update(() => tabs);
+		}
+
 	}
 
 	function hideClosingButton(tab: Tab) {
@@ -99,7 +103,6 @@
 						on:mouseleave={() => hideClosingButton(tab)}
 					>
 						{tab.name}
-						<!--TODO: add animation-->
 						<button on:click={() => removeTab(tab.name)} class="{tab.closingState}">
 							<X class="ml-1 text-red-600 w-4 h-4"/>
 						</button>
@@ -113,3 +116,4 @@
 		<Avatar />
 	</div>
 </div>
+

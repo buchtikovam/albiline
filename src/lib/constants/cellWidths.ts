@@ -6,5 +6,3 @@ export const cellWidths: Map<string, number> = new Map([
 	["xlarge", 280],
 	["limit", 400],
 ]);
-
-// TODO: make into enum

@@ -1,26 +1,24 @@
 <script lang="ts">
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
+	import * as Command from '$lib/components/ui/command';
+	import * as Popover from '$lib/components/ui/popover';
 	import { tick } from 'svelte';
 	import ArrowLeftFromLine from 'lucide-svelte/icons/arrow-left-from-line';
 	import ArrowLeftRight from 'lucide-svelte/icons/arrow-left-right';
 	import ArrowRightFromLine from 'lucide-svelte/icons/arrow-right-from-line';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import { Button } from '$lib/components/ui/button';
-	import type { Writable } from 'svelte/store';
+	import { get, type Readable, type Writable } from 'svelte/store';
 
 	export let filterValue;
-	export let preFilteredValues;
-	export let values;
+	export let preFilteredValues: Readable<unknown[]>;
+	export let values: Readable<unknown[]>;
 	export let columnFilter: Writable<string>;
 
-	preFilteredValues = "";
-	values = "";
+	get(values);
+	get(preFilteredValues);
 
 	// TODO: add checkboxes with unique row values, to filter out data
-
-	// TODO: think functionality of filter switches
 
 	let open = false;
 	let value = '';
@@ -49,7 +47,7 @@
 
 	function closeAndFocusTrigger(triggerId: string, value: string) {
 		open = false;
-			columnFilter.set(value);
+		columnFilter.set(value);
 
 		tick().then(() => {
 			document.getElementById(triggerId)?.focus();
