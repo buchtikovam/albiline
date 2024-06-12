@@ -19,6 +19,7 @@
 		ribbonStateStore.update(() => !isOpen);
 	}
 </script>
+
 <div class="flex p-2 px-4 overflow-auto">
 	{#each ribbonItems as item}
 		{#if Array.isArray(item)}

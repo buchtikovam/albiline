@@ -1,10 +1,13 @@
 import type { Writable } from 'svelte/store';
+import type { TextFilters } from '$lib/types/filter';
 
-export const textFilter = (columnFilter: Writable<string>) => {
-	let currentFilter: string;
+export const textFilter = (columnFilter: Writable<TextFilters>) => {
+	let currentFilter: TextFilters;
 
-	columnFilter.subscribe((data: string) => {
+	columnFilter.subscribe((data) => {
 		currentFilter = data;
+
+
 	});
 
 	return ({ filterValue, value }: { filterValue: string, value: string }) => {

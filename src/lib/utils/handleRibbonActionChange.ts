@@ -9,3 +9,5 @@ export function handleRibbonActionChange(action: Action) {
 		save().then(() => ribbonActionStore.set(undefined));
 	}
 }
+
+// TODO: save and delete

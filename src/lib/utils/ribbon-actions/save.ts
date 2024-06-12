@@ -1,5 +1,6 @@
 import { editedDataStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
+import { toastStore } from '$lib/stores/toastStore';
 
 export async function save(): Promise<void> {
 	const editedData = get(editedDataStore);
@@ -8,16 +9,23 @@ export async function save(): Promise<void> {
 		const editedId = row.id;
 
 		try {
-			await fetch(`http://localhost:3000/pruvodni-list-data/${editedId}`, {
+			const response = await fetch(`http://localhost:3000/pruvodni-list-data/${editedId}`, {
 				method: 'PATCH',
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(row)
 			});
 
-			console.log(`Data saved successfully for id: ${editedId}`);
+			if (!response.ok) {
+				toastStore.set([{ type: "Critical", content: "Nepodařilo se uložit data"}]);
+			} else {
+				toastStore.set([{ type: "Success", content: "Úspěšně uloženo" }]);
+				editedDataStore.set([]);
+			}
+
 
 		} catch (error) {
-			console.error(`Failed to save data for id: ${editedId}`, error);
+			console.error('Error saving data:', error);
+			toastStore.set([{ type: "Critical", content: "Nepodařilo se uložit data"}]);
 		}
 	}
 }

@@ -16,7 +16,7 @@
 
 
 {#if isOpen === true}
-	<div class="w-16 min-w-16">
+	<div class="w-[60px] min-w-[60px]">
 		{#each item as item}
 			<button
 				class="text-[10px] flex text-muted-foreground rounded hover:bg-muted/70"

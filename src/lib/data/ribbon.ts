@@ -177,7 +177,7 @@ export const ribbonItems: Items[] = [
 		action: Action.FILTER_OUT_OF_RANGE,
 	},
 	{
-		name: "Filter v rozmezí",
+		name: "Filtr v rozmezí",
 		type: RibbonType.ITEM,
 		icon: Scan,
 		action: Action.FILTER_IN_RANGE,

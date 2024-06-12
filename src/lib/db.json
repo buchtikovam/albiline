@@ -42,7 +42,7 @@
     {
       "id": "3",
       "ksp": "35967",
-      "jmeno": "Pletená šála s třpytkami",
+      "jmeno": "Pletená šála ",
       "typ": "Produkt",
       "linie": "Dámská móda",
       "koncepce": "Doplňky",
@@ -344,67 +344,78 @@
       "accessor": "id",
       "header": "id",
       "type": "id",
-      "size": "checkbox"
+      "size": "checkbox",
+      "id": "c79f"
     },
     {
       "accessor": "ksp",
       "header": "KSP",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "id": "c7c4"
     },
     {
       "accessor": "jmeno",
       "header": "Jméno",
       "type": "string",
-      "size": "xlarge"
+      "size": "xlarge",
+      "id": "a9ee"
     },
     {
       "accessor": "typ",
       "header": "Typ",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "id": "b57b"
     },
     {
       "accessor": "linie",
       "header": "Linie",
       "type": "string",
-      "size": "medium"
+      "size": "medium",
+      "id": "4617"
     },
     {
       "accessor": "koncepce",
       "header": "Koncepce",
       "type": "string",
-      "size": "large"
+      "size": "large",
+      "id": "e5ab"
     },
     {
       "accessor": "klp",
       "header": "KLP",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "id": "6031"
     },
     {
       "accessor": "listovaciPolozka",
       "header": "Listovací položka",
       "type": "string",
-      "size": "large"
+      "size": "large",
+      "id": "ff96"
     },
     {
       "accessor": "prodCena",
       "header": "Cena",
       "type": "currency",
-      "size": "medium"
+      "size": "medium",
+      "id": "03d5"
     },
     {
       "accessor": "skladem",
       "header": "Skladem",
       "type": "string",
-      "size": "medium"
+      "size": "medium",
+      "id": "59a1"
     },
     {
       "accessor": "vyrobeno",
       "header": "Vyrobeno",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "id": "3117"
     }
   ]
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Table from '$lib/components/table/Table.svelte';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { handleRibbonActionChange } from '$lib/utils/handleRibbonActionChange';
+	import Table from '$lib/components/table/Table.svelte';
 
 	export let data;
 
@@ -12,4 +12,4 @@
 	});
 </script>
 
-<Table data={data} />
+<Table data={data}/>

@@ -10,7 +10,7 @@
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender, DataColumn } from 'svelte-headless-table';
 	import { textFilter } from '$lib/components/table/column-filters/filters';
-	import { get, writable } from 'svelte/store';
+	import { get, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
@@ -24,6 +24,8 @@
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
+
+	import type { TextFilters } from '$lib/types/filter';
 
 	export let data;
 	const columnData = writable(data.columnData);
@@ -43,6 +45,7 @@
 		columnData.set(newData)
 	};
 
+	let initColOrder: string[] = getInitColumnOrder();
 
 	const table = createTable(columnData, {
 		sort: addSortBy(),
@@ -51,7 +54,9 @@
 		}),
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
-		colOrder: addColumnOrder(),
+		colOrder: addColumnOrder({
+			initialColumnIdOrder: initColOrder
+		}),
 		colFilter: addColumnFilters(),
 		resize: addResizedColumns({
 			onResizeEnd: () => {
@@ -63,6 +68,13 @@
 		})
 	});
 
+	function getInitColumnOrder(): string[] {
+		return data.columnInfo.map((column: Column) => {
+			return column.accessor
+		})
+	}
+
+	// TODO: hide columns
 
 	const createdColumns: DataColumn<any, any>[] = [];
 	const tableColumns = table.createColumns(createdColumns);
@@ -103,7 +115,7 @@
 					}
 				}));
 			} else {
-				let columnFilter = writable("contains")
+				let columnFilter: Writable<TextFilters> = writable("contains")
 
 				createdColumns.push(table.column({
 					accessor: column.accessor,
@@ -159,8 +171,6 @@
 		}
 	};
 
-	// TODO: dnd bug
-
 	const drop = (event: DragEvent, target: number | null) => {
 		if (event.dataTransfer && target !== null) {
 			event.dataTransfer.dropEffect = 'copy';
@@ -177,15 +187,16 @@
 					if (start < target) {
 						columnOrderData.splice(target + 1, 0, columnOrderData[start]);
 						columnOrderData.splice(start, 1);
+						columnIdOrder.update(() => columnOrderData);
 					} else {
 						columnOrderData.splice(target, 0, columnOrderData[start]);
 						columnOrderData.splice(start + 1, 1);
+						columnIdOrder.update(() => columnOrderData);
 					}
 					hovering = null;
 				}
 			}, 0)
 
-			columnIdOrder.update(() => columnOrderData);
 		}
 	};
 

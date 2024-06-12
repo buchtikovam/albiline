@@ -26,12 +26,19 @@
 	onMount(() => {
 		dialogOpen = true;
 	});
+
+/*
+	TODO: research on current input dialogs, make it into single component,
+ 	that tells what inputs are needed (text, num, date, daterange, checkbox, radiobuttons)
+ */
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Content class="!w-[500px]">
 		<Dialog.Header>
-			<Dialog.Title class="h-6">Test dialog</Dialog.Title>
+			<Dialog.Title class="h-6">
+				Test dialog
+			</Dialog.Title>
 			<Dialog.Description>
 				Prosím zadejte parametry.
 			</Dialog.Description>
