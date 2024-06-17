@@ -57,17 +57,7 @@ export const allItems: Item[] = [
 				open: false,
 				hide: false,
 				icon: null,
-				children: [
-					{
-						name: "Zkouška",
-						value: "zkouska",
-						href: "/sklad/zasilky/zkouska",
-						open: false,
-						hide: false,
-						icon: null,
-						children: [],
-					},
-				]
+				children: [],
 			},
 		]
 	},

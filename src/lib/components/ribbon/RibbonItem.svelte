@@ -8,7 +8,7 @@
 
 	function setAction() {
 		if (item.action) {
-			ribbonActionStore.set(item.action)
+			ribbonActionStore.set(item.action);
 		}
 	}
 </script>

@@ -4,6 +4,7 @@
 	import type { Item, SubItem } from '$lib/types/ribbon';
 	import type { Action } from '$lib/enums/action';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 
 	export let item: Item;
 	export let isOpen: boolean = false;
@@ -15,8 +16,6 @@
 			ribbonActionStore.set(itemAction);
 		}
 	}
-
-	// 	TODO: differ item with dropdown from normal item
 </script>
 
 {#if isOpen === true}
@@ -25,7 +24,11 @@
 			<button
 				class="text-[10px] min-w-12 w-12 h-12 leading-3 rounded hover:bg-muted/70"
 			>
-				<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
+<!--				<span class="flex items-center justify-center gap-0.5 ml-1">-->
+					<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
+<!--					<ChevronDown class="size-2 " />-->
+<!--				</span>-->
+
 				{item.name}
 			</button>
 		</DropdownMenu.Trigger>
@@ -47,6 +50,7 @@
 				<Tooltip.Trigger>
 					<button class="size-6 rounded hover:bg-muted/70">
 						<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
+<!--						<ChevronDown class="size-2" />-->
 					</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content class="mt-20">

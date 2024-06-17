@@ -41,9 +41,9 @@
 
 		<form on:submit={handleSubmit}>
 			<div class="flex items-center">
-				<DatePicker name="Začátek" bind:value={startDate} />
+				<DatePicker label="Začátek" bind:value={startDate} />
 				<ChevronRight class="w-8 mt-6 mx-2" />
-				<DatePicker name="Konec" bind:value={endDate} />
+				<DatePicker label="Konec" bind:value={endDate} />
 			</div>
 
 			<Dialog.Footer>

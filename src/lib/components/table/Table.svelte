@@ -68,6 +68,8 @@
 		})
 	});
 
+	// TODO: save filters
+
 	function getInitColumnOrder(): string[] {
 		return data.columnInfo.map((column: Column) => {
 			return column.accessor

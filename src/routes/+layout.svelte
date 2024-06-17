@@ -13,7 +13,6 @@
 	toastStore.subscribe((data) => {
 		toasts = data;
 	});
-
 </script>
 
 <svelte:head>

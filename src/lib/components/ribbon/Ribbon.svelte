@@ -32,7 +32,7 @@
 				<RibbonDropdownItem item={item} isOpen={isOpen} />
 			{/if}
 			{#if item.type === RibbonType.SEPARATOR}
-				<Separator orientation="vertical" class="mx-2"/>
+				<Separator orientation="vertical" class="mx-2" />
 			{/if}
 		{/if}
 	{/each}
