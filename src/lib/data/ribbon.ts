@@ -196,9 +196,19 @@ export const ribbonItems: Items[] = [
 	},
 	{
 		name: "Moje filtry",
-		type: RibbonType.ITEM,
+		type: RibbonType.DROPDOWN,
 		icon: ListPlus,
-		action: Action.MY_FILTERS,
+		action: Action.UNKNOWN,
+		children: [
+			{
+				name: "Uložit aktuální filtry",
+				action: Action.SAVE_FILTERS
+			},
+			{
+				name: "Vybrat z uložených filtrů",
+				action: Action.MY_FILTERS
+			},
+		]
 	},
 	{
 		type: RibbonType.SEPARATOR,

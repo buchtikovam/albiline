@@ -18,6 +18,7 @@ export enum Action {
 	FILTER_IN_RANGE = "filter-in-range",
 	FILTER_UNDO = "filter-undo",
 	FILTER_REMOVE = "filter-remove",
+	SAVE_FILTERS = "save-filters",
 	MY_FILTERS = "my-filters",
 	MY_PRESETS = "my-presets",
 

@@ -24,10 +24,10 @@
 			<button
 				class="text-[10px] min-w-12 w-12 h-12 leading-3 rounded hover:bg-muted/70"
 			>
-<!--				<span class="flex items-center justify-center gap-0.5 ml-1">-->
-					<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
-<!--					<ChevronDown class="size-2 " />-->
-<!--				</span>-->
+				<span class="flex items-center justify-center ml-1">
+					<svelte:component this={item.icon} class="size-4 muted-foreground " />
+					<ChevronDown class="size-2 " />
+				</span>
 
 				{item.name}
 			</button>
@@ -44,13 +44,15 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {:else}
+	<!--TODO: scrollable small sidebar-->
+
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger>
 			<Tooltip.Root openDelay={250}>
 				<Tooltip.Trigger>
-					<button class="size-6 rounded hover:bg-muted/70">
+					<button class="size-6 min-w-6 rounded hover:bg-muted/70 flex items-center">
 						<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
-<!--						<ChevronDown class="size-2" />-->
+						<ChevronDown class="size-2 mr-0.5" />
 					</button>
 				</Tooltip.Trigger>
 				<Tooltip.Content class="mt-20">

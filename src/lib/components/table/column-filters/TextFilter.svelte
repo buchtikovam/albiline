@@ -2,21 +2,24 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import ArrowLeftFromLine from 'lucide-svelte/icons/arrow-left-from-line';
 	import ArrowLeftRight from 'lucide-svelte/icons/arrow-left-right';
 	import ArrowRightFromLine from 'lucide-svelte/icons/arrow-right-from-line';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import { Button } from '$lib/components/ui/button';
-	import { get, type Readable, type Writable } from 'svelte/store';
+	import { get, type Readable, type Writable } from 'svelte/store'
+	import type { TextFilters, Filter } from '$lib/types/filter';
+	import { currentFiltersStore } from '$lib/stores/tableStore';
 
-	export let filterValue;
 	export let preFilteredValues: Readable<unknown[]>;
 	export let values: Readable<unknown[]>;
-	export let columnFilter: Writable<string>;
-
 	get(values);
 	get(preFilteredValues);
+
+	export let accessor: string;
+	export let filterValue: Writable<string>;
+	export let columnFilter: Writable<TextFilters>;
 
 	// TODO: add checkboxes with unique row values, to filter out data
 
@@ -45,14 +48,50 @@
 		filters.find((f) => f.value === value)
 	;
 
-	function closeAndFocusTrigger(triggerId: string, value: string) {
+
+	function closeAndFocusTrigger(triggerId: string, value: TextFilters) {
 		open = false;
 		columnFilter.set(value);
+		saveFiltersTemporary(get(filterValue), value)
 
 		tick().then(() => {
 			document.getElementById(triggerId)?.focus();
 		});
 	}
+
+	function saveFiltersTemporary(value: string, columnFilter: TextFilters) {
+		let newFilter: Filter = {
+			value: value,
+			colFilter: columnFilter
+		}
+
+		currentFiltersStore.update((data) => {
+			if (data !== undefined) {
+				const existingFilter = data[accessor];
+				if (existingFilter) {
+					existingFilter.value = value;
+					existingFilter.colFilter = columnFilter;
+				} else {
+					data[accessor] = newFilter;
+				}
+				return data;
+			}
+		});
+
+	}
+
+	let prevFilterValue = "";
+
+	onMount(() => {
+		saveFiltersTemporary(get(filterValue), get(columnFilter));
+
+		filterValue.subscribe((newValue: string) => {
+			if (prevFilterValue !== newValue) {
+				saveFiltersTemporary(get(filterValue), get(columnFilter));
+				prevFilterValue = newValue;
+			}
+		});
+	});
 </script>
 
 <div class="w-auto flex items-center border rounded-md my-0.5 ">

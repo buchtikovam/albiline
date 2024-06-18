@@ -6,10 +6,6 @@
 	export let preset: string = 'pruvodni-list';
 </script>
 
-<svelte:head>
-	<title>Albiline</title>
-</svelte:head>
-
 <div class="w-full">
 	<Tabs.Root value={$page.url.pathname}>
 		<Tabs.List class="w-fit">

@@ -6,11 +6,11 @@
 		addSelectedRows,
 		addColumnOrder,
 		addColumnFilters,
-		addResizedColumns,
+		addResizedColumns
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender, DataColumn } from 'svelte-headless-table';
 	import { textFilter } from '$lib/components/table/column-filters/filters';
-	import { get, type Writable, writable } from 'svelte/store';
+	import { derived, get, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
@@ -18,14 +18,14 @@
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
 	import { Button } from '$lib/components/ui/button';
 	import { cellWidths } from '$lib/constants/cellWidths';
-	import { columnWidthStore, columnOrderStore } from '$lib/stores/tableStore';
+	import { columnWidthStore, columnOrderStore, currentFiltersStore } from '$lib/stores/tableStore';
 	import type { Column } from '$lib/types/table';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
 
-	import type { TextFilters } from '$lib/types/filter';
+	import type { StoredFilters, TextFilters } from '$lib/types/filter';
 
 	export let data;
 	const columnData = writable(data.columnData);
@@ -42,7 +42,7 @@
 		});
 
 	const updateData = (newData) => {
-		columnData.set(newData)
+		columnData.set(newData);
 	};
 
 	let initColOrder: string[] = getInitColumnOrder();
@@ -62,26 +62,32 @@
 			onResizeEnd: () => {
 				const { columnWidths } = pluginStates.resize;
 				columnWidths.subscribe((data) => {
-						columnWidthStore.set(data);
+					columnWidthStore.set(data);
 				});
 			}
 		})
 	});
 
-	// TODO: save filters
 
 	function getInitColumnOrder(): string[] {
 		return data.columnInfo.map((column: Column) => {
-			return column.accessor
-		})
+			return column.accessor;
+		});
 	}
 
 	// TODO: hide columns
 
-	const createdColumns: DataColumn<any, any>[] = [];
-	const tableColumns = table.createColumns(createdColumns);
+	let createdColumns: DataColumn<any, any>[] = [];
+	let tableColumns;
 
-	columnWidthStore.subscribe((colWidthData) => {
+	currentFiltersStore.subscribe((filters) => {
+		createdColumns = []
+		tableColumns = undefined;
+
+		console.log("sub");
+		console.log("filters", filters);
+
+		const colWidthData = get(columnWidthStore)
 		data.columnInfo.map((column: Column) => {
 			let initialWidth;
 			if (colWidthData && Object.keys(colWidthData).length > 0) {
@@ -117,7 +123,9 @@
 					}
 				}));
 			} else {
-				let columnFilter: Writable<TextFilters> = writable("contains")
+				let accessor = column.accessor;
+				const initialFilter = filters ? filters[accessor].value : '';
+				let columnFilter = writable(filters ? filters[accessor].colFilter : 'contains');
 
 				createdColumns.push(table.column({
 					accessor: column.accessor,
@@ -125,9 +133,15 @@
 					plugins: {
 						colFilter: {
 							fn: textFilter(columnFilter),
-							initialFilterValue: '',
+							initialFilterValue: initialFilter,
 							render: ({ filterValue, values, preFilteredValues }) =>
-								createRender(TextFilter, { filterValue, values, preFilteredValues, columnFilter })
+								createRender(TextFilter, {
+									filterValue,
+									values,
+									preFilteredValues,
+									columnFilter,
+									accessor
+								})
 						},
 						resize: {
 							minWidth: 80,
@@ -139,7 +153,9 @@
 				}));
 			}
 		});
-	});
+		tableColumns = table.createColumns(createdColumns)
+	})
+
 
 	const {
 		headerRows,
@@ -149,9 +165,6 @@
 		pluginStates
 	} = table.createViewModel(tableColumns);
 
-	function resetColumns() {
-		columnWidthStore.set({ });
-	}
 
 	// checkbox plugin
 	let selectedRows = 0;
@@ -164,16 +177,16 @@
 	let hovering: number | null;
 	let start: number;
 
-	const drag = (event: DragEvent, index: number) => {
+	function drag (event: DragEvent, index: number) {
 		if (event.dataTransfer) {
 			event.dataTransfer.effectAllowed = 'copy';
 			event.dataTransfer.dropEffect = 'copy';
 			event.dataTransfer.setData('text/plain', '');
 			start = index;
 		}
-	};
+	}
 
-	const drop = (event: DragEvent, target: number | null) => {
+	function drop (event: DragEvent, target: number | null) {
 		if (event.dataTransfer && target !== null) {
 			event.dataTransfer.dropEffect = 'copy';
 
@@ -197,10 +210,10 @@
 					}
 					hovering = null;
 				}
-			}, 0)
+			}, 0);
 
 		}
-	};
+	}
 
 
 	function setHovering(index: number) {
@@ -310,13 +323,5 @@
 			{selectedRows} řad označeno.
 		</div>
 
-		<Button
-			variant="ghost"
-			size="sm"
-			class="hover:bg-muted/50"
-			on:click={resetColumns}
-		>
-			<RotateCcw class="h-4 w-4" />
-		</Button>
 	</div>
 </div>

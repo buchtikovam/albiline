@@ -341,81 +341,271 @@
   ],
   "pruvodni-list-info": [
     {
+      "id": 0,
       "accessor": "id",
       "header": "id",
       "type": "id",
-      "size": "checkbox",
-      "id": "c79f"
+      "size": "checkbox"
     },
     {
+      "id": 1,
       "accessor": "ksp",
       "header": "KSP",
       "type": "string",
-      "size": "small",
-      "id": "c7c4"
+      "size": "small"
     },
     {
+      "id": 2,
       "accessor": "jmeno",
       "header": "Jméno",
       "type": "string",
-      "size": "xlarge",
-      "id": "a9ee"
+      "size": "xlarge"
     },
     {
+      "id": 3,
       "accessor": "typ",
       "header": "Typ",
       "type": "string",
-      "size": "small",
-      "id": "b57b"
+      "size": "small"
     },
     {
+      "id": 4,
       "accessor": "linie",
       "header": "Linie",
       "type": "string",
-      "size": "medium",
-      "id": "4617"
+      "size": "medium"
     },
     {
+      "id": 5,
       "accessor": "koncepce",
       "header": "Koncepce",
       "type": "string",
-      "size": "large",
-      "id": "e5ab"
+      "size": "large"
     },
     {
+      "id": 6,
       "accessor": "klp",
       "header": "KLP",
       "type": "string",
-      "size": "small",
-      "id": "6031"
+      "size": "small"
     },
     {
+      "id": 7,
       "accessor": "listovaciPolozka",
       "header": "Listovací položka",
       "type": "string",
-      "size": "large",
-      "id": "ff96"
+      "size": "large"
     },
     {
+      "id": 8,
       "accessor": "prodCena",
       "header": "Cena",
       "type": "currency",
-      "size": "medium",
-      "id": "03d5"
+      "size": "medium"
     },
     {
+      "id": 9,
       "accessor": "skladem",
       "header": "Skladem",
       "type": "string",
-      "size": "medium",
-      "id": "59a1"
+      "size": "medium"
     },
     {
+      "id": 10,
       "accessor": "vyrobeno",
       "header": "Vyrobeno",
       "type": "string",
-      "size": "small",
-      "id": "3117"
+      "size": "small"
+    }
+  ],
+  "filters": [
+    {
+      "id": 0,
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "Jména na S",
+      "filters": {
+        "ksp": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "jmeno": {
+          "value": "s",
+          "colFilter": "starts-with"
+        },
+        "koncepce": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "linie": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "listovaciPolozka": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "prodCena": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "vyrobeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "skladem": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "contains"
+        }
+      }
+    },
+    {
+      "id": 1,
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "Domácnost",
+      "filters": {
+        "ksp": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "jmeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "koncepce": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "linie": {
+          "value": "Dom",
+          "colFilter": "contains"
+        },
+        "listovaciPolozka": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "prodCena": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "vyrobeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "skladem": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "contains"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "Končí na 7",
+      "filters": {
+        "ksp": {
+          "value": "7",
+          "colFilter": "ends-with"
+        },
+        "jmeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "koncepce": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "linie": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "listovaciPolozka": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "prodCena": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "vyrobeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "skladem": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "contains"
+        }
+      }
+    },
+    {
+      "id": "589e",
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "Hračky",
+      "filters": {
+        "ksp": {
+          "value": "8",
+          "colFilter": "starts-with"
+        },
+        "jmeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "koncepce": {
+          "value": "Hračky",
+          "colFilter": "contains"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "linie": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "listovaciPolozka": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "prodCena": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "vyrobeno": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "skladem": {
+          "value": "",
+          "colFilter": "contains"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "contains"
+        }
+      }
     }
   ]
 }

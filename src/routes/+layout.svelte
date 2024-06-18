@@ -15,9 +15,7 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Albiline</title>
-</svelte:head>
+
 
 <div class="grid h-dvh w-dvh">
 	{#if toasts.length > 0}
