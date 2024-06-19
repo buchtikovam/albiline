@@ -26,6 +26,8 @@
 	import * as Table from '$lib/components/ui/table';
 
 	import type { StoredFilters, TextFilters } from '$lib/types/filter';
+	import { toast } from 'svelte-sonner';
+	import Toast from '$lib/components/toast/Toast.svelte';
 
 	export let data;
 	const columnData = writable(data.columnData);
@@ -156,6 +158,7 @@
 		tableColumns = table.createColumns(createdColumns)
 	})
 
+	// TODO(bug): filters won't refresh
 
 	const {
 		headerRows,
@@ -322,6 +325,5 @@
 		<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
 			{selectedRows} řad označeno.
 		</div>
-
 	</div>
 </div>

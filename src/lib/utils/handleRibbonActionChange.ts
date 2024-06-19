@@ -40,4 +40,4 @@ export function handleRibbonActionChange(action: Action) {
 	}
 }
 
-// TODO: delete, edit
+// TODO: delete

@@ -1,6 +1,6 @@
 import { editedDataStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
-import { toastStore } from '$lib/stores/toastStore';
+import { customToast } from '$lib/utils/customToast';
 
 export async function save(): Promise<void> {
 	const editedData = get(editedDataStore);
@@ -16,29 +16,14 @@ export async function save(): Promise<void> {
 			});
 
 			if (!response.ok) {
-				toastStore.set([
-					{
-						type: 'Critical',
-						content: 'Nepodařilo se uložit data'
-					}
-				]);
+				customToast("Critical", "Nepodařilo se uložit data.")
 			} else {
-				toastStore.set([
-					{
-						type: 'Success',
-						content: 'Úspěšně uloženo'
-					}
-				]);
+				customToast("Success", "Data byla úspěšně uložena.")
 				editedDataStore.set([]);
 			}
 		} catch (error) {
 			console.error('Error saving data:', error);
-			toastStore.set([
-				{
-					type: 'Critical',
-					content: 'Nepodařilo se uložit data'
-				}
-			]);
+			customToast("Critical", "Nepodařilo se uložit data.")
 		}
 	}
 }

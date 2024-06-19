@@ -4,6 +4,7 @@
 	import Table from '$lib/components/table/Table.svelte';
 	import MainDialog from '$lib/components/ribbon-dialog/MainDialog.svelte';
 	import { page } from '$app/stores';
+	import { toast } from 'svelte-sonner';
 
 	export let data;
 
@@ -17,6 +18,8 @@
 <svelte:head>
 	<title>Průvodní list</title>
 </svelte:head>
+
+
 
 <Table data={data}/>
 
