@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { editedDataStore } from '$lib/stores/tableStore';
 	import { get } from 'svelte/store';
+	import { isEditAllowedStore } from '$lib/stores/ribbonStore';
 
 	export let row;
 	export let column;
@@ -14,6 +15,12 @@
 
 	$: if (isEditing) {
 		inputElement?.focus();
+	}
+
+	function handleEdit() {
+		if (get(isEditAllowedStore)) {
+			isEditing = true
+		}
 	}
 
 	const handleSubmit = (event: Event) => {
@@ -42,7 +49,7 @@
 
 <div class="w-full">
 	{#if !isEditing}
-    	<span on:dblclick={() => (isEditing = true)} aria-hidden="true" class="line-clamp-1">
+    	<span on:dblclick={handleEdit} aria-hidden="true" class="line-clamp-1">
       		{value}
     	</span>
 	{:else}

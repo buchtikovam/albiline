@@ -9,8 +9,8 @@
 		activeCategoryStore
 	} from '$lib/stores/sidebarStore';
 	import { onMount } from 'svelte';
-	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
-	import { handleTabClick } from '$lib/utils/handleTabClick';
+	import { buttonBorderSwitch } from '$lib/utils/button/buttonBorderSwitch';
+	import { handleTabClick } from '$lib/utils/header/handleTabClick';
 	import { get } from 'svelte/store';
 	import deepcopy from 'deepcopy';
 	import Search from 'lucide-svelte/icons/search';

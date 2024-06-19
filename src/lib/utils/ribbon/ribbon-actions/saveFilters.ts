@@ -2,7 +2,7 @@ import { currentFiltersStore, editedDataStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import apiService from '$lib/api/apiService';
 import type { FetchedFilter } from '$lib/types/filter';
-import { customToast } from '$lib/utils/customToast';
+import { customToast } from '$lib/utils/toast/customToast';
 
 
 export async function saveFilters(inputValue: string, url: string): Promise<void> {

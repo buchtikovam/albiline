@@ -90,7 +90,6 @@
 				<Home class="w-4 h-4" />
 			</Tabs.Trigger>
 
-			<!-- TODO: animation -->
 			<!-- Taby otevřené uživatelem -->
 			{#each tabs as tab}
 				<Tabs.Trigger

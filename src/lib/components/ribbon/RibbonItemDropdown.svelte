@@ -44,7 +44,7 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {:else}
-	<!--TODO: scrollable small sidebar-->
+	<!--TODO: scrollable small ribbon-->
 
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger>

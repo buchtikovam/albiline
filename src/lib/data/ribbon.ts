@@ -32,16 +32,16 @@ export const ribbonItems: Items[] = [
 			action: Action.NEW,
 		},
 		{
-			name: "Smazat",
-			type: RibbonType.ITEM,
-			icon: FileX2,
-			action: Action.DELETE,
-		},
-		{
 			name: "Editovat",
 			type: RibbonType.ITEM,
 			icon: Pencil,
 			action: Action.EDIT,
+		},
+		{
+			name: "Smazat",
+			type: RibbonType.ITEM,
+			icon: FileX2,
+			action: Action.DELETE,
 		},
 	],
 	{

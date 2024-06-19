@@ -4,6 +4,10 @@
 	let params: any[];
 </script>
 
+<svelte:head>
+	<title>Test</title>
+</svelte:head>
+
 <InputDialog bind:objects={params} />
 
 {#if params !== undefined}

@@ -1,8 +1,8 @@
 import { Action } from '$lib/enums/action';
-import { save } from '$lib/utils/ribbon-actions/save';
+import { save } from '$lib/utils/ribbon/ribbon-actions/save';
 import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-import { edit } from '$lib/utils/ribbon-actions/edit';
-import { deleteItem } from '$lib/utils/ribbon-actions/deleteItem';
+import { edit } from '$lib/utils/ribbon/ribbon-actions/edit';
+import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/deleteItem';
 
 export function handleRibbonActionChange(action: Action) {
 
@@ -17,7 +17,7 @@ export function handleRibbonActionChange(action: Action) {
 	}
 
 	if (action === Action.DELETE) {
-		deleteItem();
+		deleteItem().then(() => ribbonActionStore.set(undefined));
 	}
 
 
@@ -39,5 +39,3 @@ export function handleRibbonActionChange(action: Action) {
 		openedDialogStore.set("save-filters")
 	}
 }
-
-// TODO: delete

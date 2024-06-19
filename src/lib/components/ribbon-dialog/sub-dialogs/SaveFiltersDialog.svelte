@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { saveFilters } from '$lib/utils/ribbon-actions/saveFilters';
+	import { saveFilters } from '$lib/utils/ribbon/ribbon-actions/saveFilters';
 	import { page } from '$app/stores';
 
 	let dialogOpen: boolean = false;

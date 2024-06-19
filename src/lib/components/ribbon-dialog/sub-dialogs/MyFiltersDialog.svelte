@@ -5,10 +5,11 @@
 	import { page } from '$app/stores';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-
-	// TODO: display fetched filters
+	import { Button } from '$lib/components/ui/button';
 
 	let filtersData: FetchedFilter[] | undefined = undefined;
+
+	// TODO: style myFilters
 
 	(async function getFilters() {
 		try {
@@ -20,16 +21,16 @@
 				return filter.pageOrigin === $page.url.pathname;
 			});
 		} catch (error) {
-			console.error("Error fetching filters:", error);
+			console.error('Error fetching filters:', error);
 		}
 	})();
 
 
 	function handleClick(filters: StoredFilters) {
-		currentFiltersStore.set(filters)
+		currentFiltersStore.set(filters);
 		dialogOpen = false;
-		openedDialogStore.set(undefined)
-		ribbonActionStore.set(undefined)
+		openedDialogStore.set(undefined);
+		ribbonActionStore.set(undefined);
 	}
 
 	let dialogOpen: boolean = false;
@@ -40,7 +41,7 @@
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
-	<Dialog.Content class="">
+	<Dialog.Content class="!min-w-[300px] !w-fit">
 		<Dialog.Header>
 			<Dialog.Title class="h-6">
 				Moje filtry
@@ -49,10 +50,17 @@
 
 		{#if filtersData !== undefined}
 			{#each filtersData as filter}
-				<button on:click={() => handleClick(filter.filters)}>{filter.filterName}</button>
+				<Button variant="outline" on:click={() => handleClick(filter.filters)}>
+					{filter.filterName}
+				</Button>
 			{/each}
+
 		{:else}
 			<p>Loading</p>
 		{/if}
+
+<!--		<Button type="submit" class="mt-6 w-full bg-albi-500 text-background font-bolder">-->
+<!--			Potvrdit-->
+<!--		</Button>-->
 	</Dialog.Content>
 </Dialog.Root>

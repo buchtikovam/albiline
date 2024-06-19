@@ -48,7 +48,6 @@
 		filters.find((f) => f.value === value)
 	;
 
-
 	function closeAndFocusTrigger(triggerId: string, value: TextFilters) {
 		open = false;
 		columnFilter.set(value);
@@ -91,6 +90,8 @@
 				prevFilterValue = newValue;
 			}
 		});
+
+		value = get(columnFilter);
 	});
 </script>
 
@@ -106,7 +107,7 @@
 			>
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
-						<svelte:component this={selectedValue?.icon ?? ChevronDown} class="h-3 w-3 min-w-3" />
+						<svelte:component this={get(columnFilter) === "default" ? ChevronDown : selectedValue?.icon} class="h-3 w-3 min-w-3" />
 					</Tooltip.Trigger>
 					{#if selectedValue?.label === undefined}
 						<Tooltip.Content class="mt-16">Vyberte filtr</Tooltip.Content>

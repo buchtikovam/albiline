@@ -15,8 +15,6 @@
 		ribbonActionStore.set(undefined)
 	}
 
-	// TODO: make input form with inputs based on columnInfo from page data
-
 	onMount(() => {
 		dialogOpen = true;
 	});

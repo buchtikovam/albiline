@@ -10,24 +10,18 @@
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender, DataColumn } from 'svelte-headless-table';
 	import { textFilter } from '$lib/components/table/column-filters/filters';
-	import { derived, get, type Writable, writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
-	import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
-	import { Button } from '$lib/components/ui/button';
 	import { cellWidths } from '$lib/constants/cellWidths';
-	import { columnWidthStore, columnOrderStore, currentFiltersStore } from '$lib/stores/tableStore';
+	import { columnWidthStore, columnOrderStore, currentFiltersStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import type { Column } from '$lib/types/table';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
-
-	import type { StoredFilters, TextFilters } from '$lib/types/filter';
-	import { toast } from 'svelte-sonner';
-	import Toast from '$lib/components/toast/Toast.svelte';
 
 	export let data;
 	const columnData = writable(data.columnData);
@@ -83,13 +77,13 @@
 	let tableColumns;
 
 	currentFiltersStore.subscribe((filters) => {
-		createdColumns = []
+		createdColumns = [];
 		tableColumns = undefined;
 
-		console.log("sub");
-		console.log("filters", filters);
+		// console.log('sub');
+		// console.log('filters', filters);
 
-		const colWidthData = get(columnWidthStore)
+		const colWidthData = get(columnWidthStore);
 		data.columnInfo.map((column: Column) => {
 			let initialWidth;
 			if (colWidthData && Object.keys(colWidthData).length > 0) {
@@ -127,7 +121,7 @@
 			} else {
 				let accessor = column.accessor;
 				const initialFilter = filters ? filters[accessor].value : '';
-				let columnFilter = writable(filters ? filters[accessor].colFilter : 'contains');
+				let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
 
 				createdColumns.push(table.column({
 					accessor: column.accessor,
@@ -155,10 +149,10 @@
 				}));
 			}
 		});
-		tableColumns = table.createColumns(createdColumns)
-	})
+		tableColumns = table.createColumns(createdColumns);
+	});
 
-	// TODO(bug): filters won't refresh
+	// TODO: table rerender!
 
 	const {
 		headerRows,
@@ -172,15 +166,17 @@
 	// checkbox plugin
 	let selectedRows = 0;
 	const { selectedDataIds } = pluginStates.select;
-	selectedDataIds.subscribe(
-		(rows) => selectedRows = Object.keys(rows).length
-	);
+	selectedDataIds.subscribe((rows) => {
+		selectedRowsStore.set(rows);
+		selectedRows = Object.keys(rows).length;
+	});
+
 
 	// column drag and drop functions
 	let hovering: number | null;
 	let start: number;
 
-	function drag (event: DragEvent, index: number) {
+	function drag(event: DragEvent, index: number) {
 		if (event.dataTransfer) {
 			event.dataTransfer.effectAllowed = 'copy';
 			event.dataTransfer.dropEffect = 'copy';
@@ -189,7 +185,7 @@
 		}
 	}
 
-	function drop (event: DragEvent, target: number | null) {
+	function drop(event: DragEvent, target: number | null) {
 		if (event.dataTransfer && target !== null) {
 			event.dataTransfer.dropEffect = 'copy';
 

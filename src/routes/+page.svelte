@@ -4,5 +4,6 @@
 	</h1>
 </div>
 
-
-<!--TODO: add titles to all pages ! -->
+<svelte:head>
+	<title>Albiline</title>
+</svelte:head>

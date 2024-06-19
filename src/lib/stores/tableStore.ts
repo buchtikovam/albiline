@@ -14,3 +14,5 @@ export const pageCompactStore: Writable<'standard' | 'compact'> = persisted('row
 export const editedDataStore: Writable<any[]> = writable([]);
 
 export const currentFiltersStore: Writable<StoredFilters|undefined> = writable(undefined)
+
+export const selectedRowsStore: Writable<Record<number, boolean>|undefined> = writable(undefined)

@@ -24,6 +24,7 @@ export const textFilter = (columnFilter: Writable<TextFilters>) => {
 			return String(value).toLowerCase().endsWith(String(filterValue).toLowerCase());
 		}
 
+		// default
 		return String(value).toLowerCase().includes(String(filterValue).toLowerCase())
 	};
 };

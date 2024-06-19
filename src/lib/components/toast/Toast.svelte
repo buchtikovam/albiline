@@ -11,7 +11,7 @@
 
 <div
 	id="toast"
-	class="flex items-center max-w-[300px] p-2 text-primary bg-background rounded-lg border-2 dark:text-albi-50 dark:bg-albi-800"
+	class="flex items-center max-w-[300px] p-2 text-primary bg-background rounded-lg border-2 dark:text-albi-50 dark:bg-albi-800 pr-3"
 >
 	{#if type === 'InfoToast'}
 		<div
@@ -35,5 +35,7 @@
 		</div>
 	{/if}
 
-	<div class="ms-3 text-sm font-semibold">{content}</div>
+	<div class="ms-3 text-sm font-semibold">
+		{content}
+	</div>
 </div>

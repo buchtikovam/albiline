@@ -422,11 +422,11 @@
     {
       "id": "0",
       "pageOrigin": "/pruvodni-list",
-      "filterName": "Jména na S",
+      "filterName": "Jména produktů začínající na S",
       "filters": {
         "ksp": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "jmeno": {
           "value": "s",
@@ -434,42 +434,42 @@
         },
         "koncepce": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "typ": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "linie": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "listovaciPolozka": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "prodCena": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "vyrobeno": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "skladem": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "klp": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         }
       }
     },
     {
       "id": "2",
       "pageOrigin": "/pruvodni-list",
-      "filterName": "Končí na 7",
+      "filterName": "KSP končící na 7",
       "filters": {
         "ksp": {
           "value": "7",
@@ -477,86 +477,39 @@
         },
         "jmeno": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "koncepce": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "typ": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "linie": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "listovaciPolozka": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "prodCena": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "vyrobeno": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "skladem": {
           "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         },
         "klp": {
           "value": "",
-          "colFilter": "contains"
-        }
-      }
-    },
-    {
-      "id": "589e",
-      "pageOrigin": "/pruvodni-list",
-      "filterName": "Hračky",
-      "filters": {
-        "ksp": {
-          "value": "8",
-          "colFilter": "starts-with"
-        },
-        "jmeno": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "koncepce": {
-          "value": "Hračky",
-          "colFilter": "contains"
-        },
-        "typ": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "linie": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "listovaciPolozka": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "prodCena": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "vyrobeno": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "skladem": {
-          "value": "",
-          "colFilter": "contains"
-        },
-        "klp": {
-          "value": "",
-          "colFilter": "contains"
+          "colFilter": "default"
         }
       }
     }

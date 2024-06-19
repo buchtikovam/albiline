@@ -1,11 +1,9 @@
 import { isEditAllowedStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 import { get } from 'svelte/store';
-import { customToast } from '$lib/utils/customToast';
+import { customToast } from '$lib/utils/toast/customToast';
 
 export function edit() {
 	isEditAllowedStore.update((value) => !value);
-
-	// TODO: implement edit disable
 
 	if (get(isEditAllowedStore)) {
 		customToast("InfoToast", "Editace byla povolena")

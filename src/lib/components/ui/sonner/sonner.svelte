@@ -3,8 +3,6 @@
 	// import { mode } from "mode-watcher";
 
 	type $$Props = SonnerProps;
-
-	console.log("toast");
 </script>
 
 <Sonner
