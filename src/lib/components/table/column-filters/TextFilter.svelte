@@ -42,6 +42,8 @@
 	// 		icon: ArrowLeftRight
 	// 	}
 	// ];
+	// let open = false;
+	// let value = '';
 
 	// $: selectedValue =
 	// 	filters.find((f) => f.value === value)
@@ -116,6 +118,28 @@
 <!--				</Tooltip.Root>-->
 <!--			</Button>-->
 
+<!--		</Popover.Trigger>-->
+<!--		<Popover.Content class="w-fit p-0">-->
+<!--			<Command.Root>-->
+<!--				<Command.Empty>Nejsou dostupné žádné filtry.</Command.Empty>-->
+<!--				<Command.Group class="p-1">-->
+<!--					{#each filters as filter}-->
+<!--						<Command.Item-->
+<!--							value={filter.value}-->
+<!--							onSelect={(currentValue) => {-->
+<!--								value = currentValue;-->
+<!--								closeAndFocusTrigger(ids.trigger, filter.value);-->
+<!--							}}-->
+<!--							class="text-xs hover:bg-muted/70 p-1.5 flex items-center"-->
+<!--						>-->
+<!--							<svelte:component this={filter.icon} class="h-3 w-3 mr-2" />-->
+<!--							{filter.label}-->
+<!--						</Command.Item>-->
+<!--					{/each}-->
+<!--				</Command.Group>-->
+<!--			</Command.Root>-->
+<!--		</Popover.Content>-->
+<!--	</Popover.Root>-->
 <!--		</Popover.Trigger>-->
 <!--		<Popover.Content class="w-fit p-0">-->
 <!--			<Command.Root>-->
