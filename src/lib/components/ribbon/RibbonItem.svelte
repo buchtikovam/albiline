@@ -23,9 +23,9 @@
 	</button>
 {:else}
 	<Tooltip.Root openDelay={250}>
-		<Tooltip.Trigger>
+		<Tooltip.Trigger class="min-w-6">
 			<button
-				class="size-6 rounded hover:bg-muted/70"
+				class="w-6 rounded hover:bg-muted/70"
 				on:click={setAction}
 			>
 				<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground" />

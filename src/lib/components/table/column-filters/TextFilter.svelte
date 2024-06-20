@@ -14,15 +14,14 @@
 
 	export let preFilteredValues: Readable<unknown[]>;
 	export let values: Readable<unknown[]>;
-	get(values);
-	get(preFilteredValues);
+	get(preFilteredValues)
+	get(values)
 
 	export let accessor: string;
 	export let filterValue: Writable<string>;
 	export let columnFilter: Writable<TextFilters>;
 
-	// TODO: add checkboxes with unique row values, to filter out data
-
+	// // TODO: add checkboxes with unique row values, to filter out data
 	let open = false;
 	let value = '';
 
@@ -120,7 +119,7 @@
 		</Popover.Trigger>
 		<Popover.Content class="w-fit p-0">
 			<Command.Root>
-				<Command.Empty>No framework found.</Command.Empty>
+				<Command.Empty>Nejsou dostupné žádné filtry.</Command.Empty>
 				<Command.Group class="p-1">
 					{#each filters as filter}
 						<Command.Item

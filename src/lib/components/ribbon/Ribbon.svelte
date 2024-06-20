@@ -38,7 +38,6 @@
 	{/each}
 </div>
 
-
 <div
 	class={
 		(isOpen
@@ -55,4 +54,3 @@
 		{/if}
 	</button>
 </div>
-
