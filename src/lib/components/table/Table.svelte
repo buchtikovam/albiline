@@ -24,26 +24,16 @@
 	import * as Table from '$lib/components/ui/table';
 
 	export let data;
+	const rowData = writable(data.rowData);
 	const columnData = writable(data.columnData);
-	let storeData = get(columnData);
-
-	// editable cell
-	const EditableCellLabel = ({ column, row, value }) =>
-		createRender(EditableCell, {
-			row,
-			column,
-			value,
-			storeData,
-			onUpdateValue: updateData
-		});
 
 	const updateData = (newData) => {
-		columnData.set(newData);
+		rowData.set(newData);
 	};
 
 	let initColOrder: string[] = getInitColumnOrder();
 
-	const table = createTable(columnData, {
+	const table = createTable(rowData, {
 		sort: addSortBy(),
 		filter: addTableFilter({
 			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
@@ -66,102 +56,113 @@
 
 
 	function getInitColumnOrder(): string[] {
-		return data.columnInfo.map((column: Column) => {
+		return get(columnData).map((column: Column) => {
 			return column.accessor;
 		});
 	}
 
 	// TODO: hide columns
 
-	let createdColumns: DataColumn<any, any>[] = [];
-	let tableColumns;
 
-	currentFiltersStore.subscribe((filters) => {
-		createdColumns = [];
-		tableColumns = undefined;
 
-		// console.log('sub');
-		// console.log('filters', filters);
-
-		const colWidthData = get(columnWidthStore);
-		data.columnInfo.map((column: Column) => {
-			let initialWidth;
-			if (colWidthData && Object.keys(colWidthData).length > 0) {
-				initialWidth = colWidthData[column.accessor];
-			} else {
-				initialWidth = cellWidths.get(column.size);
-			}
-
-			if (column.type === 'id') {
-				createdColumns.push(table.column({
-					header: (_, { pluginStates }) => {
-						const { allPageRowsSelected } = pluginStates.select;
-						return createRender(TableCheckbox, {
-							checked: allPageRowsSelected
-						});
-					},
-					accessor: column.accessor,
-					cell: ({ row }, { pluginStates }) => {
-						const { getRowState } = pluginStates.select;
-						const { isSelected } = getRowState(row);
-						return createRender(TableCheckbox, {
-							checked: isSelected
-						});
-					},
-					plugins: {
-						sort: {
-							disable: true
-						},
-						resize: {
-							initialWidth: 40,
-							disable: true
-						}
-					}
-				}));
-			} else {
-				let accessor = column.accessor;
-				const initialFilter = filters ? filters[accessor].value : '';
-				let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
-
-				createdColumns.push(table.column({
-					accessor: column.accessor,
-					header: column.header,
-					plugins: {
-						colFilter: {
-							fn: textFilter(columnFilter),
-							initialFilterValue: initialFilter,
-							render: ({ filterValue, values, preFilteredValues }) =>
-								createRender(TextFilter, {
-									filterValue,
-									values,
-									preFilteredValues,
-									columnFilter,
-									accessor
-								})
-						},
-						resize: {
-							minWidth: 80,
-							initialWidth: initialWidth,
-							maxWidth: 400
-						}
-					},
-					cell: EditableCellLabel
-				}));
-			}
-		});
-		tableColumns = table.createColumns(createdColumns);
+	let tableColumnData = writable([]);
+	let tableViewModel = table.createViewModel(
+		table.createColumns(get(tableColumnData)),
+	);
+	let headerRows = tableViewModel.headerRows;
+	let pageRows = tableViewModel.pageRows;
+	let tableAttrs = tableViewModel.tableAttrs;
+	let tableBodyAttrs = tableViewModel.tableBodyAttrs;
+	let pluginStates = tableViewModel.pluginStates;
+	tableColumnData.subscribe((value) => {
+		tableViewModel = table.createViewModel(
+			table.createColumns(value),
+		);
+		headerRows = tableViewModel.headerRows;
+		pageRows = tableViewModel.pageRows;
+		tableAttrs = tableViewModel.tableAttrs;
+		tableBodyAttrs = tableViewModel.tableBodyAttrs;
+		pluginStates = tableViewModel.pluginStates;
 	});
 
-	// TODO: table rerender!
+	currentFiltersStore.subscribe((filters) => {
+		const colWidthData = get(columnWidthStore);
+		tableColumnData.set(
+			get(columnData).map(
+				(column: Column) => {
+					let initialWidth;
+					if (colWidthData && Object.keys(colWidthData).length > 0) {
+						initialWidth = colWidthData[column.accessor];
+					} else {
+						initialWidth = cellWidths.get(column.size);
+					}
 
-	const {
-		headerRows,
-		pageRows,
-		tableAttrs,
-		tableBodyAttrs,
-		pluginStates
-	} = table.createViewModel(tableColumns);
+					if (column.type === 'id') {
+						return table.column({
+							header: (_, { pluginStates }) => {
+								const { allPageRowsSelected } = pluginStates.select;
+								return createRender(TableCheckbox, {
+									checked: allPageRowsSelected
+								});
+							},
+							accessor: column.accessor,
+							cell: ({ row }, { pluginStates }) => {
+								const { getRowState } = pluginStates.select;
+								const { isSelected } = getRowState(row);
+								return createRender(TableCheckbox, {
+									checked: isSelected
+								});
+							},
+							plugins: {
+								sort: {
+									disable: true
+								},
+								resize: {
+									initialWidth: 40,
+									disable: true
+								}
+							}
+						});
+					}
 
+					let accessor = column.accessor;
+					const inputValue = filters ? filters[accessor].value : '';
+					let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
+					return table.column({
+						accessor: column.accessor,
+						header: column.header,
+						plugins: {
+							colFilter: {
+								fn: textFilter(columnFilter),
+								initialFilterValue: inputValue,
+								render: ({ filterValue, values, preFilteredValues }) =>
+									createRender(TextFilter, {
+										filterValue,
+										values,
+										preFilteredValues,
+										columnFilter,
+										accessor
+									})
+							},
+							resize: {
+								minWidth: 80,
+								initialWidth: initialWidth,
+								maxWidth: 400
+							}
+						},
+						cell: ({ column, row, value }) =>
+							createRender(EditableCell, {
+								row,
+								column,
+								value,
+								rowData,
+								onUpdateValue: updateData
+							}),
+					})
+				}
+			)
+		);
+	});
 
 	// checkbox plugin
 	let selectedRows = 0;
@@ -241,6 +242,7 @@
 	});
 </script>
 
+{#key $tableColumnData}
 <div class="h-full flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
 		<Table.Header class="top-0 sticky bg-white border-1">
@@ -323,3 +325,4 @@
 		</div>
 	</div>
 </div>
+{/key}

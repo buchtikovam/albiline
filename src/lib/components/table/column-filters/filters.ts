@@ -6,8 +6,6 @@ export const textFilter = (columnFilter: Writable<TextFilters>) => {
 
 	columnFilter.subscribe((data) => {
 		currentFilter = data;
-
-
 	});
 
 	return ({ filterValue, value }: { filterValue: string, value: string }) => {

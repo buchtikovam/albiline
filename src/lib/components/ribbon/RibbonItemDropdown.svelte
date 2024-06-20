@@ -20,7 +20,7 @@
 
 {#if isOpen === true}
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger>
+		<DropdownMenu.Trigger class="min-w-12">
 			<button
 				class="text-[10px] min-w-12 w-12 h-12 leading-3 rounded hover:bg-muted/70"
 			>
@@ -44,13 +44,11 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {:else}
-	<!--TODO: scrollable small ribbon-->
-
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger>
+		<DropdownMenu.Trigger class="min-w-6">
 			<Tooltip.Root openDelay={250}>
-				<Tooltip.Trigger>
-					<button class="size-6 min-w-6 rounded hover:bg-muted/70 flex items-center">
+				<Tooltip.Trigger class="min-w-6">
+					<button class="size-6 rounded hover:bg-muted/70 flex items-center">
 						<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
 						<ChevronDown class="size-2 mr-0.5" />
 					</button>

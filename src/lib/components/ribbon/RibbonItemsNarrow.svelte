@@ -14,7 +14,6 @@
 	}
 </script>
 
-
 {#if isOpen === true}
 	<div class="w-[60px] min-w-[60px]">
 		{#each item as item}
@@ -30,7 +29,7 @@
 {:else}
 	{#each item as item}
 		<Tooltip.Root openDelay={250}>
-			<Tooltip.Trigger>
+			<Tooltip.Trigger class="min-w-6">
 				<button
 					class="size-6 rounded hover:bg-muted/70"
 					on:click={() => setAction(item.action)}
