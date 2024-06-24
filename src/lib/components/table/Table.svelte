@@ -8,65 +8,88 @@
 		addColumnFilters,
 		addResizedColumns
 	} from 'svelte-headless-table/plugins';
-	import { createTable, Render, Subscribe, createRender, DataColumn } from 'svelte-headless-table';
+	import { createTable, Render, Subscribe, createRender, type DataColumn } from 'svelte-headless-table';
 	import { textFilter } from '$lib/components/table/column-filters/filters';
-	import { get, writable } from 'svelte/store';
+	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
 	import { cellWidths } from '$lib/constants/cellWidths';
-	import { columnWidthStore, columnOrderStore, currentFiltersStore, selectedRowsStore } from '$lib/stores/tableStore';
-	import type { Column } from '$lib/types/table';
+	import {
+		columnWidthStore,
+		columnOrderStore,
+		currentFiltersStore,
+		selectedRowsStore,
+		rowDataStore,
+		columnDataStore
+	} from '$lib/stores/tableStore';
+	import type { Column, TableRowData } from '$lib/types/table';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
 	import type { StoredFilters } from '$lib/types/filter';
 
-	export let data;
-	const rowData = writable(data.rowData);
-	const columnData = writable(data.columnData);
+	export let data: {
+		rowData: any,
+		columnData: Column[],
+	};
 
-	const updateData = (newData) => {
-		rowData.set(newData);
+	// TODO: keyed forEach blocks
+
+	rowDataStore.set(data.rowData);
+	columnDataStore.set(data.columnData);
+
+	const updateData = (newData: TableRowData) => {
+		rowDataStore.set(newData);
 	};
 
 	let initColOrder: string[] = getInitColumnOrder();
 
-	const table = createTable(rowData, {
-		sort: addSortBy(),
-		filter: addTableFilter({
-			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
-		}),
-		hide: addHiddenColumns(),
-		select: addSelectedRows(),
-		colOrder: addColumnOrder({
-			initialColumnIdOrder: initColOrder
-		}),
-		colFilter: addColumnFilters(),
-		resize: addResizedColumns({
-			onResizeEnd: () => {
-				const { columnWidths } = pluginStates.resize;
-				columnWidths.subscribe((data) => {
-					columnWidthStore.set(data);
-				});
-			}
-		})
-	});
+
+
+
+	let table;
+
+	rowDataStore.subscribe(() => {
+		// console.log("STORE DATA", dataa);
+
+		 table = createTable(rowDataStore, {
+			sort: addSortBy(),
+			hide: addHiddenColumns(),
+			select: addSelectedRows(),
+			colOrder: addColumnOrder({
+				initialColumnIdOrder: initColOrder
+			}),
+			colFilter: addColumnFilters(),
+			resize: addResizedColumns({
+				onResizeEnd: () => {
+					const { columnWidths } = pluginStates.resize;
+					columnWidths.subscribe((data) => {
+						columnWidthStore.set(data);
+					});
+				}
+			})
+		});
+
+		// console.log("TABLE DATA", get(table.data));
+		// console.log(" ");
+	})
+
 
 
 	function getInitColumnOrder(): string[] {
-		return get(columnData).map((column: Column) => {
+		return get(columnDataStore).map((column: Column) => {
 			return column.accessor;
 		});
 	}
 
 	// TODO: hide columns
 
-	let tableColumnData = writable([]);
+	let tableColumnData: Writable<DataColumn<any>[]> = writable([]);
 	let tableViewModel = table.createViewModel(
-		table.createColumns(get(tableColumnData)),
+		table.createColumns(get(tableColumnData))
 	);
 	let headerRows = tableViewModel.headerRows;
 	let pageRows = tableViewModel.pageRows;
@@ -76,7 +99,7 @@
 
 	tableColumnData.subscribe((value) => {
 		tableViewModel = table.createViewModel(
-			table.createColumns(value),
+			table.createColumns(value)
 		);
 		headerRows = tableViewModel.headerRows;
 		pageRows = tableViewModel.pageRows;
@@ -88,22 +111,22 @@
 	(function createDefaultFilters() {
 		let defaultFilters: StoredFilters = {};
 
-		get(columnData).forEach((column: Column) => {
+		get(columnDataStore).forEach((column: Column) => {
 			defaultFilters[column.accessor] = {
-				value: "",
-				colFilter: "default"
+				value: '',
+				colFilter: 'default'
 			};
-		})
+		});
 
 		currentFiltersStore.set(defaultFilters);
-	})()
+	})();
 
 
 	currentFiltersStore.subscribe((filters) => {
 		const colWidthData = get(columnWidthStore);
 
 		tableColumnData.set(
-			get(columnData).map(
+			get(columnDataStore).map(
 				(column: Column) => {
 					let initialWidth;
 					if (colWidthData && Object.keys(colWidthData).length > 0) {
@@ -151,7 +174,12 @@
 							colFilter: {
 								fn: textFilter(columnFilter),
 								initialFilterValue: inputValue,
-								render: ({ filterValue, values, preFilteredValues }) =>
+								render: (
+									{ filterValue, values, preFilteredValues }: {
+										filterValue: Writable<string>,
+										values: Readable<any[]>,
+										preFilteredValues: Readable<any[]>
+									}) =>
 									createRender(TextFilter, {
 										filterValue,
 										values,
@@ -171,19 +199,20 @@
 								row,
 								column,
 								value,
-								rowData,
+								rowDataStore,
 								onUpdateValue: updateData
-							}),
-					})
+							})
+					});
 				}
 			)
 		);
 	});
 
+
 	// checkbox plugin
 	let selectedRows = 0;
 	const { selectedDataIds } = pluginStates.select;
-	selectedDataIds.subscribe((rows) => {
+	selectedDataIds.subscribe((rows: Record<number, boolean>) => {
 		selectedRowsStore.set(rows);
 		selectedRows = Object.keys(rows).length;
 	});
@@ -193,23 +222,23 @@
 	let hovering: number | null;
 	let start: number;
 
-	function drag(event: DragEvent, index: number) {
-		if (event.dataTransfer) {
-			event.dataTransfer.effectAllowed = 'copy';
-			event.dataTransfer.dropEffect = 'copy';
-			event.dataTransfer.setData('text/plain', '');
+	function drag(e: DragEvent, index: number) {
+		if (e.dataTransfer) {
+			e.dataTransfer.effectAllowed = 'copy';
+			e.dataTransfer.dropEffect = 'copy';
+			e.dataTransfer.setData('text/plain', '');
 			start = index;
 		}
 	}
 
-	function drop(event: DragEvent, target: number | null) {
-		if (event.dataTransfer && target !== null) {
-			event.dataTransfer.dropEffect = 'copy';
+	function drop(e: DragEvent, target: number | null) {
+		if (e.dataTransfer && target !== null) {
+			e.dataTransfer.dropEffect = 'copy';
 
 			const { columnIdOrder } = pluginStates.colOrder;
 			let columnOrderData: string[];
 
-			columnIdOrder.subscribe((data) => {
+			columnIdOrder.subscribe((data: string[]) => {
 				columnOrderData = data;
 			});
 
@@ -227,26 +256,25 @@
 					hovering = null;
 				}
 			}, 0);
-
 		}
 	}
-
 
 	function setHovering(index: number) {
 		hovering = index;
 	}
 
 
-	// check for stored colOrder, subscribe to colOrder changes
+	// check if some columnOrder is already stored (as persisted store in local storage)
 	const { columnIdOrder } = pluginStates.colOrder;
 
-	let columnStore = get(columnOrderStore);
-
-	if (columnStore.length > 0) {
-		columnIdOrder.update(() => columnStore);
+	// if it is stored, main columnOrder store responsible for correct table rendering
+	// is updated
+	if ($columnOrderStore.length > 0) {
+		columnIdOrder.update(() => $columnOrderStore);
 	}
 
-	columnIdOrder.subscribe((data) => {
+	// subscribe to changes on main columnOrder store, to update persisted store
+	columnIdOrder.subscribe((data: string[]) => {
 		columnOrderStore.update(() => data);
 	});
 
@@ -258,87 +286,89 @@
 	});
 </script>
 
-{#key $tableColumnData}
-<div class="h-full flex flex-col">
-	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
-		<Table.Header class="top-0 sticky bg-white border-1">
-			{#each $headerRows as headerRow (headerRow.id)}
-				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<tr {...attrs}>
-						{#each headerRow.cells as cell, index (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<th
-									{...attrs}
-									use:props.resize
-									draggable="true"
-									on:dragstart={(e) => drag(e, index)}
-									on:dragover={() => setHovering(index)}
-									on:dragend|preventDefault={(e) => drop(e, hovering)}
-									class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
-								>
-									{#if cell.id !== "id"}
-										<button
-											class="flex w-full items-center justify-center font-semibold rounded-md hover:bg-muted/70 "
-											on:click={props.sort.toggle}
+{#key $rowDataStore}
+	{#key $tableColumnData}
+		<div class="h-full flex flex-col">
+			<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
+				<Table.Header class="top-0 sticky bg-white border-1">
+					{#each $headerRows as headerRow (headerRow.id)}
+						<Subscribe attrs={headerRow.attrs()} let:attrs>
+							<tr {...attrs}>
+								{#each headerRow.cells as cell, index (cell.id)}
+									<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+										<th
+											{...attrs}
+											use:props.resize
+											draggable="true"
+											on:dragstart={(e) => drag(e, index)}
+											on:dragover={() => setHovering(index)}
+											on:dragend|preventDefault={(e) => drop(e, hovering)}
+											class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
 										>
-											<Render of={cell.render()} />
-											{#if props.sort.order === 'asc'}
-												<ArrowDownAZ class="h-4 w-4 ml-2" />
-											{:else if props.sort.order === 'desc'}
-												<ArrowUpAZ class="h-4 w-4 ml-2" />
+											{#if cell.id !== "id"}
+												<button
+													class="flex w-full items-center justify-center font-semibold rounded-md hover:bg-muted/70 "
+													on:click={props.sort.toggle}
+												>
+													<Render of={cell.render()} />
+													{#if props.sort.order === 'asc'}
+														<ArrowDownAZ class="h-4 w-4 ml-2" />
+													{:else if props.sort.order === 'desc'}
+														<ArrowUpAZ class="h-4 w-4 ml-2" />
+													{:else}
+														<ArrowUpDown class="h-4 w-4 ml-2" />
+													{/if}
+												</button>
 											{:else}
-												<ArrowUpDown class="h-4 w-4 ml-2" />
+												<Render of={cell.render()} />
 											{/if}
-										</button>
-									{:else}
-										<Render of={cell.render()} />
-									{/if}
 
-									{#if props.colFilter?.render}
-										<Render of={props.colFilter.render} />
-									{/if}
+											{#if props.colFilter?.render}
+												<Render of={props.colFilter.render} />
+											{/if}
 
-									{#if !props.resize.disabled}
-										<div
-											class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
-											use:props.resize.drag
-										/>
-									{/if}
-								</th>
-							</Subscribe>
-						{/each}
-					</tr>
-				</Subscribe>
-			{/each}
-		</Table.Header>
-		<Table.Body {...$tableBodyAttrs}>
-			{#each $pageRows as row (row.id)}
-				<Subscribe attrs={row.attrs()} let:attrs>
-					<Table.Row
-						{...attrs}
-						data-state={$selectedDataIds[row.id] && "selected"}
-						class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
-					>
-						{#each row.cells as cell (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs>
-								<Table.Cell {...attrs}>
-									<div class="line-clamp-1 h-6 flex items-center">
-										<Render of={cell.render()} />
-									</div>
-								</Table.Cell>
-							</Subscribe>
-						{/each}
-					</Table.Row>
-				</Subscribe>
-			{/each}
+											{#if !props.resize.disabled}
+												<div
+													class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
+													use:props.resize.drag
+												/>
+											{/if}
+										</th>
+									</Subscribe>
+								{/each}
+							</tr>
+						</Subscribe>
+					{/each}
+				</Table.Header>
+				<Table.Body {...$tableBodyAttrs}>
+					{#each $pageRows as row (row.id)}
+						<Subscribe attrs={row.attrs()} let:attrs>
+							<Table.Row
+								{...attrs}
+								data-state={$selectedDataIds[row.id] && "selected"}
+								class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
+							>
+								{#each row.cells as cell (cell.id)}
+									<Subscribe attrs={cell.attrs()} let:attrs>
+										<Table.Cell {...attrs}>
+											<div class="line-clamp-1 h-6 flex items-center">
+												<Render of={cell.render()} />
+											</div>
+										</Table.Cell>
+									</Subscribe>
+								{/each}
+							</Table.Row>
+						</Subscribe>
+					{/each}
 
-		</Table.Body>
-	</Table.Root>
+				</Table.Body>
+			</Table.Root>
 
-	<div class="flex justify-between items-center w-full border-t">
-		<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
-			{selectedRows} řad označeno.
+			<div class="flex justify-between items-center w-full border-t">
+				<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
+					{selectedRows} řad označeno.
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
+	{/key}
 {/key}

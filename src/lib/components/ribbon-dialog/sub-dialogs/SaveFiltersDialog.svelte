@@ -11,8 +11,6 @@
 	let dialogOpen: boolean = false;
 	let inputValue: string = "";
 
-	// TODO: style saveFilters
-
 	function handleSubmit(event: Event) {
 		event.preventDefault();
 
@@ -34,7 +32,7 @@
 <Dialog.Root bind:open={dialogOpen} >
 	<Dialog.Content class="!w-fit ">
 		<Dialog.Header>
-			<Dialog.Title class="h-4">
+			<Dialog.Title class="h-4 mb-4">
 				Uložení filtrů
 			</Dialog.Title>
 		</Dialog.Header>
