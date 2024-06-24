@@ -25,3 +25,6 @@ export async function deleteItem() {
 
 	// get selected items
 }
+
+
+// TODO: reload after delete => remove from data in page.svelte or table

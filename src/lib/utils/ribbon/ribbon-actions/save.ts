@@ -5,21 +5,24 @@ import { customToast } from '$lib/utils/toast/customToast';
 export async function save(): Promise<void> {
 	const editedData = get(editedDataStore);
 
-	let response;
+	if (editedData.length !== 0) {
+		let response;
 
-	for (const row of editedData) {
-		const editedId = row.id;
+		for (const row of editedData) {
+			const editedId = row.id;
 
-		 response = await fetch(`http://localhost:3000/pruvodni-list-data/${editedId}`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(row)
-		});
-	}
+			response = await fetch(`http://localhost:3000/pruvodni-list-data/${editedId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(row)
+			});
+		}
 
-	if (!response?.ok) {
-		customToast("Warning", "Nepodařilo se uložit data.")
-	} else {
-		customToast("Success", "Data byla uložena.")
+		if (response?.ok) {
+			customToast("Success", "Data byla uložena.")
+			editedDataStore.set([])
+		} else {
+			customToast("Warning", "Nepodařilo se uložit data.")
+		}
 	}
 }

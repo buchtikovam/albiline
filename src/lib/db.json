@@ -512,6 +512,57 @@
           "colFilter": "default"
         }
       }
+    },
+    {
+      "id": 3,
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "rem",
+      "filters": {
+        "id": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "ksp": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "jmeno": {
+          "value": "rem",
+          "colFilter": "ends-with"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "linie": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "koncepce": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "listovaciPolozka": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "prodCena": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "skladem": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "vyrobeno": {
+          "value": "",
+          "colFilter": "default"
+        }
+      }
     }
   ]
 }

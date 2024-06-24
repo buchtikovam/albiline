@@ -22,6 +22,7 @@
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
+	import type { StoredFilters } from '$lib/types/filter';
 
 	export let data;
 	const rowData = writable(data.rowData);
@@ -63,8 +64,6 @@
 
 	// TODO: hide columns
 
-
-
 	let tableColumnData = writable([]);
 	let tableViewModel = table.createViewModel(
 		table.createColumns(get(tableColumnData)),
@@ -74,6 +73,7 @@
 	let tableAttrs = tableViewModel.tableAttrs;
 	let tableBodyAttrs = tableViewModel.tableBodyAttrs;
 	let pluginStates = tableViewModel.pluginStates;
+
 	tableColumnData.subscribe((value) => {
 		tableViewModel = table.createViewModel(
 			table.createColumns(value),
@@ -85,8 +85,23 @@
 		pluginStates = tableViewModel.pluginStates;
 	});
 
+	(function createDefaultFilters() {
+		let defaultFilters: StoredFilters = {};
+
+		get(columnData).forEach((column: Column) => {
+			defaultFilters[column.accessor] = {
+				value: "",
+				colFilter: "default"
+			};
+		})
+
+		currentFiltersStore.set(defaultFilters);
+	})()
+
+
 	currentFiltersStore.subscribe((filters) => {
 		const colWidthData = get(columnWidthStore);
+
 		tableColumnData.set(
 			get(columnData).map(
 				(column: Column) => {
@@ -124,6 +139,7 @@
 							}
 						});
 					}
+
 
 					let accessor = column.accessor;
 					const inputValue = filters ? filters[accessor].value : '';

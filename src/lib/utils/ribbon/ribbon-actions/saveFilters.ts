@@ -1,4 +1,4 @@
-import { currentFiltersStore, editedDataStore } from '$lib/stores/tableStore';
+import { currentFiltersStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import apiService from '$lib/api/apiService';
 import type { FetchedFilter } from '$lib/types/filter';
@@ -11,7 +11,7 @@ export async function saveFilters(inputValue: string, url: string): Promise<void
 	const toSave: FetchedFilter = {
 		pageOrigin: url,
 		filterName: inputValue,
-		filters: currentFilters || {}
+		filters: currentFilters
 	}
 
 	const response = await apiService(
@@ -20,10 +20,9 @@ export async function saveFilters(inputValue: string, url: string): Promise<void
 		toSave
 	)
 
-	if (!response.ok) {
-		customToast("Critical", "Nepodařilo se uložit filtry.")
-	} else {
+	if (response.ok) {
 		customToast("Success", "Filtry byly uloženy.")
-		editedDataStore.set([]);
+	} else {
+		customToast("Critical", "Nepodařilo se uložit filtry.")
 	}
 }

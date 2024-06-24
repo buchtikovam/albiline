@@ -11,6 +11,8 @@
 	let dialogOpen: boolean = false;
 	let inputValue: string = "";
 
+	// TODO: style saveFilters
+
 	function handleSubmit(event: Event) {
 		event.preventDefault();
 
