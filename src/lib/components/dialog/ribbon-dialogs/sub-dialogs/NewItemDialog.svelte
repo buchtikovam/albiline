@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
 
 	let dialogOpen: boolean = false;
 
@@ -15,20 +16,19 @@
 		ribbonActionStore.set(undefined)
 	}
 
-
 	onMount(() => {
 		dialogOpen = true;
 	});
 </script>
 
-<Dialog.Root bind:open={dialogOpen} >
+<Dialog.Root bind:open={dialogOpen} onOpenChange={() => handleRibbonDialogClose()}>
 	<Dialog.Content class="!w-[500px] overflow-visible">
 		<Dialog.Header>
 			<Dialog.Title class="h-6">
-				Moje šablony
+				Nový záznam
 			</Dialog.Title>
 			<Dialog.Description>
-				test
+				Prosím zadejte parametry.
 			</Dialog.Description>
 		</Dialog.Header>
 		<form on:submit={handleSubmit}>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { pageCompactStore } from '$lib/stores/tableStore';
-	import { allowTabAdding } from '$lib/stores/tabStore';
+	// import { allowTabAdding } from '$lib/stores/tabStore';
 	import User from 'lucide-svelte/icons/user';
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
@@ -13,20 +13,20 @@
 	export let userImage: string = '';
 
 	let isCompact: 'standard' | 'compact';
-	let isChecked: boolean;
+	// let isChecked: boolean;
 
 	pageCompactStore.subscribe((data) => isCompact = data);
-	allowTabAdding.subscribe((data) => isChecked = data);
+	// allowTabAdding.subscribe((data) => isChecked = data);
 
 	// Nastavení kompaktnosti stránky
 	function setHeight(state: 'standard' | 'compact') {
 		pageCompactStore.set(state);
 	}
 
-	// Povolení přidávání stránek do tabů
-	function setTabAllow() {
-		allowTabAdding.set(!isChecked)
-	}
+	// // Povolení přidávání stránek do tabů
+	// function setTabAllow() {
+	// 	allowTabAdding.set(!isChecked)
+	// }
 </script>
 
 <DropdownMenu.Root closeOnItemClick={false}>
@@ -79,12 +79,12 @@
 		<DropdownMenu.Separator />
 
 
-		<DropdownMenu.Group>
-			<DropdownMenu.CheckboxItem bind:checked={isChecked} on:click={setTabAllow}>
-				Povolit přidávání tabů
-			</DropdownMenu.CheckboxItem>
-		</DropdownMenu.Group>
-		<DropdownMenu.Separator />
+<!--		<DropdownMenu.Group>-->
+<!--			<DropdownMenu.CheckboxItem bind:checked={isChecked} on:click={setTabAllow}>-->
+<!--				Povolit přidávání tabů-->
+<!--			</DropdownMenu.CheckboxItem>-->
+<!--		</DropdownMenu.Group>-->
+<!--		<DropdownMenu.Separator />-->
 
 
 		<DropdownMenu.Group>

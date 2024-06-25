@@ -1,28 +1,22 @@
 import { currentFiltersStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
-import apiService from '$lib/api/apiService';
-import type { FetchedFilter } from '$lib/types/filter';
+import { apiServicePOST } from '$lib/api/apiService';
 import { customToast } from '$lib/utils/toast/customToast';
 
 
 export async function saveFilters(inputValue: string, url: string): Promise<void> {
 	const currentFilters = get(currentFiltersStore);
 
-	const toSave: FetchedFilter = {
+	const toSave = currentFilters ? {
 		pageOrigin: url,
 		filterName: inputValue,
 		filters: currentFilters
-	}
+	} : undefined;
 
-	const response = await apiService(
-		"filters",
-		"POST",
-		toSave
-	)
+	const response = toSave ? await apiServicePOST('filters', toSave) : undefined;
 
-	if (response.ok) {
-		customToast("Success", "Filtry byly uloženy.")
-	} else {
-		customToast("Critical", "Nepodařilo se uložit filtry.")
-	}
+	response?.ok
+		? customToast('Success', 'Filtry byly uloženy.')
+		: customToast('Critical', 'Nepodařilo se uložit filtry.')
+	;
 }

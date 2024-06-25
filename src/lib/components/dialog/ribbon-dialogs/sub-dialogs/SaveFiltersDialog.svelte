@@ -5,8 +5,9 @@
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { saveFilters } from '$lib/utils/ribbon/ribbon-actions/saveFilters';
+	import { saveFilters } from '$lib/utils/ribbon/ribbon-actions/filters/saveFilters';
 	import { page } from '$app/stores';
+	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
 
 	let dialogOpen: boolean = false;
 	let inputValue: string = "";
@@ -29,8 +30,8 @@
 	});
 </script>
 
-<Dialog.Root bind:open={dialogOpen} >
-	<Dialog.Content class="!w-fit ">
+<Dialog.Root bind:open={dialogOpen} onOpenChange={() => handleRibbonDialogClose()}>
+	<Dialog.Content class="!w-fit">
 		<Dialog.Header>
 			<Dialog.Title class="h-4 mb-4">
 				Uložení filtrů

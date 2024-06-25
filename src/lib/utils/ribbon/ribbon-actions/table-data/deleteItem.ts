@@ -11,7 +11,7 @@ export async function deleteItem() {
 
 	console.log(selectedRows);
 
-	let idsToRemove: number[] = [];
+	const idsToRemove: number[] = [];
 
 	if (selectedRows) {
 		for (const [key] of Object.entries(selectedRows)) {
@@ -40,34 +40,7 @@ export async function deleteItem() {
 	}
 
 	console.log(idsToRemove);
-
-
 }
-
-// let response;
-
-// if (selectedRows) {
-// 	for (const [key] of Object.entries(selectedRows)) {
-// 		response = await fetch(`http://localhost:3000/pruvodni-list-data/${key}`, {
-// 			method: 'DELETE',
-// 			headers: { 'Content-Type': 'application/json' },
-// 		});
-// 	}
-//
-// 	if (response?.ok) {
-// 		customToast("Success", "Operace proběhla úspěšně.")
-// 		selectedRowsStore.set(undefined)
-// 		//
-// 		// rowDataStore.update((data) => {
-// 		// 	for (const [key] of Object.entries(data)) {
-// 		//
-// 		// 	}
-// 		// })
-//
-// 	} else {
-// 		customToast("Warning", "Operace neproběhla.")
-// 	}
-// }
 
 
 // TODO: reload after delete => remove from data in page.svelte or table

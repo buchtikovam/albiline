@@ -315,77 +315,77 @@
   ],
   "pruvodni-list-info": [
     {
-      "id": 0,
+      "id": "0",
       "accessor": "id",
       "header": "id",
       "type": "id",
       "size": "checkbox"
     },
     {
-      "id": 1,
+      "id": "1",
       "accessor": "ksp",
       "header": "KSP",
       "type": "string",
       "size": "small"
     },
     {
-      "id": 2,
+      "id": "2",
       "accessor": "jmeno",
       "header": "Jméno",
       "type": "string",
       "size": "xlarge"
     },
     {
-      "id": 3,
+      "id": "3",
       "accessor": "typ",
       "header": "Typ",
       "type": "string",
       "size": "small"
     },
     {
-      "id": 4,
+      "id": "4",
       "accessor": "linie",
       "header": "Linie",
       "type": "string",
       "size": "medium"
     },
     {
-      "id": 5,
+      "id": "5",
       "accessor": "koncepce",
       "header": "Koncepce",
       "type": "string",
       "size": "large"
     },
     {
-      "id": 6,
+      "id": "6",
       "accessor": "klp",
       "header": "KLP",
       "type": "string",
       "size": "small"
     },
     {
-      "id": 7,
+      "id": "7",
       "accessor": "listovaciPolozka",
       "header": "Listovací položka",
       "type": "string",
       "size": "large"
     },
     {
-      "id": 8,
+      "id": "8",
       "accessor": "prodCena",
       "header": "Cena",
       "type": "currency",
       "size": "medium"
     },
     {
-      "id": 9,
+      "id": "9",
       "accessor": "skladem",
       "header": "Skladem",
       "type": "string",
       "size": "medium"
     },
     {
-      "id": 10,
+      "id": "10",
       "accessor": "vyrobeno",
       "header": "Vyrobeno",
       "type": "string",
@@ -488,21 +488,21 @@
       }
     },
     {
-      "id": 3,
+      "id": "3",
       "pageOrigin": "/pruvodni-list",
-      "filterName": "rem",
+      "filterName": "Sport",
       "filters": {
-        "id": {
-          "value": "",
-          "colFilter": "default"
-        },
         "ksp": {
           "value": "",
           "colFilter": "default"
         },
         "jmeno": {
-          "value": "rem",
-          "colFilter": "ends-with"
+          "value": "",
+          "colFilter": "starts-with"
+        },
+        "koncepce": {
+          "value": "",
+          "colFilter": "default"
         },
         "typ": {
           "value": "",
@@ -512,19 +512,15 @@
           "value": "",
           "colFilter": "default"
         },
-        "koncepce": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "klp": {
-          "value": "",
-          "colFilter": "default"
-        },
         "listovaciPolozka": {
-          "value": "",
+          "value": "Sport",
           "colFilter": "default"
         },
         "prodCena": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "vyrobeno": {
           "value": "",
           "colFilter": "default"
         },
@@ -532,7 +528,7 @@
           "value": "",
           "colFilter": "default"
         },
-        "vyrobeno": {
+        "klp": {
           "value": "",
           "colFilter": "default"
         }

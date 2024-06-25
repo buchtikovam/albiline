@@ -1,11 +1,11 @@
 import { Action } from '$lib/enums/action';
-import { save } from '$lib/utils/ribbon/ribbon-actions/save';
+import { save } from '$lib/utils/ribbon/ribbon-actions/table-data/save';
 import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-import { edit } from '$lib/utils/ribbon/ribbon-actions/edit';
-import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/deleteItem';
+import { edit } from '$lib/utils/ribbon/ribbon-actions/table-data/edit';
+import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/table-data/deleteItem';
+import { removeFilters } from '$lib/utils/ribbon/ribbon-actions/filters/removeFilters';
 
 export function handleRibbonActionChange(action: Action) {
-
 	// Actions running functions right away
 
 	if (action === Action.SAVE) {
@@ -19,6 +19,11 @@ export function handleRibbonActionChange(action: Action) {
 	if (action === Action.DELETE) {
 		deleteItem().then(() => ribbonActionStore.set(undefined));
 	}
+
+	if (action === Action.FILTER_REMOVE) {
+		removeFilters();
+	}
+
 
 
 	// Actions opening dialogs

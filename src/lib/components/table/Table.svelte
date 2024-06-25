@@ -36,8 +36,6 @@
 		columnData: Column[],
 	};
 
-	// TODO: keyed forEach blocks
-
 	rowDataStore.set(data.rowData);
 	columnDataStore.set(data.columnData);
 
@@ -46,9 +44,6 @@
 	};
 
 	let initColOrder: string[] = getInitColumnOrder();
-
-
-
 
 	let table;
 
@@ -80,6 +75,14 @@
 
 
 	function getInitColumnOrder(): string[] {
+		// if ls, map that shit
+		let storedOrder = get(columnOrderStore);
+		console.log("stored order", storedOrder);
+
+		if (storedOrder.length > 0) {
+			return storedOrder;
+		}
+
 		return get(columnDataStore).map((column: Column) => {
 			return column.accessor;
 		});
@@ -262,21 +265,6 @@
 	function setHovering(index: number) {
 		hovering = index;
 	}
-
-
-	// check if some columnOrder is already stored (as persisted store in local storage)
-	const { columnIdOrder } = pluginStates.colOrder;
-
-	// if it is stored, main columnOrder store responsible for correct table rendering
-	// is updated
-	if ($columnOrderStore.length > 0) {
-		columnIdOrder.update(() => $columnOrderStore);
-	}
-
-	// subscribe to changes on main columnOrder store, to update persisted store
-	columnIdOrder.subscribe((data: string[]) => {
-		columnOrderStore.update(() => data);
-	});
 
 
 	onMount(() => {

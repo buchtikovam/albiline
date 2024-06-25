@@ -5,7 +5,8 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
 	import type { InputDialogItem } from '$lib/types/inputDialog';
-	import InputString from '$lib/components/input-dialog/Input.svelte';
+	import InputString from '$lib/components/dialog/input-dialogs/Input.svelte';
+	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
 
 	let dialogOpen: boolean = false;
 	export let objects: any[];

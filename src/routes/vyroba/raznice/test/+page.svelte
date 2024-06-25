@@ -1,5 +1,5 @@
 <script lang="ts">
-	import InputDialog from '$lib/components/input-dialog/InputDialog.svelte';
+	import InputDialog from '$lib/components/dialog/input-dialogs/InputDialog.svelte';
 
 	let params: any[];
 </script>
