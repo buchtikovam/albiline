@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		addSortBy,
-		addTableFilter,
 		addHiddenColumns,
 		addSelectedRows,
 		addColumnOrder,
@@ -45,39 +44,27 @@
 
 	let initColOrder: string[] = getInitColumnOrder();
 
-	let table;
-
-	rowDataStore.subscribe(() => {
-		// console.log("STORE DATA", dataa);
-
-		 table = createTable(rowDataStore, {
-			sort: addSortBy(),
-			hide: addHiddenColumns(),
-			select: addSelectedRows(),
-			colOrder: addColumnOrder({
-				initialColumnIdOrder: initColOrder
-			}),
-			colFilter: addColumnFilters(),
-			resize: addResizedColumns({
-				onResizeEnd: () => {
-					const { columnWidths } = pluginStates.resize;
-					columnWidths.subscribe((data) => {
-						columnWidthStore.set(data);
-					});
-				}
-			})
-		});
-
-		// console.log("TABLE DATA", get(table.data));
-		// console.log(" ");
-	})
-
+	const table = createTable(rowDataStore, {
+		sort: addSortBy(),
+		hide: addHiddenColumns(),
+		select: addSelectedRows(),
+		colOrder: addColumnOrder({
+			initialColumnIdOrder: initColOrder
+		}),
+		colFilter: addColumnFilters(),
+		resize: addResizedColumns({
+			onResizeEnd: () => {
+				const { columnWidths } = pluginStates.resize;
+				columnWidths.subscribe((data) => {
+					columnWidthStore.set(data);
+				});
+			}
+		})
+	});
 
 
 	function getInitColumnOrder(): string[] {
-		// if ls, map that shit
 		let storedOrder = get(columnOrderStore);
-		console.log("stored order", storedOrder);
 
 		if (storedOrder.length > 0) {
 			return storedOrder;

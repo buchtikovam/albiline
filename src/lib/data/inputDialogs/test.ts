@@ -1,24 +1,36 @@
-import type { InputDialogItem } from '$lib/types/inputDialog';
+import type { InputDialog } from '$lib/types/inputDialog';
 
-export const params: InputDialogItem[] = [
+export const params: InputDialog = [
 	{
+		name: "String",
 		type: "string",
 		label: "Parametr string",
 		id: "param1",
-		value: ""
+		value: "test"
 	},
 
 	{
-		type: "date",
-		label: "Datum",
-		id: "date",
-	},
-
-	{
+		name: "Number",
 		type: "number",
 		label: "Parametr číslo",
 		id: "param2",
-		value: ""
+		value: 14
 	},
 
+	{
+		name: "Date",
+		type: "date",
+		label: "Datum",
+		id: "date",
+		value: undefined,
+	},
+
+	{
+		name: "DateRange",
+		type: "date-range",
+		startDateLabel: "Začátek",
+		endDateLabel: "Konec",
+		startDateValue: undefined,
+		endDateValue: undefined
+	},
 ]

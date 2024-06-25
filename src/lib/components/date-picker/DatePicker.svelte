@@ -6,8 +6,8 @@
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
 	import type { DateValue } from '@internationalized/date';
 
-	export let value: DateValue;
-	export let label;
+	export let value: DateValue|undefined;
+	export let label: string;
 </script>
 
 <!--Kalendář komponent s dialogem pro výběr datumu -->
@@ -27,7 +27,6 @@
 		<DatePicker.Input
 			let:segments
 			class="flex h-input w-full max-w-[220px] h-10 select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground "
-			on:input={() => console.log(value)}
 		>
 			{#each segments as { part, value }}
 				<div class="inline-block select-none">

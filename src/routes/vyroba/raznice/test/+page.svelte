@@ -1,17 +1,19 @@
 <script lang="ts">
-	import InputDialog from '$lib/components/dialog/input-dialogs/InputDialog.svelte';
+	import InputDialog from '$lib/components/dialog/input-dialog/InputDialog.svelte';
 
-	let params: any[];
+	let inputDialogObjects: Record<string, string>;
 </script>
 
 <svelte:head>
 	<title>Test</title>
 </svelte:head>
 
-<InputDialog bind:objects={params} />
+<InputDialog bind:inputDialogObjects={inputDialogObjects} />
 
-{#if params !== undefined}
-	{#each params as param}
-		<p>{param}</p>
-	{/each}
-{/if}
+<div class="w-full h-full bg-background border">
+	{#if inputDialogObjects !== undefined}
+		{#each Object.entries(inputDialogObjects) as [key, value]}
+			<p>{key} {value}</p>
+		{/each}
+	{/if}
+</div>

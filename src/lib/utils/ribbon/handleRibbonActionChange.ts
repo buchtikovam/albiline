@@ -6,6 +6,7 @@ import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/table-data/deleteIt
 import { removeFilters } from '$lib/utils/ribbon/ribbon-actions/filters/removeFilters';
 
 export function handleRibbonActionChange(action: Action) {
+
 	// Actions running functions right away
 
 	if (action === Action.SAVE) {
@@ -23,8 +24,6 @@ export function handleRibbonActionChange(action: Action) {
 	if (action === Action.FILTER_REMOVE) {
 		removeFilters();
 	}
-
-
 
 	// Actions opening dialogs
 
