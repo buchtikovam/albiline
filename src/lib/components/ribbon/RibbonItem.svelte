@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import type { Item } from '$lib/types/ribbon';
+	import type { Item } from '$lib/types/ribbon/ribbon';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 
 	export let item: Item;

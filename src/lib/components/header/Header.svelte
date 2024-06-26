@@ -4,7 +4,7 @@
 	import Home from 'lucide-svelte/icons/home';
 	import { openedTabsStore, currentActiveTabStore, allowTabAdding } from '$lib/stores/tabStore';
 	import { page } from '$app/stores';
-	import type { Tab } from '$lib/types/sidebar';
+	import type { Tab } from '$lib/types/sidebar/sidebar';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { get } from 'svelte/store';
@@ -104,7 +104,7 @@
 					>
 						{tab.name}
 						<button on:click={() => removeTab(tab.name)} class="{tab.closingState}">
-							<X class="ml-1 text-red-600 w-4 h-4"/>
+							<X class="ml-1 text-red-600 w-4 h-4" />
 						</button>
 					</button>
 				</Tabs.Trigger>

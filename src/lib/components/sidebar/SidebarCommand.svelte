@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { handleTabClick } from '$lib/utils/header/handleTabClick';
-	import type { Item } from '$lib/types/sidebar';
+	import type { Item } from '$lib/types/sidebar/sidebar';
 	import * as Command from '$lib/components/ui/command';
 
 	export let items: Item[];

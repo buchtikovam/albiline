@@ -9,7 +9,7 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import { Button } from '$lib/components/ui/button';
 	import { get, type Readable, type Writable } from 'svelte/store';
-	import type { TextFilters, Filter } from '$lib/types/filter';
+	import type { TextFilters, Filter } from '$lib/types/table/filter';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
 
 	export let preFilteredValues: Readable<unknown[]>;

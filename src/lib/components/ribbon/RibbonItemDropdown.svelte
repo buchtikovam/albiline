@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import type { Item, SubItem } from '$lib/types/ribbon';
+	import type { Item, SubItem } from '$lib/types/ribbon/ribbon';
 	import type { Action } from '$lib/enums/action';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';

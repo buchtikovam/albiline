@@ -14,7 +14,7 @@
 	import { get } from 'svelte/store';
 	import deepcopy from 'deepcopy';
 	import Search from 'lucide-svelte/icons/search';
-	import type { Item } from '$lib/types/sidebar';
+	import type { Item } from '$lib/types/sidebar/sidebar';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuContent.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';

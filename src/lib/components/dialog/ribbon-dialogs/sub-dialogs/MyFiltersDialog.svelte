@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import type { FetchedFilter, StoredFilters } from '$lib/types/filter';
+	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
 	import { page } from '$app/stores';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
@@ -90,6 +90,8 @@
 		dialogOpen = true;
 	});
 </script>
+
+<!-- TODO: add order -->
 
 <Dialog.Root bind:open={dialogOpen} onOpenChange={() => handleRibbonDialogClose()}>
 	<Dialog.Content class="!min-w-[400px] !w-fit">

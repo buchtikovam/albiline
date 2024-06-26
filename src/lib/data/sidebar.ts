@@ -3,7 +3,7 @@ import Warehouse from 'lucide-svelte/icons/warehouse';
 import Hammer from 'lucide-svelte/icons/hammer';
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
-import type { Item } from '$lib/types/sidebar';
+import type { Item } from '$lib/types/sidebar/sidebar';
 
 export const allItems: Item[] = [
 	{

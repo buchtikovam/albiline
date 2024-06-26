@@ -10,4 +10,3 @@ export function customToast(type: ToastVariant, msg: string): void {
 		}
 	});
 }
-

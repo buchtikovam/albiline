@@ -7,7 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	/*
-	Avatar komponent s dropdownem a rychlými nastaveními
+		Avatar komponent s dropdownem a uživatelskými nastaveními
 	*/
 
 	export let userName: string = 'MBUC';
@@ -58,6 +58,7 @@
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 
+		<!-- Nastavení kompaktnosti stránky -->
 		<DropdownMenu.RadioGroup bind:value={isCompact}>
 			<DropdownMenu.Label>
 				Zobrazení

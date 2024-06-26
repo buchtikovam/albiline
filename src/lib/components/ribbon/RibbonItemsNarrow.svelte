@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Item } from '$lib/types/ribbon';
+	import type { Item } from '$lib/types/ribbon/ribbon';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import type { Action } from '$lib/enums/action';

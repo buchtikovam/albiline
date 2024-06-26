@@ -2,13 +2,13 @@
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
 	import type { DateValue } from '@internationalized/date';
-	import type { DialogItemDateRange } from '$lib/types/inputDialog';
+	import type { DialogDateRange } from '$lib/types/input-dialog/inputDialog';
 
 	/*
 	Komponent pro získání časového rozmezí
 	*/
 
-	export let item: DialogItemDateRange;
+	export let item: DialogDateRange;
 	export let startDateValue: DateValue | undefined = undefined;
 	export let endDateValue: DateValue | undefined = undefined;
 </script>

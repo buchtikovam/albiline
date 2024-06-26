@@ -1,7 +1,7 @@
 import { persisted } from 'svelte-persisted-store';
 import { writable, type Writable } from 'svelte/store';
-import type { StoredFilters } from '$lib/types/filter';
-import type { Column, TableRowData } from '$lib/types/table';
+import type { StoredFilters } from '$lib/types/table/filter';
+import type { Column, TableRowData } from '$lib/types/table/table';
 
 
 // PERSISTENT STORES

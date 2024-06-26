@@ -1,7 +1,7 @@
 import { selectedRowsStore, rowDataStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import { customToast } from '$lib/utils/toast/customToast';
-import type { TableRowData } from '$lib/types/table';
+import type { TableRowData } from '$lib/types/table/table';
 
 
 export async function deleteItem() {
@@ -15,7 +15,7 @@ export async function deleteItem() {
 
 	if (selectedRows) {
 		for (const [key] of Object.entries(selectedRows)) {
-			const rowId: number = (data[key as unknown as number]).id
+			const rowId: number = (data[key as unknown as number]).id;
 			idsToRemove.push(rowId);
 
 
@@ -29,13 +29,13 @@ export async function deleteItem() {
 
 		if (response?.ok) {
 			idsToRemove.forEach((id) => {
-				data.splice(id, 1)
-			})
-			rowDataStore.set(data)
+				data.splice(id, 1);
+			});
+			rowDataStore.set(data);
 
 			customToast('Success', 'Operace proběhla úspěšně.');
 
-			selectedRowsStore.set(undefined)
+			selectedRowsStore.set(undefined);
 		}
 	}
 

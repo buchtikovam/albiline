@@ -6,11 +6,14 @@
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
 	import type { DateValue } from '@internationalized/date';
 
-	export let value: DateValue|undefined;
+	/*
+		Kalendář s popoverem pro výběr datumu
+	*/
+
+	export let value: DateValue | undefined;
 	export let label: string;
 </script>
 
-<!--Kalendář komponent s dialogem pro výběr datumu -->
 
 <DatePicker.Root
 	weekdayFormat="short"
@@ -72,7 +75,7 @@
 
 					<DatePicker.NextButton
 						class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">
-						<ChevronRight class="mx-auto"/>
+						<ChevronRight class="mx-auto" />
 					</DatePicker.NextButton>
 				</DatePicker.Header>
 

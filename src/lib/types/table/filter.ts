@@ -1,4 +1,4 @@
-export type TextFilters = "default" | "contains" | "starts-with" | "ends-with"
+export type TextFilters = 'default' | 'contains' | 'starts-with' | 'ends-with'
 
 export type Filter = {
 	value: string,
@@ -13,5 +13,5 @@ export type FetchedFilter = {
 	id?: number,
 	pageOrigin: string,
 	filterName: string,
-	filters: StoredFilters|null
+	filters: StoredFilters | null
 }

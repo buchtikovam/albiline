@@ -5,20 +5,21 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
 	import InputStringNumber
-		from '$lib/components/dialog/input-dialog/input-dialog-components/InputStringNumber.svelte';
+		from '$lib/components/dialog/input-dialog/dialog-components/InputStringNumber.svelte';
 	import InputDialogDateRange
-		from '$lib/components/dialog/input-dialog/input-dialog-components/DateRange.svelte';
-	import type { InputDialog, InputDialogItem } from '$lib/types/inputDialog';
+		from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';
+	import type { InputDialog, InputDialogItem } from '$lib/types/input-dialog/inputDialog';
 	import { customToast } from '$lib/utils/toast/customToast';
+	import PresetDateButton from '$lib/components/dialog/input-dialog/dialog-components/PresetDateRangeButton.svelte';
 
 	/*
-	Vstupní parametry pro správné načtení jednotlivých stránek.
+		Vstupní parametry pro správné načtení jednotlivých stránek.
 
-	Komponent očekává, že se v $lib/data/inputDialogs nachází soubor, který se jmenuje stejně
-	jako poslední část routy stránky (později se předělá na fetch z db) a v tomto souboru má být
-	nadefinovaný obsah input dialogu v podobě objektu.
+		Komponent očekává, že se v $lib/data/inputDialogs nachází soubor, který se jmenuje stejně
+		jako poslední část routy stránky (později se předělá na fetch z db) a v tomto souboru má být
+		nadefinovaný obsah input dialogu v podobě objektu.
 
-	Po vyplnění všech inputů +page.svelte získává data
+		Po vyplnění všech inputů +page.svelte získává data
 	*/
 
 	export let inputDialogObjects: Record<string, any>;
@@ -70,12 +71,9 @@
 		getParams();
 	});
 
-	// TODO: input dialog: checkbox
+	// TODO: input input-dialog: checkbox
 
-	// TODO: input dialog: radiobuttons
-
-	// TODO: input dialog: set of date preset buttons
-
+	// TODO: input input-dialog: radiobuttons
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
@@ -87,8 +85,9 @@
 		</Dialog.Header>
 
 		<form on:submit={handleSubmit}>
-			<div class="flex flex-wrap justify-between gap-2.5 mb-4">
-				{#if dialogContent}
+			{#if dialogContent}
+				<div class="flex flex-wrap justify-between gap-2.5 mb-4">
+
 					{#each dialogContent as item}
 						{#if item.type === "string" || item.type === "number"}
 							<InputStringNumber item={item} bind:value={item.value} />
@@ -99,13 +98,30 @@
 						{/if}
 
 						{#if item.type === "date-range"}
-							<InputDialogDateRange item={item} bind:startDateValue={item.startDateValue}
-												  bind:endDateValue={item.endDateValue} />
+							<InputDialogDateRange
+								item={item}
+								bind:startDateValue={item.startDateValue}
+								bind:endDateValue={item.endDateValue}
+							/>
+						{/if}
+
+
+					{/each}
+				</div>
+				<div class="flex flex-wrap gap-2 mb-4 ">
+					{#each dialogContent as item}
+						<!--OR DATE BUTTON-->
+						{#if item.type === "date-range-button"}
+							<PresetDateButton
+								item={item}
+								bind:startDateValue={item.startDateValue}
+								bind:endDateValue={item.endDateValue}
+							/>
 						{/if}
 					{/each}
-				{/if}
+				</div>
+			{/if}
 
-			</div>
 
 			<Dialog.Footer>
 				<Button type="submit" class="w-full bg-albi-500 text-background font-bolder">

@@ -1,6 +1,6 @@
 import { RibbonType } from '$lib/enums/ribbonType';
 import { Action } from '$lib/enums/action';
-import type { Item } from '$lib/types/ribbon';
+import type { Item } from '$lib/types/ribbon/ribbon';
 import FilePlus from 'lucide-svelte/icons/file-plus';
 import FileX2 from 'lucide-svelte/icons/file-x-2';
 import Pencil from 'lucide-svelte/icons/pencil';

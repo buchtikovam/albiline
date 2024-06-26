@@ -14,7 +14,6 @@
 	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
 	import { cellWidths } from '$lib/constants/cellWidths';
@@ -27,22 +26,24 @@
 		columnDataStore,
 		filterValueStore
 	} from '$lib/stores/tableStore';
-	import type { Column, TableRowData } from '$lib/types/table';
-	import type { StoredFilters } from '$lib/types/filter';
+	import type { Column, TableRowData } from '$lib/types/table/table';
+	import type { StoredFilters } from '$lib/types/table/filter';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-	import { Button } from '$lib/components/ui/button';
+	// import { getUniqueValuesForRowDataKeys } from '$lib/utils/getUniqueKeysAndValues';
 
 	export let data: {
-		rowData: any,
+		rowData: TableRowData,
 		columnData: Column[],
 	};
 
 	rowDataStore.set(data.rowData);
 	columnDataStore.set(data.columnData);
+
+	// console.log(getUniqueValuesForRowDataKeys(get(rowDataStore)));
+
 
 	const updateData = (newData: TableRowData) => {
 		rowDataStore.set(newData);
@@ -71,7 +72,6 @@
 		})
 	});
 
-	// TODO: in db.json add plugin options
 
 	function getInitColumnOrder(): string[] {
 		let storedOrder = get(columnOrderStore);
@@ -153,11 +153,11 @@
 							},
 							plugins: {
 								sort: {
-									disable: true
+									disable: column.sortDisabled
 								},
 								resize: {
 									initialWidth: 40,
-									disable: true
+									disable: column.resizeDisabled
 								}
 							}
 						});
@@ -188,7 +188,11 @@
 										accessor
 									})
 							},
+							sort: {
+								disable: column.sortDisabled
+							},
 							resize: {
+								disable: column.resizeDisabled,
 								minWidth: 80,
 								initialWidth: initialWidth,
 								maxWidth: 400
@@ -264,7 +268,6 @@
 	}
 
 
-
 	// hide columns
 	// const { hiddenColumnIds } = pluginStates.hide;
 	//
@@ -280,14 +283,12 @@
 	// const hiddenCols = ["id"];
 
 
-
 	// fulltext filter value
 	const { filterValue } = pluginStates.filter;
 
 	filterValueStore.subscribe((value) => {
-		filterValue.set(value)
-	})
-
+		filterValue.set(value);
+	});
 
 
 	// event listener for drag and drop
@@ -300,22 +301,22 @@
 
 {#key $rowDataStore}
 	{#key $tableColumnData}
-<!--		<DropdownMenu.Root>-->
-<!--			<DropdownMenu.Trigger asChild let:builder>-->
-<!--				<Button variant="outline" class="ml-auto" builders={[builder]}>-->
-<!--					<ChevronDown class="h-4 w-4" />-->
-<!--				</Button>-->
-<!--			</DropdownMenu.Trigger>-->
-<!--			<DropdownMenu.Content>-->
-<!--				{#each flatColumns as col}-->
-<!--					{#if !hiddenCols.includes(col.id)}-->
-<!--						<DropdownMenu.CheckboxItem bind:checked={hideForId[col.id]}>-->
-<!--							{col.header}-->
-<!--						</DropdownMenu.CheckboxItem>-->
-<!--					{/if}-->
-<!--				{/each}-->
-<!--			</DropdownMenu.Content>-->
-<!--		</DropdownMenu.Root>-->
+		<!--		<DropdownMenu.Root>-->
+		<!--			<DropdownMenu.Trigger asChild let:builder>-->
+		<!--				<Button variant="outline" class="ml-auto" builders={[builder]}>-->
+		<!--					<ChevronDown class="h-4 w-4" />-->
+		<!--				</Button>-->
+		<!--			</DropdownMenu.Trigger>-->
+		<!--			<DropdownMenu.Content>-->
+		<!--				{#each flatColumns as col}-->
+		<!--					{#if !hiddenCols.includes(col.id)}-->
+		<!--						<DropdownMenu.CheckboxItem bind:checked={hideForId[col.id]}>-->
+		<!--							{col.header}-->
+		<!--						</DropdownMenu.CheckboxItem>-->
+		<!--					{/if}-->
+		<!--				{/each}-->
+		<!--			</DropdownMenu.Content>-->
+		<!--		</DropdownMenu.Root>-->
 
 		<div class="h-full flex flex-col">
 			<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">

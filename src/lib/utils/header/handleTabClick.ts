@@ -1,4 +1,4 @@
-import type { Item, Tab } from '$lib/types/sidebar';
+import type { Item, Tab } from '$lib/types/sidebar/sidebar';
 import { currentActiveTabStore, openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
 import { recentItemsStore } from '$lib/stores/sidebarStore';
 import { get } from 'svelte/store';

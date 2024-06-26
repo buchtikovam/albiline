@@ -4,6 +4,8 @@ export type Column = {
 	header: string,
 	type: string,
 	size: string,
+	sortDisabled: boolean,
+	resizeDisabled: boolean,
 }
 
 export type TableRowData = Record<string, any>[]
