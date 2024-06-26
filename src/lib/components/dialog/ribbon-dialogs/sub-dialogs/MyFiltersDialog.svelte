@@ -30,7 +30,7 @@
 				return filter.pageOrigin === $page.url.pathname;
 			});
 		} catch (error) {
-			console.error('Error fetching filters:', error);
+			console.error('Error fetching input-filters:', error);
 		}
 	})();
 

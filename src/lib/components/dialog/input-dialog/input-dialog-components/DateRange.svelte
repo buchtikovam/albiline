@@ -4,6 +4,10 @@
 	import type { DateValue } from '@internationalized/date';
 	import type { DialogItemDateRange } from '$lib/types/inputDialog';
 
+	/*
+	Komponent pro získání časového rozmezí
+	*/
+
 	export let item: DialogItemDateRange;
 	export let startDateValue: DateValue | undefined = undefined;
 	export let endDateValue: DateValue | undefined = undefined;

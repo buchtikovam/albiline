@@ -5,13 +5,16 @@
 		addSelectedRows,
 		addColumnOrder,
 		addColumnFilters,
-		addResizedColumns
+		addResizedColumns,
+		addTableFilter
 	} from 'svelte-headless-table/plugins';
 	import { createTable, Render, Subscribe, createRender, type DataColumn } from 'svelte-headless-table';
-	import { textFilter } from '$lib/components/table/column-filters/filters';
+	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
+	import { columnTextFilter } from '$lib/utils/input-filters/columnTextFilter';
 	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
 	import { cellWidths } from '$lib/constants/cellWidths';
@@ -21,14 +24,17 @@
 		currentFiltersStore,
 		selectedRowsStore,
 		rowDataStore,
-		columnDataStore
+		columnDataStore,
+		filterValueStore
 	} from '$lib/stores/tableStore';
 	import type { Column, TableRowData } from '$lib/types/table';
+	import type { StoredFilters } from '$lib/types/filter';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from '$lib/components/ui/table';
-	import type { StoredFilters } from '$lib/types/filter';
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import { Button } from '$lib/components/ui/button';
 
 	export let data: {
 		rowData: any,
@@ -48,6 +54,9 @@
 		sort: addSortBy(),
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
+		filter: addTableFilter({
+			fn: ({ filterValue, value }) => tableFulltextFilter(filterValue, value)
+		}),
 		colOrder: addColumnOrder({
 			initialColumnIdOrder: initColOrder
 		}),
@@ -62,6 +71,7 @@
 		})
 	});
 
+	// TODO: in db.json add plugin options
 
 	function getInitColumnOrder(): string[] {
 		let storedOrder = get(columnOrderStore);
@@ -75,8 +85,6 @@
 		});
 	}
 
-	// TODO: hide columns
-
 	let tableColumnData: Writable<DataColumn<any>[]> = writable([]);
 	let tableViewModel = table.createViewModel(
 		table.createColumns(get(tableColumnData))
@@ -86,6 +94,7 @@
 	let tableAttrs = tableViewModel.tableAttrs;
 	let tableBodyAttrs = tableViewModel.tableBodyAttrs;
 	let pluginStates = tableViewModel.pluginStates;
+	let flatColumns = tableViewModel.flatColumns;
 
 	tableColumnData.subscribe((value) => {
 		tableViewModel = table.createViewModel(
@@ -96,6 +105,7 @@
 		tableAttrs = tableViewModel.tableAttrs;
 		tableBodyAttrs = tableViewModel.tableBodyAttrs;
 		pluginStates = tableViewModel.pluginStates;
+		flatColumns = tableViewModel.flatColumns;
 	});
 
 	(function createDefaultFilters() {
@@ -162,7 +172,7 @@
 						header: column.header,
 						plugins: {
 							colFilter: {
-								fn: textFilter(columnFilter),
+								fn: columnTextFilter(columnFilter),
 								initialFilterValue: inputValue,
 								render: (
 									{ filterValue, values, preFilteredValues }: {
@@ -254,6 +264,33 @@
 	}
 
 
+
+	// hide columns
+	// const { hiddenColumnIds } = pluginStates.hide;
+	//
+	// const ids = flatColumns.map((col) => col.id);
+	//
+	// let hideForId = Object.fromEntries(ids.map((id) => [id, true]));
+	//
+	// $: $hiddenColumnIds = Object.entries(hideForId)
+	// 	.filter(([, hide]) => !hide)
+	// 	.map(([id]) => id);
+	//
+	// // TODO: make into store, access it my presets, save a preset
+	// const hiddenCols = ["id"];
+
+
+
+	// fulltext filter value
+	const { filterValue } = pluginStates.filter;
+
+	filterValueStore.subscribe((value) => {
+		filterValue.set(value)
+	})
+
+
+
+	// event listener for drag and drop
 	onMount(() => {
 		document.addEventListener('dragover', (event) => {
 			event.preventDefault();
@@ -263,6 +300,23 @@
 
 {#key $rowDataStore}
 	{#key $tableColumnData}
+<!--		<DropdownMenu.Root>-->
+<!--			<DropdownMenu.Trigger asChild let:builder>-->
+<!--				<Button variant="outline" class="ml-auto" builders={[builder]}>-->
+<!--					<ChevronDown class="h-4 w-4" />-->
+<!--				</Button>-->
+<!--			</DropdownMenu.Trigger>-->
+<!--			<DropdownMenu.Content>-->
+<!--				{#each flatColumns as col}-->
+<!--					{#if !hiddenCols.includes(col.id)}-->
+<!--						<DropdownMenu.CheckboxItem bind:checked={hideForId[col.id]}>-->
+<!--							{col.header}-->
+<!--						</DropdownMenu.CheckboxItem>-->
+<!--					{/if}-->
+<!--				{/each}-->
+<!--			</DropdownMenu.Content>-->
+<!--		</DropdownMenu.Root>-->
+
 		<div class="h-full flex flex-col">
 			<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
 				<Table.Header class="top-0 sticky bg-white border-1">
@@ -315,6 +369,8 @@
 						</Subscribe>
 					{/each}
 				</Table.Header>
+
+
 				<Table.Body {...$tableBodyAttrs}>
 					{#each $pageRows as row (row.id)}
 						<Subscribe attrs={row.attrs()} let:attrs>
@@ -335,7 +391,6 @@
 							</Table.Row>
 						</Subscribe>
 					{/each}
-
 				</Table.Body>
 			</Table.Root>
 

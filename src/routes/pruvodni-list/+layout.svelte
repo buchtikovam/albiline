@@ -2,6 +2,9 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import { Input } from '$lib/components/ui/input';
+	import { showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { filterValueStore } from '$lib/stores/tableStore';
 
 	export let preset: string = '/pruvodni-list';
 </script>
@@ -10,7 +13,7 @@
 	<title>Průvodní list</title>
 </svelte:head>
 
-<div class="w-full">
+<div class="w-full flex items-center justify-between">
 	<Tabs.Root value={$page.url.pathname}>
 		<Tabs.List class="w-fit">
 			<Tabs.Trigger
@@ -70,6 +73,18 @@
 			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>
+
+	{#if $showFulltextSearchStore === true}
+		<div class="flex items-center">
+			<Input
+				class="max-w-sm h-[31px] mr-4 border-b-white rounded-md rounded-b-none focus-visible:ring-0"
+				placeholder="Filtrovat..."
+				type="text"
+				bind:value={$filterValueStore}
+			/>
+		</div>
+	{/if}
+
 </div>
 
 <div class="h-full bg-background rounded-bl-lg rounded-none border">

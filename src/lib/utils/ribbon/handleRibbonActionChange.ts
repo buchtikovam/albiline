@@ -1,6 +1,6 @@
+import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 import { Action } from '$lib/enums/action';
 import { save } from '$lib/utils/ribbon/ribbon-actions/table-data/save';
-import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 import { edit } from '$lib/utils/ribbon/ribbon-actions/table-data/edit';
 import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/table-data/deleteItem';
 import { removeFilters } from '$lib/utils/ribbon/ribbon-actions/filters/removeFilters';

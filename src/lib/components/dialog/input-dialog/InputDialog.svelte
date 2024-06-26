@@ -4,17 +4,22 @@
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
-	import InputStringNumber from '$lib/components/dialog/input-dialog/input-dialog-components/InputStringNumber.svelte';
-	import InputDialogDateRange from '$lib/components/dialog/input-dialog/input-dialog-components/InputDateRange.svelte';
+	import InputStringNumber
+		from '$lib/components/dialog/input-dialog/input-dialog-components/InputStringNumber.svelte';
+	import InputDialogDateRange
+		from '$lib/components/dialog/input-dialog/input-dialog-components/DateRange.svelte';
 	import type { InputDialog, InputDialogItem } from '$lib/types/inputDialog';
+	import { customToast } from '$lib/utils/toast/customToast';
 
-	/* Vstupní parametry pro správné načtení jednotlivých stránek.
+	/*
+	Vstupní parametry pro správné načtení jednotlivých stránek.
 
-	* Komponent očekává, že se v $lib/data/inputDialogs nachází soubor, který se jmenuje stejně
-	* jako poslední část routy. V tomto souboru má být nadefinovaný obsah input dialogu v podobě
-	* objektu.
+	Komponent očekává, že se v $lib/data/inputDialogs nachází soubor, který se jmenuje stejně
+	jako poslední část routy stránky (později se předělá na fetch z db) a v tomto souboru má být
+	nadefinovaný obsah input dialogu v podobě objektu.
 
-	* Po vyplnění všech inputů +page.svelte získává data pomocí oboustranného bindu proměnné inputDialogObjects  */
+	Po vyplnění všech inputů +page.svelte získává data
+	*/
 
 	export let inputDialogObjects: Record<string, any>;
 
@@ -37,22 +42,27 @@
 		inputDialogObjects = {};
 
 		dialogContent.forEach((item: InputDialogItem) => {
-
-			if (item.type === "string" || item.type === "number" || item.type === "date") {
-				inputDialogObjects[item.name] = item.value;
+			if (item.type === 'string' || item.type === 'number' || item.type === 'date') {
+				if (item.value) {
+					inputDialogObjects[item.name] = item.value;
+				}
 			}
 
-			if (item.type === "date-range") {
-				inputDialogObjects[item.name] = {
-					startDateValue: item.startDateValue,
-					endDateValue: item.endDateValue
+			if (item.type === 'date-range') {
+				if (item.startDateValue && item.endDateValue) {
+					inputDialogObjects[item.name] = {
+						startDateValue: item.startDateValue,
+						endDateValue: item.endDateValue
+					};
 				}
 			}
 		});
 
-		console.log('objects', inputDialogObjects);
-
-		dialogOpen = false;
+		if (Object.entries(inputDialogObjects).length === dialogContent.length) {
+			dialogOpen = false;
+		} else {
+			customToast('Warning', 'Prosím vyplňte všechna pole');
+		}
 	}
 
 	onMount(() => {
@@ -76,8 +86,6 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<!-- TODO: make dates also required ? --check for undefined values in date, date-range -->
-
 		<form on:submit={handleSubmit}>
 			<div class="flex flex-wrap justify-between gap-2.5 mb-4">
 				{#if dialogContent}
@@ -91,7 +99,8 @@
 						{/if}
 
 						{#if item.type === "date-range"}
-							<InputDialogDateRange item={item} bind:startDateValue={item.startDateValue} bind:endDateValue={item.endDateValue} />
+							<InputDialogDateRange item={item} bind:startDateValue={item.startDateValue}
+												  bind:endDateValue={item.endDateValue} />
 						{/if}
 					{/each}
 				{/if}

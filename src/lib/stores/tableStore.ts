@@ -22,3 +22,7 @@ export const selectedRowsStore: Writable<Record<number, boolean>|undefined> = wr
 export const rowDataStore: Writable<TableRowData> = writable()
 
 export const columnDataStore: Writable<Column[]> = writable()
+
+export const showFulltextSearchStore: Writable<boolean> = writable(false)
+
+export const filterValueStore: Writable<string> = writable("")
