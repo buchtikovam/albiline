@@ -13,10 +13,9 @@
 
 	<div class="flex h-dvh flex-col">
 		<header class="flex flex-col border-b lg:h-fit">
-			<div class="pl-2">
+			<div class="pl-2 border-b">
 				<Header />
 			</div>
-			<Separator />
 			<Ribbon />
 		</header>
 

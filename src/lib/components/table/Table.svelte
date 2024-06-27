@@ -40,6 +40,13 @@
 	};
 
 	rowDataStore.set(data.rowData);
+	const rowData = writable(data.rowData);
+	rowDataStore.subscribe((data) => {
+		selectedRowsStore.set(undefined);
+		rowData.set(data);
+	});
+	// rowDataStore.subscribe((data) => console.log(data));
+
 	columnDataStore.set(data.columnData);
 
 	// console.log(getUniqueValuesForRowDataKeys(get(rowDataStore)));
@@ -51,7 +58,7 @@
 
 	let initColOrder: string[] = getInitColumnOrder();
 
-	const table = createTable(rowDataStore, {
+	const table = createTable(rowData, {
 		sort: addSortBy(),
 		hide: addHiddenColumns(),
 		select: addSelectedRows(),
@@ -203,7 +210,7 @@
 								row,
 								column,
 								value,
-								rowDataStore,
+								rowData,
 								onUpdateValue: updateData
 							})
 					});
@@ -252,10 +259,13 @@
 						columnOrderData.splice(target + 1, 0, columnOrderData[start]);
 						columnOrderData.splice(start, 1);
 						columnIdOrder.update(() => columnOrderData);
+						columnOrderStore.set(columnOrderData)
 					} else {
 						columnOrderData.splice(target, 0, columnOrderData[start]);
 						columnOrderData.splice(start + 1, 1);
 						columnIdOrder.update(() => columnOrderData);
+						columnOrderStore.set(columnOrderData)
+
 					}
 					hovering = null;
 				}
@@ -299,7 +309,7 @@
 	});
 </script>
 
-{#key $rowDataStore}
+{#key $rowData}
 	{#key $tableColumnData}
 		<!--		<DropdownMenu.Root>-->
 		<!--			<DropdownMenu.Trigger asChild let:builder>-->

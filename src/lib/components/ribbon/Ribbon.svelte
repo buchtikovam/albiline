@@ -20,7 +20,7 @@
 	}
 </script>
 
-<div class="flex p-2 px-4 overflow-auto">
+<div class="flex p-2 px-4 overflow-auto border-t-none">
 	{#each ribbonItems as item}
 		{#if Array.isArray(item)}
 			<RibbonItemsNarrow item={item} isOpen={isOpen} />
@@ -41,8 +41,8 @@
 <div
 	class={
 		(isOpen
-			? "mt-[89px]"
-			: "mt-[67px]")
+			? "mt-[88px]"
+			: "mt-[66px]")
 			+ " absolute w-full flex justify-end items-center"
 	}
 >

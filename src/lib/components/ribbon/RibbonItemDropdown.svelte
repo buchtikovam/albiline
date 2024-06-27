@@ -59,7 +59,7 @@
 			</Tooltip.Root>
 		</DropdownMenu.Trigger>
 
-		<DropdownMenu.Content class="w-fit p-1">
+		<DropdownMenu.Content class="w-fit p-1 mx-0.5">
 			{#each children as child}
 				<DropdownMenu.Item class="text-xs w-full">
 					<button on:click={() => setAction(child.action)}>

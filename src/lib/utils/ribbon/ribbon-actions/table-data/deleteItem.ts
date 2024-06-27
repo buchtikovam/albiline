@@ -28,14 +28,17 @@ export async function deleteItem() {
 		}
 
 		if (response?.ok) {
-			idsToRemove.forEach((id) => {
-				data.splice(id, 1);
-			});
-			rowDataStore.set(data);
+			selectedRowsStore.set(undefined);
+
+			rowDataStore.set(
+				data.filter(
+					(record) => !idsToRemove.includes(record.id)
+				)
+			);
 
 			customToast('Success', 'Operace proběhla úspěšně.');
 
-			selectedRowsStore.set(undefined);
+
 		}
 	}
 

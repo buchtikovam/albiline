@@ -12,6 +12,7 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { apiServiceDELETE } from '$lib/api/apiService';
+	import { Input } from '$lib/components/ui/input';
 
 	let dialogOpen: boolean = false;
 	let warningDialogOpen: boolean = false;
@@ -20,6 +21,8 @@
 	let filtersData: FetchedFilter[] | undefined = undefined;
 	let deleteFilterConsent: Writable<boolean> = writable(false);
 
+	let isEditing: boolean = false;
+	// create an object holding filterName and if it is editing
 
 	(async function getFilters() {
 		try {
@@ -50,7 +53,7 @@
 		try {
 			console.log('Deleting filter...');
 
-			const response = await apiServiceDELETE("filters", filterId);
+			const response = await apiServiceDELETE('filters', filterId);
 
 			if (!response.ok) {
 				customToast('Critical', 'Nastala chyba při mazání filtru.');
@@ -104,14 +107,21 @@
 
 		{#if filtersData !== undefined}
 			<div>
-				{#each filtersData as filter}
+				{#each filtersData as filter (filter.id)}
 					<div class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1">
-						<button
-							on:click={() => loadFilterInTable(filter.filters)}
-							class="text-left text-sm w-full  hover:text-primary px-0.5 py-2"
-						>
-							{filter.filterName}
-						</button>
+						<!--{#if isEditing}-->
+<!--							<form>-->
+<!--								<Input />-->
+<!--							</form>-->
+<!--						{:else}-->
+							<button
+								on:click={() => loadFilterInTable(filter.filters)}
+								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
+							>
+								{filter.filterName}
+							</button>
+						<!--{/if}-->
+
 
 						<div class="flex gap-2">
 							<button

@@ -6,7 +6,7 @@
 	export let row;
 	export let column;
 	export let value: unknown;
-	export let rowDataStore;
+	export let rowData;
 	export let onUpdateValue;
 
 	let isEditing = false;
@@ -26,11 +26,11 @@
 	const handleSubmit = (event: Event) => {
 		event.preventDefault();
 
-		const rowData = get(rowDataStore)
+		const rowDataValue = get(rowData)
 
-		rowData[row.id][column.id] = value;
+		rowDataValue[row.dataId][column.id] = value;
 
-		let editedRow = rowData[row.id];
+		let editedRow = rowDataValue[row.dataId];
 
 		let rowIds: number[] = [];
 		get(editedDataStore).forEach((row) => {
@@ -44,7 +44,7 @@
 		isEditing = false;
 
 		if (row.isData()) {
-			onUpdateValue(rowData);
+			onUpdateValue(rowDataValue);
 		}
 	};
 </script>
