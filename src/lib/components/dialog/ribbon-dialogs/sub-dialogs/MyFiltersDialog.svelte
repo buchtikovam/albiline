@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
 	import { page } from '$app/stores';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-	import Pencil from 'lucide-svelte/icons/pencil';
-	import X from 'lucide-svelte/icons/x';
-	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
+	import { onMount } from 'svelte';
 	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
 	import { writable, type Writable } from 'svelte/store';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { apiServiceDELETE } from '$lib/api/apiService';
+	import Pencil from 'lucide-svelte/icons/pencil';
+	import X from 'lucide-svelte/icons/x';
+	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
+	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 
 	let dialogOpen: boolean = false;
@@ -22,7 +22,7 @@
 	let deleteFilterConsent: Writable<boolean> = writable(false);
 
 	let isEditing: boolean = false;
-	// create an object holding filterName and if it is editing
+	let editingFilterId: number | undefined = undefined;
 
 	(async function getFilters() {
 		try {
@@ -32,17 +32,48 @@
 			filtersData = filtersData?.filter((filter: FetchedFilter) => {
 				return filter.pageOrigin === $page.url.pathname;
 			});
+
 		} catch (error) {
 			console.error('Error fetching input-filters:', error);
 		}
 	})();
 
-	function editFilter(filters: StoredFilters | null) {
-		if (filters) {
-			console.log('edit');
-		}
-		// TODO: make into editable when edit icon clicked, then update in json db
+	function editFilter(filter: FetchedFilter) {
+		isEditing = !isEditing;
+		editingFilterId = filter.id;
 
+		// TODO: after edit, save in json db
+	}
+
+	function drag(e: DragEvent, index: number) {
+		if (e.dataTransfer) {
+			e.dataTransfer.setData('text', String(index));
+			start = index;
+		}
+	}
+
+	let hovering: number | null;
+	let start: number;
+
+	function drop(e: DragEvent, target: number | null) {
+		if (e.dataTransfer && target !== null) {
+			if (filtersData) {
+				if (start < target) {
+					filtersData.splice(target + 1, 0, filtersData[start]);
+					filtersData.splice(start, 1);
+					// 	TODO: save in local storage ?
+
+				} else {
+					filtersData.splice(target, 0, filtersData[start]);
+					filtersData.splice(start + 1, 1);
+				}
+				hovering = null;
+			}
+		}
+	}
+
+	function setHovering(index: number) {
+		hovering = index;
 	}
 
 	async function deleteFilter(filterId: number | undefined) {
@@ -70,7 +101,6 @@
 		}
 	}
 
-
 	function loadFilterInTable(filters: StoredFilters | null) {
 		if (filters) {
 			dialogOpen = false;
@@ -94,8 +124,6 @@
 	});
 </script>
 
-<!-- TODO: add order -->
-
 <Dialog.Root bind:open={dialogOpen} onOpenChange={() => handleRibbonDialogClose()}>
 	<Dialog.Content class="!min-w-[400px] !w-fit">
 		<Dialog.Header>
@@ -107,25 +135,40 @@
 
 		{#if filtersData !== undefined}
 			<div>
-				{#each filtersData as filter (filter.id)}
-					<div class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1">
-						<!--{#if isEditing}-->
-<!--							<form>-->
-<!--								<Input />-->
-<!--							</form>-->
-<!--						{:else}-->
+				{#each filtersData as filter, index (filter.id)}
+					<div
+						role={isEditing && editingFilterId === filter.id ? 'region form' : null}
+						draggable="true"
+						on:focusout={() => {editingFilterId = undefined}}
+						on:dragstart={(e) => drag(e, index)}
+						on:dragover={() => setHovering(index)}
+						on:dragend={(e) => drop(e, hovering)}
+						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1 cursor-grab active:cursor-grabbing "
+					>
+						{#if isEditing && editingFilterId === filter.id}
+							<form
+								class="w-full p-1"
+								on:submit|preventDefault={() => {editingFilterId = undefined}}
+							>
+								<Input
+									class="w-full h-7 focus-visible:ring-0 px-1.5"
+									bind:value={filter.filterName}
+									on:focusout={() => {editingFilterId = undefined}}
+								/>
+							</form>
+						{:else}
 							<button
 								on:click={() => loadFilterInTable(filter.filters)}
 								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
 							>
 								{filter.filterName}
 							</button>
-						<!--{/if}-->
+						{/if}
 
 
-						<div class="flex gap-2">
+						<div class="flex gap-2 ml-4">
 							<button
-								on:click={() => editFilter(filter.filters)}
+								on:click={() => editFilter(filter)}
 								class="size-5"
 							>
 								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />

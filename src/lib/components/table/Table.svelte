@@ -235,17 +235,14 @@
 
 	function drag(e: DragEvent, index: number) {
 		if (e.dataTransfer) {
-			e.dataTransfer.effectAllowed = 'copy';
-			e.dataTransfer.dropEffect = 'copy';
-			e.dataTransfer.setData('text/plain', '');
 			start = index;
 		}
 	}
 
+	// TODO: fulltext not working
+
 	function drop(e: DragEvent, target: number | null) {
 		if (e.dataTransfer && target !== null) {
-			e.dataTransfer.dropEffect = 'copy';
-
 			const { columnIdOrder } = pluginStates.colOrder;
 			let columnOrderData: string[];
 
@@ -265,7 +262,6 @@
 						columnOrderData.splice(start + 1, 1);
 						columnIdOrder.update(() => columnOrderData);
 						columnOrderStore.set(columnOrderData)
-
 					}
 					hovering = null;
 				}
