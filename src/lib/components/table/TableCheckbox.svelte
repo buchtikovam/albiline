@@ -5,4 +5,6 @@
 	export let checked: Writable<boolean>;
 </script>
 
+<!--{#if checked}-->
 <Checkbox bind:checked={$checked} class="flex"/>
+<!--{/if}-->

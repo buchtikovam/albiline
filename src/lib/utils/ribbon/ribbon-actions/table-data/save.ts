@@ -11,6 +11,8 @@ export async function save(): Promise<void> {
 		for (const row of editedData) {
 			const editedId = row.id;
 
+			console.log(editedId);
+
 			response = await fetch(`http://localhost:3000/pruvodni-list-data/${editedId}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },

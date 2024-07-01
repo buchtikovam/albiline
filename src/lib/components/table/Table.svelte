@@ -1,30 +1,27 @@
 <script lang="ts">
 	import {
-		addSortBy,
-		addHiddenColumns,
-		addSelectedRows,
-		addColumnOrder,
 		addColumnFilters,
+		addColumnOrder,
+		addHiddenColumns,
 		addResizedColumns,
+		addSelectedRows,
+		addSortBy,
 		addTableFilter
 	} from 'svelte-headless-table/plugins';
-	import { createTable, Render, Subscribe, createRender, type DataColumn } from 'svelte-headless-table';
+	import { createRender, createTable, type DataColumn, Render, Subscribe } from 'svelte-headless-table';
 	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
 	import { columnTextFilter } from '$lib/utils/input-filters/columnTextFilter';
 	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
-	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
-	import ArrowUpAZ from 'lucide-svelte/icons/arrow-up-a-z';
 	import { cellWidths } from '$lib/constants/cellWidths';
 	import {
-		columnWidthStore,
-		columnOrderStore,
-		currentFiltersStore,
-		selectedRowsStore,
-		rowDataStore,
 		columnDataStore,
-		filterValueStore
+		columnOrderStore,
+		columnWidthStore,
+		currentFiltersStore,
+		filterValueStore,
+		rowDataStore,
+		selectedRowsStore
 	} from '$lib/stores/tableStore';
 	import type { Column, TableRowData } from '$lib/types/table/table';
 	import type { StoredFilters } from '$lib/types/table/filter';
@@ -34,23 +31,22 @@
 	import * as Table from '$lib/components/ui/table';
 	// import { getUniqueValuesForRowDataKeys } from '$lib/utils/getUniqueKeysAndValues';
 
-	export let data: {
-		rowData: TableRowData,
-		columnData: Column[],
-	};
+	export let data;
 
-	rowDataStore.set(data.rowData);
-	const rowData = writable(data.rowData);
+	// console.log(data);
+
+	const rowData = writable(data.items);
+
+	rowDataStore.set(data.items);
+
 	rowDataStore.subscribe((data) => {
 		selectedRowsStore.set(undefined);
 		rowData.set(data);
 	});
-	// rowDataStore.subscribe((data) => console.log(data));
 
-	columnDataStore.set(data.columnData);
+	columnDataStore.set(data.columnInfo);
 
 	// console.log(getUniqueValuesForRowDataKeys(get(rowDataStore)));
-
 
 	const updateData = (newData: TableRowData) => {
 		rowDataStore.set(newData);
@@ -101,7 +97,7 @@
 	let tableAttrs = tableViewModel.tableAttrs;
 	let tableBodyAttrs = tableViewModel.tableBodyAttrs;
 	let pluginStates = tableViewModel.pluginStates;
-	let flatColumns = tableViewModel.flatColumns;
+	// let flatColumns = tableViewModel.flatColumns;
 
 	tableColumnData.subscribe((value) => {
 		tableViewModel = table.createViewModel(
@@ -112,7 +108,7 @@
 		tableAttrs = tableViewModel.tableAttrs;
 		tableBodyAttrs = tableViewModel.tableBodyAttrs;
 		pluginStates = tableViewModel.pluginStates;
-		flatColumns = tableViewModel.flatColumns;
+		// flatColumns = tableViewModel.flatColumns;
 	});
 
 	(function createDefaultFilters() {
@@ -128,6 +124,7 @@
 		currentFiltersStore.set(defaultFilters);
 	})();
 
+	// TODO: visible column title even on small width
 
 	currentFiltersStore.subscribe((filters) => {
 		const colWidthData = get(columnWidthStore);
@@ -141,6 +138,9 @@
 					} else {
 						initialWidth = cellWidths.get(column.size);
 					}
+
+					let sortDisable = column.sortDisabled !== 0;
+					let resizeDisable = column.resizeDisabled !== 0;
 
 					if (column.type === 'id') {
 						return table.column({
@@ -160,16 +160,153 @@
 							},
 							plugins: {
 								sort: {
-									disable: column.sortDisabled
+									disable: sortDisable
 								},
 								resize: {
 									initialWidth: 40,
-									disable: column.resizeDisabled
+									disable: resizeDisable
 								}
 							}
 						});
 					}
 
+					// TODO: checkbox - new column filter
+
+					if (column.type === 'checkbox') {
+						let accessor = column.accessor;
+						const inputValue = filters ? filters[accessor].value : '';
+						let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
+						return table.column({
+							accessor: column.accessor,
+							header: column.header,
+							plugins: {
+								colFilter: {
+									fn: columnTextFilter(columnFilter),
+									initialFilterValue: inputValue,
+									render: (
+										{ filterValue, values, preFilteredValues }: {
+											filterValue: Writable<string>,
+											values: Readable<any[]>,
+											preFilteredValues: Readable<any[]>
+										}) =>
+										createRender(TextFilter, {
+											filterValue,
+											values,
+											preFilteredValues,
+											columnFilter,
+											accessor
+										})
+								},
+								sort: {
+									disable: sortDisable
+								},
+								resize: {
+									disable: resizeDisable,
+									minWidth: 60,
+									initialWidth: initialWidth,
+									maxWidth: 400
+								}
+							},
+							cell: ({ value }: { value: 0|1 }) =>
+								createRender(TableCheckbox, {
+									checked: writable(value !== 0)
+								})
+						});
+					}
+
+					if (column.type === 'date') {
+						// TODO: date
+						let accessor = column.accessor;
+						const inputValue = filters ? filters[accessor].value : '';
+						let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
+						return table.column({
+							accessor: column.accessor,
+							header: column.header,
+							plugins: {
+								colFilter: {
+									fn: columnTextFilter(columnFilter),
+									initialFilterValue: inputValue,
+									render: (
+										{ filterValue, values, preFilteredValues }: {
+											filterValue: Writable<string>,
+											values: Readable<any[]>,
+											preFilteredValues: Readable<any[]>
+										}) =>
+										createRender(TextFilter, {
+											filterValue,
+											values,
+											preFilteredValues,
+											columnFilter,
+											accessor
+										})
+								},
+								sort: {
+									disable: sortDisable
+								},
+								resize: {
+									disable: resizeDisable,
+									minWidth: 60,
+									initialWidth: initialWidth,
+									maxWidth: 400
+								}
+							},
+							cell: ({ column, row, value }) =>
+								createRender(EditableCell, {
+									row,
+									column,
+									value,
+									rowData,
+									onUpdateValue: updateData
+								})
+						})
+					}
+
+					if (column.type === 'int') {
+						// TODO: int
+						let accessor = column.accessor;
+						const inputValue = filters ? filters[accessor].value : '';
+						let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
+						return table.column({
+							accessor: column.accessor,
+							header: column.header,
+							plugins: {
+								colFilter: {
+									fn: columnTextFilter(columnFilter),
+									initialFilterValue: inputValue,
+									render: (
+										{ filterValue, values, preFilteredValues }: {
+											filterValue: Writable<string>,
+											values: Readable<any[]>,
+											preFilteredValues: Readable<any[]>
+										}) =>
+										createRender(TextFilter, {
+											filterValue,
+											values,
+											preFilteredValues,
+											columnFilter,
+											accessor
+										})
+								},
+								sort: {
+									disable: sortDisable
+								},
+								resize: {
+									disable: resizeDisable,
+									minWidth: 60,
+									initialWidth: initialWidth,
+									maxWidth: 400
+								}
+							},
+							cell: ({ column, row, value }) =>
+								createRender(EditableCell, {
+									row,
+									column,
+									value,
+									rowData,
+									onUpdateValue: updateData
+								})
+						})
+					}
 
 					let accessor = column.accessor;
 					const inputValue = filters ? filters[accessor].value : '';
@@ -196,10 +333,10 @@
 									})
 							},
 							sort: {
-								disable: column.sortDisabled
+								disable: sortDisable
 							},
 							resize: {
-								disable: column.resizeDisabled,
+								disable: resizeDisable,
 								minWidth: 80,
 								initialWidth: initialWidth,
 								maxWidth: 400
@@ -220,6 +357,7 @@
 	});
 
 
+	// TODO: when using column filters, selected rows doesn't work
 	// checkbox plugin
 	let selectedRows = 0;
 	const { selectedDataIds } = pluginStates.select;
@@ -239,7 +377,6 @@
 		}
 	}
 
-	// TODO: fulltext not working
 
 	function drop(e: DragEvent, target: number | null) {
 		if (e.dataTransfer && target !== null) {
@@ -307,22 +444,22 @@
 
 {#key $rowData}
 	{#key $tableColumnData}
-		<!--		<DropdownMenu.Root>-->
-		<!--			<DropdownMenu.Trigger asChild let:builder>-->
-		<!--				<Button variant="outline" class="ml-auto" builders={[builder]}>-->
-		<!--					<ChevronDown class="h-4 w-4" />-->
-		<!--				</Button>-->
-		<!--			</DropdownMenu.Trigger>-->
-		<!--			<DropdownMenu.Content>-->
-		<!--				{#each flatColumns as col}-->
-		<!--					{#if !hiddenCols.includes(col.id)}-->
-		<!--						<DropdownMenu.CheckboxItem bind:checked={hideForId[col.id]}>-->
-		<!--							{col.header}-->
-		<!--						</DropdownMenu.CheckboxItem>-->
-		<!--					{/if}-->
-		<!--				{/each}-->
-		<!--			</DropdownMenu.Content>-->
-		<!--		</DropdownMenu.Root>-->
+		<!--				<DropdownMenu.Root>-->
+		<!--					<DropdownMenu.Trigger asChild let:builder>-->
+		<!--						<Button variant="outline" class="ml-auto" builders={[builder]}>-->
+		<!--							<ChevronDown class="h-4 w-4" />-->
+		<!--						</Button>-->
+		<!--					</DropdownMenu.Trigger>-->
+		<!--					<DropdownMenu.Content>-->
+		<!--						{#each flatColumns as col}-->
+		<!--							{#if !hiddenCols.includes(col.id)}-->
+		<!--								<DropdownMenu.CheckboxItem bind:checked={hideForId[col.id]}>-->
+		<!--									{col.header}-->
+		<!--								</DropdownMenu.CheckboxItem>-->
+		<!--							{/if}-->
+		<!--						{/each}-->
+		<!--					</DropdownMenu.Content>-->
+		<!--				</DropdownMenu.Root>-->
 
 		<div class="h-full flex flex-col">
 			<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
@@ -347,13 +484,13 @@
 													on:click={props.sort.toggle}
 												>
 													<Render of={cell.render()} />
-													{#if props.sort.order === 'asc'}
-														<ArrowDownAZ class="h-4 w-4 ml-2" />
-													{:else if props.sort.order === 'desc'}
-														<ArrowUpAZ class="h-4 w-4 ml-2" />
-													{:else}
-														<ArrowUpDown class="h-4 w-4 ml-2" />
-													{/if}
+													<!--{#if props.sort.order === 'asc'}-->
+													<!--														<ArrowDownAZ class="h-4 w-4 ml-2" />-->
+													<!--													{:else if props.sort.order === 'desc'}-->
+													<!--														<ArrowUpAZ class="h-4 w-4 ml-2" />-->
+													<!--													{:else}-->
+													<!--														<ArrowUpDown class="h-4 w-4 ml-2" />-->
+													<!--													{/if}-->
 												</button>
 											{:else}
 												<Render of={cell.render()} />

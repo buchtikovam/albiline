@@ -4,7 +4,7 @@
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { onMount } from 'svelte';
 	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
-	import { writable, type Writable } from 'svelte/store';
+	import { get, writable, type Writable } from 'svelte/store';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { apiServiceDELETE } from '$lib/api/apiService';
 	import Pencil from 'lucide-svelte/icons/pencil';
@@ -13,6 +13,7 @@
 	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
+	import { persisted } from 'svelte-persisted-store';
 
 	let dialogOpen: boolean = false;
 	let warningDialogOpen: boolean = false;
@@ -23,6 +24,13 @@
 
 	let isEditing: boolean = false;
 	let editingFilterId: number | undefined = undefined;
+
+	let filtersOrder: Writable<string[]> = persisted("filtersOrder", []);
+
+	if (filtersData) {
+		console.log(filtersData);
+	}
+
 
 	(async function getFilters() {
 		try {
@@ -39,9 +47,9 @@
 	})();
 
 	function editFilter(filter: FetchedFilter) {
-		isEditing = !isEditing;
 		editingFilterId = filter.id;
-
+		isEditing = !isEditing;
+		console.log("edit", filter.id);
 		// TODO: after edit, save in json db
 	}
 
@@ -61,7 +69,9 @@
 				if (start < target) {
 					filtersData.splice(target + 1, 0, filtersData[start]);
 					filtersData.splice(start, 1);
-					// 	TODO: save in local storage ?
+
+
+					// 	TODO: save filter order in local storage ?
 
 				} else {
 					filtersData.splice(target, 0, filtersData[start]);
@@ -118,6 +128,7 @@
 		deleteFilterConsent.set(false);
 	});
 
+	// TODO: fix bug - closing after clicking in input
 
 	onMount(() => {
 		dialogOpen = true;
@@ -134,10 +145,14 @@
 
 
 		{#if filtersData !== undefined}
+			{#if filtersData.length === 0}
+				<p class="mt-2">Filtry nebyly nalezeny. Zkuste si nějaký uložit.</p>
+
+			{/if}
 			<div>
 				{#each filtersData as filter, index (filter.id)}
 					<div
-						role={isEditing && editingFilterId === filter.id ? 'region form' : null}
+						role="listitem"
 						draggable="true"
 						on:focusout={() => {editingFilterId = undefined}}
 						on:dragstart={(e) => drag(e, index)}
@@ -148,12 +163,10 @@
 						{#if isEditing && editingFilterId === filter.id}
 							<form
 								class="w-full p-1"
-								on:submit|preventDefault={() => {editingFilterId = undefined}}
 							>
 								<Input
 									class="w-full h-7 focus-visible:ring-0 px-1.5"
 									bind:value={filter.filterName}
-									on:focusout={() => {editingFilterId = undefined}}
 								/>
 							</form>
 						{:else}

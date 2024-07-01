@@ -7,9 +7,6 @@ import type { TableRowData } from '$lib/types/table/table';
 export async function deleteItem() {
 	const selectedRows: Record<number, boolean> | undefined = get(selectedRowsStore);
 	const data: TableRowData = get(rowDataStore);
-	let response;
-
-	console.log(selectedRows);
 
 	const idsToRemove: number[] = [];
 
@@ -17,18 +14,7 @@ export async function deleteItem() {
 		for (const [key] of Object.entries(selectedRows)) {
 			const rowId: number = (data[key as unknown as number]).id;
 			idsToRemove.push(rowId);
-
-
-			response = await fetch(`http://localhost:3000/pruvodni-list-data/${rowId}`, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' }
-			});
-
-
 		}
-
-		if (response?.ok) {
-			selectedRowsStore.set(undefined);
 
 			rowDataStore.set(
 				data.filter(
@@ -36,14 +22,10 @@ export async function deleteItem() {
 				)
 			);
 
-			customToast('Success', 'Operace proběhla úspěšně.');
+			customToast('Success', 'Úspěšně smazáno.');
 
-
-		}
+			selectedRowsStore.set(undefined)
 	}
 
 	console.log(idsToRemove);
 }
-
-
-// TODO: reload after delete => remove from data in page.svelte or table

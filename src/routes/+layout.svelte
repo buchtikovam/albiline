@@ -1,10 +1,19 @@
 <script lang="ts">
 	import './../app.pcss';
-	import { Separator } from '$lib/components/ui/separator';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
+	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
+
+
+	ribbonActionStore.subscribe((action) => {
+		if (action) {
+			handleRibbonActionChange(action)
+		}
+	});
 </script>
 
 
@@ -32,3 +41,4 @@
 	</div>
 </div>
 
+<MainDialog/>

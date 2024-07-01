@@ -6,7 +6,7 @@
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { filterValueStore } from '$lib/stores/tableStore';
 
-	export let preset: string = '/pruvodni-list';
+	let preset: string = '/pruvodni-list';
 </script>
 
 <svelte:head>

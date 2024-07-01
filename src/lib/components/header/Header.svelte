@@ -79,6 +79,8 @@
 	}
 </script>
 
+<!--TODO: tab reorder-->
+
 <div class="flex justify-between bg-muted">
 	<Tabs.Root class="w-fit h-fit pt-2" value={activeTabValue}>
 		<Tabs.List>
