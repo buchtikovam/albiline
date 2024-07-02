@@ -1,7 +1,7 @@
 import { persisted } from 'svelte-persisted-store';
-import type { Writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 
-export const sidebarStateStore: Writable<boolean> = persisted('sidebarState', true);
+export const sidebarStateStore: Writable<boolean> = writable( true);
 
 export const recentItemsStore: Writable<string[]> = persisted(
 	'recentSidebarItems',
@@ -11,4 +11,4 @@ export const recentItemsStore: Writable<string[]> = persisted(
 
 export const favoriteItemsStore: Writable<string[]> = persisted("favoriteSidebarItems", [])
 
-export const activeCategoryStore: Writable<string> = persisted("activeSidebarCategory", "all")
+export const activeCategoryStore: Writable<string> = writable("all")

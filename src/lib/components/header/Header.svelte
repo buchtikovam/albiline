@@ -14,6 +14,8 @@
 	let url = $page.url.pathname;
 	let urlLength = url.split('/').length;
 
+	console.log();
+
 	openedTabsStore.subscribe((data) => {
 		tabs = data;
 	});
@@ -73,6 +75,8 @@
 
 	}
 
+	// TODO: header tab load
+
 	function hideClosingButton(tab: Tab) {
 		tab.closingState = 'hidden';
 		openedTabsStore.update(() => tabs);
@@ -92,6 +96,13 @@
 				<Home class="w-4 h-4" />
 			</Tabs.Trigger>
 
+			<Tabs.Trigger
+				value={`/pruvodni-list`}
+				on:click={() => goto("/pruvodni-list")}
+			>
+				Průvodní list
+			</Tabs.Trigger>
+
 			<!-- Taby otevřené uživatelem -->
 			{#each tabs as tab}
 				<Tabs.Trigger
@@ -100,7 +111,7 @@
 					class=""
 				>
 					<button
-						class="flex "
+						class="flex"
 						on:mouseenter={() => showClosingButton(tab)}
 						on:mouseleave={() => hideClosingButton(tab)}
 					>

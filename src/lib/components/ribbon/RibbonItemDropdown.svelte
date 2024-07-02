@@ -7,7 +7,7 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 
 	export let item: Item;
-	export let isOpen: boolean = false;
+	export let isOpen: boolean = true;
 
 	let children: SubItem[] = item.children || [];
 
@@ -20,7 +20,7 @@
 
 {#if isOpen === true}
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="min-w-12">
+		<DropdownMenu.Trigger>
 			<button
 				class="text-[10px] min-w-12 w-12 h-12 leading-3 rounded hover:bg-muted/70"
 			>

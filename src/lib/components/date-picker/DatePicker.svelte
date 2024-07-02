@@ -10,16 +10,24 @@
 		Kalendář s popoverem pro výběr datumu
 	*/
 
-	export let value: DateValue | undefined;
-	export let label: string;
-</script>
+	console.log("run");
 
+	export let dateValue: Date|undefined;
+
+	let value: DateValue|undefined;
+
+	export let label: string;
+
+	$: if (value) {
+		dateValue = new Date(value.year, value.month, value.day)
+	}
+</script>
 
 <DatePicker.Root
 	weekdayFormat="short"
 	fixedWeeks={true}
 	weekStartsOn={1}
-	bind:value
+	bind:value={value}
 	locale="cz"
 >
 	<div class="flex w-full max-w-[220px] flex-col gap-0.5">

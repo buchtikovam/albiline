@@ -4,7 +4,7 @@
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 
 	export let item: Item;
-	export let isOpen: boolean = false;
+	export let isOpen: boolean = true;
 
 	function setAction() {
 		if (item.action) {

@@ -2,15 +2,12 @@
 	import { Button } from '$lib/components/ui/button';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
-	import InputStringNumber
-		from '$lib/components/dialog/input-dialog/dialog-components/InputStringNumber.svelte';
-	import InputDialogDateRange
-		from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';
+	import InputStringNumber from '$lib/components/dialog/input-dialog/dialog-components/InputStringNumber.svelte';
+	import DateRange from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';
 	import type { InputDialog, InputDialogItem } from '$lib/types/input-dialog/inputDialog';
-	import { customToast } from '$lib/utils/toast/customToast';
-	import PresetDateButton from '$lib/components/dialog/input-dialog/dialog-components/PresetDateRangeButton.svelte';
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import { get } from 'svelte/store';
 
 	/*
 		Vstupní parametry pro správné načtení jednotlivých stránek.
@@ -50,20 +47,25 @@
 			}
 
 			if (item.type === 'date-range') {
+				console.log(item.startDateValue);
+				console.log(item.endDateValue);
+
 				if (item.startDateValue && item.endDateValue) {
 					inputDialogObjects[item.name] = {
 						startDateValue: item.startDateValue,
 						endDateValue: item.endDateValue
 					};
+
+					dialogOpen = false
 				}
 			}
 		});
 
-		if (Object.entries(inputDialogObjects).length === dialogContent.length) {
-			dialogOpen = false;
-		} else {
-			customToast('Warning', 'Prosím vyplňte všechna pole');
-		}
+		// if (Object.entries(inputDialogObjects).length === dialogContent.length) {
+		// 	dialogOpen = false;
+		// } else {
+		// 	customToast('Warning', 'Prosím vyplňte všechna pole');
+		// }
 	}
 
 	onMount(() => {
@@ -94,30 +96,19 @@
 						{/if}
 
 						{#if item.type === "date"}
-							<DatePicker label={item.label} bind:value={item.value} />
+							<DatePicker label={item.label} bind:dateValue={item.value} />
 						{/if}
 
 						{#if item.type === "date-range"}
-							<InputDialogDateRange
+							<DateRange
 								item={item}
+								bind:dialogOpen
 								bind:startDateValue={item.startDateValue}
 								bind:endDateValue={item.endDateValue}
 							/>
 						{/if}
 
 
-					{/each}
-				</div>
-				<div class="flex flex-wrap gap-2 mb-4 ">
-					{#each dialogContent as item}
-						<!--OR DATE BUTTON-->
-						{#if item.type === "date-range-button"}
-							<PresetDateButton
-								item={item}
-								bind:startDateValue={item.startDateValue}
-								bind:endDateValue={item.endDateValue}
-							/>
-						{/if}
 					{/each}
 				</div>
 			{/if}

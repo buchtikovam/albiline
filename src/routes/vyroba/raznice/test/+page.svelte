@@ -8,14 +8,13 @@
 	<title>Test</title>
 </svelte:head>
 
-<!--TODO: check if all params were included-->
-
 <InputDialog bind:inputDialogObjects={inputDialogObjects} />
 
 <div class="w-full h-full bg-background border">
 	{#if inputDialogObjects !== undefined}
-		{#each Object.entries(inputDialogObjects) as [key, value]}
-			<p>{key} {value}</p>
+		{#each Object.entries(inputDialogObjects) as [_, value]}
+			<p>{value.startDateValue}</p>
+			<p>{value.endDateValue}</p>
 		{/each}
 	{/if}
 </div>

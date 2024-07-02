@@ -33,8 +33,6 @@
 
 	export let data;
 
-	// console.log(data);
-
 	const rowData = writable(data.items);
 
 	rowDataStore.set(data.items);
@@ -212,53 +210,6 @@
 									checked: writable(value !== 0)
 								})
 						});
-					}
-
-					if (column.type === 'date') {
-						// TODO: date
-						let accessor = column.accessor;
-						const inputValue = filters ? filters[accessor].value : '';
-						let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
-						return table.column({
-							accessor: column.accessor,
-							header: column.header,
-							plugins: {
-								colFilter: {
-									fn: columnTextFilter(columnFilter),
-									initialFilterValue: inputValue,
-									render: (
-										{ filterValue, values, preFilteredValues }: {
-											filterValue: Writable<string>,
-											values: Readable<any[]>,
-											preFilteredValues: Readable<any[]>
-										}) =>
-										createRender(TextFilter, {
-											filterValue,
-											values,
-											preFilteredValues,
-											columnFilter,
-											accessor
-										})
-								},
-								sort: {
-									disable: sortDisable
-								},
-								resize: {
-									disable: resizeDisable,
-									minWidth: 60,
-									initialWidth: initialWidth,
-									maxWidth: 400
-								}
-							},
-							cell: ({ column, row, value }) =>
-								createRender(EditableCell, {
-									row,
-									column,
-									value,
-									rowData,
-									onUpdateValue: updateData
-								})
-						})
 					}
 
 					if (column.type === 'int') {
@@ -485,12 +436,12 @@
 												>
 													<Render of={cell.render()} />
 													<!--{#if props.sort.order === 'asc'}-->
-													<!--														<ArrowDownAZ class="h-4 w-4 ml-2" />-->
-													<!--													{:else if props.sort.order === 'desc'}-->
-													<!--														<ArrowUpAZ class="h-4 w-4 ml-2" />-->
-													<!--													{:else}-->
-													<!--														<ArrowUpDown class="h-4 w-4 ml-2" />-->
-													<!--													{/if}-->
+													<!--<ArrowDownAZ class="h-4 w-4 ml-2" />-->
+													<!--{:else if props.sort.order === 'desc'}-->
+													<!--<ArrowUpAZ class="h-4 w-4 ml-2" />-->
+													<!--{:else}-->
+													<!--<ArrowUpDown class="h-4 w-4 ml-2" />-->
+													<!--{/if}-->
 												</button>
 											{:else}
 												<Render of={cell.render()} />

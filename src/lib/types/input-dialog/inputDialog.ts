@@ -1,13 +1,9 @@
-import type { DateValue } from '@internationalized/date';
-
-
 export type InputDialog = InputDialogItem[]
 
 export type InputDialogItem = DialogString
 	| DialogNumber
 	| DialogDate
 	| DialogDateRange
-	| DialogDateRangeButton
 
 
 export type DialogString = {
@@ -31,7 +27,7 @@ type DialogDate = {
 	type: 'date';
 	label: string;
 	id: string;
-	value: DateValue | undefined;
+	value: Date | undefined;
 }
 
 export type DialogDateRange = {
@@ -39,21 +35,14 @@ export type DialogDateRange = {
 	type: 'date-range';
 	startDateLabel: string;
 	endDateLabel: string;
-	startDateValue: DateValue | undefined;
-	endDateValue: DateValue | undefined;
+	startDateValue: Date | undefined;
+	endDateValue: Date | undefined;
+	presetButtons: DateRangeButtons[];
 }
 
-export type DialogDateRangeButton = {
-	name: string;
-	label: string;
-	action: DateRangeActions
-	type: 'date-range-button';
-	startDateValue: DateValue | undefined;
-	endDateValue: DateValue | undefined;
-}
 
-export type DateRangeActions =
-	'lastYearFull' |
+export type DateRangeButtons =
+	'lastYear' |
 	'last365' |
 	'thisYearFull' |
 	'thisYear' |

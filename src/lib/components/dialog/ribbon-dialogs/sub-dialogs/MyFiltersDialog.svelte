@@ -4,7 +4,7 @@
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { onMount } from 'svelte';
 	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
-	import { get, writable, type Writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { apiServiceDELETE } from '$lib/api/apiService';
 	import Pencil from 'lucide-svelte/icons/pencil';
@@ -13,7 +13,7 @@
 	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { persisted } from 'svelte-persisted-store';
+	// import { persisted } from 'svelte-persisted-store';
 
 	let dialogOpen: boolean = false;
 	let warningDialogOpen: boolean = false;
@@ -25,7 +25,7 @@
 	let isEditing: boolean = false;
 	let editingFilterId: number | undefined = undefined;
 
-	let filtersOrder: Writable<string[]> = persisted("filtersOrder", []);
+	// let filtersOrder: Writable<string[]> = persisted("filtersOrder", []);
 
 	if (filtersData) {
 		console.log(filtersData);
@@ -128,8 +128,6 @@
 		deleteFilterConsent.set(false);
 	});
 
-	// TODO: fix bug - closing after clicking in input
-
 	onMount(() => {
 		dialogOpen = true;
 	});
@@ -146,24 +144,17 @@
 
 		{#if filtersData !== undefined}
 			{#if filtersData.length === 0}
-				<p class="mt-2">Filtry nebyly nalezeny. Zkuste si nějaký uložit.</p>
-
+				<p class="mt-2">Nemáte uložené žádné filtry.</p>
 			{/if}
 			<div>
 				{#each filtersData as filter, index (filter.id)}
 					<div
 						role="listitem"
-						draggable="true"
-						on:focusout={() => {editingFilterId = undefined}}
-						on:dragstart={(e) => drag(e, index)}
-						on:dragover={() => setHovering(index)}
-						on:dragend={(e) => drop(e, hovering)}
-						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1 cursor-grab active:cursor-grabbing "
+						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
 					>
 						{#if isEditing && editingFilterId === filter.id}
-							<form
-								class="w-full p-1"
-							>
+							<form on:submit={() => isEditing = false} class="w-full">
+
 								<Input
 									class="w-full h-7 focus-visible:ring-0 px-1.5"
 									bind:value={filter.filterName}
@@ -172,12 +163,15 @@
 						{:else}
 							<button
 								on:click={() => loadFilterInTable(filter.filters)}
+								draggable="true"
+								on:dragstart={(e) => drag(e, index)}
+								on:dragover={() => setHovering(index)}
+								on:dragend={(e) => drop(e, hovering)}
 								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
 							>
 								{filter.filterName}
 							</button>
 						{/if}
-
 
 						<div class="flex gap-2 ml-4">
 							<button

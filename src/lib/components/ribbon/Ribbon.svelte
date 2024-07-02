@@ -9,14 +9,10 @@
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
 
-	let isOpen: boolean;
-
-	ribbonStateStore.subscribe((data) => {
-		isOpen = data;
-	});
+	let isOpen: boolean = true;
 
 	function toggleOpen() {
-		ribbonStateStore.update(() => !isOpen);
+		isOpen = !isOpen;
 	}
 </script>
 

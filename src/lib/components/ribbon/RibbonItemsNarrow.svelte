@@ -5,7 +5,7 @@
 	import type { Action } from '$lib/enums/action';
 
 	export let item: Item[];
-	export let isOpen: boolean = false;
+	export let isOpen: boolean = true;
 
 	function setAction(itemAction: Action | undefined) {
 		if (itemAction) {

@@ -3,24 +3,24 @@ import type { InputDialog } from '$lib/types/input-dialog/inputDialog';
 
 export const params: InputDialog = [
 	// STRING
-	{
-		name: "String",
-		type: "string",
-		label: "Parametr string",
-		id: "param1",
-		value: "test"
-	},
+	// {
+	// 	name: "String",
+	// 	type: "string",
+	// 	label: "Parametr string",
+	// 	id: "param1",
+	// 	value: "test"
+	// },
+	//
+	// // NUMBER
+	// {
+	// 	name: "Number",
+	// 	type: "number",
+	// 	label: "Parametr číslo",
+	// 	id: "param2",
+	// 	value: 14
+	// },
 
-	// NUMBER
-	{
-		name: "Number",
-		type: "number",
-		label: "Parametr číslo",
-		id: "param2",
-		value: 14
-	},
-
-	// // DATE
+	// DATE
 	// {
 	// 	name: "Date",
 	// 	type: "date",
@@ -36,28 +36,12 @@ export const params: InputDialog = [
 		startDateLabel: "Začátek",
 		endDateLabel: "Konec",
 		startDateValue: undefined,
-		endDateValue: undefined
+		endDateValue: undefined,
+		presetButtons: ['lastYear']
 	},
 
 	// // PRESET DATE RANGE BTN
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "365",
-	// 	action: "last365",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn",
-	// 	label: String(new Date().getFullYear() - 1),
-	// 	action: "lastYearFull",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
+
 	// {
 	// 	name: "DatePresetBtn2",
 	// 	label: String(new Date().getFullYear()),
@@ -66,7 +50,7 @@ export const params: InputDialog = [
 	// 	startDateValue: undefined,
 	// 	endDateValue: undefined
 	// },
-	//
+
 	// {
 	// 	name: "DatePresetBtn2",
 	// 	label: "Tento rok",

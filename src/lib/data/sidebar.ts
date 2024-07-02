@@ -9,7 +9,7 @@ export const allItems: Item[] = [
 	{
 		name: 'Průvodní list',
 		value: 'pruvodni-list',
-		href: '/pruvodni-list',
+		href: '/pruvodni-list/',
 		open: false,
 		hide: false,
 		icon: TableProperties,

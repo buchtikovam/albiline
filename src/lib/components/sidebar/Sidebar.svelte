@@ -101,6 +101,8 @@
 		}
 	}
 
+
+
 	function filterItemsSearch(items: Item[], searchTerm: string): Item[] {
 		if (searchTerm === '') {
 			return items;
@@ -138,36 +140,28 @@
 
 			document.addEventListener('keydown', handleKeydown);
 
-			activeCategoryStore.subscribe(data => {
-				if (data === '' || data === 'all') {
-					filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
-					buttonBorderSwitch();
-				}
+		activeCategoryStore.subscribe(data => {
+			if (data === '' || data === 'all') {
+				filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
+				buttonBorderSwitch();
+			}
 
-				if (data === 'recent') {
-					filteredItems = deepcopy(filterItemsSearch(
-						deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
-						searchTerm
-					));
-					buttonBorderSwitch();
-				}
+			if (data === 'recent') {
+				filteredItems = deepcopy(filterItemsSearch(
+					deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
+					searchTerm
+				));
+				buttonBorderSwitch();
+			}
 
-				if (data === 'favorite') {
-					filteredItems = deepcopy(filterItemsSearch(
-						deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
-						searchTerm
-					));
-					buttonBorderSwitch();
-				}
-			});
-
-			sidebarStateStore.subscribe(data => {
-				if (data) {
-					setTimeout(() => {
-						buttonBorderSwitch();
-					}, 0);
-				}
-			});
+			if (data === 'favorite') {
+				filteredItems = deepcopy(filterItemsSearch(
+					deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
+					searchTerm
+				));
+				buttonBorderSwitch();
+			}
+		});
 		}
 	);
 </script>
@@ -177,7 +171,7 @@
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if show === true}
 		<div class="flex justify-center pt-3 px-4 gap-4 text-sm w-[320px]">
-			<CategoryButton buttonName="Všechny" category="all" />
+			<CategoryButton buttonName="Všechny" category="all"/>
 			<CategoryButton buttonName="Nedávné" category="recent" />
 			<CategoryButton buttonName="Oblíbené" category="favorite" />
 		</div>
