@@ -7,7 +7,8 @@
 	import DateRange from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';
 	import type { InputDialog, InputDialogItem } from '$lib/types/input-dialog/inputDialog';
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { get } from 'svelte/store';
+	import CheckboxGroup from '$lib/components/dialog/input-dialog/dialog-components/CheckboxGroup.svelte';
+	import RadioGroup from '$lib/components/dialog/input-dialog/dialog-components/RadioGroup.svelte';
 
 	/*
 		Vstupní parametry pro správné načtení jednotlivých stránek.
@@ -72,14 +73,10 @@
 		dialogOpen = true;
 		getParams();
 	});
-
-	// TODO: input input-dialog: checkbox
-
-	// TODO: input input-dialog: radiobuttons
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
-	<Dialog.Content class="!w-[500px] overflow-visible">
+	<Dialog.Content class="!w-[400px] overflow-visible">
 		<Dialog.Header>
 			<Dialog.Title class="h-6 mb-2">
 				Vstupní parametry
@@ -102,13 +99,18 @@
 						{#if item.type === "date-range"}
 							<DateRange
 								item={item}
-								bind:dialogOpen
 								bind:startDateValue={item.startDateValue}
 								bind:endDateValue={item.endDateValue}
 							/>
 						{/if}
 
+						{#if item.type === "checkbox-group"}
+							<CheckboxGroup items={item.children}/>
+						{/if}
 
+						{#if item.type === "radio-group"}
+							<RadioGroup item={item}/>
+						{/if}
 					{/each}
 				</div>
 			{/if}

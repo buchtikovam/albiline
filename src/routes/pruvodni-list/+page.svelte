@@ -1,13 +1,11 @@
 <script lang="ts">
-	import Table from '$lib/components/table/Table.svelte';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
-	export const prerender = true;
+	import TableRewrite from '$lib/components/table/TableRewrite.svelte';
+	import type { TableType } from '$lib/types/table/table';
 
-	export let data;
-
-	// console.log(data);
+	export let data: TableType;
 
 	showFulltextSearchStore.set(true)
 </script>
 
-<Table data={data}/>
+<TableRewrite data={data}/>

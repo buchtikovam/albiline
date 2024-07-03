@@ -65,18 +65,15 @@
 			});
 	}
 
-
 	// otevírání sidebaru
 	sidebarStateStore.subscribe(data => {
 		show = data;
 	});
 
-
 	// otevírání vyhledávání v dialogu
 	function toggleCommand() {
 		open = !open;
 	}
-
 
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
 	function search(searchTerm: string): void {

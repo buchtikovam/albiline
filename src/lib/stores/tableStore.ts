@@ -1,7 +1,7 @@
 import { persisted } from 'svelte-persisted-store';
 import { writable, type Writable } from 'svelte/store';
 import type { StoredFilters } from '$lib/types/table/filter';
-import type { Column, TableRowData } from '$lib/types/table/table';
+import type { TableColumn, TableRows } from '$lib/types/table/table';
 
 
 // PERSISTENT STORES
@@ -15,13 +15,13 @@ export const pageCompactStore: Writable<'standard' | 'compact'> = persisted('row
 // TEMPORARY STORES
 export const editedDataStore: Writable<any[]> = writable([]);
 
-export const currentFiltersStore: Writable<StoredFilters|undefined> = writable()
+export const currentFiltersStore: Writable<StoredFilters|undefined> = writable({test: { value: '', colFilter: 'default' }})
 
 export const selectedRowsStore: Writable<Record<number, boolean>|undefined> = writable(undefined)
 
-export const rowDataStore: Writable<TableRowData> = writable()
+export const rowDataStore: Writable<TableRows> = writable()
 
-export const columnDataStore: Writable<Column[]> = writable()
+export const columnDataStore: Writable<TableColumn[]> = writable()
 
 export const showFulltextSearchStore: Writable<boolean> = writable(false)
 

@@ -2,7 +2,6 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import ChevronUp from 'lucide-svelte/icons/chevron-up';
 	import { RibbonType } from '$lib/enums/ribbonType';
-	import { ribbonStateStore } from '$lib/stores/ribbonStore';
 	import { ribbonItems } from '$lib/data/ribbon';
 	import { Separator } from '$lib/components/ui/separator';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';

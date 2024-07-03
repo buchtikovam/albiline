@@ -10,7 +10,6 @@
 	}
 </script>
 
-
 <Button variant="outline" on:click={setDates}>
 	Minulý rok
 </Button>

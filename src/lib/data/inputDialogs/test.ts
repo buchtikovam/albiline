@@ -30,87 +30,59 @@ export const params: InputDialog = [
 	// },
 
 	// DATE RANGE
+	// {
+	// 	name: "DateRange",
+	// 	type: "date-range",
+	// 	startDateLabel: "Začátek",
+	// 	endDateLabel: "Konec",
+	// 	startDateValue: undefined,
+	// 	endDateValue: undefined,
+	// 	presetButtons: ['lastYear']
+	// },
+
+	// CHECKBOX GROUP
 	{
-		name: "DateRange",
-		type: "date-range",
-		startDateLabel: "Začátek",
-		endDateLabel: "Konec",
-		startDateValue: undefined,
-		endDateValue: undefined,
-		presetButtons: ['lastYear']
+		name: 'checkboxGroup',
+		label: 'Checkbox skupina',
+		type: 'checkbox-group',
+		children: [
+			{
+				id: 'checkbox1',
+				label: 'Checkbox 1',
+				checked: false
+			},
+			{
+				id: 'checkbox2',
+				label: 'Checkbox 2',
+				checked: false
+			},
+			{
+				id: 'checkbox3',
+				label: 'Checkbox 3',
+				checked: false
+			}
+		]
 	},
 
-	// // PRESET DATE RANGE BTN
 
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: String(new Date().getFullYear()),
-	// 	action: "thisYearFull",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Tento rok",
-	// 	action: "thisYear",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Minulý měsíc",
-	// 	action: "lastMonthFull",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Celý měsíc",
-	// 	action: "thisMonthFull",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Tento měsíc",
-	// 	action: "thisMonth",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Dva týdny",
-	// 	action: "last14",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Minulý týden",
-	// 	action: "lastWeek",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
-	//
-	// {
-	// 	name: "DatePresetBtn2",
-	// 	label: "Tento týden",
-	// 	action: "thisWeek",
-	// 	type: "date-range-button",
-	// 	startDateValue: undefined,
-	// 	endDateValue: undefined
-	// },
+	// 	RADIO GROUP
+	{
+		name: "radioGroup",
+		defaultValue: "radio1",
+		type: "radio-group",
+		children: [
+			{
+				id: "radio1",
+				label: "Radio item 1"
+			},
+			{
+				id: "radio2",
+				label: "Radio item 2"
+			},
+			{
+				id: "radio3",
+				label: "Radio item 3"
+			}
+		]
+	}
 ]

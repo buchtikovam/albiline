@@ -23,7 +23,7 @@
 		rowDataStore,
 		selectedRowsStore
 	} from '$lib/stores/tableStore';
-	import type { Column, TableRowData } from '$lib/types/table/table';
+	import type { TableColumn, TableRows } from '$lib/types/table/table';
 	import type { StoredFilters } from '$lib/types/table/filter';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
@@ -46,7 +46,7 @@
 
 	// console.log(getUniqueValuesForRowDataKeys(get(rowDataStore)));
 
-	const updateData = (newData: TableRowData) => {
+	const updateData = (newData: TableRows) => {
 		rowDataStore.set(newData);
 	};
 
@@ -81,7 +81,7 @@
 			return storedOrder;
 		}
 
-		return get(columnDataStore).map((column: Column) => {
+		return get(columnDataStore).map((column: TableColumn) => {
 			return column.accessor;
 		});
 	}
@@ -112,7 +112,7 @@
 	(function createDefaultFilters() {
 		let defaultFilters: StoredFilters = {};
 
-		get(columnDataStore).forEach((column: Column) => {
+		get(columnDataStore).forEach((column: TableColumn) => {
 			defaultFilters[column.accessor] = {
 				value: '',
 				colFilter: 'default'
@@ -129,7 +129,7 @@
 
 		tableColumnData.set(
 			get(columnDataStore).map(
-				(column: Column) => {
+				(column: TableColumn) => {
 					let initialWidth;
 					if (colWidthData && Object.keys(colWidthData).length > 0) {
 						initialWidth = colWidthData[column.accessor];
@@ -166,97 +166,6 @@
 								}
 							}
 						});
-					}
-
-					// TODO: checkbox - new column filter
-
-					if (column.type === 'checkbox') {
-						let accessor = column.accessor;
-						const inputValue = filters ? filters[accessor].value : '';
-						let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
-						return table.column({
-							accessor: column.accessor,
-							header: column.header,
-							plugins: {
-								colFilter: {
-									fn: columnTextFilter(columnFilter),
-									initialFilterValue: inputValue,
-									render: (
-										{ filterValue, values, preFilteredValues }: {
-											filterValue: Writable<string>,
-											values: Readable<any[]>,
-											preFilteredValues: Readable<any[]>
-										}) =>
-										createRender(TextFilter, {
-											filterValue,
-											values,
-											preFilteredValues,
-											columnFilter,
-											accessor
-										})
-								},
-								sort: {
-									disable: sortDisable
-								},
-								resize: {
-									disable: resizeDisable,
-									minWidth: 60,
-									initialWidth: initialWidth,
-									maxWidth: 400
-								}
-							},
-							cell: ({ value }: { value: 0|1 }) =>
-								createRender(TableCheckbox, {
-									checked: writable(value !== 0)
-								})
-						});
-					}
-
-					if (column.type === 'int') {
-						// TODO: int
-						let accessor = column.accessor;
-						const inputValue = filters ? filters[accessor].value : '';
-						let columnFilter = writable(filters ? filters[accessor].colFilter : 'default');
-						return table.column({
-							accessor: column.accessor,
-							header: column.header,
-							plugins: {
-								colFilter: {
-									fn: columnTextFilter(columnFilter),
-									initialFilterValue: inputValue,
-									render: (
-										{ filterValue, values, preFilteredValues }: {
-											filterValue: Writable<string>,
-											values: Readable<any[]>,
-											preFilteredValues: Readable<any[]>
-										}) =>
-										createRender(TextFilter, {
-											filterValue,
-											values,
-											preFilteredValues,
-											columnFilter,
-											accessor
-										})
-								},
-								sort: {
-									disable: sortDisable
-								},
-								resize: {
-									disable: resizeDisable,
-									minWidth: 60,
-									initialWidth: initialWidth,
-									maxWidth: 400
-								}
-							},
-							cell: ({ column, row, value }) =>
-								createRender(EditableCell, {
-									row,
-									column,
-									value,
-									rowData,
-									onUpdateValue: updateData
-								})
-						})
 					}
 
 					let accessor = column.accessor;

@@ -2,12 +2,12 @@
 	import { editedDataStore } from '$lib/stores/tableStore';
 	import { get } from 'svelte/store';
 	import { isEditAllowedStore } from '$lib/stores/ribbonStore';
-	import type { TableRowData } from '$lib/types/table/table';
+	import type { TableRows } from '$lib/types/table/table';
 
 	export let row;
 	export let column;
 	export let value: unknown;
-	export let rowData;
+	export let rowsWritable;
 	export let onUpdateValue;
 
 	let isEditing = false;
@@ -27,7 +27,7 @@
 	const handleSubmit = (event: Event) => {
 		event.preventDefault();
 
-		const rowDataValue: TableRowData = get(rowData)
+		const rowDataValue: TableRows = get(rowsWritable)
 
 		rowDataValue[row.dataId][column.id] = value;
 

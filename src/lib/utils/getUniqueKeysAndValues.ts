@@ -1,6 +1,6 @@
-import type { TableRowData } from '$lib/types/table/table';
+import type { TableRows } from '$lib/types/table/table';
 
-export function getUniqueValuesForRowDataKeys(data: TableRowData) {
+export function getUniqueValuesForRowDataKeys(data: TableRows) {
 	const uniqueValues: Record<string, string[]> = {};
 
 	for (const [key] of Object.entries(data[0])) {

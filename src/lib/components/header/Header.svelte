@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { openedTabsStore, currentActiveTabStore, allowTabAdding } from '$lib/stores/tabStore';
+	import { goto, preloadData } from '$app/navigation';
 	import X from 'lucide-svelte/icons/x';
 	import Home from 'lucide-svelte/icons/home';
-	import { openedTabsStore, currentActiveTabStore, allowTabAdding } from '$lib/stores/tabStore';
 	import { page } from '$app/stores';
 	import type { Tab } from '$lib/types/sidebar/sidebar';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
@@ -58,6 +58,7 @@
 		}
 	});
 
+
 	function removeTab(tabName: string) {
 		tabs.forEach((tab) => {
 			if (tab.name === tabName) {
@@ -72,10 +73,7 @@
 			tab.closingState = '';
 			openedTabsStore.update(() => tabs);
 		}
-
 	}
-
-	// TODO: header tab load
 
 	function hideClosingButton(tab: Tab) {
 		tab.closingState = 'hidden';
@@ -83,12 +81,12 @@
 	}
 </script>
 
-<!--TODO: tab reorder-->
+<!-- TODO: tab reorder - dnd -->
 
 <div class="flex justify-between bg-muted">
 	<Tabs.Root class="w-fit h-fit pt-2" value={activeTabValue}>
 		<Tabs.List>
-			<!-- Výchozí tab -->
+			<!-- Výchozí taby -->
 			<Tabs.Trigger
 				value="/"
 				on:click={() => goto("/")}
@@ -96,12 +94,17 @@
 				<Home class="w-4 h-4" />
 			</Tabs.Trigger>
 
-			<Tabs.Trigger
-				value={`/pruvodni-list`}
-				on:click={() => goto("/pruvodni-list")}
+			<button
+				on:mouseenter={() => preloadData("/pruvodni-list")}
+				class="flex"
 			>
-				Průvodní list
-			</Tabs.Trigger>
+				<Tabs.Trigger
+					value={`/pruvodni-list`}
+					on:click={() => goto("/pruvodni-list")}
+				>
+					Průvodní list
+				</Tabs.Trigger>
+			</button>
 
 			<!-- Taby otevřené uživatelem -->
 			{#each tabs as tab}

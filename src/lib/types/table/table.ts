@@ -1,4 +1,4 @@
-export type Column = {
+export type TableColumn = {
 	id: number,
 	accessor: string,
 	header: string,
@@ -8,4 +8,9 @@ export type Column = {
 	resizeDisabled: 0 | 1,
 }
 
-export type TableRowData = Record<string, any>[]
+export type TableRows = Record<string, any>[]
+
+export type TableType = {
+	items: TableRows,
+	columnInfo: TableColumn[]
+}

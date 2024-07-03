@@ -65,6 +65,8 @@
 			colFilter: $columnFilter
 		};
 
+		console.log(newFilter);
+
 		currentFiltersStore.update((data) => {
 			if (data !== undefined) {
 				const existingFilter = data[accessor];

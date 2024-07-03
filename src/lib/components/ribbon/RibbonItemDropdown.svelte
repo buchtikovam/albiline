@@ -70,6 +70,3 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {/if}
-
-
-

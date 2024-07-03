@@ -24,7 +24,6 @@
 			<Heart class="w-4 h-4 text-red-600" />
 			Přidat do oblíbených
 		</ContextMenu.Item>
-
 	{:else}
 		<ContextMenu.Item class="flex gap-2" on:click={handleRemove}>
 			<HeartCrack class="w-4 h-4 text-red-600" />
