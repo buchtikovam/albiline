@@ -7,6 +7,7 @@
 		addColumnFilters,
 		addResizedColumns,
 		addSortBy,
+		addHiddenColumns
 	} from 'svelte-headless-table/plugins';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from "$lib/components/ui/table";
@@ -15,13 +16,14 @@
 	import { columnTextFilter } from '$lib/utils/input-filters/columnTextFilter';
 	import type { TextFilters } from '$lib/types/table/filter';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
-
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
 
 	// initialize variables
 	export let data: TableType;
 	console.log(data);
 
-	const rowsWritable: Writable<TableRows> = writable(data.items); // passed into create table
+	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
 
 	rowDataStore.subscribe((data) => {
@@ -49,7 +51,8 @@
 				const { columnWidths } = pluginStates.resize;
 				columnWidthStore.set(get(columnWidths));
 			}
-		})
+		}),
+		hide: addHiddenColumns(),
 	});
 
 
@@ -117,7 +120,9 @@
 		const { columnWidths } = pluginStates.resize;
 
 		columnWidthStore.subscribe((widths) => {
-			columnWidths.set(widths)
+			if (Object.keys(widths).length > 0) {
+				columnWidths.set(widths)
+			}
 		})
 
 		document.addEventListener('dragover', (event) => {

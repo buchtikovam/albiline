@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { editedDataStore } from '$lib/stores/tableStore';
-	import { get } from 'svelte/store';
+	import { get, type Writable } from 'svelte/store';
 	import { isEditAllowedStore } from '$lib/stores/ribbonStore';
 	import type { TableRows } from '$lib/types/table/table';
 
 	export let row;
 	export let column;
 	export let value: unknown;
-	export let rowsWritable;
+	export let rowsWritable: Writable<TableRows>;
 	export let onUpdateValue;
 
 	let isEditing = false;
