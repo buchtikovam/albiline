@@ -13,9 +13,11 @@
 	function toggleOpen() {
 		isOpen = !isOpen;
 	}
+
+
 </script>
 
-<div class="flex p-2 px-4 overflow-auto border-t-none">
+<div class="flex p-2 px-4 overflow-auto">
 	{#each ribbonItems as item}
 		{#if Array.isArray(item)}
 			<RibbonItemsNarrow item={item} isOpen={isOpen} />
@@ -27,7 +29,7 @@
 				<RibbonDropdownItem item={item} isOpen={isOpen} />
 			{/if}
 			{#if item.type === RibbonType.SEPARATOR}
-				<Separator orientation="vertical" class="mx-2" />
+				<Separator orientation="vertical" class="mx-2.5" />
 			{/if}
 		{/if}
 	{/each}

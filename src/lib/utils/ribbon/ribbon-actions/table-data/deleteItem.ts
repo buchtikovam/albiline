@@ -1,31 +1,31 @@
-import { selectedRowsStore, rowDataStore } from '$lib/stores/tableStore';
+import { rowDataStore, selectedRowsStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import { customToast } from '$lib/utils/toast/customToast';
 import type { TableRows } from '$lib/types/table/table';
 
-
 export async function deleteItem() {
 	const selectedRows: Record<number, boolean> | undefined = get(selectedRowsStore);
-	const data: TableRows = get(rowDataStore);
+	let rowData: TableRows = get(rowDataStore);
+
+	console.log(rowData);
+
+	console.log(selectedRows);
 
 	const idsToRemove: number[] = [];
 
 	if (selectedRows) {
 		for (const [key] of Object.entries(selectedRows)) {
-			const rowId: number = (data[key as unknown as number]).id;
-			idsToRemove.push(rowId);
+			idsToRemove.push(Number(key));
 		}
 
-			rowDataStore.set(
-				data.filter(
-					(record) => !idsToRemove.includes(record.id)
-				)
-			);
+		idsToRemove.forEach((id) => {
+			rowData.splice(id, 1);
+		})
 
-			customToast('Success', 'Úspěšně smazáno.');
+		rowDataStore.set(rowData)
 
-			selectedRowsStore.set(undefined)
+		// TODO: remove checkboxes
+
+		customToast('Success', 'Úspěšně smazáno.');
 	}
-
-	console.log(idsToRemove);
 }

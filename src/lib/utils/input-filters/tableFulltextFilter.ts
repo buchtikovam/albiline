@@ -1,7 +1,7 @@
 export function tableFulltextFilter(filterValue: string, value: string): boolean {
-	// const inputParams = filterValue.split(" ")
+	if (!filterValue) return true;
 
-	// TODO: fulltext functionality - split by space and if match, return true
+	const inputParams = filterValue.toLowerCase().split(" ");
 
-	return value.toLowerCase().includes(filterValue.toLowerCase())
+	return inputParams.every((param) => value.toLowerCase().includes(param));
 }

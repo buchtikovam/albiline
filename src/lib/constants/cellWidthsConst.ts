@@ -1,4 +1,4 @@
-export const cellWidths: Map<string, number> = new Map([
+export const cellWidthsConst: Map<string, number> = new Map([
 	["checkbox", 60],
 	["small", 80],
 	["medium", 120],

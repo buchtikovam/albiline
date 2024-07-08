@@ -1,30 +1,40 @@
 <script lang="ts">
 	import type { TableColumn, TableRows, TableType } from '$lib/types/table/table';
 	import { get, type Readable, type Writable, writable } from 'svelte/store';
-	import { columnWidthStore, rowDataStore } from '$lib/stores/tableStore';
+	import {
+		columnOrderStore,
+		columnWidthStore,
+		currentFiltersStore,
+		filterValueStore,
+		rowDataStore, selectedRowsStore
+	} from '$lib/stores/tableStore';
 	import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
 	import {
 		addColumnFilters,
 		addResizedColumns,
 		addSortBy,
-		addHiddenColumns
+		addHiddenColumns,
+		addSelectedRows,
+		addTableFilter
 	} from 'svelte-headless-table/plugins';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import * as Table from "$lib/components/ui/table";
-	import { cellWidths } from '$lib/constants/cellWidths';
+	import { cellWidthsConst } from '$lib/constants/cellWidthsConst';
 	import { onMount } from 'svelte';
-	import { columnTextFilter } from '$lib/utils/input-filters/columnTextFilter';
-	import type { TextFilters } from '$lib/types/table/filter';
+	import { stringColumnFilterFn } from '$lib/utils/input-filters/stringColumnFilterFn';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
+	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
+	import { addColumnOrder } from 'svelte-headless-table/plugins';
+	import { createInitialColumnOrder } from '$lib/utils/table/createInitialColumnOrder';
+
+
 
 	// initialize variables
 	export let data: TableType;
-	console.log(data);
-
 	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
+	rowDataStore.set(data.items)
 
 	rowDataStore.subscribe((data) => {
 		if (data) {
@@ -36,16 +46,19 @@
 		rowDataStore.set(newData);
 	};
 
-	let columns: TableColumn[] = data.columnInfo;
-	columnsWritable.subscribe((columnsData) => {
-		columns = columnsData;
-	});
 
 
 	// initialize table
 	const table = createTable(rowsWritable, {
 		sort: addSortBy(),
+		select: addSelectedRows(),
 		colFilter: addColumnFilters(),
+		colOrder: addColumnOrder({
+			initialColumnIdOrder: createInitialColumnOrder(columnsWritable)
+		}),
+		filter: addTableFilter({
+			fn: ({ filterValue, value }) => tableFulltextFilter(filterValue, value)
+		}),
 		resize: addResizedColumns({
 			onResizeEnd: () => {
 				const { columnWidths } = pluginStates.resize;
@@ -56,17 +69,45 @@
 	});
 
 
+
 	// create columns
-	let dataColumns = table.createColumns(columns.map((column: TableColumn) => {
-		let columnFilter: Writable<TextFilters> = writable("default")
+	const columns = table.createColumns(get(columnsWritable).map((column: TableColumn) => {
 		let accessor = column.accessor
+
+		if (column.type === 'id') {
+			return table.column({
+				header: (_, { pluginStates }) => {
+					const { allPageRowsSelected } = pluginStates.select;
+					return createRender(TableCheckbox, {
+						checked: allPageRowsSelected
+					});
+				},
+				accessor: column.accessor,
+				cell: ({ row }, { pluginStates }) => {
+					const { getRowState } = pluginStates.select;
+					const { isSelected } = getRowState(row);
+					return createRender(TableCheckbox, {
+						checked: isSelected
+					});
+				},
+				plugins: {
+					sort: {
+						disable: true
+					},
+					resize: {
+						initialWidth: 40,
+						disable: true
+					}
+				}
+			});
+		}
 
 		return table.column({
 			accessor: column.accessor,
 			header: column.header,
 			plugins: {
 				colFilter: {
-					fn: columnTextFilter(columnFilter),
+					fn: stringColumnFilterFn(accessor),
 					initialFilterValue: "",
 					render: (
 						{ filterValue, values, preFilteredValues }: {
@@ -78,7 +119,6 @@
 							filterValue,
 							values,
 							preFilteredValues,
-							columnFilter,
 							accessor
 						})
 				},
@@ -88,7 +128,7 @@
 				resize: {
 					disable: false,
 					minWidth: 60,
-					initialWidth: cellWidths.get(column.size),
+					initialWidth: cellWidthsConst.get(column.size),
 					maxWidth: 400
 				}
 			},
@@ -106,16 +146,100 @@
 
 
 	// create view model
-	let {
+	const {
 		headerRows,
 		pageRows,
 		tableAttrs,
 		tableBodyAttrs,
 		pluginStates
-	} = table.createViewModel(dataColumns);
+	} = table.createViewModel(columns);
 
 
 
+	// listen for column filters changes
+	const { filterValues } = pluginStates.colFilter;
+
+	currentFiltersStore.subscribe((storedFilters) => {
+		let rawFilterData: Record<string, any> = get(filterValues)
+
+		if (storedFilters) {
+			for (const [key] of Object.entries(rawFilterData)) {
+				if (storedFilters[key]) {
+					rawFilterData[key] = storedFilters[key].value;
+				}
+			}
+
+			filterValues.set(rawFilterData)
+		}
+	})
+
+
+
+	// fulltext filter value
+	const { filterValue } = pluginStates.filter;
+
+	filterValueStore.subscribe((value) => {
+		filterValue.set(value);
+	});
+
+
+
+	// checkbox plugin
+	let selectedRows = 0;
+	const { selectedDataIds } = pluginStates.select;
+	selectedDataIds.subscribe((rows: Record<number, boolean>) => {
+		selectedRowsStore.set(rows);
+		selectedRows = Object.keys(rows).length;
+	});
+
+
+
+
+	// column drag and drop functions
+	let hovering: number | null;
+	let start: number;
+
+	function drag(e: DragEvent, index: number) {
+		if (e.dataTransfer) {
+			start = index;
+		}
+	}
+
+	function drop(e: DragEvent, target: number | null) {
+		if (e.dataTransfer && target !== null) {
+			const { columnIdOrder } = pluginStates.colOrder;
+			let columnOrderData: string[];
+
+			columnIdOrder.subscribe((data: string[]) => {
+				columnOrderData = data;
+			});
+
+			setTimeout(() => {
+				if (columnOrderData) {
+					if (start < target) {
+						columnOrderData.splice(target + 1, 0, columnOrderData[start]);
+						columnOrderData.splice(start, 1);
+						columnIdOrder.update(() => columnOrderData);
+						columnOrderStore.set(columnOrderData)
+					} else {
+						columnOrderData.splice(target, 0, columnOrderData[start]);
+						columnOrderData.splice(start + 1, 1);
+						columnIdOrder.update(() => columnOrderData);
+						columnOrderStore.set(columnOrderData)
+					}
+					hovering = null;
+				}
+			}, 0);
+		}
+	}
+
+	function setHovering(index: number) {
+		hovering = index;
+	}
+
+
+
+	// page load logic
 	onMount(() => {
 		const { columnWidths } = pluginStates.resize;
 
@@ -131,23 +255,28 @@
 	})
 </script>
 
+
+
 <div class="h-full flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
 		<Table.Header class="top-0 sticky bg-white border-1">
 			{#each $headerRows as headerRow (headerRow.id)}
 				<Subscribe attrs={headerRow.attrs()} let:attrs>
 					<tr {...attrs}>
-						{#each headerRow.cells as cell (cell.id)}
+						{#each headerRow.cells as cell, index (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 								<th
 									{...attrs}
 									use:props.resize
 									draggable="true"
+									on:dragstart={(e) => drag(e, index)}
+									on:dragover={() => setHovering(index)}
+									on:dragend|preventDefault={(e) => drop(e, hovering)}
 									class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
 								>
 									{#if cell.id !== "id"}
 										<button
-											class="flex w-full items-center justify-center font-semibold rounded-md hover:bg-muted/70 "
+											class="flex w-full items-center justify-center font-semibold overflow-visible rounded-md hover:bg-muted/70 "
 											on:click={props.sort.toggle}
 										>
 											<Render of={cell.render()} />
@@ -173,11 +302,13 @@
 				</Subscribe>
 			{/each}
 		</Table.Header>
+
 		<Table.Body {...$tableBodyAttrs}>
 			{#each $pageRows as row (row.id)}
 				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
 					<Table.Row
 						{...rowAttrs}
+						data-state={$selectedDataIds[row.id] && "selected"}
 						class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
 					>
 						{#each row.cells as cell (cell.id)}
@@ -197,7 +328,7 @@
 
 	<div class="flex justify-between items-center w-full border-t">
 		<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
-			0 řad označeno.
+			{selectedRows} řad označeno.
 		</div>
 	</div>
 </div>

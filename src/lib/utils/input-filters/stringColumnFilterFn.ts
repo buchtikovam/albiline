@@ -1,12 +1,16 @@
-import type { Writable } from 'svelte/store';
 import type { TextFilters } from '$lib/types/table/filter';
+import { currentFiltersStore } from '$lib/stores/tableStore';
 
-export const columnTextFilter = (columnFilter: Writable<TextFilters>) => {
+export const stringColumnFilterFn = (accessor: string) => {
 	let currentFilter: TextFilters;
 
-	columnFilter.subscribe((data) => {
-		currentFilter = data;
-	});
+	currentFiltersStore.subscribe((filters) => {
+		if (filters) {
+			if (filters[accessor]) {
+				currentFilter = filters[accessor].colFilter;
+			}
+		}
+	})
 
 	return ({ filterValue, value }: { filterValue: string, value: string }) => {
 
@@ -22,7 +26,6 @@ export const columnTextFilter = (columnFilter: Writable<TextFilters>) => {
 			return String(value).toLowerCase().endsWith(String(filterValue).toLowerCase());
 		}
 
-		// default
 		return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
 	};
 };

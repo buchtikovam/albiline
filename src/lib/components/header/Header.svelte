@@ -70,7 +70,7 @@
 
 	function showClosingButton(tab: Tab) {
 		if (get(allowTabAdding)) {
-			tab.closingState = '';
+			tab.closingState = 'flex';
 			openedTabsStore.update(() => tabs);
 		}
 	}
@@ -111,16 +111,16 @@
 				<Tabs.Trigger
 					value={tab.url}
 					on:click={() => goto(tab.url)}
-					class=""
 				>
 					<button
-						class="flex"
+						class="flex items-center "
 						on:mouseenter={() => showClosingButton(tab)}
 						on:mouseleave={() => hideClosingButton(tab)}
 					>
 						{tab.name}
-						<button on:click={() => removeTab(tab.name)} class="{tab.closingState}">
-							<X class="ml-1 text-red-600 w-4 h-4" />
+						<button on:click={() => removeTab(tab.name)}
+								class={`${tab.closingState}`}>
+							<X class="ml-1 text-red-600 size-3.5"/>
 						</button>
 					</button>
 				</Tabs.Trigger>

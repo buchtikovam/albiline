@@ -41,28 +41,28 @@ export const params: InputDialog = [
 	// },
 
 	// CHECKBOX GROUP
-	{
-		name: 'checkboxGroup',
-		label: 'Checkbox skupina',
-		type: 'checkbox-group',
-		children: [
-			{
-				id: 'checkbox1',
-				label: 'Checkbox 1',
-				checked: false
-			},
-			{
-				id: 'checkbox2',
-				label: 'Checkbox 2',
-				checked: false
-			},
-			{
-				id: 'checkbox3',
-				label: 'Checkbox 3',
-				checked: false
-			}
-		]
-	},
+	// {
+	// 	name: 'checkboxGroup',
+	// 	label: 'Checkbox skupina',
+	// 	type: 'checkbox-group',
+	// 	children: [
+	// 		{
+	// 			id: 'checkbox1',
+	// 			label: 'Checkbox 1',
+	// 			checked: false
+	// 		},
+	// 		{
+	// 			id: 'checkbox2',
+	// 			label: 'Checkbox 2',
+	// 			checked: false
+	// 		},
+	// 		{
+	// 			id: 'checkbox3',
+	// 			label: 'Checkbox 3',
+	// 			checked: false
+	// 		}
+	// 	]
+	// },
 
 
 	// 	RADIO GROUP

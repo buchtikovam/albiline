@@ -3,50 +3,41 @@
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { onMount, tick } from 'svelte';
-	import ArrowLeftFromLine from 'lucide-svelte/icons/arrow-left-from-line';
-	import ArrowLeftRight from 'lucide-svelte/icons/arrow-left-right';
-	import ArrowRightFromLine from 'lucide-svelte/icons/arrow-right-from-line';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import { Button } from '$lib/components/ui/button';
-	import { get, type Readable, type Writable } from 'svelte/store';
-	import type { TextFilters, Filter } from '$lib/types/table/filter';
+	import { get, type Readable, writable, type Writable } from 'svelte/store';
+	import type { TextFilters } from '$lib/types/table/filter';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
+	import { stringColumnFiltersConst } from '$lib/constants/stringColumnFiltersConst';
 
+	// unused but required ?
 	export let preFilteredValues: Readable<unknown[]>;
 	export let values: Readable<unknown[]>;
 	get(preFilteredValues);
 	get(values);
 
+	// variables
 	export let accessor: string;
 	export let filterValue: Writable<string>;
-	export let columnFilter: Writable<TextFilters>;
-
-	// TODO: add checkboxes with unique row values, to filter out data
-
-	const filters = [
-		{
-			value: 'starts-with',
-			label: 'Začíná na',
-			icon: ArrowRightFromLine
-		},
-		{
-			value: 'ends-with',
-			label: 'Končí na',
-			icon: ArrowLeftFromLine
-		},
-		{
-			value: 'contains',
-			label: 'Obsahuje',
-			icon: ArrowLeftRight
-		}
-	];
-
+	let value: TextFilters = "default";
 	let open = false;
-	let value: TextFilters;
+	let columnFilter: Writable<TextFilters> = writable("default")
+
+
+	currentFiltersStore.subscribe((filters) => {
+		if (filters) {
+			if (filters[accessor]) {
+				columnFilter.set(filters[accessor].colFilter);
+				value = filters[accessor].colFilter
+			}
+		}
+	})
+
 
 	$: selectedValue =
-		filters.find((f) => f.value === value)
+		stringColumnFiltersConst.find((f) => f.value === value)
 	;
+
 
 	function closeAndFocusTrigger(triggerId: string) {
 		open = false;
@@ -59,33 +50,32 @@
 		});
 	}
 
+
 	function saveFilters() {
-		let newFilter: Filter = {
+		currentFiltersStore.update((data) => {
+			return {
+				...data,
+				[accessor]: {
+					value: $filterValue,
+					colFilter: $columnFilter,
+				},
+			};
+		});
+	}
+
+
+	onMount(() => {
+		value = get(columnFilter);
+
+		let filters = get(currentFiltersStore);
+
+		filters[accessor] = {
 			value: $filterValue,
 			colFilter: $columnFilter
 		};
 
-		console.log(newFilter);
-
-		currentFiltersStore.update((data) => {
-			if (data !== undefined) {
-				const existingFilter = data[accessor];
-
-				if (existingFilter) {
-					existingFilter.value = $filterValue;
-					existingFilter.colFilter = $columnFilter;
-				} else {
-					data[accessor] = newFilter;
-				}
-
-				return data;
-			}
-		});
-	}
-
-	onMount(() => {
-		value = get(columnFilter);
-	});
+		currentFiltersStore.set(filters)}
+	);
 </script>
 
 <div class="w-auto flex items-center border rounded-md my-0.5">
@@ -116,7 +106,7 @@
 			<Command.Root>
 				<Command.Empty>Nejsou dostupné žádné filtry.</Command.Empty>
 				<Command.Group class="p-1">
-					{#each filters as filter}
+					{#each stringColumnFiltersConst as filter}
 						<Command.Item
 							value={filter.value}
 							onSelect={(currentValue) => {

@@ -20,11 +20,11 @@
 
 {#if isOpen === true}
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger>
+		<DropdownMenu.Trigger class="min-w-12">
 			<button
-				class="text-[10px] min-w-12 w-12 h-12 leading-3 rounded hover:bg-muted/70"
+				class="text-[10px] min-w-12 size-12 leading-3 rounded hover:bg-muted/70"
 			>
-				<span class="flex items-center justify-center ml-1">
+				<span class="flex min-w-12 w-12 items-center justify-center ml-1">
 					<svelte:component this={item.icon} class="size-4 muted-foreground " />
 					<ChevronDown class="size-2 " />
 				</span>
@@ -49,7 +49,7 @@
 			<Tooltip.Root openDelay={250}>
 				<Tooltip.Trigger class="min-w-6">
 					<button class="size-6 rounded hover:bg-muted/70 flex items-center">
-						<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
+						<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground" />
 						<ChevronDown class="size-2 mr-0.5" />
 					</button>
 				</Tooltip.Trigger>

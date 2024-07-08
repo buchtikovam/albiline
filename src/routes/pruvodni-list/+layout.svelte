@@ -10,7 +10,9 @@
 </script>
 
 <svelte:head>
-	<title>Průvodní list</title>
+	<title>
+		Průvodní list
+	</title>
 </svelte:head>
 
 <div class="w-full flex items-center justify-between">
@@ -84,7 +86,6 @@
 			/>
 		</div>
 	{/if}
-
 </div>
 
 <div class="h-full bg-background rounded-bl-lg rounded-none border">

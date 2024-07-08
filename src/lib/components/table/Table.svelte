@@ -10,10 +10,10 @@
 	} from 'svelte-headless-table/plugins';
 	import { createRender, createTable, type DataColumn, Render, Subscribe } from 'svelte-headless-table';
 	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
-	import { columnTextFilter } from '$lib/utils/input-filters/columnTextFilter';
+	import { stringColumnFilterFn } from '$lib/utils/input-filters/stringColumnFilterFn';
 	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import { cellWidths } from '$lib/constants/cellWidths';
+	import { cellWidthsConst } from '$lib/constants/cellWidthsConst';
 	import {
 		columnDataStore,
 		columnOrderStore,
@@ -122,8 +122,6 @@
 		currentFiltersStore.set(defaultFilters);
 	})();
 
-	// TODO: visible column title even on small width
-
 	currentFiltersStore.subscribe((filters) => {
 		const colWidthData = get(columnWidthStore);
 
@@ -134,39 +132,11 @@
 					if (colWidthData && Object.keys(colWidthData).length > 0) {
 						initialWidth = colWidthData[column.accessor];
 					} else {
-						initialWidth = cellWidths.get(column.size);
+						initialWidth = cellWidthsConst.get(column.size);
 					}
 
 					let sortDisable = column.sortDisabled !== 0;
 					let resizeDisable = column.resizeDisabled !== 0;
-
-					if (column.type === 'id') {
-						return table.column({
-							header: (_, { pluginStates }) => {
-								const { allPageRowsSelected } = pluginStates.select;
-								return createRender(TableCheckbox, {
-									checked: allPageRowsSelected
-								});
-							},
-							accessor: column.accessor,
-							cell: ({ row }, { pluginStates }) => {
-								const { getRowState } = pluginStates.select;
-								const { isSelected } = getRowState(row);
-								return createRender(TableCheckbox, {
-									checked: isSelected
-								});
-							},
-							plugins: {
-								sort: {
-									disable: sortDisable
-								},
-								resize: {
-									initialWidth: 40,
-									disable: resizeDisable
-								}
-							}
-						});
-					}
 
 					let accessor = column.accessor;
 					const inputValue = filters ? filters[accessor].value : '';
@@ -176,7 +146,7 @@
 						header: column.header,
 						plugins: {
 							colFilter: {
-								fn: columnTextFilter(columnFilter),
+								fn: stringColumnFilterFn(columnFilter),
 								initialFilterValue: inputValue,
 								render: (
 									{ filterValue, values, preFilteredValues }: {
@@ -217,7 +187,6 @@
 	});
 
 
-	// TODO: when using column filters, selected rows doesn't work
 	// checkbox plugin
 	let selectedRows = 0;
 	const { selectedDataIds } = pluginStates.select;
@@ -282,7 +251,7 @@
 	// 	.filter(([, hide]) => !hide)
 	// 	.map(([id]) => id);
 	//
-	// // TODO: make into store, access it my presets, save a preset
+	// make into store, access it my presets, save a preset
 	// const hiddenCols = ["id"];
 
 
