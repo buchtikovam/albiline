@@ -10,7 +10,7 @@ export type StoredFilters = {
 }
 
 export type FetchedFilter = {
-	id?: number,
+	id: number,
 	pageOrigin: string,
 	filterName: string,
 	filters: StoredFilters | null

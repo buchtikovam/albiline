@@ -4,16 +4,15 @@
 	import type { DialogRadioGroup } from '$lib/types/input-dialog/inputDialog';
 
 	export let item: DialogRadioGroup;
-
 </script>
 
-<RadioGroup.Root value={item.defaultValue}>
+<RadioGroup.Root bind:value={item.checkedValue}>
 	{#each item.children as child}
 		<div class="flex items-center space-x-2">
 			<RadioGroup.Item value={child.id} id={child.id} />
-			<Label for={child.id}>{child.label}</Label>
+			<Label for={child.id}>
+				{child.label}
+			</Label>
 		</div>
 	{/each}
 </RadioGroup.Root>
-
-<!--TODO: return value -->

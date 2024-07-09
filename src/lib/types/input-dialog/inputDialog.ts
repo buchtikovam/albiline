@@ -72,7 +72,7 @@ export type DialogCheckbox = {
 export type DialogRadioGroup = {
 	name: string,
 	type: "radio-group",
-	defaultValue: string,
+	checkedValue: string,
 	children: DialogRadioItem[]
 
 }

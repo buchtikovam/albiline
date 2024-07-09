@@ -8,7 +8,6 @@
 	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
 	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
 
-
 	ribbonActionStore.subscribe((action) => {
 		if (action) {
 			handleRibbonActionChange(action)

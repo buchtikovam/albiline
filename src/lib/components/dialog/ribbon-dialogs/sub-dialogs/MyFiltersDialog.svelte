@@ -6,7 +6,7 @@
 	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
 	import { writable, type Writable } from 'svelte/store';
 	import { customToast } from '$lib/utils/toast/customToast';
-	import { apiServiceDELETE } from '$lib/api/apiService';
+	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import X from 'lucide-svelte/icons/x';
 	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
@@ -31,7 +31,6 @@
 		console.log(filtersData);
 	}
 
-
 	(async function getFilters() {
 		try {
 			const response = await fetch('http://localhost:3000/filters');
@@ -45,13 +44,6 @@
 			console.error('Error fetching input-filters:', error);
 		}
 	})();
-
-	function editFilter(filter: FetchedFilter) {
-		editingFilterId = filter.id;
-		isEditing = !isEditing;
-		console.log("edit", filter.id);
-		// TODO: after edit, save in json db
-	}
 
 	function drag(e: DragEvent, index: number) {
 		if (e.dataTransfer) {
@@ -69,10 +61,6 @@
 				if (start < target) {
 					filtersData.splice(target + 1, 0, filtersData[start]);
 					filtersData.splice(start, 1);
-
-
-					// 	TODO: save filter order in local storage ?
-
 				} else {
 					filtersData.splice(target, 0, filtersData[start]);
 					filtersData.splice(start + 1, 1);
@@ -92,8 +80,6 @@
 		}
 
 		try {
-			console.log('Deleting filter...');
-
 			const response = await apiServiceDELETE('filters', filterId);
 
 			if (!response.ok) {
@@ -117,6 +103,22 @@
 			currentFiltersStore.set(filters);
 			openedDialogStore.set(undefined);
 			ribbonActionStore.set(undefined);
+		}
+	}
+
+	async function saveFilter(filter: FetchedFilter) {
+		try {
+			const response = await apiServicePUT("filters", filter.id, filter)
+
+			if (!response.ok) {
+				customToast('Critical', 'Nastala chyba při editaci filtru.');
+			}
+
+			customToast('Success', 'Filtr byl úspěšně upraven');
+			isEditing = false
+		} catch (error) {
+			console.error('Error deleting filter:', error);
+			customToast('Critical', 'Nastala chyba při editaci filtru.');
 		}
 	}
 
@@ -153,8 +155,7 @@
 						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
 					>
 						{#if isEditing && editingFilterId === filter.id}
-							<form on:submit={() => isEditing = false} class="w-full">
-
+							<form on:submit={() => saveFilter(filter)} class="w-full">
 								<Input
 									class="w-full h-7 focus-visible:ring-0 px-1.5"
 									bind:value={filter.filterName}
@@ -175,7 +176,10 @@
 
 						<div class="flex gap-2 ml-4">
 							<button
-								on:click={() => editFilter(filter)}
+								on:click={() => {
+									isEditing = true
+									editingFilterId = filter.id
+								}}
 								class="size-5"
 							>
 								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />

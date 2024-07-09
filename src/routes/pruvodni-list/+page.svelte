@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
-	import TableRewrite from '$lib/components/table/TableRewrite.svelte';
+	import TableRewrite from '$lib/components/table/Table.svelte';
 	import type { TableType } from '$lib/types/table/table';
 
 	export let data: TableType;

@@ -4,8 +4,6 @@
 	import { Label } from "$lib/components/ui/label/index.js";
 
 	export let items: DialogCheckbox[];
-
-	// 	TODO: return checked
 </script>
 
 <div class="flex flex-col gap-1">

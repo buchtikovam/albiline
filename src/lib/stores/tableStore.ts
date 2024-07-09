@@ -17,7 +17,7 @@ export const editedDataStore: Writable<any[]> = writable([]);
 
 export const currentFiltersStore: Writable<StoredFilters> = writable({test: { value: '', colFilter: 'starts-with' }})
 
-export const selectedRowsStore: Writable<Record<number, boolean>|undefined> = writable(undefined)
+export const selectedRowsStore: Writable<Record<number, boolean>> = writable({ })
 
 export const rowDataStore: Writable<TableRows> = writable()
 

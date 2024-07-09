@@ -20,11 +20,11 @@
 
 {#if isOpen === true}
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="min-w-12">
+		<DropdownMenu.Trigger class="min-w-12 w-12 h-12 pt-1">
 			<button
-				class="text-[10px] min-w-12 size-12 leading-3 rounded hover:bg-muted/70"
+				class="text-[10px] w-12 leading-3 rounded hover:bg-muted/70"
 			>
-				<span class="flex min-w-12 w-12 items-center justify-center ml-1">
+				<span class="flex w-12 items-center justify-center ml-1">
 					<svelte:component this={item.icon} class="size-4 muted-foreground " />
 					<ChevronDown class="size-2 " />
 				</span>

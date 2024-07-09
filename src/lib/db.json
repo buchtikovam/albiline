@@ -401,9 +401,44 @@
       }
     },
     {
-      "id": "35c6",
+      "id": "ecf3",
       "pageOrigin": "/pruvodni-list",
-      "filterName": "El em",
+      "filterName": "Hračky",
+      "filters": {
+        "test": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "ksp": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "jmeno": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "linie": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "koncepce": {
+          "value": "Hračky",
+          "colFilter": "default"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "default"
+        }
+      }
+    },
+    {
+      "id": "2da2",
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "Sada svět",
       "filters": {
         "test": {
           "value": "",
@@ -414,15 +449,15 @@
           "colFilter": "default"
         },
         "jmeno": {
-          "value": "em",
-          "colFilter": "ends-with"
+          "value": "Sada",
+          "colFilter": "default"
         },
         "typ": {
           "value": "",
           "colFilter": "default"
         },
         "linie": {
-          "value": "el",
+          "value": "sv",
           "colFilter": "stars-with"
         },
         "koncepce": {

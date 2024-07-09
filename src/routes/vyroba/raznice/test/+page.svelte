@@ -13,8 +13,7 @@
 <div class="w-full h-full bg-background border">
 	{#if inputDialogObjects !== undefined}
 		{#each Object.entries(inputDialogObjects) as [_, value]}
-			<p>{value.startDateValue}</p>
-			<p>{value.endDateValue}</p>
+			<p>{value}</p>
 		{/each}
 	{/if}
 </div>

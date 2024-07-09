@@ -9,6 +9,7 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import CheckboxGroup from '$lib/components/dialog/input-dialog/dialog-components/CheckboxGroup.svelte';
 	import RadioGroup from '$lib/components/dialog/input-dialog/dialog-components/RadioGroup.svelte';
+	import { customToast } from '$lib/utils/toast/customToast';
 
 	/*
 		Vstupní parametry pro správné načtení jednotlivých stránek.
@@ -48,9 +49,6 @@
 			}
 
 			if (item.type === 'date-range') {
-				console.log(item.startDateValue);
-				console.log(item.endDateValue);
-
 				if (item.startDateValue && item.endDateValue) {
 					inputDialogObjects[item.name] = {
 						startDateValue: item.startDateValue,
@@ -60,13 +58,23 @@
 					dialogOpen = false
 				}
 			}
+
+			if (item.type === "radio-group") {
+				inputDialogObjects[item.name] = item.checkedValue
+			}
+
+			if (item.type === "checkbox-group") {
+				inputDialogObjects[item.name] = item.children
+					.filter((child) => child.checked === true)
+					.map((child) => child.id)
+			}
 		});
 
-		// if (Object.entries(inputDialogObjects).length === dialogContent.length) {
-		// 	dialogOpen = false;
-		// } else {
-		// 	customToast('Warning', 'Prosím vyplňte všechna pole');
-		// }
+		if (Object.entries(inputDialogObjects).length === dialogContent.length) {
+			dialogOpen = false;
+		} else {
+			customToast('Warning', 'Prosím vyplňte všechna pole');
+		}
 	}
 
 	onMount(() => {
@@ -105,11 +113,11 @@
 						{/if}
 
 						{#if item.type === "checkbox-group"}
-							<CheckboxGroup items={item.children}/>
+							<CheckboxGroup bind:items={item.children}/>
 						{/if}
 
 						{#if item.type === "radio-group"}
-							<RadioGroup item={item}/>
+							<RadioGroup bind:item={item}/>
 						{/if}
 					{/each}
 				</div>

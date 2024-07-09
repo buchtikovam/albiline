@@ -17,7 +17,7 @@
 
 </script>
 
-<div class="flex p-2 px-4 overflow-auto">
+<div class="flex items-center p-2 px-4 overflow-auto">
 	{#each ribbonItems as item}
 		{#if Array.isArray(item)}
 			<RibbonItemsNarrow item={item} isOpen={isOpen} />
