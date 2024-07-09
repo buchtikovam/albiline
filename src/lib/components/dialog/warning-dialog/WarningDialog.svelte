@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import { writable, type Writable } from 'svelte/store';
+	import * as Dialog from '$lib/components/ui/dialog';
+
+	/*
+		Warning dialog s tlačítky pro udělení/zamítnutí souhlasu akce
+	*/
 
 	export let open = true;
 	export let message: string;
@@ -11,16 +15,18 @@
 	export let consent: Writable<boolean> = writable(false);
 
 
-	function deleteFilterAllowed() {
+	function consentAllow() {
 		open = false;
 		consent.set(true);
 	}
 
-	function deleteFilterDenied() {
+
+	function consentDenied() {
 		open = false;
 		consent.set(false);
 	}
 </script>
+
 
 
 <Dialog.Root bind:open={open}>
@@ -29,22 +35,24 @@
 			<Dialog.Title class="h-6 mb-1">
 				{message}
 			</Dialog.Title>
+
 			<Dialog.Description>
 				{desription}
 			</Dialog.Description>
 		</Dialog.Header>
 
+
 		<Dialog.Footer class="mt-4">
 			<Button
 				class="w-full bg-albi-500 text-background font-bolder"
-				on:click={deleteFilterAllowed}
+				on:click={consentAllow}
 			>
 				{buttonAllowLabel}
 			</Button>
 
 			<Button
 				class="w-full bg-red-500 text-background font-bolder"
-				on:click={deleteFilterDenied}
+				on:click={consentDenied}
 			>
 				{buttonDenyLabel}
 			</Button>

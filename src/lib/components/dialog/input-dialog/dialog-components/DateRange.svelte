@@ -1,12 +1,8 @@
 <script lang="ts">
+	import type { DialogDateRange } from '$lib/types/input-dialog/inputDialog';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
-	import type { DialogDateRange } from '$lib/types/input-dialog/inputDialog';
 	import LastYearButton from '$lib/components/button/date-range-buttons/LastYearButton.svelte';
-
-	/*
-	Komponent pro získání časového rozmezí
-	*/
 
 	export let item: DialogDateRange;
 	export let startDateValue: Date | undefined

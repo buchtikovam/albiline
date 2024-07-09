@@ -30,15 +30,15 @@ export const params: InputDialog = [
 	},
 
 	// DATE RANGE
-	{
-		name: "DateRange",
-		type: "date-range",
-		startDateLabel: "Začátek",
-		endDateLabel: "Konec",
-		startDateValue: undefined,
-		endDateValue: undefined,
-		presetButtons: ['lastYear']
-	},
+	// {
+	// 	name: "DateRange",
+	// 	type: "date-range",
+	// 	startDateLabel: "Začátek",
+	// 	endDateLabel: "Konec",
+	// 	startDateValue: undefined,
+	// 	endDateValue: undefined,
+	// 	presetButtons: ['lastYear']
+	// },
 
 	// CHECKBOX GROUP
 	{

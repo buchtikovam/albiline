@@ -13,5 +13,5 @@ export type FetchedFilter = {
 	id: number,
 	pageOrigin: string,
 	filterName: string,
-	filters: StoredFilters | null
+	filters: StoredFilters
 }

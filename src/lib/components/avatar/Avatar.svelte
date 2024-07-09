@@ -13,18 +13,19 @@
 	export let userName: string = 'MBUC';
 	export let userImage: string = '';
 
-	let isCompact: 'standard' | 'compact';
+	let pageCompactState: 'standard' | 'compact';
 
-	pageCompactStore.subscribe((data) => isCompact = data);
+	pageCompactStore.subscribe((data) => pageCompactState = data);
 
-	function setHeight(state: 'standard' | 'compact') {
+	function setRowHeight(state: 'standard' | 'compact') {
 		pageCompactStore.set(state);
 	}
 </script>
 
+
+
 <DropdownMenu.Root closeOnItemClick={false}>
 	<DropdownMenu.Trigger>
-		<!-- Avatar ikona -->
 		<Avatar.Root class="w-7 h-7 ">
 			<Avatar.Image src={`/${userImage}`} alt="icon" />
 			<Avatar.Fallback class="bg-albi-500">
@@ -32,6 +33,7 @@
 			</Avatar.Fallback>
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
+
 
 	<DropdownMenu.Content class="w-60">
 		<DropdownMenu.Label class="font-bold text-base">
@@ -58,20 +60,32 @@
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 
-		<!-- Nastavení kompaktnosti stránky -->
-		<DropdownMenu.RadioGroup bind:value={isCompact}>
-			<DropdownMenu.Label>
-				Zobrazení
-			</DropdownMenu.Label>
 
-			<DropdownMenu.RadioItem value="standard" class="cursor-pointer" on:click={() => setHeight("standard")}>
+		<DropdownMenu.Label>
+			Zobrazení
+		</DropdownMenu.Label>
+
+		<DropdownMenu.RadioGroup
+			bind:value={pageCompactState}
+		>
+			<DropdownMenu.RadioItem
+				value="standard"
+				class="cursor-pointer"
+				on:click={() => setRowHeight("standard")}
+			>
 				Standardní
 			</DropdownMenu.RadioItem>
-			<DropdownMenu.RadioItem value="compact" class="cursor-pointer" on:click={() => setHeight("compact")}>
+
+			<DropdownMenu.RadioItem
+				value="compact"
+				class="cursor-pointer"
+				on:click={() => setRowHeight("compact")}
+			>
 				Kompaktní
 			</DropdownMenu.RadioItem>
 		</DropdownMenu.RadioGroup>
 		<DropdownMenu.Separator />
+
 
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>

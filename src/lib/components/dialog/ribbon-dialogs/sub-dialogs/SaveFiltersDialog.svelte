@@ -1,21 +1,24 @@
 <script lang="ts">
+	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
+	import { page } from '$app/stores';
+	import { saveFilters } from '$lib/utils/ribbon/ribbon-actions/filters/saveFilters';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { saveFilters } from '$lib/utils/ribbon/ribbon-actions/filters/saveFilters';
-	import { page } from '$app/stores';
-	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
+
+	/*
+		Dialog pro uložení nového filtru,
+		po vložení názvu se provede saveFilters funkce
+	*/
 
 	let dialogOpen: boolean = false;
 	let inputValue: string = "";
 
-	function handleSubmit(event: Event) {
-		event.preventDefault();
 
-		dialogOpen = false
+	function handleSaveFilters(event: Event) {
+		event.preventDefault();
 
 		saveFilters(inputValue, $page.url.pathname);
 
@@ -23,33 +26,43 @@
 			openedDialogStore.set(undefined)
 			ribbonActionStore.set(undefined)
 		}, 250)
+
+		dialogOpen = false
 	}
+
 
 	onMount(() => {
 		dialogOpen = true;
 	});
 </script>
 
-<Dialog.Root bind:open={dialogOpen} onOpenChange={() => handleRibbonDialogClose()}>
+
+
+<Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Content class="!w-fit">
 		<Dialog.Header>
 			<Dialog.Title class="h-4 mb-4">
 				Uložení filtrů
 			</Dialog.Title>
 		</Dialog.Header>
-		<form on:submit={handleSubmit}>
+
+		<form on:submit={handleSaveFilters} class="p-0.5">
 			<Label for="test" class="text-right">
 				Název nové kolekce
 			</Label>
+
 			<Input
 				id="test"
 				bind:value={inputValue}
 				required
-				class="focus-visible:ring-0 w-[220px]"
+				class="w-[220px] "
 			/>
 
 			<Dialog.Footer>
-				<Button type="submit" class="mt-4 w-full bg-albi-500 text-background font-bolder">
+				<Button
+					type="submit"
+					class="mt-4 w-full bg-albi-500 text-background font-bolder"
+				>
 					Potvrdit
 				</Button>
 			</Dialog.Footer>

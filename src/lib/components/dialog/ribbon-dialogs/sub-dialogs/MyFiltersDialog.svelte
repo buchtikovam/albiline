@@ -2,6 +2,9 @@
 	import { page } from '$app/stores';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { Input } from '$lib/components/ui/input';
+	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
 	import { onMount } from 'svelte';
 	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
 	import { writable, type Writable } from 'svelte/store';
@@ -9,119 +12,138 @@
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import X from 'lucide-svelte/icons/x';
-	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
 	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { Input } from '$lib/components/ui/input';
-	// import { persisted } from 'svelte-persisted-store';
+
+	/*
+		Dialog zobrazující uložené column filtry pro danou tabulku,
+		možnost řazení, editace a mazání filtrů
+	*/
 
 	let dialogOpen: boolean = false;
 	let warningDialogOpen: boolean = false;
-	let currentFilterId: number;
 
-	let filtersData: FetchedFilter[] | undefined = undefined;
+	let currentFilterId: number;
+	let filters: FetchedFilter[];
 	let deleteFilterConsent: Writable<boolean> = writable(false);
 
 	let isEditing: boolean = false;
-	let editingFilterId: number | undefined = undefined;
+	let currentEditedId: number | undefined = undefined;
 
-	// let filtersOrder: Writable<string[]> = persisted("filtersOrder", []);
 
-	if (filtersData) {
-		console.log(filtersData);
-	}
-
-	(async function getFilters() {
+	async function fetchFilters() {
 		try {
+			// fetch only filters based on page name, avoid filtering on FE
 			const response = await fetch('http://localhost:3000/filters');
-			filtersData = await response.json();
+			filters = await response.json();
 
-			filtersData = filtersData?.filter((filter: FetchedFilter) => {
+			filters = filters?.filter((filter: FetchedFilter) => {
 				return filter.pageOrigin === $page.url.pathname;
 			});
-
 		} catch (error) {
 			console.error('Error fetching input-filters:', error);
+			customToast("Warning", "Nepovedlo se fetchnout filtery.")
 		}
-	})();
+	}
 
-	function drag(e: DragEvent, index: number) {
+
+	// Drag and drop pro řazení filtrů
+	let hovering: number | null;
+	let start: number;
+
+	function dragFilter(e: DragEvent, index: number) {
 		if (e.dataTransfer) {
 			e.dataTransfer.setData('text', String(index));
 			start = index;
 		}
 	}
 
-	let hovering: number | null;
-	let start: number;
-
-	function drop(e: DragEvent, target: number | null) {
-		if (e.dataTransfer && target !== null) {
-			if (filtersData) {
-				if (start < target) {
-					filtersData.splice(target + 1, 0, filtersData[start]);
-					filtersData.splice(start, 1);
-				} else {
-					filtersData.splice(target, 0, filtersData[start]);
-					filtersData.splice(start + 1, 1);
-				}
-				hovering = null;
-			}
-		}
-	}
-
-	function setHovering(index: number) {
+	function setHoveringFilter(index: number) {
 		hovering = index;
 	}
 
-	async function deleteFilter(filterId: number | undefined) {
-		if (!filterId) {
-			return;
+	function dropFilter(e: DragEvent, target: number | null) {
+		if (e.dataTransfer && target !== null) {
+			if (start < target) {
+				filters.splice(target + 1, 0, filters[start]);
+				filters.splice(start, 1);
+			} else {
+				filters.splice(target, 0, filters[start]);
+				filters.splice(start + 1, 1);
+			}
+			hovering = null;
 		}
+	}
+
+
+	// Smazání filtru po souhlasu ve warning dialogu
+	async function deleteFilter(filterId: number | undefined) {
+		if (!filterId) return;
 
 		try {
 			const response = await apiServiceDELETE('filters', filterId);
 
 			if (!response.ok) {
-				customToast('Critical', 'Nastala chyba při mazání filtru.');
+				customToast(
+					'Critical',
+					'Nastala chyba při mazání filtru.'
+				);
 			}
-
-			customToast('Success', 'Filtr byl úspěšně smazán');
-
-			if (filtersData) {
-				filtersData = filtersData.filter(filter => filter.id !== filterId);
-			}
+			// frontendové smazání filtru, aby se nemuselo znovu fetchovat
+			filters = filters?.filter(filter => filter.id !== filterId);
+			customToast(
+				'Success',
+				'Filtr byl úspěšně smazán'
+			);
 		} catch (error) {
 			console.error('Error deleting filter:', error);
-			customToast('Critical', 'Nastala chyba při mazání filtru.');
+			customToast(
+				'Critical',
+				'Nastala chyba při mazání filtru.'
+			);
 		}
 	}
 
-	function loadFilterInTable(filters: StoredFilters | null) {
-		if (filters) {
-			dialogOpen = false;
-			currentFiltersStore.set(filters);
-			openedDialogStore.set(undefined);
-			ribbonActionStore.set(undefined);
-		}
+
+	function loadFiltersInTable(filters: StoredFilters) {
+		currentFiltersStore.set(filters);
+		openedDialogStore.set(undefined);
+		ribbonActionStore.set(undefined);
+		dialogOpen = false;
 	}
 
-	async function saveFilter(filter: FetchedFilter) {
+
+	async function updateFilter(filter: FetchedFilter) {
 		try {
-			const response = await apiServicePUT("filters", filter.id, filter)
+			const response = await apiServicePUT(
+				"filters",
+				filter.id,
+				filter
+			)
 
 			if (!response.ok) {
-				customToast('Critical', 'Nastala chyba při editaci filtru.');
+				customToast(
+					'Critical',
+					'Nastala chyba při editaci filtru.'
+				);
 			}
 
-			customToast('Success', 'Filtr byl úspěšně upraven');
+			customToast(
+				'Success',
+				'Filtr byl úspěšně upraven.'
+			);
 			isEditing = false
 		} catch (error) {
 			console.error('Error deleting filter:', error);
-			customToast('Critical', 'Nastala chyba při editaci filtru.');
+			customToast(
+				'Critical',
+				'Nastala chyba při editaci filtru.'
+			);
 		}
 	}
 
+
+	// Nastavuje se ve warning dialogu. Pokud je true, zvolený filtr se smaže
 	deleteFilterConsent.subscribe((consent) => {
 		if (consent) {
 			deleteFilter(currentFilterId);
@@ -130,13 +152,20 @@
 		deleteFilterConsent.set(false);
 	});
 
+
 	onMount(() => {
 		dialogOpen = true;
+		fetchFilters()
 	});
 </script>
 
-<Dialog.Root bind:open={dialogOpen} onOpenChange={() => handleRibbonDialogClose()}>
-	<Dialog.Content class="!min-w-[400px] !w-fit">
+
+
+<Dialog.Root
+	bind:open={dialogOpen}
+	onOpenChange={() => handleRibbonDialogClose()}
+>
+	<Dialog.Content class="!w-[400px]">
 		<Dialog.Header>
 			<Dialog.Title class="h-6 mb-2">
 				Moje filtry
@@ -144,30 +173,36 @@
 		</Dialog.Header>
 
 
-		{#if filtersData !== undefined}
-			{#if filtersData.length === 0}
-				<p class="mt-2">Nemáte uložené žádné filtry.</p>
+		{#if filters !== undefined}
+			{#if filters.length === 0}
+				<p class="mt-2">
+					Nemáte uložené žádné filtry.
+				</p>
 			{/if}
+
 			<div>
-				{#each filtersData as filter, index (filter.id)}
+				{#each filters as filter, index (filter.id)}
 					<div
 						role="listitem"
 						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
 					>
-						{#if isEditing && editingFilterId === filter.id}
-							<form on:submit={() => saveFilter(filter)} class="w-full">
+						{#if isEditing && currentEditedId === filter.id}
+							<form
+								on:submit={() => updateFilter(filter)}
+								on:focusout={() => updateFilter(filter)}
+								class="w-full">
 								<Input
-									class="w-full h-7 focus-visible:ring-0 px-1.5"
+									class="w-fit h-7 m-1"
 									bind:value={filter.filterName}
 								/>
 							</form>
 						{:else}
 							<button
-								on:click={() => loadFilterInTable(filter.filters)}
 								draggable="true"
-								on:dragstart={(e) => drag(e, index)}
-								on:dragover={() => setHovering(index)}
-								on:dragend={(e) => drop(e, hovering)}
+								on:click={() => loadFiltersInTable(filter.filters)}
+								on:dragstart={(e) => dragFilter(e, index)}
+								on:dragover={() => setHoveringFilter(index)}
+								on:dragend={(e) => dropFilter(e, hovering)}
 								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
 							>
 								{filter.filterName}
@@ -177,13 +212,14 @@
 						<div class="flex gap-2 ml-4">
 							<button
 								on:click={() => {
-									isEditing = true
-									editingFilterId = filter.id
+									isEditing = !isEditing
+									currentEditedId = filter.id
 								}}
 								class="size-5"
 							>
 								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />
 							</button>
+
 							<button
 								on:click={() => {
 									warningDialogOpen = true
@@ -198,7 +234,13 @@
 				{/each}
 			</div>
 		{:else}
-			<p>Loading</p>
+			<!-- Placeholdery během toho, co se filtry fetchují.
+			Ukáže se jen při pomalém internetu -->
+			<div class="space-y-3 mt-2">
+				<Skeleton class="h-4 w-[250px]" />
+				<Skeleton class="h-4 w-[180px]" />
+				<Skeleton class="h-4 w-[220px]" />
+			</div>
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>

@@ -1,7 +1,7 @@
 export const load = async ({ fetch }) => {
 	try {
 		// const res = await fetch(`http://10.2.2.181/productList`);
-		const res = await fetch("http://localhost:3000/pruvodni-list-data")
+		const res = await fetch("http://localhost:3000/pruvodni-list-data?_start=0&_end=19")
 		const resp = await fetch("http://localhost:3000/pruvodni-list-info")
 
 		if (!res.ok || !resp.ok) {

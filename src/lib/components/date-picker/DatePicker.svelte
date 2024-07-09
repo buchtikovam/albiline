@@ -1,27 +1,26 @@
 <script lang="ts">
-	import { DatePicker } from 'bits-ui';
+	import type { DateValue } from '@internationalized/date';
 	import { flyAndScale } from '$lib/utils';
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
-	import type { DateValue } from '@internationalized/date';
+	import { DatePicker } from 'bits-ui';
 
 	/*
-		Kalendář s popoverem pro výběr datumu
+		Kalendář s inputem a popoverem pro výběr datumu
 	*/
 
-	console.log("run");
-
 	export let dateValue: Date|undefined;
+	export let label: string;
 
 	let value: DateValue|undefined;
-
-	export let label: string;
 
 	$: if (value) {
 		dateValue = new Date(value.year, value.month, value.day)
 	}
 </script>
+
+
 
 <DatePicker.Root
 	weekdayFormat="short"
@@ -35,9 +34,10 @@
 			{ label }
 		</DatePicker.Label>
 
+
 		<DatePicker.Input
 			let:segments
-			class="flex h-input w-full max-w-[220px] h-10 select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground "
+			class="flex h-input w-full max-w-[220px] h-10 select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground"
 		>
 			{#each segments as { part, value }}
 				<div class="inline-block select-none">
@@ -61,6 +61,7 @@
 				<CalendarRange />
 			</DatePicker.Trigger>
 		</DatePicker.Input>
+
 
 		<DatePicker.Content
 			sideOffset={6}

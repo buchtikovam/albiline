@@ -18,6 +18,8 @@
 	}
 </script>
 
+<!-- TODO: fix load -->
+
 {#if isOpen === true}
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger class="min-w-12 w-12 h-12 mt-auto">

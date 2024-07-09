@@ -27,6 +27,7 @@
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import { addColumnOrder } from 'svelte-headless-table/plugins';
 	import { createInitialColumnOrder } from '$lib/utils/table/createInitialColumnOrder';
+	import InfiniteScroll from '$lib/components/table/InfiniteScroll.svelte';
 
 
 
@@ -232,16 +233,25 @@
 		}
 	}
 
+	// TODO: infinite scroll
+
 	function setHovering(index: number) {
 		hovering = index;
 	}
 
-
-	//
 	// let page = 1;
-	// let data = [];
 	// let newData = [];
 	//
+	// async function fetchData() {
+	// 	const response = await fetch("http://localhost:3000/pruvodni-list-data?_start=20&_end=39");
+	// 	newBatch = await response.json();
+	// 	console.log(newBatch)
+	// }
+
+	// $: data = [
+	// 	...data,
+	// 	...newBatch
+	// ];
 
 
 	// page load logic
@@ -328,6 +338,10 @@
 					</Table.Row>
 				</Subscribe>
 			{/each}
+<!--			<InfiniteScroll-->
+<!--				hasMore={newBatch.length}-->
+<!--				threshold={100}-->
+<!--				on:loadMore={() => {page++; fetchData()}} />-->
 		</Table.Body>
 	</Table.Root>
 
