@@ -29,12 +29,12 @@
 {:else}
 	{#each item as item}
 		<Tooltip.Root openDelay={250}>
-			<Tooltip.Trigger class="min-w-5 mx-0.5">
+			<Tooltip.Trigger class="min-w-5 mx-0.5 mt-auto">
 				<button
-					class="size-5 rounded hover:bg-muted/70"
+					class="size-5 pt-1 rounded hover:bg-muted/70"
 					on:click={() => setAction(item.action)}
 				>
-					<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground " />
+					<svelte:component this={item.icon} class="size-4 mx-auto muted-foreground" />
 				</button>
 			</Tooltip.Trigger>
 			<Tooltip.Content class="mt-20">

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TableColumn, TableRows, TableType } from '$lib/types/table/table';
-	import { derived, get, type Readable, type Writable, writable } from 'svelte/store';
+	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import {
 		columnOrderStore,
 		columnWidthStore,
@@ -32,6 +32,9 @@
 
 	// initialize variables
 	export let data: TableType;
+
+	console.log(data);
+
 	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
 	rowDataStore.set(data.items)
@@ -183,7 +186,6 @@
 
 
 	// checkbox plugin
-	// let selectedRows = 0;
 	export const { selectedDataIds } = pluginStates.select;
 
 	selectedDataIds.subscribe((rows) => {
@@ -234,6 +236,12 @@
 		hovering = index;
 	}
 
+
+	//
+	// let page = 1;
+	// let data = [];
+	// let newData = [];
+	//
 
 
 	// page load logic

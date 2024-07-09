@@ -23,7 +23,7 @@
 	</button>
 {:else}
 	<Tooltip.Root openDelay={250}>
-		<Tooltip.Trigger class="min-w-5 mx-0.5">
+		<Tooltip.Trigger class="mt-auto min-w-5 mx-0.5">
 			<button
 				class="w-5 rounded hover:bg-muted/70"
 				on:click={setAction}

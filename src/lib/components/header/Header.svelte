@@ -20,6 +20,8 @@
 		tabs = data;
 	});
 
+
+
 	// Nastavování aktivního tabu
 	currentActiveTabStore.subscribe((value) => {
 		activeTabValue = value;
@@ -59,6 +61,7 @@
 	});
 
 
+
 	function removeTab(tabName: string) {
 		tabs.forEach((tab) => {
 			if (tab.name === tabName) {
@@ -68,6 +71,8 @@
 		});
 	}
 
+
+
 	function showClosingButton(tab: Tab) {
 		if (get(allowTabAdding)) {
 			tab.closingState = 'flex';
@@ -75,13 +80,16 @@
 		}
 	}
 
+
+
 	function hideClosingButton(tab: Tab) {
 		tab.closingState = 'hidden';
 		openedTabsStore.update(() => tabs);
 	}
 </script>
 
-<!-- TODO: tab reorder - dnd -->
+
+
 
 <div class="flex justify-between bg-muted">
 	<Tabs.Root class="w-fit h-fit pt-2" value={activeTabValue}>
@@ -134,4 +142,3 @@
 		<Avatar />
 	</div>
 </div>
-

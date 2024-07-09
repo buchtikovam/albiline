@@ -24,26 +24,25 @@ import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 type Items = Item[] | Item;
 
 export const ribbonItems: Items[] = [
-	[
-		{
-			name: "Nový",
-			type: RibbonType.ITEM,
-			icon: FilePlus,
-			action: Action.NEW,
-		},
-		{
-			name: "Editovat",
-			type: RibbonType.ITEM,
-			icon: Pencil,
-			action: Action.EDIT,
-		},
-		{
-			name: "Smazat",
-			type: RibbonType.ITEM,
-			icon: FileX2,
-			action: Action.DELETE,
-		},
-	],
+	{
+		name: "Nový",
+		type: RibbonType.ITEM,
+		icon: FilePlus,
+		action: Action.NEW,
+	},
+	{
+		name: "Editovat",
+		type: RibbonType.ITEM,
+		icon: Pencil,
+		action: Action.EDIT,
+	},
+	{
+		name: "Smazat",
+		type: RibbonType.ITEM,
+		icon: FileX2,
+		action: Action.DELETE,
+	},
+
 	{
 		type: RibbonType.SEPARATOR,
 	},
