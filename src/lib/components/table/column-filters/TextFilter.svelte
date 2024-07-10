@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { stringColumnFiltersConst } from '$lib/constants/stringColumnFiltersConst';
+	import { currentFiltersStore } from '$lib/stores/tableStore';
+	import { Button } from '$lib/components/ui/button';
+	import type { TextFilters } from '$lib/types/table/filter';
+	import { get, type Readable, writable, type Writable } from 'svelte/store';
+	import { onMount, tick } from 'svelte';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
-	import { onMount, tick } from 'svelte';
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import { Button } from '$lib/components/ui/button';
-	import { get, type Readable, writable, type Writable } from 'svelte/store';
-	import type { TextFilters } from '$lib/types/table/filter';
-	import { currentFiltersStore } from '$lib/stores/tableStore';
-	import { stringColumnFiltersConst } from '$lib/constants/stringColumnFiltersConst';
 
 	// unused but required ?
 	export let preFilteredValues: Readable<unknown[]>;
@@ -78,6 +78,8 @@
 	);
 </script>
 
+
+
 <div class="w-auto flex items-center border rounded-md my-0.5">
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
@@ -90,13 +92,20 @@
 			>
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
-						<svelte:component this={get(columnFilter) === "default" ? ChevronDown : selectedValue?.icon}
-										  class="h-3 w-3 min-w-3" />
+						<svelte:component
+							this={get(columnFilter) === "default" ? ChevronDown : selectedValue?.icon}
+							class="h-3 w-3 min-w-3"
+						/>
 					</Tooltip.Trigger>
+
 					{#if selectedValue?.label === undefined}
-						<Tooltip.Content class="mt-16">Vyberte filtr</Tooltip.Content>
+						<Tooltip.Content class="mt-16">
+							Vyberte filtr
+						</Tooltip.Content>
 					{:else}
-						<Tooltip.Content class="mt-16">{selectedValue?.label}</Tooltip.Content>
+						<Tooltip.Content class="mt-16">
+							{selectedValue?.label}
+						</Tooltip.Content>
 					{/if}
 				</Tooltip.Root>
 			</Button>
@@ -104,7 +113,10 @@
 		</Popover.Trigger>
 		<Popover.Content class="w-fit p-0">
 			<Command.Root>
-				<Command.Empty>Nejsou dostupné žádné filtry.</Command.Empty>
+				<Command.Empty>
+					Nejsou dostupné žádné filtry.
+				</Command.Empty>
+
 				<Command.Group class="p-1">
 					{#each stringColumnFiltersConst as filter}
 						<Command.Item

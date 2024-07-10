@@ -1,31 +1,43 @@
 <script lang="ts">
-	import Heart from 'lucide-svelte/icons/heart';
-	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 	import { favoriteItemsStore, activeCategoryStore } from '$lib/stores/sidebarStore';
+	import HeartCrack from 'lucide-svelte/icons/heart-crack';
+	import Heart from 'lucide-svelte/icons/heart';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 
 	export let itemValue: string;
 
 	let category: string;
-	activeCategoryStore.subscribe((data) => category = data);
+	activeCategoryStore.subscribe((data) => {
+		category = data;
+	});
 
-	function handleAdd() {
+
+	function addToFavorites() {
 		favoriteItemsStore.update(data => data.concat(itemValue));
 	}
 
-	function handleRemove() {
+
+	function removeFromFavorites() {
 		favoriteItemsStore.update(data => data.filter((item) => item.indexOf(itemValue) === -1));
 	}
 </script>
 
+
+
 <ContextMenu.Content>
 	{#if category !== "favorite"}
-		<ContextMenu.Item class="flex gap-2" on:click={handleAdd}>
+		<ContextMenu.Item
+			class="flex gap-2"
+			on:click={addToFavorites}
+		>
 			<Heart class="w-4 h-4 text-red-600" />
 			Přidat do oblíbených
 		</ContextMenu.Item>
 	{:else}
-		<ContextMenu.Item class="flex gap-2" on:click={handleRemove}>
+		<ContextMenu.Item
+			class="flex gap-2"
+			on:click={removeFromFavorites}
+		>
 			<HeartCrack class="w-4 h-4 text-red-600" />
 			Odebrat z oblíbených
 		</ContextMenu.Item>

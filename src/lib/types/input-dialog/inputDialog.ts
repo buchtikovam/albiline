@@ -6,6 +6,7 @@ export type InputDialogItem = DialogString
 	| DialogDateRange
 	| DialogCheckboxGroup
 	| DialogRadioGroup
+	| DateRangeButton
 
 
 export type DialogString = {
@@ -80,4 +81,12 @@ export type DialogRadioGroup = {
 export type DialogRadioItem = {
 	id: string,
 	label: string,
+}
+
+export type DateRangeButton = {
+	name: string,
+	type: "date-range-button",
+	startDateValue: Date | undefined,
+	endDateValue: Date | undefined,
+	buttonType: DateRangeButtons
 }

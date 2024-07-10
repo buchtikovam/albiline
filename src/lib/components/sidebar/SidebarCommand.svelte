@@ -1,18 +1,21 @@
 <script lang="ts">
-	import { handleTabClick } from '$lib/utils/header/handleTabClick';
 	import type { Item } from '$lib/types/sidebar/sidebar';
+	import { handleTabClick } from '$lib/utils/header/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
 
 	export let items: Item[];
-	export let open: boolean;
+	export let isSidebarCommandOpen: boolean;
+
 
 	function handleClick(item: Item, treeDepth: number): void {
-		open = !open;
+		isSidebarCommandOpen = !isSidebarCommandOpen;
 		handleTabClick(item, treeDepth);
 	}
 </script>
 
-<Command.Dialog bind:open>
+
+
+<Command.Dialog bind:open={isSidebarCommandOpen}>
 	<Command.Input placeholder="Vyhledat..." />
 
 	<Command.List class="mt-2">

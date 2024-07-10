@@ -8,27 +8,42 @@
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
 
-	let isOpen: boolean = true;
+	/*
+		Resizable ribbon container obsahující různé ribbon items
+	*/
 
-	function toggleOpen() {
-		isOpen = !isOpen;
+	let isRibbonOpen: boolean = true;
+
+	function toggleRibbonOpen() {
+		isRibbonOpen = !isRibbonOpen;
 	}
-
-
 </script>
 
+
+
 <div class="flex items-center p-2 px-4 overflow-auto">
-	{#each ribbonItems as item}
-		{#if Array.isArray(item)}
-			<RibbonItemsNarrow item={item} isOpen={isOpen} />
+	{#each ribbonItems as ribbonItem}
+		{#if Array.isArray(ribbonItem)}
+			<RibbonItemsNarrow
+				ribbonItems={ribbonItem}
+				isRibbonOpen={isRibbonOpen}
+			/>
 		{:else}
-			{#if item.type === RibbonType.ITEM}
-				<RibbonItem item={item} isOpen={isOpen} />
+			{#if ribbonItem.type === RibbonType.ITEM}
+				<RibbonItem
+					ribbonItem={ribbonItem}
+					isRibbonOpen={isRibbonOpen}
+				/>
 			{/if}
-			{#if item.type === RibbonType.DROPDOWN}
-				<RibbonDropdownItem item={item} isOpen={isOpen} />
+
+			{#if ribbonItem.type === RibbonType.DROPDOWN}
+				<RibbonDropdownItem
+					ribbonItem={ribbonItem}
+					isRibbonOpen={isRibbonOpen}
+				/>
 			{/if}
-			{#if item.type === RibbonType.SEPARATOR}
+
+			{#if ribbonItem.type === RibbonType.SEPARATOR}
 				<Separator orientation="vertical" class="mx-2.5" />
 			{/if}
 		{/if}
@@ -37,14 +52,14 @@
 
 <div
 	class={
-		(isOpen
+		(isRibbonOpen
 			? "mt-[88px]"
 			: "mt-[66px]")
 			+ " absolute w-full flex justify-end items-center"
 	}
 >
-	<button on:click={toggleOpen}>
-		{#if isOpen}
+	<button on:click={toggleRibbonOpen}>
+		{#if isRibbonOpen}
 			<ChevronDown class="h-4 w-4 bg-background" />
 		{:else}
 			<ChevronUp class="h-4 w-4 bg-background" />

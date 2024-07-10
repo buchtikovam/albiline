@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { allItems } from '$lib/data/sidebar';
-	import { Separator } from '$lib/components/ui/separator';
-	import { Input } from '$lib/components/ui/input';
 	import {
 		sidebarStateStore,
 		recentItemsStore,
 		favoriteItemsStore,
 		activeCategoryStore
 	} from '$lib/stores/sidebarStore';
+	import { allItems } from '$lib/data/sidebar';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Input } from '$lib/components/ui/input';
 	import { onMount } from 'svelte';
 	import { buttonBorderSwitch } from '$lib/utils/button/buttonBorderSwitch';
 	import { handleTabClick } from '$lib/utils/header/handleTabClick';
@@ -16,7 +16,7 @@
 	import Search from 'lucide-svelte/icons/search';
 	import type { Item } from '$lib/types/sidebar/sidebar';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
-	import ContextMenuContent from '$lib/components/sidebar/ContextMenuContent.svelte';
+	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';
 	import SidebarToggleButton from '$lib/components/sidebar/SidebarToggleButton.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
@@ -24,25 +24,44 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 
-	let open: boolean = false;
-	let show: boolean;
+	/*
+		Resizeble sidebar se třemi kategoriemi,
+		tlačítky pro přepínání kategorií a inputem
+	*/
+
+	let isSidebarCommandOpen: boolean = false;
+	let isSidebarOpen: boolean = true;
+
+	// otevírání sidebaru
+	sidebarStateStore.subscribe(data => {
+		isSidebarOpen = data;
+	});
+
+	// otevírání vyhledávání v dialogu
+	function openSidebarCommand() {
+		isSidebarCommandOpen = !isSidebarCommandOpen;
+	}
+
+
+	let recentItemValues: string[] = [];
+	let favoriteItemValues: string[] = [];
 	let filteredItems: Item[] = deepcopy(allItems);
 	let searchTerm = '';
 
-	let recentItemValues: string[] = [];
-	recentItemsStore.subscribe(data => recentItemValues = data);
+	recentItemsStore.subscribe(recentItems => {
+		recentItemValues = recentItems;
+	});
 
-	let favoriteItemValues: string[] = [];
-	favoriteItemsStore.subscribe(data => {
+	favoriteItemsStore.subscribe(favoriteItems => {
 		// znovu načtění itemů po odebrání položky z favorites
-		if (favoriteItemValues.length > data.length) {
+		if (favoriteItemValues.length > favoriteItems.length) {
 			filteredItems = deepcopy(filterItemsSearch(
-				deepcopy(filterItemsCategory(deepcopy(allItems), data)),
+				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItems)),
 				searchTerm
 			));
 		}
 
-		favoriteItemValues = data;
+		favoriteItemValues = favoriteItems;
 	});
 
 
@@ -65,15 +84,6 @@
 			});
 	}
 
-	// otevírání sidebaru
-	sidebarStateStore.subscribe(data => {
-		show = data;
-	});
-
-	// otevírání vyhledávání v dialogu
-	function toggleCommand() {
-		open = !open;
-	}
 
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
 	function search(searchTerm: string): void {
@@ -97,7 +107,6 @@
 			));
 		}
 	}
-
 
 
 	function filterItemsSearch(items: Item[], searchTerm: string): Item[] {
@@ -128,14 +137,14 @@
 
 	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F, nastavení sidebaru podle aktivní kategorie
 	onMount(() => {
-			function handleKeydown(e: KeyboardEvent) {
-				if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
-					e.preventDefault();
-					open = !open;
-				}
+		function handleKeydown(e: KeyboardEvent) {
+			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				isSidebarCommandOpen = !isSidebarCommandOpen;
 			}
+		}
 
-			document.addEventListener('keydown', handleKeydown);
+		document.addEventListener('keydown', handleKeydown);
 
 		activeCategoryStore.subscribe(data => {
 			if (data === '' || data === 'all') {
@@ -164,9 +173,10 @@
 </script>
 
 
+
 <div class="flex h-full flex-col border-r overflow-auto">
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
-	{#if show === true}
+	{#if isSidebarOpen === true}
 		<div class="flex justify-center pt-3 px-4 gap-4 text-sm w-[320px]">
 			<CategoryButton buttonName="Všechny" category="all"/>
 			<CategoryButton buttonName="Nedávné" category="recent" />
@@ -321,7 +331,7 @@
 			</Accordion.Root>
 
 			<div class="mt-auto ml-auto pt-4">
-				<SidebarToggleButton bind:show />
+				<SidebarToggleButton bind:isSidebarOpen />
 			</div>
 		</div>
 		<!-- konec otevřeného sidebaru-->
@@ -332,13 +342,16 @@
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
 						<button
-							on:click={toggleCommand}
+							on:click={openSidebarCommand}
 							class="m-auto mb-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
 						>
 							<Search />
 						</button>
 					</Tooltip.Trigger>
-					<Tooltip.Content class="ml-10 mt-10">Vyhledat</Tooltip.Content>
+
+					<Tooltip.Content class="ml-10 mt-10">
+						Vyhledat
+					</Tooltip.Content>
 				</Tooltip.Root>
 
 				<Separator />
@@ -410,10 +423,10 @@
 			</nav>
 		</div>
 		<div class="flex justify-center pb-2">
-			<SidebarToggleButton bind:show />
+			<SidebarToggleButton bind:isSidebarOpen />
 		</div>
 	{/if}
 </div>
 
 <!-- hledání v sidebaru pomocí dialogu -->
-<SidebarCommand items={allItems} bind:open />
+<SidebarCommand items={allItems} bind:isSidebarCommandOpen />

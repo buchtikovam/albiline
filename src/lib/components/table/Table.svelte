@@ -27,17 +27,17 @@
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import { addColumnOrder } from 'svelte-headless-table/plugins';
 	import { createInitialColumnOrder } from '$lib/utils/table/createInitialColumnOrder';
-	import InfiniteScroll from '$lib/components/table/InfiniteScroll.svelte';
+	import VirtualList from '@sveltejs/svelte-virtual-list';
+
+	// import InfiniteScroll from '$lib/components/table/InfiniteScroll.svelte';
 
 
 
 	// initialize variables
 	export let data: TableType;
-
-	console.log(data);
-
 	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
+
 	rowDataStore.set(data.items)
 
 	rowDataStore.subscribe((data) => {
@@ -187,21 +187,32 @@
 
 
 	// checkbox plugin
+	let update: boolean = false;
 	export const { selectedDataIds } = pluginStates.select;
 
 	selectedDataIds.subscribe((rows) => {
 		selectedRowsStore.set(rows)
+		if (Object.keys(rows).length > 0) {
+			update = true
+		}
+	})
+
+	selectedRowsStore.subscribe((rows) => {
+		if (Object.keys(rows).length === 0 && update === true) {
+			selectedDataIds.set({})
+			update = false
+		}
 	})
 
 
 
 	// column drag and drop functions
 	let hovering: number | null;
-	let start: number;
+	let dragStart: number;
 
 	function drag(e: DragEvent, index: number) {
 		if (e.dataTransfer) {
-			start = index;
+			dragStart = index;
 		}
 	}
 
@@ -216,14 +227,14 @@
 
 			setTimeout(() => {
 				if (columnOrderData) {
-					if (start < target) {
-						columnOrderData.splice(target + 1, 0, columnOrderData[start]);
-						columnOrderData.splice(start, 1);
+					if (dragStart < target) {
+						columnOrderData.splice(target + 1, 0, columnOrderData[dragStart]);
+						columnOrderData.splice(dragStart, 1);
 						columnIdOrder.update(() => columnOrderData);
 						columnOrderStore.set(columnOrderData)
 					} else {
-						columnOrderData.splice(target, 0, columnOrderData[start]);
-						columnOrderData.splice(start + 1, 1);
+						columnOrderData.splice(target, 0, columnOrderData[dragStart]);
+						columnOrderData.splice(dragStart + 1, 1);
 						columnIdOrder.update(() => columnOrderData);
 						columnOrderStore.set(columnOrderData)
 					}
@@ -233,25 +244,10 @@
 		}
 	}
 
-	// TODO: infinite scroll
 
 	function setHovering(index: number) {
 		hovering = index;
 	}
-
-	// let page = 1;
-	// let newData = [];
-	//
-	// async function fetchData() {
-	// 	const response = await fetch("http://localhost:3000/pruvodni-list-data?_start=20&_end=39");
-	// 	newBatch = await response.json();
-	// 	console.log(newBatch)
-	// }
-
-	// $: data = [
-	// 	...data,
-	// 	...newBatch
-	// ];
 
 
 	// page load logic
@@ -267,7 +263,35 @@
 		document.addEventListener('dragover', (event) => {
 			event.preventDefault();
 		})
+
+		const tableBody = document.querySelector('.table-body'); // Adjust selector as needed
+
+		if (tableBody) {
+			const visibleHeight = tableBody.clientHeight;
+			const rowHeight = 20; // Adjust row height as needed
+
+			start = 0;
+			end = Math.ceil(visibleHeight / rowHeight);
+
+			updateStartEnd();
+		}
+
 	})
+	//
+	let start: number = 0;
+	let end: number = 400;
+
+	// TODO: implement virtual list to table
+
+	function updateStartEnd() {
+		const tableBody = document.querySelector('.table-body'); // Adjust selector as needed
+		const scrollTop = tableBody.scrollTop;
+		const visibleHeight = tableBody.clientHeight;
+		const rowHeight = 20;
+
+		start = Math.floor(scrollTop / rowHeight);
+		end = Math.ceil((scrollTop + visibleHeight) / rowHeight);
+	}
 </script>
 
 
@@ -291,7 +315,7 @@
 								>
 									{#if cell.id !== "id"}
 										<button
-											class="flex w-full items-center justify-center font-semibold overflow-visible rounded-md hover:bg-muted/70 "
+											class="flex w-full items-center justify-center font-semibold overflow-visible rounded-md hover:bg-muted/70"
 											on:click={props.sort.toggle}
 										>
 											<Render of={cell.render()} />
@@ -318,30 +342,19 @@
 			{/each}
 		</Table.Header>
 
-		<Table.Body {...$tableBodyAttrs}>
-			{#each $pageRows as row (row.id)}
-				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-					<Table.Row
-						{...rowAttrs}
-						data-state={$selectedDataIds[row.id] && "selected"}
-						class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
-					>
-						{#each row.cells as cell (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs>
-								<Table.Cell {...attrs}>
-									<div class="line-clamp-1 h-6 flex items-center">
-										<Render of={cell.render()} />
-									</div>
-								</Table.Cell>
-							</Subscribe>
-						{/each}
-					</Table.Row>
-				</Subscribe>
-			{/each}
-<!--			<InfiniteScroll-->
-<!--				hasMore={newBatch.length}-->
-<!--				threshold={100}-->
-<!--				on:loadMore={() => {page++; fetchData()}} />-->
+		<Table.Body {...$tableBodyAttrs} on:scroll={() => updateStartEnd()}>
+			<VirtualList items={$pageRows} bind:start bind:end let:item>
+				{#each item as row (row.id)}
+					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
+						<Table.Row
+							{...rowAttrs}
+							data-state={$selectedDataIds[row.id] && "selected"}
+							class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
+						>
+						</Table.Row>
+					</Subscribe>
+				{/each}
+			</VirtualList>
 		</Table.Body>
 	</Table.Root>
 

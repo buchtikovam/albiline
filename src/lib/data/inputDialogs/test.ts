@@ -40,6 +40,15 @@ export const params: InputDialog = [
 	// 	presetButtons: ['lastYear']
 	// },
 
+	// DATE RANGE PRESET BTN
+	{
+		name: "DateRangeButton",
+		type: "date-range-button",
+		startDateValue: undefined,
+		endDateValue: undefined,
+		buttonType: 'lastYear'
+	},
+
 	// CHECKBOX GROUP
 	{
 		name: 'checkboxGroup',

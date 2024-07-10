@@ -6,29 +6,26 @@ import type { TableRows } from '$lib/types/table/table';
 
 export async function deleteItem() {
 	const selectedRows: Record<number, boolean> | undefined = get(selectedRowsStore);
-	let rowData: TableRows = get(rowDataStore);
-
-
+	const rowData: TableRows = get(rowDataStore);
 	const idsToRemove: number[] = [];
 
-	if (selectedRows) {
-
-		console.log(selectedRows);
+	if (Object.keys(selectedRows).length > 0) {
 		selectedRowsStore.set({ })
 
-
 		for (const [key] of Object.entries(selectedRows)) {
-			idsToRemove.push(Number(key));
+			const rowId: number = (rowData[key as unknown as number]).id;
+			idsToRemove.push(rowId);
 		}
 
-		idsToRemove.forEach((id) => {
-			rowData.splice(id, 1);
-		})
+		rowDataStore.set(
+			rowData.filter(
+				(record) => !idsToRemove.includes(record.id)
+			)
+		);
 
-		rowDataStore.set(rowData)
-
-		// // TODO: remove checkboxes
-		//
-		// customToast('Success', 'Úspěšně smazáno.');
+		customToast(
+			'Success',
+			'Úspěšně smazáno.'
+		);
 	}
 }

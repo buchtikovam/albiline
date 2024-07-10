@@ -1,39 +1,39 @@
 <script lang="ts">
 	import { openedTabsStore, currentActiveTabStore, allowTabAdding } from '$lib/stores/tabStore';
-	import { goto, preloadData } from '$app/navigation';
-	import X from 'lucide-svelte/icons/x';
-	import Home from 'lucide-svelte/icons/home';
 	import { page } from '$app/stores';
 	import type { Tab } from '$lib/types/sidebar/sidebar';
+	import { goto, preloadData } from '$app/navigation';
+	import { get } from 'svelte/store';
+	import X from 'lucide-svelte/icons/x';
+	import Home from 'lucide-svelte/icons/home';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { get } from 'svelte/store';
 
-	let tabs: Tab[];
+	/*
+		Header komponenent s hlavními taby a avatarem
+	*/
+
+	let storedTabs: Tab[];
 	let activeTabValue: string;
 	let url = $page.url.pathname;
 	let urlLength = url.split('/').length;
 
-	console.log();
-
 	openedTabsStore.subscribe((data) => {
-		tabs = data;
+		storedTabs = data;
 	});
-
 
 
 	// Nastavování aktivního tabu
 	currentActiveTabStore.subscribe((value) => {
 		activeTabValue = value;
 
-		// Proběhne při načtění stránky:
+		// Proběhne při načtění stránky (currentActiveTabStore ještě nic neobsahuje)
 		if (value === '') {
 			activeTabValue = url;
-
 			// Jelikož albiline má sekundární taby (např. /detail), které přidávají parametr do url,
 			// pro správné zobrazení hlavních tabů je potřeba poslední parametr z url smazat než
 			// se nastaví v Tabs.Root > value
-			for (let tab of tabs) {
+			for (let tab of storedTabs) {
 				// nalezena přímá shoda
 				if (tab.url === url) {
 					activeTabValue = url;
@@ -61,33 +61,29 @@
 	});
 
 
-
 	function removeTab(tabName: string) {
-		tabs.forEach((tab) => {
+		storedTabs.forEach((tab) => {
 			if (tab.name === tabName) {
-				tabs.splice(tabs.indexOf(tab), 1);
-				openedTabsStore.set(tabs);
+				storedTabs.splice(storedTabs.indexOf(tab), 1);
+				openedTabsStore.set(storedTabs);
 			}
 		});
 	}
 
 
-
-	function showClosingButton(tab: Tab) {
+	function showTabClosingButton(tab: Tab) {
 		if (get(allowTabAdding)) {
 			tab.closingState = 'flex';
-			openedTabsStore.update(() => tabs);
+			openedTabsStore.update(() => storedTabs);
 		}
 	}
 
 
-
-	function hideClosingButton(tab: Tab) {
+	function hideTabClosingButton(tab: Tab) {
 		tab.closingState = 'hidden';
-		openedTabsStore.update(() => tabs);
+		openedTabsStore.update(() => storedTabs);
 	}
 </script>
-
 
 
 
@@ -115,25 +111,30 @@
 			</button>
 
 			<!-- Taby otevřené uživatelem -->
-			{#each tabs as tab}
-				<Tabs.Trigger
-					value={tab.url}
-					on:click={() => goto(tab.url)}
+			{#each storedTabs as tab}
+				<button
+					on:mouseenter={() => preloadData(tab.url)}
+					class="flex"
 				>
-					<button
-						class="flex items-center"
-						on:mouseenter={() => showClosingButton(tab)}
-						on:mouseleave={() => hideClosingButton(tab)}
+					<Tabs.Trigger
+						value={tab.url}
+						on:click={() => goto(tab.url)}
 					>
-						{tab.name}
 						<button
-							on:click={() => removeTab(tab.name)}
-							class={`${tab.closingState}`}
+							class="flex items-center"
+							on:mouseenter={() => showTabClosingButton(tab)}
+							on:mouseleave={() => hideTabClosingButton(tab)}
 						>
-							<X class="ml-1 text-red-600 size-3.5"/>
+							{tab.name}
+							<button
+								on:click={() => removeTab(tab.name)}
+								class={`${tab.closingState}`}
+							>
+								<X class="ml-1 text-red-600 size-3.5"/>
+							</button>
 						</button>
-					</button>
-				</Tabs.Trigger>
+					</Tabs.Trigger>
+				</button>
 			{/each}
 		</Tabs.List>
 	</Tabs.Root>

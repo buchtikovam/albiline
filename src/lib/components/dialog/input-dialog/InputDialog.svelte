@@ -10,6 +10,7 @@
 	import RadioGroup from '$lib/components/dialog/input-dialog/dialog-components/RadioGroup.svelte';
 	import CheckboxGroup from '$lib/components/dialog/input-dialog/dialog-components/CheckboxGroup.svelte';
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import LastYearButton from '$lib/components/button/date-range-buttons/LastYearButton.svelte';
 
 	/*
 		Vstupní parametry pro získávání dat jednotlivých stránek.
@@ -67,6 +68,15 @@
 				inputDialogObjects[item.name] = item.children
 					.filter((child) => child.checked === true)
 					.map((child) => child.id)
+			}
+
+			if (item.type === "date-range-button") {
+				if (item.startDateValue && item.endDateValue) {
+					inputDialogObjects[item.name] = {
+						startDateValue: item.startDateValue,
+						endDateValue: item.endDateValue
+					};
+				}
 			}
 		});
 
@@ -128,7 +138,14 @@
 							<RadioGroup bind:item={item}/>
 						{/if}
 
-					<!-- TODO: add preset buttons -->
+						{#if item.type === "date-range-button"}
+							{#if item.buttonType === "lastYear"}
+								<LastYearButton
+									bind:startDateValue={item.startDateValue}
+									bind:endDateValue={item.endDateValue}
+								/>
+							{/if}
+						{/if}
 					{/each}
 				</div>
 			{/if}

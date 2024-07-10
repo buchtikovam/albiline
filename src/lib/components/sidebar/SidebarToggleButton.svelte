@@ -1,14 +1,16 @@
 <script lang="ts">
-	import Menu from 'lucide-svelte/icons/menu';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import { sidebarStateStore } from '$lib/stores/sidebarStore';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import Menu from 'lucide-svelte/icons/menu';
 
-	export let show: boolean;
+	export let isSidebarOpen: boolean = true;
+
 
 	function toggleOpen() {
-		sidebarStateStore.update(() => !show)
+		sidebarStateStore.update(() => !isSidebarOpen)
 	}
 </script>
+
 
 <Button
 	variant="ghost"
