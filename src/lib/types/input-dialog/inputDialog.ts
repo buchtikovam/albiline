@@ -1,12 +1,14 @@
 export type InputDialog = InputDialogItem[]
 
-export type InputDialogItem = DialogString
-	| DialogNumber
-	| DialogDate
-	| DialogDateRange
-	| DialogCheckboxGroup
-	| DialogRadioGroup
-	| DateRangeButton
+export type InputDialogItem =
+	DialogString |
+	DialogNumber |
+	DialogDate |
+	DateRange |
+	CheckboxGroup |
+	RadioGroup |
+	DateRangeButton
+
 
 
 export type DialogString = {
@@ -33,18 +35,18 @@ type DialogDate = {
 	value: Date | undefined;
 }
 
-export type DialogDateRange = {
+export type DateRange = {
 	name: string;
 	type: 'date-range';
 	startDateLabel: string;
 	endDateLabel: string;
 	startDateValue: Date | undefined;
 	endDateValue: Date | undefined;
-	presetButtons: DateRangeButtons[];
+	presetButtons: DateRangeButtonOptions[];
 }
 
 
-export type DateRangeButtons =
+export type DateRangeButtonOptions =
 	'lastYear' |
 	'last365' |
 	'thisYearFull' |
@@ -57,28 +59,28 @@ export type DateRangeButtons =
 	'thisWeek'
 
 
-export type DialogCheckboxGroup = {
+export type CheckboxGroup = {
 	name: string,
 	label: string,
 	type: "checkbox-group"
-	children: DialogCheckbox[]
+	children: CheckboxItem[]
 }
 
-export type DialogCheckbox = {
+export type CheckboxItem = {
 	id: string,
 	label: string,
 	checked: boolean
 }
 
-export type DialogRadioGroup = {
+export type RadioGroup = {
 	name: string,
 	type: "radio-group",
 	checkedValue: string,
-	children: DialogRadioItem[]
+	children: RadioItem[]
 
 }
 
-export type DialogRadioItem = {
+export type RadioItem = {
 	id: string,
 	label: string,
 }
@@ -88,5 +90,5 @@ export type DateRangeButton = {
 	type: "date-range-button",
 	startDateValue: Date | undefined,
 	endDateValue: Date | undefined,
-	buttonType: DateRangeButtons
+	buttonType: DateRangeButtonOptions
 }

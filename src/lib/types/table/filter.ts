@@ -1,4 +1,8 @@
-export type TextFilters = 'default' | 'contains' | 'starts-with' | 'ends-with'
+export type TextFilters =
+	'default' |
+	'contains' |
+	'starts-with' |
+	'ends-with'
 
 export type Filter = {
 	value: string,

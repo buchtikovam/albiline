@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
-	import type { Item, SubItem } from '$lib/types/ribbon/ribbon';
-	import type { Action } from '$lib/enums/action';
+	import type { RibbonItem, RibbonSubItem } from '$lib/types/ribbon/ribbon';
+	import type { RibbonAction } from '$lib/enums/ribbonAction';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
-	export let ribbonItem: Item;
+	export let ribbonItem: RibbonItem;
 	export let isRibbonOpen: boolean = true;
 
-	let children: SubItem[] = ribbonItem.children || [];
+	let children: RibbonSubItem[] = ribbonItem.children || [];
 
 
-	function setRibbonAction(itemAction: Action | undefined) {
+	function setRibbonAction(itemAction: RibbonAction | undefined) {
 		if (itemAction) {
 			ribbonActionStore.set(itemAction);
 		}

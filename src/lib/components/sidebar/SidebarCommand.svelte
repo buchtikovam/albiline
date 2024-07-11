@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Item } from '$lib/types/sidebar/sidebar';
+	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/header/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
 
-	export let items: Item[];
+	export let items: SidebarItem[];
 	export let isSidebarCommandOpen: boolean;
 
 
-	function handleClick(item: Item, treeDepth: number): void {
+	function handleClick(item: SidebarItem, treeDepth: number): void {
 		isSidebarCommandOpen = !isSidebarCommandOpen;
 		handleTabClick(item, treeDepth);
 	}

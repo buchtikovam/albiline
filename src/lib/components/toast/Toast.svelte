@@ -1,13 +1,20 @@
 <script lang="ts">
-	import Info from 'lucide-svelte/icons/info';
+	import type { ToastVariant } from '$lib/types/toast';
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import CircleCheck from 'lucide-svelte/icons/circle-check';
 	import CircleX from 'lucide-svelte/icons/circle-x';
-	import type { ToastVariant } from '$lib/types/toast';
+	import Info from 'lucide-svelte/icons/info';
+
+	/*
+		Toast komponent, který pomocí svelte sonneru zobrazuje
+		uživateli zpětnou vazbu na FE
+	*/
 
 	export let type: ToastVariant;
 	export let content: string;
 </script>
+
+
 
 <div
 	id="toast"

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
-	import type { DialogCheckbox } from '$lib/types/input-dialog/inputDialog';
+	import type { CheckboxItem } from '$lib/types/input-dialog/inputDialog';
 
-	export let items: DialogCheckbox[];
+	export let items: CheckboxItem[];
 </script>
 
 <div class="flex flex-col gap-1">

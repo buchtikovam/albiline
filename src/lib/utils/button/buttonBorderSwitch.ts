@@ -1,6 +1,7 @@
 import { activeCategoryStore } from '$lib/stores/sidebarStore';
 import { get } from 'svelte/store';
 
+
 export function buttonBorderSwitch() {
 	const buttons = document.getElementsByClassName('categoryButton');
 

@@ -1,4 +1,4 @@
-export enum Action {
+export enum RibbonAction {
 	NEW = "new",
 	DELETE = "delete",
 	EDIT = "edit",

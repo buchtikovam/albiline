@@ -1,17 +1,18 @@
 import type { Icon } from 'lucide-svelte';
 import type { ComponentType } from 'svelte';
 import { RibbonType } from '$lib/enums/ribbonType';
-import type { Action } from '$lib/enums/action';
+import type { RibbonAction } from '$lib/enums/ribbonAction';
 
-export type Item = {
+
+export type RibbonItem = {
 	type: RibbonType
 	name?: string;
 	icon?: ComponentType<Icon>
-	action?: Action;
-	children?: SubItem[];
+	action?: RibbonAction;
+	children?: RibbonSubItem[];
 }
 
-export type SubItem = {
+export type RibbonSubItem = {
 	name: string,
-	action: Action;
+	action: RibbonAction;
 }

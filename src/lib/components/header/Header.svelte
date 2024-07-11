@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { openedTabsStore, currentActiveTabStore, allowTabAdding } from '$lib/stores/tabStore';
 	import { page } from '$app/stores';
-	import type { Tab } from '$lib/types/sidebar/sidebar';
+	import type { HeaderTab } from '$lib/types/sidebar/sidebar';
 	import { goto, preloadData } from '$app/navigation';
 	import { get } from 'svelte/store';
 	import X from 'lucide-svelte/icons/x';
@@ -13,7 +13,7 @@
 		Header komponenent s hlavními taby a avatarem
 	*/
 
-	let storedTabs: Tab[];
+	let storedTabs: HeaderTab[];
 	let activeTabValue: string;
 	let url = $page.url.pathname;
 	let urlLength = url.split('/').length;
@@ -71,7 +71,7 @@
 	}
 
 
-	function showTabClosingButton(tab: Tab) {
+	function showTabClosingButton(tab: HeaderTab) {
 		if (get(allowTabAdding)) {
 			tab.closingState = 'flex';
 			openedTabsStore.update(() => storedTabs);
@@ -79,7 +79,7 @@
 	}
 
 
-	function hideTabClosingButton(tab: Tab) {
+	function hideTabClosingButton(tab: HeaderTab) {
 		tab.closingState = 'hidden';
 		openedTabsStore.update(() => storedTabs);
 	}

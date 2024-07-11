@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { editedDataStore } from '$lib/stores/tableStore';
-	import { get, type Writable } from 'svelte/store';
 	import { isEditAllowedStore } from '$lib/stores/ribbonStore';
 	import type { TableRows } from '$lib/types/table/table';
+	import { get, type Writable } from 'svelte/store';
+
+	/*
+		Editovatelná buňka v tabulce.
+		Pokud dojde k editaci, řádek se přidá do editedDataStore,
+		který pak využívá save.ts pro uložení změněných dat na BE
+	*/
 
 	export let row;
 	export let column;
@@ -11,29 +17,28 @@
 	export let onUpdateValue;
 
 	let isEditing = false;
-
 	let inputElement: HTMLInputElement | undefined;
 
 	$: if (isEditing) {
 		inputElement?.focus();
 	}
 
-	function handleEdit() {
+
+	function showEditableCell() {
 		if (get(isEditAllowedStore)) {
 			isEditing = true
 		}
 	}
 
-	const handleSubmit = (event: Event) => {
+
+	const submitEditedData = (event: Event) => {
 		event.preventDefault();
 
-		const rowDataValue: TableRows = get(rowsWritable)
-
-		rowDataValue[row.dataId][column.id] = value;
-
-		let editedRow = rowDataValue[row.dataId];
-
+		const rowData: TableRows = get(rowsWritable)
+		let editedRow = rowData[row.dataId];
 		let rowIds: number[] = [];
+		rowData[row.dataId][column.id] = value;
+
 		get(editedDataStore).forEach((row) => {
 			rowIds.push(row.id);
 		})
@@ -45,22 +50,32 @@
 		isEditing = false;
 
 		if (row.isData()) {
-			onUpdateValue(rowDataValue);
+			onUpdateValue(rowData);
 		}
 	};
 </script>
 
+
+
 <div class="w-full">
 	{#if !isEditing}
-    	<span on:dblclick={handleEdit} aria-hidden="true" class="line-clamp-1">
+    	<span
+			on:dblclick={showEditableCell}
+			aria-hidden="true"
+			class="line-clamp-1"
+		>
       		{value}
     	</span>
 	{:else}
-		<form on:submit|preventDefault={handleSubmit} on:focusout={(e) => handleSubmit(e)} class="p-1 w-full">
+		<form
+			on:submit={submitEditedData}
+			on:focusout={(e) => submitEditedData(e)}
+			class="p-1 w-full"
+		>
 			<input
 				bind:this={inputElement}
-				type="text"
 				bind:value
+				type="text"
 				class="rounded w-full px-1 outline-none focus:border focus:border-albi-500"
 			/>
 		</form>

@@ -1,5 +1,6 @@
 import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 
+
 export function handleRibbonDialogClose() {
 	setTimeout(() => {
 		openedDialogStore.set(undefined)

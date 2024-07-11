@@ -1,45 +1,47 @@
 import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-import { Action } from '$lib/enums/action';
+import { RibbonAction } from '$lib/enums/ribbonAction';
 import { save } from '$lib/utils/ribbon/ribbon-actions/table-data/save';
 import { edit } from '$lib/utils/ribbon/ribbon-actions/table-data/edit';
 import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/table-data/deleteItem';
 import { removeFilters } from '$lib/utils/ribbon/ribbon-actions/filters/removeFilters';
 
-export function handleRibbonActionChange(action: Action) {
 
-	// Actions running functions right away
+export function handleRibbonActionChange(ribbonAction: RibbonAction) {
 
-	if (action === Action.SAVE) {
+	// Ribbon akce, které spouští rovnou funkce:
+
+	if (ribbonAction === RibbonAction.SAVE) {
 		save().then(() => ribbonActionStore.set(undefined));
 	}
 
-	if (action === Action.EDIT) {
+	if (ribbonAction === RibbonAction.EDIT) {
 		edit();
 	}
 
-	if (action === Action.DELETE) {
+	if (ribbonAction === RibbonAction.DELETE) {
 		deleteItem().then(() => ribbonActionStore.set(undefined));
 	}
 
-	if (action === Action.FILTER_REMOVE) {
+	if (ribbonAction === RibbonAction.FILTER_REMOVE) {
 		removeFilters();
 	}
 
-	// Actions opening dialogs
 
-	if (action === Action.NEW) {
+	// Ribbon akce, které otevírají různé dialogy:
+
+	if (ribbonAction === RibbonAction.NEW) {
 		openedDialogStore.set("new");
 	}
 
-	if (action === Action.MY_FILTERS) {
+	if (ribbonAction === RibbonAction.MY_FILTERS) {
 		openedDialogStore.set("my-filters")
 	}
 
-	if (action === Action.MY_PRESETS) {
+	if (ribbonAction === RibbonAction.MY_PRESETS) {
 		openedDialogStore.set("my-presets")
 	}
 
-	if (action === Action.SAVE_FILTERS) {
+	if (ribbonAction === RibbonAction.SAVE_FILTERS) {
 		openedDialogStore.set("save-filters")
 	}
 }

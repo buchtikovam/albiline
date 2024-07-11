@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { Toaster } from '$lib/components/ui/sonner';
 	import './../app.pcss';
+	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
 	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
 
 	ribbonActionStore.subscribe((action) => {
@@ -16,8 +16,12 @@
 </script>
 
 
+
 <div class="h-dvh w-dvh">
-	<Toaster position="bottom-right" class="flex justify-end h-56" />
+	<Toaster
+		position="bottom-right"
+		class="flex justify-end h-56"
+	/>
 
 	<div class="flex h-dvh flex-col">
 		<header class="flex flex-col border-b lg:h-fit">

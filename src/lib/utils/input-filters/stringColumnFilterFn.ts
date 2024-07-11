@@ -1,5 +1,6 @@
-import type { TextFilters } from '$lib/types/table/filter';
 import { currentFiltersStore } from '$lib/stores/tableStore';
+import type { TextFilters } from '$lib/types/table/filter';
+
 
 export const stringColumnFilterFn = (accessor: string) => {
 	let currentFilter: TextFilters;

@@ -1,19 +1,22 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { Input } from '$lib/components/ui/input';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { filterValueStore } from '$lib/stores/tableStore';
+	import { Input } from '$lib/components/ui/input';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import * as Tabs from '$lib/components/ui/tabs';
 
 	let preset: string = '/pruvodni-list';
 </script>
+
 
 <svelte:head>
 	<title>
 		Průvodní list
 	</title>
 </svelte:head>
+
+
 
 <div class="w-full flex items-center justify-between">
 	<Tabs.Root value={$page.url.pathname}>

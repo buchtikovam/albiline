@@ -1,21 +1,23 @@
-import type { Item, Tab } from '$lib/types/sidebar/sidebar';
 import { currentActiveTabStore, openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
 import { recentItemsStore } from '$lib/stores/sidebarStore';
+import type { SidebarItem, HeaderTab } from '$lib/types/sidebar/sidebar';
 import { get } from 'svelte/store';
 
-export function handleTabClick(item: Item, treeDepth: number): void {
+
+export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 	if (get(allowTabAdding)) {
-		const tab: Tab = {
+		const tab: HeaderTab = {
 			name: item.name,
 			url: item.href,
 			closingState: 'hidden',
 			treeDepth: treeDepth
 		};
 
-		const containsObject: boolean = get(openedTabsStore).some(obj => obj.name === tab.name);
+		const containsObject: boolean = get(openedTabsStore)
+			.some(obj => obj.name === tab.name);
 
 		if (!containsObject) {
-			openedTabsStore.update((data: Tab[]) => data.concat(tab));
+			openedTabsStore.update((data: HeaderTab[]) => data.concat(tab));
 		}
 
 		currentActiveTabStore.set(tab.url);

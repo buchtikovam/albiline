@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
-	import type { RibbonDialog } from '$lib/types/ribbon/ribbonDialog';
+	import type { RibbonDialogOptions } from '$lib/types/ribbon/ribbonDialogOptions';
 	import NewItemDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/todo-NewItemDialog.svelte';
 	import MyFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/MyFiltersDialog.svelte';
 	import MyPresetsDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/todo-MyPresetsDialog.svelte';
@@ -10,7 +10,7 @@
 		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
 	*/
 
-	let currentDialog: RibbonDialog | undefined = undefined;
+	let currentDialog: RibbonDialogOptions | undefined = undefined;
 
 	openedDialogStore.subscribe((dialog) => {
 		currentDialog = dialog

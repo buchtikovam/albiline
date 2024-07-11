@@ -10,17 +10,23 @@
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 
-	// unused but required ?
+	/*
+		Column filtr renderovaný Table komponentem
+		s možnostmi pro stringové hodnoty.
+
+		Pro přidání nového filtru je třeba upravit soubory
+		stringColumnFilterConst a stringColumnFilterFn
+	*/
+
 	export let preFilteredValues: Readable<unknown[]>;
 	export let values: Readable<unknown[]>;
 	get(preFilteredValues);
 	get(values);
 
-	// variables
 	export let accessor: string;
 	export let filterValue: Writable<string>;
-	let value: TextFilters = "default";
-	let open = false;
+	let columnFilterValue: TextFilters = "default";
+	let popoverOpen = false;
 	let columnFilter: Writable<TextFilters> = writable("default")
 
 
@@ -28,20 +34,20 @@
 		if (filters) {
 			if (filters[accessor]) {
 				columnFilter.set(filters[accessor].colFilter);
-				value = filters[accessor].colFilter
+				columnFilterValue = filters[accessor].colFilter
 			}
 		}
 	})
 
 
-	$: selectedValue =
-		stringColumnFiltersConst.find((f) => f.value === value)
+	$: selectedColumnValue =
+		stringColumnFiltersConst.find((f) => f.value === columnFilterValue)
 	;
 
 
 	function closeAndFocusTrigger(triggerId: string) {
-		open = false;
-		columnFilter.set(value);
+		popoverOpen = false;
+		columnFilter.set(columnFilterValue);
 
 		saveFilters();
 
@@ -65,7 +71,7 @@
 
 
 	onMount(() => {
-		value = get(columnFilter);
+		columnFilterValue = get(columnFilter);
 
 		let filters = get(currentFiltersStore);
 
@@ -81,30 +87,30 @@
 
 
 <div class="w-auto flex items-center border rounded-md my-0.5">
-	<Popover.Root bind:open let:ids>
+	<Popover.Root bind:open={popoverOpen} let:ids>
 		<Popover.Trigger asChild let:builder>
 			<Button
 				builders={[builder]}
 				variant="ghost"
 				role="combobox"
-				aria-expanded={open}
+				aria-expanded={popoverOpen}
 				class="w-fit h-fit min-w-[15px] justify-between text-[15px] p-0.5 hover:bg-muted/75"
 			>
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
 						<svelte:component
-							this={get(columnFilter) === "default" ? ChevronDown : selectedValue?.icon}
+							this={get(columnFilter) === "default" ? ChevronDown : selectedColumnValue?.icon}
 							class="h-3 w-3 min-w-3"
 						/>
 					</Tooltip.Trigger>
 
-					{#if selectedValue?.label === undefined}
+					{#if selectedColumnValue?.label === undefined}
 						<Tooltip.Content class="mt-16">
 							Vyberte filtr
 						</Tooltip.Content>
 					{:else}
 						<Tooltip.Content class="mt-16">
-							{selectedValue?.label}
+							{selectedColumnValue?.label}
 						</Tooltip.Content>
 					{/if}
 				</Tooltip.Root>
@@ -122,7 +128,7 @@
 						<Command.Item
 							value={filter.value}
 							onSelect={(currentValue) => {
-								value = currentValue;
+								columnFilterValue = currentValue;
 								closeAndFocusTrigger(ids.trigger);
 							}}
 							class="text-xs hover:bg-muted/70 p-1.5 flex items-center"

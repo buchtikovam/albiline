@@ -5,11 +5,10 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedFilter, StoredFilters } from '$lib/types/table/filter';
-	import { onMount } from 'svelte';
-	import { handleRibbonDialogClose } from '$lib/utils/ribbon/handleRibbonDialogClose';
-	import { writable, type Writable } from 'svelte/store';
-	import { customToast } from '$lib/utils/toast/customToast';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
+	import { customToast } from '$lib/utils/toast/customToast';
+	import { writable, type Writable } from 'svelte/store';
+	import { onMount } from 'svelte';
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import X from 'lucide-svelte/icons/x';
 	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
@@ -163,7 +162,6 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	onOpenChange={() => handleRibbonDialogClose()}
 >
 	<Dialog.Content class="!w-[400px]">
 		<Dialog.Header>

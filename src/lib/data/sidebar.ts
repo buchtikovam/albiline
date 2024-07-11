@@ -3,9 +3,9 @@ import Warehouse from 'lucide-svelte/icons/warehouse';
 import Hammer from 'lucide-svelte/icons/hammer';
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
-import type { Item } from '$lib/types/sidebar/sidebar';
+import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 
-export const allItems: Item[] = [
+export const allItems: SidebarItem[] = [
 	{
 		name: 'Průvodní list',
 		value: 'pruvodni-list',
@@ -165,7 +165,7 @@ export const allItems: Item[] = [
 	}
 ];
 
-export const recentItems: Item[] = [
+export const recentItems: SidebarItem[] = [
 	{
 		name: 'Průvodní nedávný list',
 		value: 'pruvodni-list',
@@ -177,7 +177,7 @@ export const recentItems: Item[] = [
 	},
 ];
 
-export const favoriteItems: Item[] = [
+export const favoriteItems: SidebarItem[] = [
 	{
 		name: 'Průvodní oblíbený list',
 		value: 'pruvodni-list',

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { TableColumn, TableRows, TableType } from '$lib/types/table/table';
-	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import {
 		columnOrderStore,
 		columnWidthStore,
@@ -8,7 +6,9 @@
 		filterValueStore,
 		rowDataStore, selectedRowsStore
 	} from '$lib/stores/tableStore';
-	import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
+	import { cellWidthsConst } from '$lib/constants/cellWidthsConst';
+	import type { TableColumn, TableRows, TableType } from '$lib/types/table/table';
+	import { get, type Readable, type Writable, writable } from 'svelte/store';
 	import {
 		addColumnFilters,
 		addResizedColumns,
@@ -17,23 +17,21 @@
 		addSelectedRows,
 		addTableFilter
 	} from 'svelte-headless-table/plugins';
-	import EditableCell from '$lib/components/table/EditableCell.svelte';
-	import * as Table from "$lib/components/ui/table";
-	import { cellWidthsConst } from '$lib/constants/cellWidthsConst';
-	import { onMount } from 'svelte';
-	import { stringColumnFilterFn } from '$lib/utils/input-filters/stringColumnFilterFn';
-	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
-	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
-	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
-	import { addColumnOrder } from 'svelte-headless-table/plugins';
+	import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
 	import { createInitialColumnOrder } from '$lib/utils/table/createInitialColumnOrder';
-	import VirtualList from '@sveltejs/svelte-virtual-list';
+	import { stringColumnFilterFn } from '$lib/utils/input-filters/stringColumnFilterFn';
+	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
+	import { addColumnOrder } from 'svelte-headless-table/plugins';
+	import { onMount } from 'svelte';
+	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
+	import EditableCell from '$lib/components/table/EditableCell.svelte';
+	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
+	import * as Table from "$lib/components/ui/table";
 
-	// import InfiniteScroll from '$lib/components/table/InfiniteScroll.svelte';
+	/*
+		Hlavní Table component zobrazující data z BE
+	*/
 
-
-
-	// initialize variables
 	export let data: TableType;
 	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
@@ -74,7 +72,7 @@
 
 
 
-	// create columns
+	// vytvoření sloupečků pro různé datové typy
 	const columns = table.createColumns(get(columnsWritable).map((column: TableColumn) => {
 		let accessor = column.accessor
 
@@ -149,7 +147,7 @@
 
 
 
-	// create view model
+	// vytvoření view modelu
 	const {
 		headerRows,
 		pageRows,
@@ -160,7 +158,7 @@
 
 
 
-	// listen for column filters changes
+	// subscribe pro hlídání změn v columnFilters (načtení uložených filtrů)
 	const { filterValues } = pluginStates.colFilter;
 
 	currentFiltersStore.subscribe((storedFilters) => {
@@ -177,7 +175,7 @@
 
 
 
-	// fulltext filter value
+	// fulltext vyhledávání
 	const { filterValue } = pluginStates.filter;
 
 	filterValueStore.subscribe((value) => {
@@ -186,12 +184,14 @@
 
 
 
-	// checkbox plugin
+	// plugin pro select řádků
 	let update: boolean = false;
+	let selectedRows: number;
 	export const { selectedDataIds } = pluginStates.select;
 
 	selectedDataIds.subscribe((rows) => {
 		selectedRowsStore.set(rows)
+		selectedRows = Object.keys(rows).length
 		if (Object.keys(rows).length > 0) {
 			update = true
 		}
@@ -206,7 +206,7 @@
 
 
 
-	// column drag and drop functions
+	// drag and drop funkce
 	let hovering: number | null;
 	let dragStart: number;
 
@@ -244,13 +244,11 @@
 		}
 	}
 
-
 	function setHovering(index: number) {
 		hovering = index;
 	}
 
 
-	// page load logic
 	onMount(() => {
 		const { columnWidths } = pluginStates.resize;
 
@@ -263,39 +261,14 @@
 		document.addEventListener('dragover', (event) => {
 			event.preventDefault();
 		})
-
-		const tableBody = document.querySelector('.table-body'); // Adjust selector as needed
-
-		if (tableBody) {
-			const visibleHeight = tableBody.clientHeight;
-			const rowHeight = 20; // Adjust row height as needed
-
-			start = 0;
-			end = Math.ceil(visibleHeight / rowHeight);
-
-			updateStartEnd();
-		}
-
 	})
-	//
-	let start: number = 0;
-	let end: number = 400;
 
 	// TODO: implement virtual list to table
-
-	function updateStartEnd() {
-		const tableBody = document.querySelector('.table-body'); // Adjust selector as needed
-		const scrollTop = tableBody.scrollTop;
-		const visibleHeight = tableBody.clientHeight;
-		const rowHeight = 20;
-
-		start = Math.floor(scrollTop / rowHeight);
-		end = Math.ceil((scrollTop + visibleHeight) / rowHeight);
-	}
 </script>
 
 
 
+<!--TODO: on destroy add alert to save unsaved data-->
 <div class="h-full flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
 		<Table.Header class="top-0 sticky bg-white border-1">
@@ -342,25 +315,32 @@
 			{/each}
 		</Table.Header>
 
-		<Table.Body {...$tableBodyAttrs} on:scroll={() => updateStartEnd()}>
-			<VirtualList items={$pageRows} bind:start bind:end let:item>
-				{#each item as row (row.id)}
-					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<Table.Row
-							{...rowAttrs}
-							data-state={$selectedDataIds[row.id] && "selected"}
-							class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
-						>
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</VirtualList>
+		<Table.Body {...$tableBodyAttrs}>
+			{#each $pageRows as row (row.id)}
+				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
+					<Table.Row
+						{...rowAttrs}
+						data-state={$selectedDataIds[row.id] && "selected"}
+						class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
+					>
+						{#each row.cells as cell (cell.id)}
+							<Subscribe attrs={cell.attrs()} let:attrs>
+								<Table.Cell {...attrs}>
+									<div class="line-clamp-1 h-6 flex items-center">
+										<Render of={cell.render()} />
+									</div>
+								</Table.Cell>
+							</Subscribe>
+						{/each}
+					</Table.Row>
+				</Subscribe>
+			{/each}
 		</Table.Body>
 	</Table.Root>
 
 	<div class="flex justify-between items-center w-full border-t">
 		<div class="text-sm text-muted-foreground/75 p-2 items-start justify-between ">
-			0 řad označeno.
+			{selectedRows} řad označeno.
 		</div>
 	</div>
 </div>

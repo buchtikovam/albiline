@@ -9,6 +9,9 @@ export const recentItemsStore: Writable<string[]> = persisted(
 	{ storage: 'session' }
 );
 
-export const favoriteItemsStore: Writable<string[]> = persisted("favoriteSidebarItems", [])
+export const favoriteItemsStore: Writable<string[]> = persisted(
+	"favoriteSidebarItems",
+	[]
+)
 
 export const activeCategoryStore: Writable<string> = writable("all")

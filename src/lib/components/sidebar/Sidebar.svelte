@@ -14,7 +14,7 @@
 	import { get } from 'svelte/store';
 	import deepcopy from 'deepcopy';
 	import Search from 'lucide-svelte/icons/search';
-	import type { Item } from '$lib/types/sidebar/sidebar';
+	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';
@@ -45,7 +45,7 @@
 
 	let recentItemValues: string[] = [];
 	let favoriteItemValues: string[] = [];
-	let filteredItems: Item[] = deepcopy(allItems);
+	let filteredItems: SidebarItem[] = deepcopy(allItems);
 	let searchTerm = '';
 
 	recentItemsStore.subscribe(recentItems => {
@@ -66,13 +66,13 @@
 
 
 	// změna kontentu sidebaru na základě kategorií
-	function filterItemsCategory(items: Item[], itemsValues: string[]): Item[] {
+	function filterItemsCategory(items: SidebarItem[], itemsValues: string[]): SidebarItem[] {
 		if (itemsValues.length === 0) {
 			return [];
 		}
 
 		return items
-			.filter((item: Item): boolean => {
+			.filter((item: SidebarItem): boolean => {
 				item.open = false;
 				item.hide = itemsValues.includes(item.value) !== true;
 				item.children = filterItemsCategory(item.children, itemsValues);
@@ -109,12 +109,12 @@
 	}
 
 
-	function filterItemsSearch(items: Item[], searchTerm: string): Item[] {
+	function filterItemsSearch(items: SidebarItem[], searchTerm: string): SidebarItem[] {
 		if (searchTerm === '') {
 			return items;
 		}
 
-		return items.map((item: Item): Item => {
+		return items.map((item: SidebarItem): SidebarItem => {
 			item.open = false;
 			item.hide = true;
 

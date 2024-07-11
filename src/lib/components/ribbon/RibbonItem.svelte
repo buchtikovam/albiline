@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
-	import type { Item } from '$lib/types/ribbon/ribbon';
+	import type { RibbonItem } from '$lib/types/ribbon/ribbon';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
-	export let ribbonItem: Item;
+	export let ribbonItem: RibbonItem;
 	export let isRibbonOpen: boolean = true;
 
 
