@@ -38,6 +38,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fontsource/open-sans": "^5.0.28",
+		"@fontsource/plus-jakarta-sans": "^5.0.20",
 		"@internationalized/date": "^3.5.2",
 		"@macfja/svelte-persistent-store": "^2.4.1",
 		"@sveltejs/svelte-virtual-list": "^3.0.1",

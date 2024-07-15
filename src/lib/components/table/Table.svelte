@@ -3,6 +3,7 @@
 		columnOrderStore,
 		columnWidthStore,
 		currentFiltersStore,
+		editedDataStore,
 		filterValueStore,
 		rowDataStore, selectedRowsStore
 	} from '$lib/stores/tableStore';
@@ -22,11 +23,13 @@
 	import { stringColumnFilterFn } from '$lib/utils/input-filters/stringColumnFilterFn';
 	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
 	import { addColumnOrder } from 'svelte-headless-table/plugins';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import * as Table from "$lib/components/ui/table";
+	import WarningDialog from '../dialog/warning-dialog/WarningDialog.svelte';
+	import { beforeNavigate } from '$app/navigation';
 
 	/*
 		Hlavní Table component zobrazující data z BE
@@ -205,7 +208,6 @@
 	})
 
 
-
 	// drag and drop funkce
 	let hovering: number | null;
 	let dragStart: number;
@@ -263,12 +265,22 @@
 		})
 	})
 
+
+
+	beforeNavigate(({ cancel }) => {
+		if (get(editedDataStore).length > 0) {
+			if (!confirm('Máte neuložená data. Opravdu chcete stránku opustit?')) {
+				cancel();
+			} else {
+				editedDataStore.set([])
+			}
+		}
+	});
+
 	// TODO: implement virtual list to table
 </script>
 
 
-
-<!--TODO: on destroy add alert to save unsaved data-->
 <div class="h-full flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
 		<Table.Header class="top-0 sticky bg-white border-1">

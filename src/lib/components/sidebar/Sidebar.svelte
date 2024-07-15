@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { handleTabClick } from '$lib/utils/header/handleTabClick';
+	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
+	import { writable, get } from 'svelte/store';
+	import type { Writable } from 'svelte/store';
 	import {
 		sidebarStateStore,
 		recentItemsStore,
@@ -10,11 +14,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { onMount } from 'svelte';
 	import { buttonBorderSwitch } from '$lib/utils/button/buttonBorderSwitch';
-	import { handleTabClick } from '$lib/utils/header/handleTabClick';
-	import { get } from 'svelte/store';
 	import deepcopy from 'deepcopy';
 	import Search from 'lucide-svelte/icons/search';
-	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';
@@ -23,6 +24,8 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
+	import { onNavigate } from '$app/navigation';
+
 
 	/*
 		Resizeble sidebar se třemi kategoriemi,
@@ -41,7 +44,6 @@
 	function openSidebarCommand() {
 		isSidebarCommandOpen = !isSidebarCommandOpen;
 	}
-
 
 	let recentItemValues: string[] = [];
 	let favoriteItemValues: string[] = [];
@@ -135,6 +137,20 @@
 	}
 
 
+	let navigatedItemWritable: Writable<{
+		item: SidebarItem,
+		treeDepth: number
+	}> = writable();
+	
+	onNavigate(() => {
+		let navigatedItem = get(navigatedItemWritable)
+
+		if (navigatedItem) {
+			handleTabClick(navigatedItem.item, navigatedItem.treeDepth)
+		}
+	});
+	
+
 	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F, nastavení sidebaru podle aktivní kategorie
 	onMount(() => {
 		function handleKeydown(e: KeyboardEvent) {
@@ -211,7 +227,12 @@
 													<svelte:component this={item.icon} />
 													<a
 														href={item.href}
-														on:click={() => handleTabClick(item, 0)}
+														on:click={() => navigatedItemWritable = writable(
+															{
+																item: item,
+																treeDepth: 0
+															}
+														)}
 													>
 														{item.name}
 													</a>
@@ -237,7 +258,12 @@
 																			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 																			<a
 																				href={secondChild.href}
-																				on:click={() => handleTabClick(secondChild, 1)}
+																				on:click={() => navigatedItemWritable = writable(
+																					{
+																						item: item,
+																						treeDepth: 1
+																					}
+																				)}
 																			>
 																				{secondChild.name}
 																			</a>
@@ -261,8 +287,13 @@
 																						>
 																							<a
 																								href="{thirdChild.href}"
-																								on:click={() => handleTabClick(thirdChild, 2)}
 																								class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+																								on:click={() => navigatedItemWritable = writable(
+																									{
+																										item: item,
+																										treeDepth: 2
+																									}
+																								)}
 																							>
 																								{thirdChild.name}
 																							</a>
@@ -289,8 +320,13 @@
 																>
 																	<a
 																		href="{secondChild.href}"
-																		on:click={() => handleTabClick(secondChild, 1)}
 																		class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+																		on:click={() => navigatedItemWritable = writable(
+																			{
+																				item: item,
+																				treeDepth: 1
+																			}
+																		)}
 																	>
 																		{secondChild.name}
 																	</a>
@@ -314,8 +350,13 @@
 									<ContextMenu.Trigger>
 										<a
 											href={item.href}
-											on:click={() => handleTabClick(item, 0)}
 											class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
+											on:click={() => navigatedItemWritable = writable(
+												{
+													item: item,
+													treeDepth: 0
+												}
+											)}
 										>
 											<svelte:component this={item.icon} />
 											{item.name}
@@ -375,7 +416,12 @@
 											<a
 												href={child.href}
 												class="hover:bg-muted/50 rounded px-2 py-1.5"
-												on:click={() => handleTabClick(child, 1)}
+												on:click={() => navigatedItemWritable = writable(
+													{
+														item: item,
+														treeDepth: 1
+													}
+												)}
 											>
 												{child.name}
 											</a>
@@ -385,7 +431,12 @@
 													<a
 														href={scndChild.href}
 														class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
-														on:click={() => handleTabClick(scndChild, 2)}
+														on:click={() => navigatedItemWritable = writable(
+															{
+																item: item,
+																treeDepth: 2
+															}
+														)}
 													>
 														{scndChild.name}
 													</a>
@@ -408,7 +459,12 @@
 								<a
 									href={item.href}
 									class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
-									on:click={() => handleTabClick(item, 0)}
+									on:click={() => navigatedItemWritable = writable(
+										{
+											item: item,
+											treeDepth: 0
+										}
+									)}
 								>
 									<svelte:component this={item.icon} />
 								</a>

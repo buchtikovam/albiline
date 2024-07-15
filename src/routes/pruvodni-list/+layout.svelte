@@ -6,6 +6,8 @@
 	import { goto } from '$app/navigation';
 	import * as Tabs from '$lib/components/ui/tabs';
 
+	// TODO: když jsou edited data, taby jsou disabled + custom toasty
+
 	let preset: string = '/pruvodni-list';
 </script>
 

@@ -2,6 +2,7 @@
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import './../app.pcss';
+	// import "@fontsource/open-sans";
 	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
@@ -17,7 +18,7 @@
 
 
 
-<div class="h-dvh w-dvh">
+<div class="wrapper h-dvh w-dvh font-plus-jakarta-sans">
 	<Toaster
 		position="bottom-right"
 		class="flex justify-end h-56"
@@ -45,3 +46,9 @@
 </div>
 
 <MainDialog/>
+
+<style>
+	/* .wrapper { */
+  		/* font-family: "Open Sans"; */
+	/* } */
+</style>
