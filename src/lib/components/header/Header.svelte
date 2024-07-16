@@ -11,6 +11,7 @@ import type {
     HeaderTab
 } from '$lib/types/sidebar/sidebar';
 import {
+	afterNavigate,
     goto,
     preloadData
 } from '$app/navigation';
@@ -37,14 +38,12 @@ import {
 	openedTabsStore.subscribe((data) => {
 		storedTabs = data;
 	});
-
-	// TODO: až po tom, co se načte stránka zvýraznit tab
 	
-	
-	// TODO: když jsou edited data, taby jsou disabled + custom toasty
+	// TODO: když jsou edited data, taby jsou disabled??
 
 	// Nastavování aktivního tabu
-    currentActiveTabStore.subscribe((value) => {
+	// if navigate (boolean), get currentActiveTabValues? 
+	currentActiveTabStore.subscribe((value) => {
 		activeTabValue = value;
 		
         // Proběhne při načtění stránky (currentActiveTabStore ještě nic neobsahuje)
@@ -101,6 +100,7 @@ import {
 		openedTabsStore.update(() => storedTabs);
 	}
 </script>
+
 
 
 <div class="flex justify-between bg-muted">

@@ -1,12 +1,11 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { filterValueStore } from '$lib/stores/tableStore';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import * as Tabs from '$lib/components/ui/tabs';
-
-	// TODO: když jsou edited data, taby jsou disabled + custom toasty
 
 	let preset: string = '/pruvodni-list';
 </script>
@@ -21,7 +20,7 @@
 
 
 <div class="w-full flex items-center justify-between">
-	<Tabs.Root value={$page.url.pathname}>
+	<Tabs.Root value={$page.url.pathname} activateOnFocus={false}>
 		<Tabs.List class="w-fit">
 			<Tabs.Trigger
 				value="/pruvodni-list"

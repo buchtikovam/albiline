@@ -25,6 +25,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import { onNavigate } from '$app/navigation';
+	import { editedDataStore } from '$lib/stores/tableStore';
 
 
 	/*
@@ -137,20 +138,6 @@
 	}
 
 
-	let navigatedItemWritable: Writable<{
-		item: SidebarItem,
-		treeDepth: number
-	}> = writable();
-	
-	onNavigate(() => {
-		let navigatedItem = get(navigatedItemWritable)
-
-		if (navigatedItem) {
-			handleTabClick(navigatedItem.item, navigatedItem.treeDepth)
-		}
-	});
-	
-
 	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F, nastavení sidebaru podle aktivní kategorie
 	onMount(() => {
 		function handleKeydown(e: KeyboardEvent) {
@@ -227,12 +214,7 @@
 													<svelte:component this={item.icon} />
 													<a
 														href={item.href}
-														on:click={() => navigatedItemWritable = writable(
-															{
-																item: item,
-																treeDepth: 0
-															}
-														)}
+														on:click={() => handleTabClick(item, 0)}
 													>
 														{item.name}
 													</a>
@@ -258,12 +240,7 @@
 																			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 																			<a
 																				href={secondChild.href}
-																				on:click={() => navigatedItemWritable = writable(
-																					{
-																						item: item,
-																						treeDepth: 1
-																					}
-																				)}
+																				on:click={() => handleTabClick(secondChild, 1)}
 																			>
 																				{secondChild.name}
 																			</a>
@@ -287,13 +264,8 @@
 																						>
 																							<a
 																								href="{thirdChild.href}"
+																								on:click={() => handleTabClick(thirdChild, 2)}
 																								class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-																								on:click={() => navigatedItemWritable = writable(
-																									{
-																										item: item,
-																										treeDepth: 2
-																									}
-																								)}
 																							>
 																								{thirdChild.name}
 																							</a>
@@ -320,13 +292,8 @@
 																>
 																	<a
 																		href="{secondChild.href}"
+																		on:click={() => handleTabClick(secondChild, 1)}
 																		class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
-																		on:click={() => navigatedItemWritable = writable(
-																			{
-																				item: item,
-																				treeDepth: 1
-																			}
-																		)}
 																	>
 																		{secondChild.name}
 																	</a>
@@ -350,13 +317,8 @@
 									<ContextMenu.Trigger>
 										<a
 											href={item.href}
+											on:click={() => handleTabClick(item, 0)}
 											class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
-											on:click={() => navigatedItemWritable = writable(
-												{
-													item: item,
-													treeDepth: 0
-												}
-											)}
 										>
 											<svelte:component this={item.icon} />
 											{item.name}
@@ -416,12 +378,7 @@
 											<a
 												href={child.href}
 												class="hover:bg-muted/50 rounded px-2 py-1.5"
-												on:click={() => navigatedItemWritable = writable(
-													{
-														item: item,
-														treeDepth: 1
-													}
-												)}
+												on:click={() => handleTabClick(child, 1)}
 											>
 												{child.name}
 											</a>
@@ -431,12 +388,7 @@
 													<a
 														href={scndChild.href}
 														class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
-														on:click={() => navigatedItemWritable = writable(
-															{
-																item: item,
-																treeDepth: 2
-															}
-														)}
+														on:click={() => handleTabClick(scndChild, 2)}
 													>
 														{scndChild.name}
 													</a>
@@ -459,12 +411,7 @@
 								<a
 									href={item.href}
 									class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
-									on:click={() => navigatedItemWritable = writable(
-										{
-											item: item,
-											treeDepth: 0
-										}
-									)}
+									on:click={() => handleTabClick(item, 0)}
 								>
 									<svelte:component this={item.icon} />
 								</a>

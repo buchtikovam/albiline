@@ -30,6 +30,8 @@
 	import * as Table from "$lib/components/ui/table";
 	import WarningDialog from '../dialog/warning-dialog/WarningDialog.svelte';
 	import { beforeNavigate } from '$app/navigation';
+	import VirtualList from 'svelte-tiny-virtual-list';
+
 
 	/*
 		Hlavní Table component zobrazující data z BE
@@ -277,57 +279,89 @@
 		}
 	});
 
-	// TODO: implement virtual list to table
+	// TODO: fix virtual list - header doesn't align
 </script>
 
 
 <div class="h-full flex flex-col">
 	<Table.Root {...$tableAttrs} class="overflow-auto relative h-fit w-auto">
-		<Table.Header class="top-0 sticky bg-white border-1">
-			{#each $headerRows as headerRow (headerRow.id)}
-				<Subscribe attrs={headerRow.attrs()} let:attrs>
-					<tr {...attrs}>
-						{#each headerRow.cells as cell, index (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<th
-									{...attrs}
-									use:props.resize
-									draggable="true"
-									on:dragstart={(e) => drag(e, index)}
-									on:dragover={() => setHovering(index)}
-									on:dragend|preventDefault={(e) => drop(e, hovering)}
-									class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
-								>
-									{#if cell.id !== "id"}
-										<button
-											class="flex w-full items-center justify-center font-semibold overflow-visible rounded-md hover:bg-muted/70"
-											on:click={props.sort.toggle}
-										>
+		
+			<Table.Header class="top-0 sticky bg-white border-1">
+				{#each $headerRows as headerRow (headerRow.id)}
+					<Subscribe attrs={headerRow.attrs()} let:attrs>
+						<tr {...attrs}>
+							{#each headerRow.cells as cell, index (cell.id)}
+								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+									<th
+										{...attrs}
+										use:props.resize
+										draggable="true"
+										on:dragstart={(e) => drag(e, index)}
+										on:dragover={() => setHovering(index)}
+										on:dragend|preventDefault={(e) => drop(e, hovering)}
+										class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
+									>
+										{#if cell.id !== "id"}
+											<button
+												class="flex w-full items-center justify-center font-semibold overflow-visible rounded-md hover:bg-muted/70"
+												on:click={props.sort.toggle}
+											>
+												<Render of={cell.render()} />
+											</button>
+										{:else}
 											<Render of={cell.render()} />
-										</button>
-									{:else}
-										<Render of={cell.render()} />
-									{/if}
+										{/if}
 
-									{#if props.colFilter?.render}
-										<Render of={props.colFilter.render} />
-									{/if}
+										{#if props.colFilter?.render}
+											<Render of={props.colFilter.render} />
+										{/if}
 
-									{#if !props.resize.disabled}
-										<div
-											class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
-											use:props.resize.drag
-										/>
-									{/if}
-								</th>
-							</Subscribe>
-						{/each}
-					</tr>
-				</Subscribe>
-			{/each}
-		</Table.Header>
+										{#if !props.resize.disabled}
+											<div
+												class="absolute hover:bg-albi-50 inset-y-0 -right-2 w-4 z-10 cursor-col-resize"
+												use:props.resize.drag
+											/>
+										{/if}
+									</th>
+								</Subscribe>
+							{/each}
+						</tr>
+					</Subscribe>
+				{/each}
+			</Table.Header>
 
-		<Table.Body {...$tableBodyAttrs}>
+	
+			<Table.Body {...$tableBodyAttrs}>
+				<VirtualList
+					width="1000px"
+					height={640}
+					itemCount={$pageRows.length}
+					itemSize={50}
+				>
+					<div slot="item" let:index let:style {style}>
+						<Subscribe rowAttrs={$pageRows[index].attrs()} let:rowAttrs>
+							<Table.Row
+								{...rowAttrs}
+								data-state={$selectedDataIds[$pageRows[index].id] && "selected"}
+								class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
+							>
+								{#each $pageRows[index].cells as cell (cell.id)}
+									<Subscribe attrs={cell.attrs()} let:attrs>
+										<Table.Cell {...attrs}>
+											<div class="line-clamp-1 h-6 flex items-center">
+												<Render of={cell.render()} />
+											</div>
+										</Table.Cell>
+									</Subscribe>
+								{/each}
+							</Table.Row>
+						</Subscribe>
+					</div>
+
+				</VirtualList>
+			</Table.Body>
+
+			<!-- <Table.Body {...$tableBodyAttrs}>
 			{#each $pageRows as row (row.id)}
 				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
 					<Table.Row
@@ -347,7 +381,7 @@
 					</Table.Row>
 				</Subscribe>
 			{/each}
-		</Table.Body>
+		</Table.Body> -->
 	</Table.Root>
 
 	<div class="flex justify-between items-center w-full border-t">

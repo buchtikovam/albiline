@@ -2,28 +2,32 @@ import { currentActiveTabStore, openedTabsStore, allowTabAdding } from '$lib/sto
 import { recentItemsStore } from '$lib/stores/sidebarStore';
 import type { SidebarItem, HeaderTab } from '$lib/types/sidebar/sidebar';
 import { get } from 'svelte/store';
+import { editedDataStore } from '$lib/stores/tableStore';
 
 
-export function handleTabClick(item: SidebarItem, treeDepth: number): void {
-	if (get(allowTabAdding)) {
-		const tab: HeaderTab = {
-			name: item.name,
-			url: item.href,
-			closingState: 'hidden',
-			treeDepth: treeDepth
-		};
+export function handleTabClick(item: SidebarItem, treeDepth: number): void {	
+	if (get(editedDataStore).length === 0) {
+		
+		if (get(allowTabAdding)) {
+			const tab: HeaderTab = {
+				name: item.name,
+				url: item.href,
+				closingState: 'hidden',
+				treeDepth: treeDepth
+			};
 
-		const containsObject: boolean = get(openedTabsStore)
-			.some(obj => obj.name === tab.name);
+			const containsObject: boolean = get(openedTabsStore)
+				.some(obj => obj.name === tab.name);
 
-		if (!containsObject) {
-			openedTabsStore.update((data: HeaderTab[]) => data.concat(tab));
-		}
+			if (!containsObject) {
+				openedTabsStore.update((data: HeaderTab[]) => data.concat(tab));
+			}
 
-		currentActiveTabStore.set(tab.url);
+			currentActiveTabStore.set(tab.url);
 
-		if (!get(recentItemsStore).includes(item.value)) {
-			recentItemsStore.update((data: string[]) => data.concat(item.value));
-		}
+			if (!get(recentItemsStore).includes(item.value)) {
+				recentItemsStore.update((data: string[]) => data.concat(item.value));
+			}
+		}	
 	}
 }
