@@ -20,7 +20,7 @@
 
 
 <div class="w-full flex items-center justify-between">
-	<Tabs.Root value={$page.url.pathname} activateOnFocus={false}>
+	<Tabs.Root value={$page.url.pathname}>
 		<Tabs.List class="w-fit">
 			<Tabs.Trigger
 				value="/pruvodni-list"

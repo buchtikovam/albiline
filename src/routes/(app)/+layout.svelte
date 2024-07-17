@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Toaster } from '$lib/components/ui/sonner';
-	import './../app.pcss';
+	import './../../app.pcss';
 	// import "@fontsource/open-sans";
 	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
@@ -46,9 +46,3 @@
 </div>
 
 <MainDialog/>
-
-<style>
-	/* .wrapper { */
-  		/* font-family: "Open Sans"; */
-	/* } */
-</style>

@@ -9,5 +9,4 @@
 </script>
 
 
-
 <Table data={data}/>

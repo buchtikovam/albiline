@@ -29,8 +29,9 @@
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import * as Table from "$lib/components/ui/table";
-	import { beforeNavigate } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import VirtualList from 'svelte-tiny-virtual-list';
+	import { redirect } from '@sveltejs/kit';
 
 
 	/*
@@ -252,6 +253,8 @@
 		hovering = index;
 	}
 
+
+	// virtual list implementace
 	function onResize() {
 		tableHeight = tableRoot.getBoundingClientRect().height;
 	}
@@ -273,18 +276,6 @@
 		})
 	})
 
-
-
-	beforeNavigate(({ cancel }) => {
-		if (get(editedDataStore).length > 0) {
-			if (!confirm('Máte neuložená data. Opravdu chcete stránku opustit?')) {
-				cancel();
-			} else {
-				editedDataStore.set([])
-			}
-		}
-	});
-
 	let rowHeight: number;
 
 	pageCompactStore.subscribe((data) => {
@@ -296,17 +287,39 @@
 			rowHeight = 32
 		}
 	})
+
+
+	// prevence neuložených dat v tabulce
+	beforeNavigate(({ cancel }) => {
+		if (get(editedDataStore).length > 0) {
+			if (!confirm('Máte neuložená data. Opravdu chcete stránku opustit?')) {
+				cancel();
+			} else {
+				editedDataStore.set([])
+			}
+		}
+	});
+
+	// FIXME: data for columns not shown when hidden by scroll
 </script>
+
+
 
 <svelte:window
 	on:resize={onResize}
 />
 
+
+
 <div class="h-full flex flex-col">
-	<Table.Root {...$tableAttrs} class="relative block overflow-auto" bind:wrapper={tableRoot}>
+	<Table.Root 
+		{...$tableAttrs}
+		class="relative block overflow-auto"
+		bind:wrapper={tableRoot}
+	>
 		<Table.Body class="block" {...$tableBodyAttrs}>
 			<VirtualList
-				width="100%"
+				width="auto"
 				height={tableHeight}
 				itemCount={$pageRows.length}
 				itemSize={rowHeight}

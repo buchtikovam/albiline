@@ -5,7 +5,7 @@
 	type $$Props = HTMLTableAttributes;
 
 	let className: $$Props["class"] = undefined;
-	export let wrapper;
+	export let wrapper: HTMLElement;
 	export {
 		className as class,
 	};

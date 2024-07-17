@@ -4,6 +4,7 @@ import { save } from '$lib/utils/ribbon/ribbon-actions/table-data/save';
 import { edit } from '$lib/utils/ribbon/ribbon-actions/table-data/edit';
 import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/table-data/deleteItem';
 import { removeFilters } from '$lib/utils/ribbon/ribbon-actions/filters/removeFilters';
+import { goto } from '$app/navigation';
 
 
 export function handleRibbonActionChange(ribbonAction: RibbonAction) {
@@ -26,13 +27,14 @@ export function handleRibbonActionChange(ribbonAction: RibbonAction) {
 		removeFilters();
 	}
 
-
-	// Ribbon akce, které otevírají různé dialogy:
-
 	if (ribbonAction === RibbonAction.NEW) {
-		openedDialogStore.set("new");
+		goto("/pruvodni-list/detail").then(() => ribbonActionStore.set(undefined))
 	}
 
+
+	// Ribbon akce, které spouštějí dialogy:
+
+	
 	if (ribbonAction === RibbonAction.MY_FILTERS) {
 		openedDialogStore.set("my-filters")
 	}
