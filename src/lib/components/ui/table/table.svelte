@@ -5,10 +5,13 @@
 	type $$Props = HTMLTableAttributes;
 
 	let className: $$Props["class"] = undefined;
-	export { className as class };
+	export let wrapper;
+	export {
+		className as class,
+	};
 </script>
 
-<div class="relative w-full h-full overflow-auto">
+<div class="relative w-full h-full" bind:this={wrapper}>
 	<table class={cn("w-full caption-bottom text-sm", className)} {...$$restProps}>
 		<slot />
 	</table>

@@ -70,13 +70,13 @@
 		<form
 			on:submit={submitEditedData}
 			on:focusout={(e) => submitEditedData(e)}
-			class="p-1 w-full"
+			class="w-full"
 		>
 			<input
 				bind:this={inputElement}
 				bind:value
 				type="text"
-				class="rounded w-full px-1 outline-none focus:border focus:border-albi-500"
+				class="rounded w-full outline-none bg-albi-50"
 			/>
 		</form>
 	{/if}

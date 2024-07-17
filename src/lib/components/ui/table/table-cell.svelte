@@ -17,7 +17,7 @@
 </script>
 
 <td
-	class={isCompact === "standard" ? cn("p-2 align-middle w-fit", className) : cn("p-0.5 pl-2 align-middle w-fit", className)}
+	class={isCompact === "standard" ? cn("px-2 py-2.5 align-middle w-fit border-t", className) : cn("px-2 py-1 align-middle w-fit border-t", className)}
 	{...$$restProps}
 	on:click
 	on:keydown
