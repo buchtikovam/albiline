@@ -1,5 +1,5 @@
 import type { StoredFilters } from '$lib/types/table/filter';
-import type { TableRows } from '$lib/types/table/table';
+import type { TableColumn, TableRows } from '$lib/types/table/table';
 import { writable, type Writable } from 'svelte/store';
 import { persisted } from 'svelte-persisted-store';
 
@@ -29,6 +29,8 @@ export const currentFiltersStore: Writable<StoredFilters> = writable({test: { va
 export const selectedRowsStore: Writable<Record<number, boolean>> = writable({ })
 
 export const rowDataStore: Writable<TableRows> = writable()
+
+export const columnDataStore: Writable<TableColumn[]> = writable()
 
 export const showFulltextSearchStore: Writable<boolean> = writable(false)
 

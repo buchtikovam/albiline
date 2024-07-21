@@ -46,4 +46,8 @@ export function handleRibbonActionChange(ribbonAction: RibbonAction) {
 	if (ribbonAction === RibbonAction.SAVE_FILTERS) {
 		openedDialogStore.set("save-filters")
 	}
+
+	if (ribbonAction === RibbonAction.SAVE_PRESET) {
+		openedDialogStore.set("save-preset")
+	}
 }

@@ -215,11 +215,18 @@ export const ribbonItems: Items[] = [
 
 	{
 		name: "Moje šablony",
-		type: RibbonType.ITEM,
+		type: RibbonType.DROPDOWN,
 		icon: Columns3,
-		action: RibbonAction.MY_PRESETS,
-	},
-	{
-		type: RibbonType.SEPARATOR,
+		action: RibbonAction.UNKNOWN,
+		children: [
+			{
+				name: "Vytvořit novou šablonu",
+				action: RibbonAction.SAVE_PRESET
+			},
+			{
+				name: "Vybrat šablonu",
+				action: RibbonAction.MY_PRESETS
+			},
+		]
 	},
 ];

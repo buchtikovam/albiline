@@ -2,4 +2,5 @@ export type RibbonDialogOptions =
 	"new" |
 	"my-filters" |
 	"my-presets" |
-	"save-filters"
+	"save-filters" |
+	"save-preset"

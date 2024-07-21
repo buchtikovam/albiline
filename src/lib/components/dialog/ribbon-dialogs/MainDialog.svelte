@@ -5,6 +5,7 @@
 	import MyFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/MyFiltersDialog.svelte';
 	import MyPresetsDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/todo-MyPresetsDialog.svelte';
 	import SaveFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/SaveFiltersDialog.svelte';
+	import SavePresetDialog from './sub-dialogs/SavePresetDialog.svelte';
 
 	/*
 		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
@@ -33,4 +34,8 @@
 
 {#if currentDialog === "save-filters"}
 	<SaveFiltersDialog />
+{/if}
+
+{#if currentDialog === "save-filters"}
+	<SavePresetDialog />
 {/if}

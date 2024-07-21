@@ -1,5 +1,6 @@
 <script lang="ts">
 	import {
+	columnDataStore,
 		columnOrderStore,
 		columnWidthStore,
 		currentFiltersStore,
@@ -29,10 +30,8 @@
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
 	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
 	import * as Table from "$lib/components/ui/table";
-	import { beforeNavigate, goto } from '$app/navigation';
+	import { beforeNavigate } from '$app/navigation';
 	import VirtualList from 'svelte-tiny-virtual-list';
-	import { redirect } from '@sveltejs/kit';
-
 
 	/*
 		Hlavní Table component zobrazující data z BE
@@ -43,6 +42,7 @@
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
 
 	rowDataStore.set(data.items)
+	columnDataStore.set(data.columnInfo)
 
 	rowDataStore.subscribe((data) => {
 		if (data) {
@@ -56,7 +56,7 @@
 
 
 
-	// initialize table
+	// initializace tabulky
 	const table = createTable(rowsWritable, {
 		sort: addSortBy(),
 		select: addSelectedRows(),
@@ -375,7 +375,7 @@
 						<tr 
 							{style} 
 							{...rowAttrs} 
-							class="hover:bg-muted/60 data-[state=selected]:bg-muted/40"
+							class="hover:bg-muted/60 data-[state=selected]:bg-muted/40 w-fit"
 							data-state={$selectedDataIds[row.id] && "selected"}
 						>
 							{#each row.cells as cell (cell.id)}

@@ -1,0 +1,134 @@
+--- ZÁKLADNÍ --- 
+	Divize (int)
+	Linie (int)
+	Koncepce (int)
+	KLP (string)
+	? Kód skupiny, Skupina
+	Název výrobku + překlady cz, sk, pl, en (checkbox + string)
+	KSP (int)
+	? Výrobní faze
+	Má na starost
+	? Preference
+	Sezóna
+	? VO cz, sk, pl (checkbox)
+	? MO cz, sk (checkbox)
+	Export (checkbox)
+	Dat. trh (date)
+	Dat. trh MO (date)
+	? Celní sazebník (u KSP)
+	Exportní země (checkbox + string)
+	? Caption (string)
+	CE certifikát platný do
+	Expirace (checkbox)
+	Náplň (checkbox)
+	Podléhá recykl. přísp. (checkbox)
+	Pro JB stojan (checkbox)
+	Baleno po (u KLP) (int)
+	Baleno po (u KSP) (int)
+	Počet na paletě (u KSP) (int)
+	EAN (u KLP)
+	EAN (u KSP)
+	Asorní EAN (u KSP)
+	Poznámka
+
+
+--- DODAVATEL ---
+	Dodavatel (string)
+	Číslo dle dodavatele (string)
+	EAN dle dodavatele (int?)
+	Název dle dodavatele (string)	
+
+--- KINOKO --- 
+	Prodejna (checkbox)
+	Eshop (checkbox)
+	Svět (checkbox)
+	Barva 
+	Model
+	Velikost
+	Materiál
+
+--- ? ---
+	Úvodní náklad
+	Nepoužít
+	Náklad reprintu
+	Požadované datum dodání (date)
+	Tiskne se (int)
+	Datum posledního tisku (date)
+	Stav skladu (int)
+	Poznámka k reprintu
+
+--- DISTRIBUCE ---
+	Baleno děleno
+	Umístění v expedici
+	Umístění palety
+	Tímto nenahrazovat (checkbox)
+	Vyhodnocovat vratky (checkbox)
+
+--- MOTIV ---
+	Orig. číslo motivu
+	Vzhled originálu
+	Práva do
+	Originál na
+	Orig. objed.
+	Copyright
+	Poznámka
+
+--- TISK ---
+	Zdroj
+	Uložení zadní strany
+	Uložení textu uvnitř
+	Obálka
+	Tisk. šířka výrobku
+	Tisk. výška výrobku 
+
+--- SLOVENSKO ---
+	Český originál 
+
+--- DTP ---
+	Štítek
+
+--- OBSAHUJE ---
+
+--- ? ---
+	Příležitost
+	Narozeniny rok
+	Velikost, typ obálky
+	Šířka výrobku (mm)
+	Výška výrobku (mm)
+	Technol. inovace (checkbox)
+	Barevnost
+	Materiál
+	Styl
+	Podstyl
+
+Projekt
+Typ výrobku
+Druh výrobku
+Technol. inovace
+
+--- ROYALTY ---
+	Dod. licence
+	Dod. licence Materiál
+	Práva do
+	Royalty
+	Royalty M
+
+--- LOGISTIKA ---
+	Celní sazebník (u KLP)
+	Země původu u KLP
+	Země původu u KSP
+	Šířka (mm)
+	Výška (mm)
+	Hloubka (mm)
+	Hmotnost g 
+	Počet v kartonu
+	Výška kartonu (mm)
+	Šířka kartonu (mm) 
+	Hloubka kartonu (mm)
+	Hmotnost kartonu g
+	Kartonů na vrstvě
+	Počet vrstev
+	Kartonů na paletě
+	Kusů na paletě
+	Hmotnost palety
+	Objem krabice (dm3)

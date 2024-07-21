@@ -20,6 +20,7 @@ export enum RibbonAction {
 	FILTER_REMOVE = "filter-remove",
 	SAVE_FILTERS = "save-filters",
 	MY_FILTERS = "my-filters",
+	SAVE_PRESET = "save-preset",
 	MY_PRESETS = "my-presets",
 
 	UNKNOWN = "unknown",
