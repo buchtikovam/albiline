@@ -1,0 +1,151 @@
+<script lang="ts">
+	import Ellipsis from 'lucide-svelte/icons/ellipsis';
+	import { stringColumnFiltersConst } from '$lib/constants/stringColumnFiltersConst';
+	import { currentFiltersStore } from '$lib/stores/tableStore';
+	import { Button } from '$lib/components/ui/button';
+	import { get, type Readable, writable, type Writable } from 'svelte/store';
+	import { onMount, tick } from 'svelte';
+	import SlidersHorizontal from 'lucide-svelte/icons/sliders-horizontal';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Command from '$lib/components/ui/command';
+	import * as Popover from '$lib/components/ui/popover';
+	import { StringColumnFilterEnum } from '$lib/enums/column-filters/stringColumnFilterEnum';
+
+	/*
+		Column filtr renderovaný Table komponentem
+		s možnostmi pro stringové hodnoty.
+	*/
+
+	export let preFilteredValues: Readable<unknown[]>;
+	export let values: Readable<unknown[]>;
+	get(preFilteredValues);
+	get(values);
+
+	export let accessor: string;
+	export let filterValue: Writable<string>;
+	let columnFilterValue = StringColumnFilterEnum.DEFAULT;
+	let popoverOpen = false;
+	let columnFilter: Writable<StringColumnFilterEnum> = writable(StringColumnFilterEnum.DEFAULT)
+
+
+	currentFiltersStore.subscribe((filters) => {
+		if (filters) {
+			if (filters[accessor]) {
+				columnFilter.set(filters[accessor].colFilter);
+				columnFilterValue = filters[accessor].colFilter
+			}
+		}
+	})
+
+
+	$: selectedColumnValue =
+		stringColumnFiltersConst.find((f) => f.value === columnFilterValue)
+	;
+
+
+	function closeAndFocusTrigger(triggerId: string) {
+		popoverOpen = false;
+		columnFilter.set(columnFilterValue);
+
+		saveFilters();
+
+		tick().then(() => {
+			document.getElementById(triggerId)?.focus();
+		});
+	}
+
+
+	function saveFilters() {
+		currentFiltersStore.update((data) => {
+			return {
+				...data,
+				[accessor]: {
+					value: $filterValue,
+					colFilter: $columnFilter,
+				},
+			};
+		});
+	}
+
+
+	onMount(() => {
+		columnFilterValue = get(columnFilter);
+
+		let filters = get(currentFiltersStore);
+
+		filters[accessor] = {
+			value: $filterValue,
+			colFilter: $columnFilter
+		};
+
+		currentFiltersStore.set(filters)}
+	);
+</script>
+
+
+
+<div class="w-auto flex items-center border rounded-md my-0.5">
+	<Popover.Root bind:open={popoverOpen} let:ids>
+		<Popover.Trigger asChild let:builder>
+			<Button
+				builders={[builder]}
+				variant="ghost"
+				role="combobox"
+				aria-expanded={popoverOpen}
+				class="w-fit h-fit min-w-[15px] justify-between text-[15px] p-0.5 hover:bg-muted/75"
+			>
+				<Tooltip.Root openDelay={500}>
+					<Tooltip.Trigger>
+						<svelte:component
+							this={get(columnFilter) === "default" ? Ellipsis : selectedColumnValue?.icon}
+							class="h-3 w-3 min-w-3"
+						/>
+					</Tooltip.Trigger>
+
+					{#if selectedColumnValue?.label === undefined}
+						<Tooltip.Content class="mt-16">
+							Vyberte filtr
+						</Tooltip.Content>
+					{:else}
+						<Tooltip.Content class="mt-16">
+							{selectedColumnValue?.label}
+						</Tooltip.Content>
+					{/if}
+				</Tooltip.Root>
+			</Button>
+
+		</Popover.Trigger>
+		<Popover.Content class="w-fit p-0">
+			<Command.Root>
+				<Command.Empty>
+					Nejsou dostupné žádné filtry.
+				</Command.Empty>
+
+				<Command.Group class="p-1">
+					{#each stringColumnFiltersConst as filter}
+						<Command.Item
+							value={filter.value}
+							onSelect={(currentValue) => {
+								columnFilterValue = currentValue;
+								closeAndFocusTrigger(ids.trigger);
+							}}
+							class="text-xs hover:bg-muted/70 p-1.5 flex items-center"
+						>
+							<svelte:component this={filter.icon} class="h-3 w-3 mr-2" />
+							{filter.label}
+						</Command.Item>
+					{/each}
+				</Command.Group>
+			</Command.Root>
+		</Popover.Content>
+	</Popover.Root>
+
+	<input
+		autocomplete="off"
+		id="filter-input"
+		type="text"
+		bind:value={$filterValue}
+		on:focusout={saveFilters}
+		class="focus:outline-none w-full min-w-fit max-w-full text-xs p-0.5 rounded-md font-semibold"
+	/>
+</div>

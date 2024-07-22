@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import type { RibbonItem, RibbonSubItem } from '$lib/types/ribbon/ribbon';
-	import type { RibbonAction } from '$lib/enums/ribbonAction';
+	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -12,7 +12,7 @@
 	let children: RibbonSubItem[] = ribbonItem.children || [];
 
 
-	function setRibbonAction(itemAction: RibbonAction | undefined) {
+	function setRibbonAction(itemAction: RibbonActionEnum | undefined) {
 		if (itemAction) {
 			ribbonActionStore.set(itemAction);
 		}

@@ -22,16 +22,19 @@
 	} from 'svelte-headless-table/plugins';
 	import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
 	import { createInitialColumnOrder } from '$lib/utils/table/createInitialColumnOrder';
-	import { stringColumnFilterFn } from '$lib/utils/input-filters/stringColumnFilterFn';
-	import { tableFulltextFilter } from '$lib/utils/input-filters/tableFulltextFilter';
+	import { stringColumnFilterFn } from '$lib/utils/table/column-filters/stringColumnFilterFn';
+	import { tableFulltextFilter } from '$lib/utils/table/column-filters/tableFulltextFilter';
 	import { addColumnOrder } from 'svelte-headless-table/plugins';
 	import { onMount } from 'svelte';
 	import TableCheckbox from '$lib/components/table/TableCheckbox.svelte';
 	import EditableCell from '$lib/components/table/EditableCell.svelte';
-	import TextFilter from '$lib/components/table/column-filters/TextFilter.svelte';
+	import StringColumnFilter from '$lib/components/table/column-filters/StringColumnFilter.svelte';
 	import * as Table from "$lib/components/ui/table";
 	import { beforeNavigate } from '$app/navigation';
 	import VirtualList from 'svelte-tiny-virtual-list';
+	import IntColumnFilter from './column-filters/IntColumnFilter.svelte';
+	import { intColumnFilterFn } from '$lib/utils/table/column-filters/intColumnFilterFn';
+
 
 	/*
 		Hlavní Table component zobrazující data z BE
@@ -81,6 +84,8 @@
 	// vytvoření sloupečků pro různé datové typy
 	const columns = table.createColumns(get(columnsWritable).map((column: TableColumn) => {
 		let accessor = column.accessor
+		let sortDisabled = column.sortDisabled === 0 ? false : true;
+		let resizeDisabled = column.resizeDisabled === 0 ? false : true;
 
 		if (column.type === 'id') {
 			return table.column({
@@ -100,14 +105,56 @@
 				},
 				plugins: {
 					sort: {
-						disable: true
+						disable: sortDisabled
 					},
 					resize: {
 						initialWidth: 40,
-						disable: true
+						disable: resizeDisabled
 					}
 				}
 			});
+		}
+
+		if (column.type === "int") {
+			return table.column({
+			accessor: column.accessor,
+			header: column.header,
+			plugins: {
+				colFilter: {
+					fn: intColumnFilterFn(accessor),
+					initialFilterValue: "",
+					render: (
+						{ filterValue, values, preFilteredValues }: {
+							filterValue: Writable<number>,
+							values: Readable<any[]>,
+							preFilteredValues: Readable<any[]>
+						}) =>
+						createRender(IntColumnFilter, {
+							filterValue,
+							values,
+							preFilteredValues,
+							accessor
+						})
+				},
+				sort: {
+					disable: sortDisabled
+				},
+				resize: {
+					disable: resizeDisabled,
+					minWidth: 60,
+					initialWidth: cellWidthsConst.get(column.size),
+					maxWidth: 400
+				}
+			},
+			cell: ({ column, row, value }) =>
+				createRender(EditableCell, {
+					row,
+					column,
+					value,
+					rowsWritable,
+					onUpdateValue: updateData
+				})
+			})
 		}
 
 		return table.column({
@@ -123,7 +170,7 @@
 							values: Readable<any[]>,
 							preFilteredValues: Readable<any[]>
 						}) =>
-						createRender(TextFilter, {
+						createRender(StringColumnFilter, {
 							filterValue,
 							values,
 							preFilteredValues,
@@ -131,10 +178,10 @@
 						})
 				},
 				sort: {
-					disable: false
+					disable: sortDisabled
 				},
 				resize: {
-					disable: false,
+					disable: resizeDisabled,
 					minWidth: 60,
 					initialWidth: cellWidthsConst.get(column.size),
 					maxWidth: 400
@@ -299,8 +346,6 @@
 			}
 		}
 	});
-
-	// FIXME: data for columns not shown when hidden by scroll
 </script>
 
 

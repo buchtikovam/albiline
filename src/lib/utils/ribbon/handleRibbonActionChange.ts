@@ -1,53 +1,58 @@
 import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
-import { RibbonAction } from '$lib/enums/ribbonAction';
+import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 import { save } from '$lib/utils/ribbon/ribbon-actions/table-data/save';
 import { edit } from '$lib/utils/ribbon/ribbon-actions/table-data/edit';
 import { deleteItem } from '$lib/utils/ribbon/ribbon-actions/table-data/deleteItem';
 import { removeFilters } from '$lib/utils/ribbon/ribbon-actions/filters/removeFilters';
 import { goto } from '$app/navigation';
+import { filterQuick } from './ribbon-actions/filters/filterQuick';
 
 
-export function handleRibbonActionChange(ribbonAction: RibbonAction) {
+export function handleRibbonActionChange(ribbonAction: RibbonActionEnum) {
 
 	// Ribbon akce, které spouští rovnou funkce:
 
-	if (ribbonAction === RibbonAction.SAVE) {
+	if (ribbonAction === RibbonActionEnum.SAVE) {
 		save().then(() => ribbonActionStore.set(undefined));
 	}
 
-	if (ribbonAction === RibbonAction.EDIT) {
+	if (ribbonAction === RibbonActionEnum.EDIT) {
 		edit();
 	}
 
-	if (ribbonAction === RibbonAction.DELETE) {
+	if (ribbonAction === RibbonActionEnum.DELETE) {
 		deleteItem().then(() => ribbonActionStore.set(undefined));
 	}
 
-	if (ribbonAction === RibbonAction.FILTER_REMOVE) {
+	if (ribbonAction === RibbonActionEnum.FILTER_REMOVE) {
 		removeFilters();
 	}
 
-	if (ribbonAction === RibbonAction.NEW) {
+	if (ribbonAction === RibbonActionEnum.NEW) {
 		goto("/pruvodni-list/detail").then(() => ribbonActionStore.set(undefined))
+	}
+
+	if (ribbonAction === RibbonActionEnum.FILTER_QUICK) {
+		filterQuick();	
 	}
 
 
 	// Ribbon akce, které spouštějí dialogy:
 
 	
-	if (ribbonAction === RibbonAction.MY_FILTERS) {
+	if (ribbonAction === RibbonActionEnum.MY_FILTERS) {
 		openedDialogStore.set("my-filters")
 	}
 
-	if (ribbonAction === RibbonAction.MY_PRESETS) {
+	if (ribbonAction === RibbonActionEnum.MY_PRESETS) {
 		openedDialogStore.set("my-presets")
 	}
 
-	if (ribbonAction === RibbonAction.SAVE_FILTERS) {
+	if (ribbonAction === RibbonActionEnum.SAVE_FILTERS) {
 		openedDialogStore.set("save-filters")
 	}
 
-	if (ribbonAction === RibbonAction.SAVE_PRESET) {
+	if (ribbonAction === RibbonActionEnum.SAVE_PRESET) {
 		openedDialogStore.set("save-preset")
 	}
 }

@@ -1,21 +1,19 @@
 <script lang="ts">
-	import { stringColumnFiltersConst } from '$lib/constants/stringColumnFiltersConst';
+	import { intColumnFiltersConst } from '$lib/constants/intColumnFiltersConst';
 	import { currentFiltersStore } from '$lib/stores/tableStore';
 	import { Button } from '$lib/components/ui/button';
-	import type { TextFilters } from '$lib/types/table/filter';
 	import { get, type Readable, writable, type Writable } from 'svelte/store';
 	import { onMount, tick } from 'svelte';
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
+	import { IntColumnFilterEnum } from '$lib/enums/column-filters/intColumnFilterEnum';
+	import Ellipsis from 'lucide-svelte/icons/ellipsis';
+
 
 	/*
 		Column filtr renderovaný Table komponentem
-		s možnostmi pro stringové hodnoty.
-
-		Pro přidání nového filtru je třeba upravit soubory
-		stringColumnFilterConst a stringColumnFilterFn
+		s možnostmi pro integerové hodnoty.
 	*/
 
 	export let preFilteredValues: Readable<unknown[]>;
@@ -24,10 +22,10 @@
 	get(values);
 
 	export let accessor: string;
-	export let filterValue: Writable<string>;
-	let columnFilterValue: TextFilters = "default";
+	export let filterValue: Writable<number>;
+	let columnFilterValue = IntColumnFilterEnum.DEFAULT;
 	let popoverOpen = false;
-	let columnFilter: Writable<TextFilters> = writable("default")
+	let columnFilter: Writable<IntColumnFilterEnum> = writable(IntColumnFilterEnum.DEFAULT)
 
 
 	currentFiltersStore.subscribe((filters) => {
@@ -41,7 +39,7 @@
 
 
 	$: selectedColumnValue =
-		stringColumnFiltersConst.find((f) => f.value === columnFilterValue)
+		intColumnFiltersConst.find((f) => f.value === columnFilterValue)
 	;
 
 
@@ -99,7 +97,7 @@
 				<Tooltip.Root openDelay={500}>
 					<Tooltip.Trigger>
 						<svelte:component
-							this={get(columnFilter) === "default" ? ChevronDown : selectedColumnValue?.icon}
+							this={get(columnFilter) === "default" ? Ellipsis : selectedColumnValue?.icon}
 							class="h-3 w-3 min-w-3"
 						/>
 					</Tooltip.Trigger>
@@ -124,7 +122,7 @@
 				</Command.Empty>
 
 				<Command.Group class="p-1">
-					{#each stringColumnFiltersConst as filter}
+					{#each intColumnFiltersConst as filter}
 						<Command.Item
 							value={filter.value}
 							onSelect={(currentValue) => {
@@ -143,10 +141,21 @@
 	</Popover.Root>
 
 	<input
+		autocomplete="off"
 		id="filter-input"
-		type="text"
+		type="number"
 		bind:value={$filterValue}
 		on:focusout={saveFilters}
 		class="focus:outline-none w-full min-w-fit max-w-full text-xs p-0.5 rounded-md font-semibold"
 	/>
 </div>
+
+
+
+<style>
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+  		-webkit-appearance: none;
+  		margin: 0;
+	}
+</style>

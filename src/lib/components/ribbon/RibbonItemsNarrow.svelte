@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import type { RibbonItem } from '$lib/types/ribbon/ribbon';
-	import type { RibbonAction } from '$lib/enums/ribbonAction';
+	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	export let ribbonItems: RibbonItem[];
 	export let isRibbonOpen: boolean = true;
 
 
-	function setRibbonAction(action: RibbonAction | undefined) {
+	function setRibbonAction(action: RibbonActionEnum | undefined) {
 		if (action) {
 			ribbonActionStore.set(action);
 		}

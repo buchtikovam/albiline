@@ -1,9 +1,9 @@
+import { StringColumnFilterEnum } from '$lib/enums/column-filters/stringColumnFilterEnum';
 import { currentFiltersStore } from '$lib/stores/tableStore';
-import type { TextFilters } from '$lib/types/table/filter';
 
 
 export const stringColumnFilterFn = (accessor: string) => {
-	let currentFilter: TextFilters;
+	let currentFilter: StringColumnFilterEnum;
 
 	currentFiltersStore.subscribe((filters) => {
 		if (filters) {
@@ -15,15 +15,15 @@ export const stringColumnFilterFn = (accessor: string) => {
 
 	return ({ filterValue, value }: { filterValue: string, value: string }) => {
 
-		if (currentFilter === 'contains') {
+		if (currentFilter === StringColumnFilterEnum.CONTAINS) {
 			return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
 		}
 
-		if (currentFilter === 'starts-with') {
+		if (currentFilter === StringColumnFilterEnum.STARTS_WITH) {
 			return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
 		}
 
-		if (currentFilter === 'ends-with') {
+		if (currentFilter === StringColumnFilterEnum.ENDS_WITH) {
 			return String(value).toLowerCase().endsWith(String(filterValue).toLowerCase());
 		}
 

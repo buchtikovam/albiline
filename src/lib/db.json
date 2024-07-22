@@ -1294,184 +1294,100 @@
       "accessor": "id",
       "header": "id",
       "type": "id",
-      "size": "checkbox"
+      "size": "checkbox",
+      "sortDisabled": 1,
+      "resizeDisabled": 1
     },
     {
       "id": "1",
       "accessor": "ksp",
       "header": "KSP",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "2",
       "accessor": "jmeno",
       "header": "Jméno",
       "type": "string",
-      "size": "xlarge"
+      "size": "xlarge",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "3",
       "accessor": "typ",
       "header": "Typ",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "4",
       "accessor": "linie",
       "header": "Linie",
       "type": "string",
-      "size": "medium"
+      "size": "medium",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "5",
       "accessor": "koncepce",
       "header": "Koncepce",
       "type": "string",
-      "size": "large"
+      "size": "large",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "6",
       "accessor": "klp",
       "header": "KLP",
       "type": "string",
-      "size": "small"
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "7",
       "accessor": "listovaciPolozka",
       "header": "Listovací položka",
       "type": "string",
-      "size": "large"
+      "size": "large",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "8",
       "accessor": "prodCena",
       "header": "Cena",
       "type": "currency",
-      "size": "medium"
+      "size": "medium",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "9",
       "accessor": "skladem",
       "header": "Skladem",
-      "type": "string",
-      "size": "medium"
+      "type": "int",
+      "size": "medium",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     },
     {
       "id": "10",
       "accessor": "vyrobeno",
       "header": "Vyrobeno",
-      "type": "string",
-      "size": "small"
+      "type": "int",
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
     }
   ],
-  "filters": [
-    {
-      "id": "0224",
-      "pageOrigin": "/pruvodni-list",
-      "filterName": "Sada domácnost",
-      "filters": {
-        "test": {
-          "value": "",
-          "colFilter": "starts-with"
-        },
-        "ksp": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "jmeno": {
-          "value": "Sada",
-          "colFilter": "default"
-        },
-        "typ": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "linie": {
-          "value": "Dom",
-          "colFilter": "stars-with"
-        },
-        "koncepce": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "klp": {
-          "value": "",
-          "colFilter": "default"
-        }
-      }
-    },
-    {
-      "id": "ecf3",
-      "pageOrigin": "/pruvodni-list",
-      "filterName": "Hračky",
-      "filters": {
-        "test": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "ksp": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "jmeno": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "typ": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "linie": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "koncepce": {
-          "value": "Hračky",
-          "colFilter": "default"
-        },
-        "klp": {
-          "value": "",
-          "colFilter": "default"
-        }
-      }
-    },
-    {
-      "id": "2da2",
-      "pageOrigin": "/pruvodni-list",
-      "filterName": "Sada dětský svět",
-      "filters": {
-        "test": {
-          "value": "",
-          "colFilter": "starts-with"
-        },
-        "ksp": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "jmeno": {
-          "value": "Sada",
-          "colFilter": "default"
-        },
-        "typ": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "linie": {
-          "value": "sv",
-          "colFilter": "stars-with"
-        },
-        "koncepce": {
-          "value": "",
-          "colFilter": "default"
-        },
-        "klp": {
-          "value": "",
-          "colFilter": "default"
-        }
-      }
-    }
-  ]
+  "filters": []
 }

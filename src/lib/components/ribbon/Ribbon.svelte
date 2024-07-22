@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import ChevronUp from 'lucide-svelte/icons/chevron-up';
-	import { RibbonType } from '$lib/enums/ribbonType';
+	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 	import { ribbonItems } from '$lib/data/ribbon';
 	import { Separator } from '$lib/components/ui/separator';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
@@ -29,21 +29,21 @@
 				isRibbonOpen={isRibbonOpen}
 			/>
 		{:else}
-			{#if ribbonItem.type === RibbonType.ITEM}
+			{#if ribbonItem.type === RibbonTypeEnum.ITEM}
 				<RibbonItem
 					ribbonItem={ribbonItem}
 					isRibbonOpen={isRibbonOpen}
 				/>
 			{/if}
 
-			{#if ribbonItem.type === RibbonType.DROPDOWN}
+			{#if ribbonItem.type === RibbonTypeEnum.DROPDOWN}
 				<RibbonDropdownItem
 					ribbonItem={ribbonItem}
 					isRibbonOpen={isRibbonOpen}
 				/>
 			{/if}
 
-			{#if ribbonItem.type === RibbonType.SEPARATOR}
+			{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
 				<Separator orientation="vertical" class="mx-2.5" />
 			{/if}
 		{/if}

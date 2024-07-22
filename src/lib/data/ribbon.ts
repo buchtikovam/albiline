@@ -1,5 +1,5 @@
-import { RibbonType } from '$lib/enums/ribbonType';
-import { RibbonAction } from '$lib/enums/ribbonAction';
+import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
+import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 import type { RibbonItem } from '$lib/types/ribbon/ribbon';
 import FilePlus from 'lucide-svelte/icons/file-plus';
 import FileX2 from 'lucide-svelte/icons/file-x-2';
@@ -21,211 +21,212 @@ import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
 import Save from 'lucide-svelte/icons/save';
 import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 
-type Items = RibbonItem[] | RibbonItem;
+type RibbonItems = RibbonItem[] | RibbonItem;
 
-export const ribbonItems: Items[] = [
+export const ribbonItems: RibbonItems[] = [
 	{
 		name: "Nový",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: FilePlus,
-		action: RibbonAction.NEW,
+		action: RibbonActionEnum.NEW,
 	},
 	{
 		name: "Editovat",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: Pencil,
-		action: RibbonAction.EDIT,
+		action: RibbonActionEnum.EDIT,
 	},
 	{
 		name: "Smazat",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: FileX2,
-		action: RibbonAction.DELETE,
+		action: RibbonActionEnum.DELETE,
 	},
 
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Vyplň dolů",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: ArrowDownWideNarrow,
-		action: RibbonAction.FILL_DOWN,
+		action: RibbonActionEnum.FILL_DOWN,
 	},
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Uložit",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: Save,
-		action: RibbonAction.SAVE,
+		action: RibbonActionEnum.SAVE,
 	},
 	{
 		name: "Načíst",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: RefreshCcw,
-		action: RibbonAction.LOAD,
+		action: RibbonActionEnum.LOAD,
 	},
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Tisk sestav",
-		type: RibbonType.DROPDOWN,
+		type: RibbonTypeEnum.DROPDOWN,
 		icon: Printer,
-		action: RibbonAction.PRINT_CHOICE,
+		action: RibbonActionEnum.PRINT_CHOICE,
 		children: [
 			{
 				name: "Volba 1",
-				action: RibbonAction.UNKNOWN
+				action: RibbonActionEnum.UNKNOWN
 			},
 			{
 				name: "Volba 2",
-				action: RibbonAction.UNKNOWN
+				action: RibbonActionEnum.UNKNOWN
 			},
 			{
 				name: "Volba 3",
-				action: RibbonAction.UNKNOWN
+				action: RibbonActionEnum.UNKNOWN
 			},
 		]
 	},
 	{
 		name: "Export jako",
-		type: RibbonType.DROPDOWN,
+		type: RibbonTypeEnum.DROPDOWN,
 		icon: FileUp,
-		action: RibbonAction.EXPORT_CHOICE,
+		action: RibbonActionEnum.EXPORT_CHOICE,
 		children: [
 			{
 				name: "Excel",
-				action: RibbonAction.EXPORT_EXCEL
+				action: RibbonActionEnum.EXPORT_EXCEL
 			},
 			{
 				name: "PDF",
-				action: RibbonAction.EXPORT_PDF
+				action: RibbonActionEnum.EXPORT_PDF
 			},
 			{
 				name: "CSV",
-				action: RibbonAction.EXPORT_CSV
+				action: RibbonActionEnum.EXPORT_CSV
 			},
 		]
 	},
 	{
 		name: "Hromadný export",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: FolderUp,
-		action: RibbonAction.GROUP_EXPORT,
+		action: RibbonActionEnum.GROUP_EXPORT,
 	},
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Import",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: FileDown,
-		action: RibbonAction.IMPORT,
+		action: RibbonActionEnum.IMPORT,
 	},
 	{
 		name: "Import šablony",
-		type: RibbonType.DROPDOWN,
+		type: RibbonTypeEnum.DROPDOWN,
 		icon: FolderDown,
-		action: RibbonAction.IMPORT,
+		action: RibbonActionEnum.IMPORT,
 		children: [
 			{
 				name: "Volba 1",
-				action: RibbonAction.UNKNOWN
+				action: RibbonActionEnum.UNKNOWN
 			},
 			{
 				name: "Volba 2",
-				action: RibbonAction.UNKNOWN
+				action: RibbonActionEnum.UNKNOWN
 			},
 			{
 				name: "Volba 3",
-				action: RibbonAction.UNKNOWN
+				action: RibbonActionEnum.UNKNOWN
 			},
 		]
 	},
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Statistika",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: BarChart3,
-		action: RibbonAction.STATISTICS,
+		action: RibbonActionEnum.STATISTICS,
 	},
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Rychlý filtr",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: ListFilter,
-		action: RibbonAction.FILTER_QUICK,
+		action: RibbonActionEnum.FILTER_QUICK,
+	},
+	
+	{
+		name: "Filtr ve výběru",
+		type: RibbonTypeEnum.ITEM,
+		icon: Scan,
+		action: RibbonActionEnum.FILTER_IN_RANGE,
 	},
 	{
 		name: "Mimo výběr",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: Filter,
-		action: RibbonAction.FILTER_OUT_OF_RANGE,
-	},
-	{
-		name: "Filtr v rozmezí",
-		type: RibbonType.ITEM,
-		icon: Scan,
-		action: RibbonAction.FILTER_IN_RANGE,
+		action: RibbonActionEnum.FILTER_OUT_OF_RANGE,
 	},
 	{
 		name: "Filtr krok zpět",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: Undo2,
-		action: RibbonAction.FILTER_UNDO,
+		action: RibbonActionEnum.FILTER_UNDO,
 	},
 	{
 		name: "Zrušit filtry",
-		type: RibbonType.ITEM,
+		type: RibbonTypeEnum.ITEM,
 		icon: FilterX,
-		action: RibbonAction.FILTER_REMOVE,
+		action: RibbonActionEnum.FILTER_REMOVE,
 	},
 	{
 		name: "Moje filtry",
-		type: RibbonType.DROPDOWN,
+		type: RibbonTypeEnum.DROPDOWN,
 		icon: ListPlus,
-		action: RibbonAction.UNKNOWN,
+		action: RibbonActionEnum.UNKNOWN,
 		children: [
 			{
 				name: "Uložit aktuální filtry",
-				action: RibbonAction.SAVE_FILTERS
+				action: RibbonActionEnum.SAVE_FILTERS
 			},
 			{
 				name: "Vybrat z uložených filtrů",
-				action: RibbonAction.MY_FILTERS
+				action: RibbonActionEnum.MY_FILTERS
 			},
 		]
 	},
 	{
-		type: RibbonType.SEPARATOR,
+		type: RibbonTypeEnum.SEPARATOR,
 	},
 
 	{
 		name: "Moje šablony",
-		type: RibbonType.DROPDOWN,
+		type: RibbonTypeEnum.DROPDOWN,
 		icon: Columns3,
-		action: RibbonAction.UNKNOWN,
+		action: RibbonActionEnum.UNKNOWN,
 		children: [
 			{
 				name: "Vytvořit novou šablonu",
-				action: RibbonAction.SAVE_PRESET
+				action: RibbonActionEnum.SAVE_PRESET
 			},
 			{
 				name: "Vybrat šablonu",
-				action: RibbonAction.MY_PRESETS
+				action: RibbonActionEnum.MY_PRESETS
 			},
 		]
 	},
