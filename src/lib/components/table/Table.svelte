@@ -370,7 +370,7 @@
 				itemSize={rowHeight}
 			>
 				<svelte:fragment slot="header">
-					<Table.Header class="top-0 sticky z-10 bg-white border-1">
+					<Table.Header class="top-0 sticky z-10 bg-white">
 						{#each $headerRows as headerRow (headerRow.id)}
 							<Subscribe attrs={headerRow.attrs()} let:attrs>
 								<tr {...attrs}>
@@ -383,7 +383,7 @@
 												on:dragstart={(e) => drag(e, index)}
 												on:dragover={() => setHovering(index)}
 												on:dragend|preventDefault={(e) => drop(e, hovering)}
-												class="relative w-fit p-2 cursor-grab active:cursor-grabbing "
+												class="relative w-fit p-2 cursor-grab active:cursor-grabbing"
 											>
 												{#if cell.id !== "id"}
 													<button

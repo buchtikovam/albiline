@@ -488,7 +488,7 @@
       "typ": "Produkt",
       "linie": "Móda",
       "koncepce": "Doplňky",
-      "klp": "O",
+      "klp": "test",
       "listovaciPolozka": "Módní doplňky",
       "prodCena": 1599,
       "skladem": 70,
@@ -1389,5 +1389,57 @@
       "resizeDisabled": 0
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "1cec",
+      "pageOrigin": "/pruvodni-list",
+      "filterName": "Móda",
+      "filters": {
+        "test": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "ksp": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "jmeno": {
+          "value": "dám",
+          "colFilter": "starts-with"
+        },
+        "typ": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "linie": {
+          "value": "da",
+          "colFilter": "ends-width"
+        },
+        "koncepce": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "listovaciPolozka": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "prodCena": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "skladem": {
+          "value": 50,
+          "colFilter": "bigger-than"
+        },
+        "vyrobeno": {
+          "value": "",
+          "colFilter": "default"
+        },
+        "klp": {
+          "value": "",
+          "colFilter": "default"
+        }
+      }
+    }
+  ]
 }
