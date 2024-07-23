@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Label } from "$lib/components/ui/label";
-	import type { RadioGroup } from '$lib/types/input-dialog/inputDialog';
 	import * as RadioGroup from "$lib/components/ui/radio-group";
+	import type { InputRadioGroup } from "$lib/types/input-dialog/inputDialog";
 
-	export let item: RadioGroup;
+	export let item: InputRadioGroup;
 </script>
 
 <RadioGroup.Root bind:value={item.checkedValue}>

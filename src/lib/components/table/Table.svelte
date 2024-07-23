@@ -41,6 +41,9 @@
 	*/
 
 	export let data: TableType;
+	console.time("js")
+
+	console.time("variable declaration")
 	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
 
@@ -52,15 +55,17 @@
 			rowsWritable.set(data);
 		}
 	});
+	console.timeEnd("variable declaration")
 
 	const updateData = (newData: TableRows) => {
 		rowDataStore.set(newData);
 	};
 
-
+	// 150 MB 5 sloupců 100 000+ řádků
 
 	// initializace tabulky
-	const table = createTable(rowsWritable, {
+	console.time('create table');
+	const table = createTable(rowsWritable, {		
 		sort: addSortBy(),
 		select: addSelectedRows(),
 		colFilter: addColumnFilters(),
@@ -78,10 +83,12 @@
 		}),
 		hide: addHiddenColumns(),
 	});
+	console.timeEnd('create table');
 
 
 
 	// vytvoření sloupečků pro různé datové typy
+	console.time('mapping');
 	const columns = table.createColumns(get(columnsWritable).map((column: TableColumn) => {
 		let accessor = column.accessor
 		let sortDisabled = column.sortDisabled === 0 ? false : true;
@@ -157,6 +164,42 @@
 			})
 		}
 
+		if (column.type === "checkbox") {
+			return table.column({
+			accessor: column.accessor,
+			header: column.header,
+			plugins: {
+				colFilter: {
+					fn: stringColumnFilterFn(accessor),
+					initialFilterValue: "",
+					render: (
+						{ filterValue, values, preFilteredValues }: {
+							filterValue: Writable<string>,
+							values: Readable<any[]>,
+							preFilteredValues: Readable<any[]>
+						}) =>
+						createRender(StringColumnFilter, {
+							filterValue,
+							values,
+							preFilteredValues,
+							accessor
+						})
+				},
+				sort: {
+					disable: sortDisabled
+				},
+				resize: {
+					disable: resizeDisabled,
+					minWidth: 40,
+					initialWidth: cellWidthsConst.get(column.size),
+				}
+			},
+			cell: ({ value }) =>
+				createRender(TableCheckbox, {
+					checked: writable(value === 0)
+				})
+			});
+		}
 		return table.column({
 			accessor: column.accessor,
 			header: column.header,
@@ -197,9 +240,11 @@
 				})
 		});
 	}));
+	console.timeEnd('mapping');
 
 
 
+	console.time('view model');
 	// vytvoření view modelu
 	const {
 		headerRows,
@@ -208,10 +253,12 @@
 		tableBodyAttrs,
 		pluginStates
 	} = table.createViewModel(columns);
+	console.timeEnd('view model');
 
 
 
 	// subscribe pro hlídání změn v columnFilters (načtení uložených filtrů)
+	console.time('filter values sub');
 	const { filterValues } = pluginStates.colFilter;
 
 	currentFiltersStore.subscribe((storedFilters) => {
@@ -225,6 +272,7 @@
 
 		filterValues.set(rawFilterData)
 	})
+	console.timeEnd('filter values sub');
 
 
 
@@ -346,6 +394,8 @@
 			}
 		}
 	});
+
+	console.timeEnd("js")
 </script>
 
 
@@ -387,7 +437,7 @@
 											>
 												{#if cell.id !== "id"}
 													<button
-														class="flex w-full items-center justify-center font-semibold overflow-visible rounded-md hover:bg-muted/70"
+														class={(props.sort.disabled ? "disabled cursor-default " : "hover:bg-muted/70 ") + "flex mx-auto px-1 font-semibold overflow-visible rounded-md"}
 														on:click={props.sort.toggle}
 													>
 														<Render of={cell.render()} />

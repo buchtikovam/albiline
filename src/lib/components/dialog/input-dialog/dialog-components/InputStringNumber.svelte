@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import type { DialogNumber, DialogString } from '$lib/types/input-dialog/inputDialog';
+	import type { InputDialogNumber, InputDialogString } from '$lib/types/input-dialog/inputDialog';
 
-	export let item: DialogString | DialogNumber;
+	export let item: InputDialogString | InputDialogNumber;
 	export let value: string | number;
 </script>
 

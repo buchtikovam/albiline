@@ -1391,9 +1391,9 @@
   ],
   "filters": [
     {
-      "id": "1cec",
+      "id": "bca4",
       "pageOrigin": "/pruvodni-list",
-      "filterName": "Móda",
+      "filterName": "ruk",
       "filters": {
         "test": {
           "value": "",
@@ -1404,16 +1404,16 @@
           "colFilter": "default"
         },
         "jmeno": {
-          "value": "dám",
-          "colFilter": "starts-with"
+          "value": "",
+          "colFilter": "default"
         },
         "typ": {
           "value": "",
           "colFilter": "default"
         },
         "linie": {
-          "value": "da",
-          "colFilter": "ends-width"
+          "value": "",
+          "colFilter": "default"
         },
         "koncepce": {
           "value": "",
@@ -1428,8 +1428,8 @@
           "colFilter": "default"
         },
         "skladem": {
-          "value": 50,
-          "colFilter": "bigger-than"
+          "value": "",
+          "colFilter": "default"
         },
         "vyrobeno": {
           "value": "",
@@ -1438,6 +1438,10 @@
         "klp": {
           "value": "",
           "colFilter": "default"
+        },
+        "productName": {
+          "value": "ruk",
+          "colFilter": "starts-with"
         }
       }
     }

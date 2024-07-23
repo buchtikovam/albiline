@@ -28,14 +28,14 @@
 	<MyFiltersDialog />
 {/if}
 
-{#if currentDialog === "my-presets"}
-	<MyPresetsDialog />
-{/if}
-
 {#if currentDialog === "save-filters"}
 	<SaveFiltersDialog />
 {/if}
 
-{#if currentDialog === "save-filters"}
+{#if currentDialog === "my-presets"}
+	<MyPresetsDialog />
+{/if}
+
+{#if currentDialog === "save-preset"}
 	<SavePresetDialog />
 {/if}

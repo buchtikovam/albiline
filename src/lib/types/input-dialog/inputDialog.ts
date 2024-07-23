@@ -1,17 +1,17 @@
 export type InputDialog = InputDialogItem[]
 
 export type InputDialogItem =
-	DialogString |
-	DialogNumber |
-	DialogDate |
-	DateRange |
-	CheckboxGroup |
-	RadioGroup |
+	InputDialogString |
+	InputDialogNumber |
+	InputDialogDate |
+	InputDialogDateRange |
+	InputCheckboxGroup |
+	InputRadioGroup |
 	DateRangeButton
 
 
 
-export type DialogString = {
+export type InputDialogString = {
 	name: string;
 	type: 'string';
 	label: string;
@@ -19,7 +19,7 @@ export type DialogString = {
 	value: string;
 }
 
-export type DialogNumber = {
+export type InputDialogNumber = {
 	name: string;
 	type: 'number';
 	label: string;
@@ -27,7 +27,7 @@ export type DialogNumber = {
 	value: number;
 }
 
-type DialogDate = {
+type InputDialogDate = {
 	name: string;
 	type: 'date';
 	label: string;
@@ -35,7 +35,7 @@ type DialogDate = {
 	value: Date | undefined;
 }
 
-export type DateRange = {
+export type InputDialogDateRange = {
 	name: string;
 	type: 'date-range';
 	startDateLabel: string;
@@ -59,20 +59,20 @@ export type DateRangeButtonOptions =
 	'thisWeek'
 
 
-export type CheckboxGroup = {
+export type InputCheckboxGroup = {
 	name: string,
 	label: string,
 	type: "checkbox-group"
-	children: CheckboxItem[]
+	children: InputCheckboxItem[]
 }
 
-export type CheckboxItem = {
+export type InputCheckboxItem = {
 	id: string,
 	label: string,
 	checked: boolean
 }
 
-export type RadioGroup = {
+export type InputRadioGroup = {
 	name: string,
 	type: "radio-group",
 	checkedValue: string,
