@@ -44,6 +44,8 @@
 		})
 
 		if (!rowIds.includes(editedRow.id)) {
+			console.log(get(editedDataStore));
+			
 			editedDataStore.update(data => data.concat(editedRow))
 		}
 

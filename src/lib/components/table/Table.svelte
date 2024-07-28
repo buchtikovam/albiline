@@ -4,6 +4,7 @@
 		columnOrderStore,
 		columnWidthStore,
 		currentFiltersStore,
+		currentSortStore,
 		editedDataStore,
 		filterValueStore,
 		pageCompactStore,
@@ -34,6 +35,7 @@
 	import VirtualList from 'svelte-tiny-virtual-list';
 	import IntColumnFilter from './column-filters/IntColumnFilter.svelte';
 	import { intColumnFilterFn } from '$lib/utils/table/column-filters/intColumnFilterFn';
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
 
 	/*
@@ -41,9 +43,7 @@
 	*/
 
 	export let data: TableType;
-	console.time("js")
 
-	console.time("variable declaration")
 	const rowsWritable: Writable<TableRows> = writable(data.items);
 	const columnsWritable: Writable<TableColumn[]> = writable(data.columnInfo);
 
@@ -55,16 +55,17 @@
 			rowsWritable.set(data);
 		}
 	});
-	console.timeEnd("variable declaration")
+
+	currentSortStore.subscribe((data) => {
+		console.log("currentSortStore:", data);
+	})
 
 	const updateData = (newData: TableRows) => {
 		rowDataStore.set(newData);
 	};
 
-	// 150 MB 5 sloupců 100 000+ řádků
 
 	// initializace tabulky
-	console.time('create table');
 	const table = createTable(rowsWritable, {		
 		sort: addSortBy(),
 		select: addSelectedRows(),
@@ -73,7 +74,8 @@
 			initialColumnIdOrder: createInitialColumnOrder(columnsWritable)
 		}),
 		filter: addTableFilter({
-			fn: ({ filterValue, value }) => tableFulltextFilter(filterValue, value)
+			serverSide: true,
+			// fn: ({ filterValue }) => console.log(filterValue)
 		}),
 		resize: addResizedColumns({
 			onResizeEnd: () => {
@@ -83,12 +85,9 @@
 		}),
 		hide: addHiddenColumns(),
 	});
-	console.timeEnd('create table');
-
 
 
 	// vytvoření sloupečků pro různé datové typy
-	console.time('mapping');
 	const columns = table.createColumns(get(columnsWritable).map((column: TableColumn) => {
 		let accessor = column.accessor
 		let sortDisabled = column.sortDisabled === 0 ? false : true;
@@ -240,11 +239,9 @@
 				})
 		});
 	}));
-	console.timeEnd('mapping');
 
 
 
-	console.time('view model');
 	// vytvoření view modelu
 	const {
 		headerRows,
@@ -253,12 +250,10 @@
 		tableBodyAttrs,
 		pluginStates
 	} = table.createViewModel(columns);
-	console.timeEnd('view model');
 
 
 
 	// subscribe pro hlídání změn v columnFilters (načtení uložených filtrů)
-	console.time('filter values sub');
 	const { filterValues } = pluginStates.colFilter;
 
 	currentFiltersStore.subscribe((storedFilters) => {
@@ -272,7 +267,6 @@
 
 		filterValues.set(rawFilterData)
 	})
-	console.timeEnd('filter values sub');
 
 
 
@@ -395,7 +389,11 @@
 		}
 	});
 
-	console.timeEnd("js")
+
+	function changeSortStore(accessor: string, sortType: string) {
+		console.log(accessor, sortType);
+		
+	}
 </script>
 
 
@@ -436,12 +434,25 @@
 												class="relative w-fit p-2 cursor-grab active:cursor-grabbing"
 											>
 												{#if cell.id !== "id"}
-													<button
+													<!-- <button
 														class={(props.sort.disabled ? "disabled cursor-default " : "hover:bg-muted/70 ") + "flex mx-auto px-1 font-semibold overflow-visible rounded-md"}
 														on:click={props.sort.toggle}
 													>
 														<Render of={cell.render()} />
-													</button>
+													</button> -->
+
+													<DropdownMenu.Root>
+														<DropdownMenu.Trigger>
+															<Render of={cell.render()} />
+														</DropdownMenu.Trigger>
+
+														<DropdownMenu.Content>
+															<DropdownMenu.Item on:click={() => changeSortStore(cell.id, "ascending")}>Seřadit vzestupně</DropdownMenu.Item>
+															<DropdownMenu.Item on:click={() => changeSortStore(cell.id, "descending")}>Seřadit sestupně</DropdownMenu.Item>
+															<DropdownMenu.Item on:click={() => changeSortStore(cell.id, "default")}>Neřadit</DropdownMenu.Item>
+														</DropdownMenu.Content>
+													</DropdownMenu.Root>
+
 												{:else}
 													<Render of={cell.render()} />
 												{/if}
