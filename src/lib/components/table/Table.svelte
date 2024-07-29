@@ -416,6 +416,7 @@
 				height={tableHeight}
 				itemCount={$pageRows.length}
 				itemSize={rowHeight}
+				overscanCount={20}
 			>
 				<svelte:fragment slot="header">
 					<Table.Header class="top-0 sticky z-10 bg-white">

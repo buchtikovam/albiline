@@ -1,6 +1,6 @@
 export const load = async ({ fetch }) => {
 	try {
-		const res = await fetch(`http://10.2.2.181/productList`);
+		const res = await fetch(`http://10.2.2.181/customers`);
 		// const res = await fetch("http://localhost:3000/pruvodni-list-data")
 		// const resp = await fetch("http://localhost:3000/pruvodni-list-info")
 

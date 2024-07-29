@@ -29,7 +29,6 @@
 
 
 	currentFiltersStore.subscribe((filters) => {
-		console.log(filters);
 		
 		if (filters) {
 			if (filters[accessor]) {
