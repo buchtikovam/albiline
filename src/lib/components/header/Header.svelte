@@ -108,19 +108,19 @@ import * as Tabs from '$lib/components/ui/tabs';
 					value={tab.url}
 					on:click={() => goto(tab.url)}
 				>
-					<button
+					<!-- <button
 						class="flex items-center"
 						on:mouseenter={() => showTabClosingButton(tab)}
 						on:mouseleave={() => hideTabClosingButton(tab)}
-					>
+					> -->
 					{tab.name}
-						<button
+						<!-- <button
 							on:click={() => removeTab(tab.name)}
 							class={`${tab.closingState}`}
 							>
 							<X class="ml-1 text-red-600 size-3.5"/>
 						</button>
-					</button>
+					</button> -->
 				</Tabs.Trigger>
 			</button>
 			{/each}
