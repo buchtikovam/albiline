@@ -39,9 +39,11 @@
 	"type": "module",
 	"dependencies": {
 		"@ag-grid-community/locale": "^32.0.2",
+		"@ag-grid-enterprise/server-side-row-model": "^32.0.2",
 		"@fontsource/open-sans": "^5.0.28",
 		"@internationalized/date": "^3.5.2",
 		"ag-grid-community": "^32.0.2",
+		"ag-grid-enterprise": "^32.0.2",
 		"bits-ui": "^0.21.4",
 		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.17",

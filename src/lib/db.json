@@ -274,7 +274,7 @@
 	],
 	"products": [
 		{
-			"id": "0",
+			"id": 0,
 			"accessor": "id",
 			"header": "id",
 			"type": "id",
@@ -283,7 +283,7 @@
 			"resizeDisabled": 1
 		},
 		{
-			"id": "1",
+			"id": 1,
 			"accessor": "title",
 			"header": "Název",
 			"type": "string",
@@ -292,7 +292,7 @@
 			"resizeDisabled": 0
 		},
 		{
-			"id": "2",
+			"id": 2,
 			"accessor": "category",
 			"header": "Kategorie",
 			"type": "string",
@@ -301,7 +301,7 @@
 			"resizeDisabled": 0
 		},
 		{
-			"id": "3",
+			"id": 3,
 			"accessor": "price",
 			"header": "Cena",
 			"type": "int",
@@ -310,7 +310,7 @@
 			"resizeDisabled": 0
 		},
 		{
-			"id": "4",
+			"id": 4,
 			"accessor": "rating",
 			"header": "Hodnocení",
 			"type": "int",
@@ -319,7 +319,7 @@
 			"resizeDisabled": 0
 		},
 		{
-			"id": "5",
+			"id": 5,
 			"accessor": "stock",
 			"header": "Skladem",
 			"type": "int",
@@ -328,7 +328,7 @@
 			"resizeDisabled": 0
 		},
 		{
-			"id": "6",
+			"id": 6,
 			"accessor": "brand",
 			"header": "Výrobce",
 			"type": "string",
@@ -337,7 +337,7 @@
 			"resizeDisabled": 0
 		},
 		{
-			"id": "7",
+			"id": 7,
 			"accessor": "weight",
 			"header": "Váha",
 			"type": "string",
@@ -347,11 +347,3 @@
 		}
 	]
 }
-
-
-
-
-
-
-
-
