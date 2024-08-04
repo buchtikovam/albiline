@@ -1,4 +1,5 @@
 <script lang="ts">
+	import "$lib/ag-grid-theme-builder.css"
 	import 'ag-grid-enterprise'
 	import { 
 		createGrid,
@@ -8,8 +9,8 @@
 		type IServerSideGetRowsParams
 	} from "ag-grid-community"
 	import { onMount } from 'svelte'
-	import 'ag-grid-community/styles/ag-grid.css'
-	import 'ag-grid-community/styles/ag-theme-quartz.css'
+
+	let gridContainer;	
 
 	const gridOptions: GridOptions = {
 		defaultColDef: {
@@ -30,7 +31,7 @@
 		 onCellValueChanged: (event) => {
 			console.log(`New Cell Value: ${JSON.stringify(event.data)}`)
 		},
-		maxBlocksInCache: 2,
+		//maxBlocksInCache: 2,
 		debug: true,
 	}
 
@@ -74,20 +75,29 @@
 
 
 	onMount(() => {
-		const gridEl = document.getElementById("mainGrid")
-		if (!gridEl) {
-			throw new Error("Grid element not found.")
-		}
-		grid = createGrid(gridEl, gridOptions)
+		grid = createGrid(gridContainer, gridOptions)
 		grid.setGridOption('serverSideDatasource', datasource);
 	})
+
 </script>
-
-
 
 <svelte:head>
 	<title>Albiline | Hodinovka</title>
 </svelte:head>
 
+<div class="flex flex-column h-full">
+	<div
+		id="datagrid"
+		class="ag-theme-custom"
+		style="flex: 1 1 auto"
+		bind:this={gridContainer}
+	></div>
+</div>
 
-<div id="mainGrid" class="ag-theme-quartz h-full"></div>
+
+<style>
+	:global(.ag-theme-quartz) {
+		--ag-odd-row-background-color: #fafafa;
+	}
+</style>
+
