@@ -2,337 +2,340 @@ export const zakazniciColDef = [
 	{ 
 		headerName: "",
 		checkboxSelection: true,
+		headerCheckboxSelection: true,
+		suppressHeaderMenuButton: true,
 		suppressMovable: true,
+		filter: false,
 		lockPosition: "left",
 		maxWidth: 50,
 	},
 	{ 
-		field: "customerAddressCode",
+		field: "CustomerAddressCode",
 		headerName: "ID zákazníka",
 		cellDataType: "number",
 	},
 	{ 
-		field: "customerNodeCode",
+		field: "CustomerNodeCode",
 		headerName: "Řetězec",
 		cellDataType: "number",
 	},
 	{ 
-		field: "addressType",
+		field: "AddressType",
 		headerName: "Typ adresy",
 		cellDataType: "text",
 	},
 	{ 
-		field: "name",
+		field: "Name",
 		headerName: "Jméno",
 		cellDataType: "text",
 	},
 	{ 
-		field: "street",
+		field: "Street",
 		headerName: "Ulice",
 		cellDataType: "text",
 	},
 	{ 
-		field: "postalCode",
+		field: "PostalCode",
 		headerName: "PSČ",
 		cellDataType: "text",
 	},
 	{ 
-		field: "countryCode", 
+		field: "CountryCode", 
 		headerName: "Země",
 		cellDataType: "text",
 	},
 	{ 
-		field: "companyName", 
+		field: "CompanyName", 
 		headerName: "Název společnosti",
 		cellDataType: "text",
 	},
 	{ 
-		field: "enabled",
+		field: "Enabled",
 		headerName: "Aktivní",
 		cellDataType: "boolean",
 	},
 	{ 
-		field: "consignmentSaleEnabled",
+		field: "ConsignmentSaleEnabled",
 		headerName: "Komise",
 		cellDataType: "text",
 	},
 	{ 
-		field: "paymentTypeCode",
+		field: "PaymentTypeCode",
 		headerName: "Typ platby",				
 		cellDataType: "text",
 	},
 	{ 
-		field: "dueDays", 
+		field: "DueDays", 
 		headerName: "Splatnost",
 		cellDataType: "number",
 	},
 	{ 
-		field: "invoiceCopies",
+		field: "InvoiceCopies",
 		headerName: "FA kopie",
 		cellDataType: "number",
 	},
 	{ 
-		field: "deliveryNoteCopies",
+		field: "DeliveryNoteCopies",
 		headerName: "DL kopie",
 		cellDataType: "number",
 	},
 	{ 
-		field: "customerRank",
+		field: "CustomerRank",
 		headerName: "Bonita",
 		cellDataType: "text",
 	},
 	{ 
-		field: "retailStoreTypeId",
+		field: "RetailStoreTypeId",
 		headerName: "",
 		cellDataType: "text",
 	},
 	{ 
-		field: "dealerCode",
+		field: "DealerCode",
 		headerName: "OZ",
 		cellDataType: "text",
 	},
 	{
-		field: "isReturnAllowed",
+		field: "IsReturnAllowed",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "customerStoreCode",
+		field: "CustomerStoreCode",
 		// headerName: "",
 		cellDataType: ""
 	},
 	{
-		field: "customerStoreEan",
+		field: "CustomerStoreEan",
 		// headerName: "EAN",
 		cellDataType: ""
 	},
 	{
-		field: "dateCreated",
+		field: "DateCreated",
 		// headerName: "",
 		cellDataType: "date"
 	},
 	{
-		field: "note",
+		field: "Note",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "firstOrderDate",
+		field: "FirstOrderDate",
 		// headerName: "",
 		cellDataType: "date"
 	},
 	{
-		field: "lastOrderDate",
+		field: "LastOrderDate",
 		// headerName: "",
 		cellDataType: "date"
 	},
 	{
-		field: "areaId",
+		field: "AreaId",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "merchandiserCode",
+		field: "MerchandiserCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "description",
+		field: "Description",
 		headerName: "Popis",
 		cellDataType: "text"
 	},
 	{
-		field: "responsiblePerson",
+		field: "ResponsiblePerson",
 		headerName: "Zodpovědná osoba",
 		cellDataType: "text"
 	},
 	{
-		field: "lastChangeUserCode",
+		field: "LastChangeUserCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "lastChangeDateTime",
+		field: "LastChangeDateTime",
 		// headerName: "",
 		cellDataType: "datetime"
 	},
 	{
-		field: "useAssortedEanCodes",
+		field: "UseAssortedEanCodes",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "sendInvoiceViaEmail",
+		field: "SendInvoiceViaEmail",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "emailForInvoicing",
+		field: "EmailForInvoicing",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "sendDeliveryNoteViaEmail",
+		field: "SendDeliveryNoteViaEmail",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "emailForDeliveryNotes",
+		field: "EmailForDeliveryNotes",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "sendShippingNotificationViaEmail",
+		field: "SendShippingNotificationViaEmail",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "sendReturnsShippingNotificationViaEmail",
+		field: "SendReturnsShippingNotificationViaEmail",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "emailForShippingNotifications",
+		field: "SmailForShippingNotifications",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_id",
+		field: "I_ID",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_customerAddressCode",
+		field: "I_CustomerAddressCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_customerNodeCode",
+		field: "I_CustomerNodeCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_addressType",
+		field: "I_AddressType",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_name",
+		field: "I_Name",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_street",
+		field: "I_Street",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_city",
+		field: "I_City",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_postalCode",
+		field: "I_PostalCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_countryCode",
+		field: "I_CountryCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_companyName",
+		field: "I_CompanyName",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_enabled",
+		field: "I_Enabled",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "i_consignmentSaleEnabled",
+		field: "I_ConsignmentSaleEnabled",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "i_paymentTypeCode",
+		field: "I_PaymentTypeCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_dueDays",
+		field: "I_DueDays",
 		// headerName: "",
 		cellDataType: "number"
 	},
 	{
-		field: "i_ico",
+		field: "I_ICO",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_dic",
+		field: "I_DIC",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_icDph",
+		field: "I_IcDph",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_customerStoreCode",
+		field: "I_CustomerStoreCode",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "i_customerStoreEan",
+		field: "I_CustomerStoreEan",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "isBadPayer",
+		field: "IsBadPayer",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "om",
+		field: "OM",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "nodeEmail",
+		field: "NodeEmail",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "retailStoreTypeName",
+		field: "RetailStoreTypeName",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "pickingBoxPacking",
+		field: "PickingBoxPacking",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "packingNote",
+		field: "PackingNote",
 		// headerName: "",
 		cellDataType: "text"
 	},
 	{
-		field: "isForConsignmentReturn",
+		field: "IsForConsignmentReturn",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "splitOrderByFood",
+		field: "SplitOrderByFood",
 		// headerName: "",
 		cellDataType: "boolean"
 	},
 	{
-		field: "b2beshopEnabled",
+		field: "B2BeshopEnabled",
 		// headerName: "",
 		cellDataType: "boolean"
 	}

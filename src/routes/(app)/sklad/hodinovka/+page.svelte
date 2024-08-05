@@ -1,6 +1,7 @@
 <script lang="ts">
-	import "$lib/ag-grid-theme-builder.css"
+	import { editedDataStore } from './../../../../lib/stores/tableStore.ts';
 	import 'ag-grid-enterprise'
+	import  { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
 	import { 
 		createGrid,
 		type GridApi,
@@ -9,65 +10,82 @@
 		type IServerSideGetRowsParams
 	} from "ag-grid-community"
 	import { onMount } from 'svelte'
+	import 'ag-grid-community/styles/ag-grid.css'
+	import 'ag-grid-community/styles/ag-theme-quartz.css'
 
 	let gridContainer;	
 
 	const gridOptions: GridOptions = {
+		localeText: AG_GRID_LOCALE_CZ,
+
 		defaultColDef: {
      	   sortable: true,
-		   editable: true
+		   editable: true,
+		   filter: 'agTextColumnFilter'
     	},
 		
 		columnDefs : [
-			{ field: "id", headerName: "ID"},
-			{ field: "title", headerName: "Název"},
-			{ field: "description", headerName: "Popis"},
+			{ 
+				checkboxSelection: true,
+				headerCheckboxSelection: true,
+				filter: false,
+				suppressHeaderMenuButton: true,
+				sortable: false
+			},
+			{ 
+				field: "title",
+				headerName: "Název"
+			},
+			{ 
+				field: "description",
+				headerName: "Popis"
+			},
 			{ field: "category", headerName: "Kategorie"},
 			{ field: "price", headerName: "Cena"},
 			{ field: "discountPercentage", headerName: "Výše slevy"}
 		],
 
-		rowModelType: 'serverSide',
-		 onCellValueChanged: (event) => {
-			console.log(`New Cell Value: ${JSON.stringify(event.data)}`)
+		onCellValueChanged: (event) => {
+			editedDataStore.update((data) => data.concat(event.data))
+			console.log(`New Cell Value: ${JSON.stringify(event.newValue)}`)
 		},
-		//maxBlocksInCache: 2,
+
+		rowModelType: 'serverSide',
+		rowSelection: "multiple",
 		debug: true,
 	}
 
-	let grid: GridApi<unknown>;
 
-		/* 
+	editedDataStore.subscribe(data => {
+		console.log(data);
 		
-		update: [
-			{
-			description: "newValue";
-			}
-		]
-		
-		
-		*/
+	})
+
+	let gridApi: GridApi<unknown>;
 
 
 	const datasource: IServerSideDatasource = {
 		getRows(params: IServerSideGetRowsParams) {
-			console.log(JSON.stringify(params.request, null, 1));
-			let url = 'https://dummyjson.com/products?'
+			let url = 'https://dummyjson.com/products?';
 
+			let updatedParamsRequest = params.request
+			updatedParamsRequest.fulltext = gridApi.getQuickFilter || "";
+
+			console.log(JSON.stringify(updatedParamsRequest, null, 1));
+			
 			fetch(url
 			//  {
 			// 	method: "post",
 			// 	body: JSON.stringify(params.request),
 			// 	headers: {"Content-Type": "application/json"}
 			// }
-		)
+			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {				
 				params.success({ rowData: response.products })
 			})
 			.catch(error => {
 				console.log(error);
-				
                 params.fail();
 			});
 		}
@@ -75,29 +93,46 @@
 
 
 	onMount(() => {
-		grid = createGrid(gridContainer, gridOptions)
-		grid.setGridOption('serverSideDatasource', datasource);
+		// const gridEl = document.getElementById("datagrid")
+		// if (!gridEl) {
+		// throw new Error("Grid element not found.");
+		// }
+
+		gridApi = createGrid(gridContainer, gridOptions)
+		gridApi.setGridOption('serverSideDatasource', datasource);
 	})
 
+	function onFilterTextBoxChanged() {
+		gridApi!.setGridOption(
+			"quickFilterText",
+			(document.getElementById("fulltext-filter") as HTMLInputElement).value,
+		);
+	}
 </script>
+
+
 
 <svelte:head>
 	<title>Albiline | Hodinovka</title>
 </svelte:head>
 
-<div class="flex flex-column h-full">
+
+
+<input 
+	type="text"
+	id="fulltext-filter"
+	placeholder="Hledat..."
+	on:input={onFilterTextBoxChanged}
+/>
+
+<div class="flex flex-column h-full">	
 	<div
 		id="datagrid"
-		class="ag-theme-custom"
+		class="ag-theme-quartz"
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>
 </div>
 
 
-<style>
-	:global(.ag-theme-quartz) {
-		--ag-odd-row-background-color: #fafafa;
-	}
-</style>
 

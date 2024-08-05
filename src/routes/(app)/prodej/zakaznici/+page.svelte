@@ -13,11 +13,11 @@
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
 	import { zakazniciColDef } from '$lib/data/column-definitons/zakaznici';
 
-
+	let gridContainer;
+	
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
-		cacheBlockSize: 100,
-		maintainColumnOrder: true,
+
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
@@ -25,28 +25,33 @@
 			minWidth: 100,
 			maxWidth: 400,
 			filter: 'agTextColumnFilter'
-		},		
+		},	
+
 		columnDefs: zakazniciColDef,
+
 		onCellValueChanged: (event) => {
-			console.log(`New Cell Value: ${JSON.stringify(event.data)}`)
+			console.log(`New Cell Value: ${JSON.stringify(event.newValue)}`)
 		},
+
 		rowModelType: 'serverSide',
-		debug: true,
+		// rowSelection: "multiple",
+		cacheBlockSize: 1000,
+		// maxBlocksInCache: 4,
+		// debug: true,
 	}
 
 
-
-	let grid: GridApi<unknown>;
+	let gridApi: GridApi<unknown>;
 
 		
-
 	const datasource: IServerSideDatasource = {
 		getRows(params: IServerSideGetRowsParams) {
-			console.log(JSON.stringify(params.request, null, 1));
 			let url = 'http://10.2.2.181/customers'
 
-			console.log(grid.getQuickFilter());
-			
+			// let updatedParamsRequest = params.request
+			// updatedParamsRequest.fulltext = gridApi.getQuickFilter()
+
+			// console.log("updatedParams", updatedParamsRequest);
 
 			fetch(url, 
 				{
@@ -56,39 +61,38 @@
 				}
 			)
 			.then(httpResponse => httpResponse.json())
-			.then(response => {				
-				params.success({ rowData: response.items })
+			.then(response => {	
+				console.log(response);
+							
+				params.success({ rowData: response})
 			})
 			.catch(error => {
+				console.log("fail");
 				console.log(error);
-                params.fail();
+				params.fail();
 			});
 		}
 	};
 
-	function onFilterTextBoxChanged() {
-		grid!.setGridOption(
-			"quickFilterText",
-			(document.getElementById("filter-text-box") as HTMLInputElement).value,
-		);
-	}
+
 
 
 	onMount(() => {
-		const gridEl = document.getElementById("mainGrid")
-		if (!gridEl) {
-			throw new Error("Grid element not found.");
-		}
-		grid = createGrid(gridEl, gridOptions);
-		grid.setGridOption('serverSideDatasource', datasource);
+		// const gridEl = document.getElementById("datagrid")
+		// if (!gridEl) {
+		// 	throw new Error("Grid element not found.");
+		// }
 
-		
-
-		if (typeof window !== "undefined") {
-		// Attach external event handlers to window so they can be called from index.html
-			(<any>window).onFilterTextBoxChanged = onFilterTextBoxChanged;
-		}
+		gridApi = createGrid(gridContainer, gridOptions);
+		gridApi.setGridOption('serverSideDatasource', datasource);
 	})
+
+	function onFilterTextBoxChanged() {
+		gridApi!.setGridOption(
+			"quickFilterText",
+			(document.getElementById("fulltext-filter") as HTMLInputElement).value,
+		);
+	}
 </script>
 
 
@@ -99,11 +103,18 @@
 
 
 
-<div id="mainGrid" class="ag-theme-quartz h-full"></div>
-
-<input
+<input 
 	type="text"
-	id="filter-text-box"
-	placeholder="Filter..."
+	id="fulltext-filter"
+	placeholder="Hledat..."
 	on:input={onFilterTextBoxChanged}
 />
+
+<div class="flex flex-column h-full">
+	<div
+		id="datagrid"
+		class="ag-theme-quartz"
+		style="flex: 1 1 auto"
+		bind:this={gridContainer}
+	></div>
+</div>
