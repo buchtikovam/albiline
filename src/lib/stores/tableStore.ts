@@ -39,3 +39,5 @@ export const columnDataStore: Writable<TableColumn[]> = writable()
 export const showFulltextSearchStore: Writable<boolean> = writable(false)
 
 export const filterValueStore: Writable<string> = writable("")
+
+export const latestFiltersStore: Writable<any[]> = writable([]);

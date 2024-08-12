@@ -4,6 +4,7 @@ import Hammer from 'lucide-svelte/icons/hammer';
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
 import type { SidebarItem } from '$lib/types/sidebar/sidebar';
+import CodeXml from 'lucide-svelte/icons/code-xml';
 
 export const allItems: SidebarItem[] = [
 	{
@@ -13,6 +14,15 @@ export const allItems: SidebarItem[] = [
 		open: false,
 		hide: false,
 		icon: TableProperties,
+		children: [],
+	},
+	{
+		name: 'Test',
+		value: 'test',
+		href: '/test',
+		open: false,
+		hide: false,
+		icon: CodeXml,
 		children: [],
 	},
 	{

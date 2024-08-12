@@ -1,19 +1,10 @@
 <script lang="ts">
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import './../../app.pcss';
-	// import "@fontsource/open-sans";
-	import { handleRibbonActionChange } from '$lib/utils/ribbon/handleRibbonActionChange';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
-
-	ribbonActionStore.subscribe((action) => {
-		if (action) {
-			handleRibbonActionChange(action)
-		}
-	});
 </script>
 
 

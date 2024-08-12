@@ -12,25 +12,25 @@ export function handleRibbonActionChange(ribbonAction: RibbonActionEnum) {
 
 	// Ribbon akce, které spouští rovnou funkce:
 
-	if (ribbonAction === RibbonActionEnum.SAVE) {
-		save().then(() => ribbonActionStore.set(undefined));
-	}
+	// if (ribbonAction === RibbonActionEnum.SAVE) {
+	// 	save().then(() => ribbonActionStore.set(undefined));
+	// }
 
 	if (ribbonAction === RibbonActionEnum.EDIT) {
 		edit();
 	}
 
-	if (ribbonAction === RibbonActionEnum.DELETE) {
-		deleteItem().then(() => ribbonActionStore.set(undefined));
-	}
+	// if (ribbonAction === RibbonActionEnum.DELETE) {
+	// 	deleteItem().then(() => ribbonActionStore.set(undefined));
+	// }
 
 	if (ribbonAction === RibbonActionEnum.FILTER_REMOVE) {
 		removeFilters();
 	}
 
-	if (ribbonAction === RibbonActionEnum.NEW) {
-		goto("/pruvodni-list/detail").then(() => ribbonActionStore.set(undefined))
-	}
+	// if (ribbonAction === RibbonActionEnum.NEW) {
+	// 	goto("/pruvodni-list/detail").then(() => ribbonActionStore.set(undefined))
+	// }
 
 	if (ribbonAction === RibbonActionEnum.FILTER_QUICK) {
 		filterQuick();	

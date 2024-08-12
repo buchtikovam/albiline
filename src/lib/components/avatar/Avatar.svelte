@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { pageCompactStore } from '$lib/stores/tableStore';
 	import User from 'lucide-svelte/icons/user';
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
@@ -12,14 +11,6 @@
 
 	export let userName: string = 'MBUC';
 	export let userImage: string = '';
-
-	let pageCompactState: 'standard' | 'compact';
-
-	pageCompactStore.subscribe((data) => pageCompactState = data);
-
-	function setRowHeight(state: 'standard' | 'compact') {
-		pageCompactStore.set(state);
-	}
 </script>
 
 
@@ -58,32 +49,6 @@
 				</a>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
-		<DropdownMenu.Separator />
-
-
-		<DropdownMenu.Label>
-			Zobrazení
-		</DropdownMenu.Label>
-
-		<DropdownMenu.RadioGroup
-			bind:value={pageCompactState}
-		>
-			<DropdownMenu.RadioItem
-				value="standard"
-				class="cursor-pointer"
-				on:click={() => setRowHeight("standard")}
-			>
-				Standardní
-			</DropdownMenu.RadioItem>
-
-			<DropdownMenu.RadioItem
-				value="compact"
-				class="cursor-pointer"
-				on:click={() => setRowHeight("compact")}
-			>
-				Kompaktní
-			</DropdownMenu.RadioItem>
-		</DropdownMenu.RadioGroup>
 		<DropdownMenu.Separator />
 
 
