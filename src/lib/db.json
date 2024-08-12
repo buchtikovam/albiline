@@ -221,129 +221,49 @@
 	],
 	"filters": [
 		{
-			"id": "9229",
-			"pageOrigin": "/pruvodni-list",
-			"filterName": "Domácnost vaření",
+			"id": "3d00",
+			"pageOrigin": "/test",
+			"filterName": "abcde",
 			"filters": {
-				"test": {
-					"value": "",
-					"colFilter": "default"
+				"price": {
+					"filterType": "text",
+					"type": "startsWith",
+					"filter": "a"
 				},
-				"ksp": {
-					"value": "81",
-					"colFilter": "starts-with"
+				"title": {
+					"filterType": "text",
+					"operator": "AND",
+					"conditions": [
+						{
+							"filterType": "text",
+							"type": "contains",
+							"filter": "a"
+						},
+						{
+							"filterType": "text",
+							"type": "contains",
+							"filter": "a"
+						}
+					]
 				},
-				"jmeno": {
-					"value": "",
-					"colFilter": "default"
-				},
-				"typ": {
-					"value": "",
-					"colFilter": "default"
-				},
-				"linie": {
-					"value": "Dom",
-					"colFilter": "default"
-				},
-				"koncepce": {
-					"value": "ření",
-					"colFilter": "ends-width"
-				},
-				"listovaciPolozka": {
-					"value": "",
-					"colFilter": "default"
-				},
-				"prodCena": {
-					"value": "",
-					"colFilter": "default"
-				},
-				"skladem": {
-					"value": "",
-					"colFilter": "default"
-				},
-				"vyrobeno": {
-					"value": "",
-					"colFilter": "default"
-				},
-				"klp": {
-					"value": "",
-					"colFilter": "default"
+				"description": {
+					"filterType": "text",
+					"type": "contains",
+					"filter": "da"
 				}
 			}
-		}
-	],
-	"products": [
-		{
-			"id": 0,
-			"accessor": "id",
-			"header": "id",
-			"type": "id",
-			"size": "checkbox",
-			"sortDisabled": 1,
-			"resizeDisabled": 1
 		},
 		{
-			"id": 1,
-			"accessor": "title",
-			"header": "Název",
-			"type": "string",
-			"size": "xlarge",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": 2,
-			"accessor": "category",
-			"header": "Kategorie",
-			"type": "string",
-			"size": "medium",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": 3,
-			"accessor": "price",
-			"header": "Cena",
-			"type": "int",
-			"size": "small",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": 4,
-			"accessor": "rating",
-			"header": "Hodnocení",
-			"type": "int",
-			"size": "small",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": 5,
-			"accessor": "stock",
-			"header": "Skladem",
-			"type": "int",
-			"size": "medium",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": 6,
-			"accessor": "brand",
-			"header": "Výrobce",
-			"type": "string",
-			"size": "large",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": 7,
-			"accessor": "weight",
-			"header": "Váha",
-			"type": "string",
-			"size": "large",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
+			"id": "34b6",
+			"pageOrigin": "/test",
+			"filterName": "a",
+			"filters": {
+				"description": {
+					"filterType": "text",
+					"type": "contains",
+					"filter": "aaa"
+				}
+			}
 		}
 	]
 }

@@ -16,7 +16,10 @@
 
 
 
-<Dialog.Root bind:open={dialogOpen}>
+<Dialog.Root 
+	bind:open={dialogOpen} 
+	closeOnOutsideClick={false}
+>
 	<Dialog.Content class="!w-fit !min-w-[300px]">
 		<Dialog.Header>
 			<Dialog.Title class="h-4 mb-4">

@@ -11,18 +11,18 @@
 		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
 	*/
 
-	let currentDialog: RibbonDialogOptions | undefined = undefined;
+	let currentDialog: RibbonDialogOptions | undefined = $openedDialogStore;
 
 	openedDialogStore.subscribe((dialog) => {
-		currentDialog = dialog
+		currentDialog = dialog	
 	})
 </script>
 
 
 
-{#if currentDialog === "new"}
+<!-- {#if currentDialog === "new"}
 	<NewItemDialog />
-{/if}
+{/if} -->
 
 {#if currentDialog === "my-filters"}
 	<MyFiltersDialog />
@@ -32,10 +32,10 @@
 	<SaveFiltersDialog />
 {/if}
 
-{#if currentDialog === "my-presets"}
+<!-- {#if currentDialog === "my-presets"}
 	<MyPresetsDialog />
 {/if}
 
 {#if currentDialog === "save-preset"}
 	<SavePresetDialog />
-{/if}
+{/if} -->

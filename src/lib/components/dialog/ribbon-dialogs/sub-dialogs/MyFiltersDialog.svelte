@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { currentFiltersStore } from '$lib/stores/tableStore';
+	import { currentColumnFiltersStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import type { FetchedFilter, StoredFilters } from '$lib/types/table/table-filters/columnFilter';
+	import type { FetchedFilter, StoredFilters } from '$lib/types/table/columnFilter';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { writable, type Writable } from 'svelte/store';
@@ -21,6 +21,9 @@
 
 	let dialogOpen: boolean = false;
 	let warningDialogOpen: boolean = false;
+
+	console.log("yay");
+	
 
 	let currentFilterId: number;
 	let filters: FetchedFilter[];
@@ -105,10 +108,13 @@
 
 
 	function loadFiltersInTable(filters: StoredFilters) {
-		currentFiltersStore.set(filters);
-		openedDialogStore.set(undefined);
+		currentColumnFiltersStore.set(filters);
+		
 		ribbonActionStore.set(undefined);
 		dialogOpen = false;
+		setTimeout(() => {
+			openedDialogStore.set(undefined);
+		}, 250);
 	}
 
 
@@ -162,6 +168,7 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
+	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="!w-[400px]">
 		<Dialog.Header>

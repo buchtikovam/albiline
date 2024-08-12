@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
-	import { filterValueStore } from '$lib/stores/tableStore';
+	import { fulltextFilterValueStore } from '$lib/stores/tableStore';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -86,7 +85,7 @@
 				class="max-w-sm h-[31px] mr-4 border-b-white rounded-md rounded-b-none focus-visible:ring-0"
 				placeholder="Filtrovat..."
 				type="text"
-				bind:value={$filterValueStore}
+				bind:value={$fulltextFilterValueStore}
 			/>
 		</div>
 	{/if}

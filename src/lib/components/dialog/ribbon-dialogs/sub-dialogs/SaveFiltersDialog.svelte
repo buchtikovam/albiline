@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { openedDialogStore } from '$lib/stores/ribbonStore';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
@@ -16,15 +16,13 @@
 	let dialogOpen: boolean = false;
 	let inputValue: string = "";
 
-
+	
 	function handleSaveFilters(event: Event) {
 		event.preventDefault();
-
 		saveFilters(inputValue, $page.url.pathname);
 
 		setTimeout(() => {
 			openedDialogStore.set(undefined)
-			ribbonActionStore.set(undefined)
 		}, 250)
 
 		dialogOpen = false
@@ -38,7 +36,10 @@
 
 
 
-<Dialog.Root bind:open={dialogOpen}>
+<Dialog.Root
+	bind:open={dialogOpen}
+	closeOnOutsideClick={false}
+>
 	<Dialog.Content class="!w-fit">
 		<Dialog.Header>
 			<Dialog.Title class="h-4 mb-4">

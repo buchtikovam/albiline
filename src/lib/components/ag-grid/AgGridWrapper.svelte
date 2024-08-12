@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { columnOrderStore } from "$lib/stores/tableStore";
+	import { testColDef } from '$lib/data/column-definitons/test';
+	import { columnOrderStore, currentColumnFiltersStore, editedDataStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
@@ -12,15 +13,17 @@
 		type IServerSideDatasource, 
 		type IServerSideGetRowsParams 
 	} from "ag-grid-enterprise";
-	import { ribbonActionStore } from "$lib/stores/ribbonStore";
+	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
+	import { customToast } from "$lib/utils/toast/customToast";
+	import { get } from 'svelte/store';
 
-	export let columnDefinitions;
+	export let columnDefinitions: any[];
 	export let url: string;
 
 	// TODO: listen to ribbon
 
-	let gridContainer;
+	let gridContainer: HTMLElement;
 	
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
@@ -34,12 +37,12 @@
 			filter: 'agTextColumnFilter'
 		},	
 
-		columnDefs: columnDefinitions,
-
 		onCellValueChanged: (event) => {
 			console.log(`New Cell Value: ${JSON.stringify(event.newValue)}`)
 		},
 
+		maintainColumnOrder: true, 
+		columnDefs: columnDefinitions,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
 		cacheBlockSize: 1000,
@@ -47,17 +50,18 @@
 	}
 
 
+
 	let gridApi: GridApi<unknown>;
 	let recentFilters: FilterModel[] = [];
 
-		
+	
+	
 	const datasource: IServerSideDatasource = {
 		getRows(params: IServerSideGetRowsParams) {
 
 			// infinite scroll model
 			let updatedParamsRequest = params.request
 			updatedParamsRequest.fullText = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
-			console.log(updatedParamsRequest);
 
 
 			// column order
@@ -66,25 +70,16 @@
 			cols.map((column) => {
 				colOrder.push(column.getId());
 			});
-			console.log(colOrder);
 			columnOrderStore.set(colOrder);
 
 
-			// get filter instances into variable
+			// store latest filters in variable
 			const currentFilter = gridApi.getFilterModel();
-			console.log(currentFilter);
-
-
-			// TODO: save last filters into store / local storeage
 			const lastStoredFilter = recentFilters[recentFilters.length - 1]
 
 			if (Object.keys(currentFilter).length > 0) {
-				console.log("keys");
 				if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-					console.log("if");
-					
 					recentFilters.push(currentFilter)
-					console.log(recentFilters);
 				}
 			}
 
@@ -108,26 +103,59 @@
 	};
 
 
-	ribbonActionStore.subscribe((action: RibbonActionEnum) => {
-		console.log(action);
-		
-		
-		if (action === RibbonActionEnum.FILTER_UNDO) {
-			let lastFilter = recentFilters.pop()
-			if (lastFilter) {
-				gridApi.setFilterModel(lastFilter)
-			}
-
-			
-			
-		}
-
-	})
-
-
 	onMount(() => {
 		gridApi = createGrid(gridContainer, gridOptions);
 		gridApi.setGridOption('serverSideDatasource', datasource);
+	})
+
+
+
+	ribbonActionStore.subscribe((action) => {		
+		if (action === RibbonActionEnum.FILTER_UNDO) {
+			recentFilters.pop()
+			if (recentFilters.length > 0) {
+				gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
+			} else {
+				gridApi.setFilterModel(null);
+			}
+		}
+
+		if (action === RibbonActionEnum.FILTER_REMOVE) {
+			gridApi.setFilterModel(null)
+		}
+
+		if (action === RibbonActionEnum.SAVE_FILTERS) {
+			if (Object.keys(gridApi.getFilterModel()).length > 0) {
+				openedDialogStore.set("save-filters")
+				currentColumnFiltersStore.set(gridApi.getFilterModel())
+			} else {
+				customToast("InfoToast", "Nemáte žádné filtry k uložení.")
+			}	
+		}
+
+		if (action === RibbonActionEnum.EDIT) {
+			isEditAllowedStore.update((data) => !data)
+
+			let isEditable = get(isEditAllowedStore)
+		
+			columnDefinitions.map((column) => {
+				column.editable = isEditable
+			}) 
+			
+			gridApi.setGridOption("columnDefs", columnDefinitions);
+
+			isEditable === true 
+				? customToast("InfoToast", "Editace byla povolena.")
+				: customToast("InfoToast", "Editace byla zakázána.")
+		}
+
+		if (action === RibbonActionEnum.MY_FILTERS) {
+			console.log(action);
+			
+			openedDialogStore.set("my-filters")
+		}
+
+		ribbonActionStore.set(undefined)
 	})
 </script>
 
@@ -146,6 +174,3 @@
 		bind:this={gridContainer}
 	></div>
 </div>
-
-
-<!-- TODO: style checkboxes -->

@@ -1,18 +1,18 @@
 import { ribbonActionStore } from '$lib/stores/ribbonStore';
-import { currentFiltersStore } from '$lib/stores/tableStore';
-import type { StoredFilters } from '$lib/types/table/filter';
+import { currentColumnFiltersStore } from '$lib/stores/tableStore';
+import type { ColumnFilters } from '$lib/types/table/columnFilter';
 import { get } from 'svelte/store';
 
 
 export function removeFilters() {
 	ribbonActionStore.set(undefined)
 
-	const currentFilters: StoredFilters = get(currentFiltersStore);
+	const currentFilters: ColumnFilters = get(currentColumnFiltersStore)
 
 	Object.values(currentFilters).forEach((filter) => {
 		filter.value = "";
 		filter.colFilter = "default"
 	})
 
-	currentFiltersStore.set(currentFilters)
+	currentColumnFiltersStore.set(currentFilters)
 }
