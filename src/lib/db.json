@@ -1,269 +1,269 @@
 {
-	"pruvodni-list-data": [
-		{
-			"id": "2",
-			"ksp": 75862,
-			"jmeno": "Domeček pro panenky",
-			"typ": "Produkt",
-			"linie": "Dětský svět",
-			"koncepce": "Hračky",
-			"klp": "D",
-			"listovaciPolozka": "Hračky",
-			"prodCena": 129,
-			"skladem": 185,
-			"vyrobeno": 23456
-		},
-		{
-			"id": "3",
-			"ksp": 35967,
-			"jmeno": "Pletená šála",
-			"typ": "Produkt",
-			"linie": "Dámská móda",
-			"koncepce": "Doplňky",
-			"klp": "O",
-			"listovaciPolozka": "Dámské doplňky",
-			"prodCena": 399,
-			"skladem": 43,
-			"vyrobeno": 8765
-		},
-		{
-			"id": "4",
-			"ksp": 81038,
-			"jmeno": "Sada hrnců s nepřilnavým povrchem",
-			"typ": "Produkt",
-			"linie": "Domácnost",
-			"koncepce": "Kuchyňské potřeby",
-			"klp": "H",
-			"listovaciPolozka": "Kuchyňské vybavení",
-			"prodCena": 1999,
-			"skladem": 12,
-			"vyrobeno": 1234
-		},
-		{
-			"id": "5",
-			"ksp": "71039",
-			"jmeno": "Telefon s velkým displejem",
-			"typ": "Produkt",
-			"linie": "Elektronika",
-			"koncepce": "Mobilní telefony",
-			"klp": "E",
-			"listovaciPolozka": "Mobilní telefony",
-			"prodCena": 9999,
-			"skladem": 5,
-			"vyrobeno": 321
-		},
-		{
-			"id": "6",
-			"ksp": 81040,
-			"jmeno": "Horské kolo",
-			"typ": "Produkt",
-			"linie": "Sport",
-			"koncepce": "Kola",
-			"klp": "S",
-			"listovaciPolozka": "Sportovní vybavení",
-			"prodCena": "13999",
-			"skladem": 2,
-			"vyrobeno": 100
-		},
-		{
-			"id": "7",
-			"ksp": 15364,
-			"jmeno": "Sada LEGO City Vesmírná raketa",
-			"typ": "Produkt",
-			"linie": "Dětský svět",
-			"koncepce": "Hračky",
-			"klp": "D",
-			"listovaciPolozka": "Hračky",
-			"prodCena": 599,
-			"skladem": 150,
-			"vyrobeno": 7890
-		},
-		{
-			"id": "8",
-			"ksp": 81042,
-			"jmeno": "Dámské kožené boty na podpatku",
-			"typ": "Produkt",
-			"linie": "Dámská móda",
-			"koncepce": "Obuv",
-			"klp": "O",
-			"listovaciPolozka": "Dámská obuv",
-			"prodCena": 1499,
-			"skladem": 32,
-			"vyrobeno": 4321
-		},
-		{
-			"id": "9",
-			"ksp": 81043,
-			"jmeno": "Mikrovlnná trouba s grilem",
-			"typ": "Produkt",
-			"linie": "Domácnost",
-			"koncepce": "Malé spotřebiče",
-			"klp": "H",
-			"listovaciPolozka": "Malé spotřebiče",
-			"prodCena": 2499,
-			"skladem": 8,
-			"vyrobeno": 1234
-		},
-		{
-			"id": "10",
-			"ksp": 81044,
-			"jmeno": "Notebook s dotykovou obrazovkou",
-			"typ": "Produkt",
-			"linie": "Elektronika",
-			"koncepce": "Notebooky",
-			"klp": "E",
-			"listovaciPolozka": "Notebooky",
-			"prodCena": 49999,
-			"skladem": 1,
-			"vyrobeno": 100
-		}
-	],
-	"pruvodni-list-info": [
-		{
-			"id": "0",
-			"accessor": "id",
-			"header": "id",
-			"type": "id",
-			"size": "checkbox",
-			"sortDisabled": 1,
-			"resizeDisabled": 1
-		},
-		{
-			"id": "1",
-			"accessor": "ksp",
-			"header": "KSP",
-			"type": "string",
-			"size": "small",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "2",
-			"accessor": "jmeno",
-			"header": "Jméno",
-			"type": "string",
-			"size": "xlarge",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "3",
-			"accessor": "typ",
-			"header": "Typ",
-			"type": "string",
-			"size": "small",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "4",
-			"accessor": "linie",
-			"header": "Linie",
-			"type": "string",
-			"size": "medium",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "5",
-			"accessor": "koncepce",
-			"header": "Koncepce",
-			"type": "string",
-			"size": "large",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "6",
-			"accessor": "klp",
-			"header": "KLP",
-			"type": "string",
-			"size": "small",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "7",
-			"accessor": "listovaciPolozka",
-			"header": "Listovací položka",
-			"type": "string",
-			"size": "large",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "8",
-			"accessor": "prodCena",
-			"header": "Cena",
-			"type": "currency",
-			"size": "medium",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "9",
-			"accessor": "skladem",
-			"header": "Skladem",
-			"type": "int",
-			"size": "medium",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		},
-		{
-			"id": "10",
-			"accessor": "vyrobeno",
-			"header": "Vyrobeno",
-			"type": "int",
-			"size": "small",
-			"sortDisabled": 0,
-			"resizeDisabled": 0
-		}
-	],
-	"filters": [
-		{
-			"id": "3d00",
-			"pageOrigin": "/test",
-			"filterName": "abcde",
-			"filters": {
-				"price": {
-					"filterType": "text",
-					"type": "startsWith",
-					"filter": "a"
-				},
-				"title": {
-					"filterType": "text",
-					"operator": "AND",
-					"conditions": [
-						{
-							"filterType": "text",
-							"type": "contains",
-							"filter": "a"
-						},
-						{
-							"filterType": "text",
-							"type": "contains",
-							"filter": "a"
-						}
-					]
-				},
-				"description": {
-					"filterType": "text",
-					"type": "contains",
-					"filter": "da"
-				}
-			}
-		},
-		{
-			"id": "34b6",
-			"pageOrigin": "/test",
-			"filterName": "a",
-			"filters": {
-				"description": {
-					"filterType": "text",
-					"type": "contains",
-					"filter": "aaa"
-				}
-			}
-		}
-	]
+  "pruvodni-list-data": [
+    {
+      "id": "2",
+      "ksp": 75862,
+      "jmeno": "Domeček pro panenky",
+      "typ": "Produkt",
+      "linie": "Dětský svět",
+      "koncepce": "Hračky",
+      "klp": "D",
+      "listovaciPolozka": "Hračky",
+      "prodCena": 129,
+      "skladem": 185,
+      "vyrobeno": 23456
+    },
+    {
+      "id": "3",
+      "ksp": 35967,
+      "jmeno": "Pletená šála",
+      "typ": "Produkt",
+      "linie": "Dámská móda",
+      "koncepce": "Doplňky",
+      "klp": "O",
+      "listovaciPolozka": "Dámské doplňky",
+      "prodCena": 399,
+      "skladem": 43,
+      "vyrobeno": 8765
+    },
+    {
+      "id": "4",
+      "ksp": 81038,
+      "jmeno": "Sada hrnců s nepřilnavým povrchem",
+      "typ": "Produkt",
+      "linie": "Domácnost",
+      "koncepce": "Kuchyňské potřeby",
+      "klp": "H",
+      "listovaciPolozka": "Kuchyňské vybavení",
+      "prodCena": 1999,
+      "skladem": 12,
+      "vyrobeno": 1234
+    },
+    {
+      "id": "5",
+      "ksp": "71039",
+      "jmeno": "Telefon s velkým displejem",
+      "typ": "Produkt",
+      "linie": "Elektronika",
+      "koncepce": "Mobilní telefony",
+      "klp": "E",
+      "listovaciPolozka": "Mobilní telefony",
+      "prodCena": 9999,
+      "skladem": 5,
+      "vyrobeno": 321
+    },
+    {
+      "id": "6",
+      "ksp": 81040,
+      "jmeno": "Horské kolo",
+      "typ": "Produkt",
+      "linie": "Sport",
+      "koncepce": "Kola",
+      "klp": "S",
+      "listovaciPolozka": "Sportovní vybavení",
+      "prodCena": "13999",
+      "skladem": 2,
+      "vyrobeno": 100
+    },
+    {
+      "id": "7",
+      "ksp": 15364,
+      "jmeno": "Sada LEGO City Vesmírná raketa",
+      "typ": "Produkt",
+      "linie": "Dětský svět",
+      "koncepce": "Hračky",
+      "klp": "D",
+      "listovaciPolozka": "Hračky",
+      "prodCena": 599,
+      "skladem": 150,
+      "vyrobeno": 7890
+    },
+    {
+      "id": "8",
+      "ksp": 81042,
+      "jmeno": "Dámské kožené boty na podpatku",
+      "typ": "Produkt",
+      "linie": "Dámská móda",
+      "koncepce": "Obuv",
+      "klp": "O",
+      "listovaciPolozka": "Dámská obuv",
+      "prodCena": 1499,
+      "skladem": 32,
+      "vyrobeno": 4321
+    },
+    {
+      "id": "9",
+      "ksp": 81043,
+      "jmeno": "Mikrovlnná trouba s grilem",
+      "typ": "Produkt",
+      "linie": "Domácnost",
+      "koncepce": "Malé spotřebiče",
+      "klp": "H",
+      "listovaciPolozka": "Malé spotřebiče",
+      "prodCena": 2499,
+      "skladem": 8,
+      "vyrobeno": 1234
+    },
+    {
+      "id": "10",
+      "ksp": 81044,
+      "jmeno": "Notebook s dotykovou obrazovkou",
+      "typ": "Produkt",
+      "linie": "Elektronika",
+      "koncepce": "Notebooky",
+      "klp": "E",
+      "listovaciPolozka": "Notebooky",
+      "prodCena": 49999,
+      "skladem": 1,
+      "vyrobeno": 100
+    }
+  ],
+  "pruvodni-list-info": [
+    {
+      "id": "0",
+      "accessor": "id",
+      "header": "id",
+      "type": "id",
+      "size": "checkbox",
+      "sortDisabled": 1,
+      "resizeDisabled": 1
+    },
+    {
+      "id": "1",
+      "accessor": "ksp",
+      "header": "KSP",
+      "type": "string",
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "2",
+      "accessor": "jmeno",
+      "header": "Jméno",
+      "type": "string",
+      "size": "xlarge",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "3",
+      "accessor": "typ",
+      "header": "Typ",
+      "type": "string",
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "4",
+      "accessor": "linie",
+      "header": "Linie",
+      "type": "string",
+      "size": "medium",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "5",
+      "accessor": "koncepce",
+      "header": "Koncepce",
+      "type": "string",
+      "size": "large",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "6",
+      "accessor": "klp",
+      "header": "KLP",
+      "type": "string",
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "7",
+      "accessor": "listovaciPolozka",
+      "header": "Listovací položka",
+      "type": "string",
+      "size": "large",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "8",
+      "accessor": "prodCena",
+      "header": "Cena",
+      "type": "currency",
+      "size": "medium",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "9",
+      "accessor": "skladem",
+      "header": "Skladem",
+      "type": "int",
+      "size": "medium",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    },
+    {
+      "id": "10",
+      "accessor": "vyrobeno",
+      "header": "Vyrobeno",
+      "type": "int",
+      "size": "small",
+      "sortDisabled": 0,
+      "resizeDisabled": 0
+    }
+  ],
+  "filters": [
+    {
+      "id": "3d00",
+      "pageOrigin": "/test",
+      "filterName": "abcde",
+      "filters": {
+        "price": {
+          "filterType": "text",
+          "type": "startsWith",
+          "filter": "a"
+        },
+        "title": {
+          "filterType": "text",
+          "operator": "AND",
+          "conditions": [
+            {
+              "filterType": "text",
+              "type": "contains",
+              "filter": "a"
+            },
+            {
+              "filterType": "text",
+              "type": "contains",
+              "filter": "a"
+            }
+          ]
+        },
+        "description": {
+          "filterType": "text",
+          "type": "contains",
+          "filter": "da"
+        }
+      }
+    },
+    {
+      "id": "34b6",
+      "pageOrigin": "/test",
+      "filterName": "abc",
+      "filters": {
+        "description": {
+          "filterType": "text",
+          "type": "contains",
+          "filter": "aaa"
+        }
+      }
+    }
+  ]
 }

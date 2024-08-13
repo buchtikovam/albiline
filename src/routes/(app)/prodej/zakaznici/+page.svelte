@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AgGridWrapper from '$lib/components/ag-grid/AgGridWrapper.svelte';
+	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import { zakazniciColDef } from '$lib/data/column-definitons/zakaznici';
 </script>
 
@@ -9,7 +9,7 @@
 </svelte:head>
 
 
-<AgGridWrapper 
+<AgGridSSWrapper 
 	columnDefinitions={zakazniciColDef}
 	url="http://10.2.2.181/customers"
 />

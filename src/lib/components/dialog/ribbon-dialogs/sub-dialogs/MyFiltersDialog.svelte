@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { currentColumnFiltersStore } from '$lib/stores/tableStore';
+	import { currentColumnFiltersStore, selectedFilterStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import type { FetchedFilter, StoredFilters } from '$lib/types/table/columnFilter';
+	import type { FetchedFilter, ColumnFilters } from '$lib/types/table/columnFilter';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { writable, type Writable } from 'svelte/store';
@@ -20,10 +20,7 @@
 	*/
 
 	let dialogOpen: boolean = false;
-	let warningDialogOpen: boolean = false;
-
-	console.log("yay");
-	
+	let warningDialogOpen: boolean = false;	
 
 	let currentFilterId: number;
 	let filters: FetchedFilter[];
@@ -107,8 +104,8 @@
 	}
 
 
-	function loadFiltersInTable(filters: StoredFilters) {
-		currentColumnFiltersStore.set(filters);
+	function loadFiltersInTable(filters: ColumnFilters) {
+		selectedFilterStore.set(filters)
 		
 		ribbonActionStore.set(undefined);
 		dialogOpen = false;
@@ -126,24 +123,17 @@
 				filter
 			)
 
-			if (!response.ok) {
-				customToast(
-					'Critical',
-					'Nastala chyba při editaci filtru.'
-				);
+			if (response.ok) {
+				customToast('Success','Filtr byl úspěšně upraven.');
+				isEditing = false;
+			} else {
+				customToast('Critical','Nastala chyba při editaci filtru.');
+				isEditing = false;
 			}
 
-			customToast(
-				'Success',
-				'Filtr byl úspěšně upraven.'
-			);
-			isEditing = false
 		} catch (error) {
+			customToast('Critical','Nastala chyba při editaci filtru.');
 			console.error('Error deleting filter:', error);
-			customToast(
-				'Critical',
-				'Nastala chyba při editaci filtru.'
-			);
 		}
 	}
 

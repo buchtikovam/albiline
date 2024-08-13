@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { testColDef } from '$lib/data/column-definitons/test';
-	import { columnOrderStore, currentColumnFiltersStore, editedDataStore } from "$lib/stores/tableStore";
+	import { columnOrderStore, currentColumnFiltersStore, selectedFilterStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
@@ -8,10 +7,11 @@
 	import { 
 		createGrid, 
 		type FilterModel, 
+		type GetRowIdParams, 
 		type GridApi, 
 		type GridOptions, 
 		type IServerSideDatasource, 
-		type IServerSideGetRowsParams 
+		type IServerSideGetRowsParams, 
 	} from "ag-grid-enterprise";
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
@@ -24,21 +24,28 @@
 	// TODO: listen to ribbon
 
 	let gridContainer: HTMLElement;
+	let gridApi: GridApi<unknown>;
+
 	
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
 
+		
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
 			editable: true,
 			minWidth: 100,
 			maxWidth: 400,
-			filter: 'agTextColumnFilter'
+			filter: 'agMultiColumnFilter'
 		},	
 
 		onCellValueChanged: (event) => {
 			console.log(`New Cell Value: ${JSON.stringify(event.newValue)}`)
+		},
+
+		getRowId: (params: GetRowIdParams) => {			
+			return String(params.data.id);
 		},
 
 		maintainColumnOrder: true, 
@@ -47,14 +54,13 @@
 		rowSelection: "multiple",
 		cacheBlockSize: 1000,
 		maxBlocksInCache: 10,
+		// debug: true
 	}
 
+	// TODO: maintain column widths
 
-
-	let gridApi: GridApi<unknown>;
 	let recentFilters: FilterModel[] = [];
 
-	
 	
 	const datasource: IServerSideDatasource = {
 		getRows(params: IServerSideGetRowsParams) {
@@ -62,7 +68,8 @@
 			// infinite scroll model
 			let updatedParamsRequest = params.request
 			updatedParamsRequest.fullText = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
-
+			console.log(JSON.stringify(updatedParamsRequest), 1, null);
+			
 
 			// column order
 			const cols = gridApi!.getAllGridColumns();
@@ -82,6 +89,8 @@
 					recentFilters.push(currentFilter)
 				}
 			}
+
+			console.log(recentFilters);
 
 
 			fetch(url
@@ -106,11 +115,58 @@
 	onMount(() => {
 		gridApi = createGrid(gridContainer, gridOptions);
 		gridApi.setGridOption('serverSideDatasource', datasource);
+
+		selectedFilterStore.subscribe((filters) => {
+			console.log(filters);
+			gridApi.setFilterModel(filters)
+		})
 	})
 
 
 
 	ribbonActionStore.subscribe((action) => {		
+		if (action === RibbonActionEnum.NEW) { // todo
+			gridApi.applyServerSideTransaction({
+				add: [{
+					title: "",
+					description: "",
+					category: "",
+					price: "",
+					discountPercentage: ""
+				}]
+			})	
+		}
+
+		if (action === RibbonActionEnum.EDIT) {
+			isEditAllowedStore.update((data) => !data)
+
+			let isEditable = get(isEditAllowedStore)
+		
+			columnDefinitions.map((column) => {
+				column.editable = isEditable
+			}) 
+			
+			gridApi.setGridOption("columnDefs", columnDefinitions);
+
+			isEditable === true 
+				? customToast("InfoToast", "Editace byla povolena.")
+				: customToast("InfoToast", "Editace byla zakázána.")
+		}
+
+		if (action === RibbonActionEnum.DELETE) { // add post rq
+			const selectedRows = gridApi!.getSelectedRows();
+
+			console.log(selectedRows.map(row => row.id));
+		}
+
+		if (action === RibbonActionEnum.SAVE) { // todo
+
+		}
+
+		if (action === RibbonActionEnum.LOAD) { // todo
+			
+		}
+
 		if (action === RibbonActionEnum.FILTER_UNDO) {
 			recentFilters.pop()
 			if (recentFilters.length > 0) {
@@ -133,30 +189,13 @@
 			}	
 		}
 
-		if (action === RibbonActionEnum.EDIT) {
-			isEditAllowedStore.update((data) => !data)
-
-			let isEditable = get(isEditAllowedStore)
-		
-			columnDefinitions.map((column) => {
-				column.editable = isEditable
-			}) 
-			
-			gridApi.setGridOption("columnDefs", columnDefinitions);
-
-			isEditable === true 
-				? customToast("InfoToast", "Editace byla povolena.")
-				: customToast("InfoToast", "Editace byla zakázána.")
-		}
-
 		if (action === RibbonActionEnum.MY_FILTERS) {
-			console.log(action);
-			
 			openedDialogStore.set("my-filters")
 		}
 
+
 		ribbonActionStore.set(undefined)
-	})
+	})	
 </script>
 
 

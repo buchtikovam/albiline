@@ -30,3 +30,5 @@ export const currentSortStore: Writable<any> = writable()
 export const showFulltextSearchStore: Writable<boolean> = writable(false)
 
 export const fulltextFilterValueStore: Writable<string> = writable("")
+
+export const selectedFilterStore: Writable<ColumnFilters> = writable({})
