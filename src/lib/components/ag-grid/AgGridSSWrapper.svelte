@@ -68,7 +68,7 @@
 			// infinite scroll model
 			let updatedParamsRequest = params.request
 			updatedParamsRequest.fullText = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
-			console.log(JSON.stringify(updatedParamsRequest), 1, null);
+			console.log(JSON.stringify(updatedParamsRequest, null, 1));
 			
 
 			// column order
