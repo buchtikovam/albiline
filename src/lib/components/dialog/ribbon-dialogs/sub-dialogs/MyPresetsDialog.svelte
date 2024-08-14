@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { selectedFilterStore } from '$lib/stores/tableStore';
+	import { selectedFilterStore, selectedPresetStore } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import type { FetchedFilter, ColumnFilters } from '$lib/types/table/columnFilter';
+	import type { FetchedPreset, Preset } from '$lib/types/table/presets';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/toast/customToast';
 	import { writable, type Writable } from 'svelte/store';
@@ -15,28 +15,28 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	/*
-		Dialog zobrazující uložené column filtry pro danou tabulku,
-		možnost řazení, editace a mazání filtrů
+		Dialog zobrazující uložené šablony pro danou tabulku,
+		možnost řazení, editace a mazání šablon
 	*/
 
 	let dialogOpen: boolean = false;
 	let warningDialogOpen: boolean = false;	
 
-	let currentFilterId: number;
-	let filters: FetchedFilter[];
-	let deleteFilterConsent: Writable<boolean> = writable(false);
+	let currentPresetId: number;
+	let presets: FetchedPreset[];
+	let deleteConsent: Writable<boolean> = writable(false);
 
 	let isEditing: boolean = false;
 	let currentEditedId: number | undefined = undefined;
 
 
-	async function fetchFilters() {
+	async function fetchPresets() {
 		try {
 			// fetch only filters based on page name, avoid filtering on FE
-			const response = await fetch('http://localhost:3000/filters');
-			filters = await response.json();
+			const response = await fetch('http://localhost:3000/presets');
+			presets = await response.json();
 
-			filters = filters?.filter((filter: FetchedFilter) => {
+			presets = presets?.filter((filter: FetchedPreset) => {
 				return filter.pageOrigin === $page.url.pathname;
 			});
 		} catch (error) {
@@ -50,25 +50,25 @@
 	let hovering: number | null;
 	let start: number;
 
-	function dragFilter(e: DragEvent, index: number) {
+	function dragPreset(e: DragEvent, index: number) {
 		if (e.dataTransfer) {
 			e.dataTransfer.setData('text', String(index));
 			start = index;
 		}
 	}
 
-	function setHoveringFilter(index: number) {
+	function setHoveringPreset(index: number) {
 		hovering = index;
 	}
 
-	function dropFilter(e: DragEvent, target: number | null) {
+	function dropPreset(e: DragEvent, target: number | null) {
 		if (e.dataTransfer && target !== null) {
 			if (start < target) {
-				filters.splice(target + 1, 0, filters[start]);
-				filters.splice(start, 1);
+				presets.splice(target + 1, 0, presets[start]);
+				presets.splice(start, 1);
 			} else {
-				filters.splice(target, 0, filters[start]);
-				filters.splice(start + 1, 1);
+				presets.splice(target, 0, presets[start]);
+				presets.splice(start + 1, 1);
 			}
 			hovering = null;
 		}
@@ -76,36 +76,36 @@
 
 
 	// Smazání filtru po souhlasu ve warning dialogu
-	async function deleteFilter(filterId: number | undefined) {
+	async function deletePreset(filterId: number | undefined) {
 		if (!filterId) return;
 
 		try {
-			const response = await apiServiceDELETE('filters', filterId);
+			const response = await apiServiceDELETE('presets', filterId);
 
 			if (!response.ok) {
 				customToast(
 					'Critical',
-					'Nastala chyba při mazání filtru.'
+					'Nastala chyba při mazání šablony.'
 				);
 			}
 			// frontendové smazání filtru, aby se nemuselo znovu fetchovat
-			filters = filters?.filter(filter => filter.id !== filterId);
+			presets = presets?.filter(filter => filter.id !== filterId);
 			customToast(
 				'Success',
-				'Filtr byl úspěšně smazán'
+				'Šablona byla úspěšně smazána'
 			);
 		} catch (error) {
 			console.error('Error deleting filter:', error);
 			customToast(
 				'Critical',
-				'Nastala chyba při mazání filtru.'
+				'Nastala chyba při mazání šablony.'
 			);
 		}
 	}
 
 
-	function loadFiltersInTable(filters: ColumnFilters) {
-		selectedFilterStore.set(filters)
+	function loadPresetsInTable(presets: Preset[]) {
+		selectedPresetStore.set(presets)
 		
 		ribbonActionStore.set(undefined);
 		dialogOpen = false;
@@ -115,42 +115,42 @@
 	}
 
 
-	async function updateFilter(filter: FetchedFilter) {
+	async function updatePreset(preset: FetchedPreset) {
 		try {
 			const response = await apiServicePUT(
-				"filters",
-				filter.id,
-				filter
+				"presets",
+				preset.id,
+				preset
 			)
 
 			if (response.ok) {
-				customToast('Success','Filtr byl úspěšně upraven.');
+				customToast('Success','Šablona byla úspěšně upravena.');
 				isEditing = false;
 			} else {
-				customToast('Critical','Nastala chyba při editaci filtru.');
+				customToast('Critical','Nastala chyba při editaci šablony.');
 				isEditing = false;
 			}
 
 		} catch (error) {
-			customToast('Critical','Nastala chyba při editaci filtru.');
-			console.error('Error deleting filter:', error);
+			customToast('Critical','Nastala chyba při editaci šablony.');
+			console.error('Error deleting preset:', error);
 		}
 	}
 
 
 	// Nastavuje se ve warning dialogu. Pokud je true, zvolený filtr se smaže
-	deleteFilterConsent.subscribe((consent) => {
+	deleteConsent.subscribe((consent) => {
 		if (consent) {
-			deleteFilter(currentFilterId);
+			deletePreset(currentPresetId);
 		}
 
-		deleteFilterConsent.set(false);
+		deleteConsent.set(false);
 	});
 
 
 	onMount(() => {
 		dialogOpen = true;
-		fetchFilters()
+		fetchPresets()
 	});
 </script>
 
@@ -163,44 +163,44 @@
 	<Dialog.Content class="!w-[400px]">
 		<Dialog.Header>
 			<Dialog.Title class="h-6 mb-2">
-				Moje filtry
+				Moje šablony
 			</Dialog.Title>
 		</Dialog.Header>
 
 
-		{#if filters !== undefined}
-			{#if filters.length === 0}
+		{#if presets !== undefined}
+			{#if presets.length === 0}
 				<p class="mt-2">
-					Nemáte uložené žádné filtry.
+					Nemáte uložené žádné šablony.
 				</p>
 			{/if}
 
 			<div>
-				{#each filters as filter, index (filter.id)}
+				{#each presets as preset, index (preset.id)}
 					<div
 						role="listitem"
 						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
 					>
-						{#if isEditing && currentEditedId === filter.id}
+						{#if isEditing && currentEditedId === preset.id}
 							<form
-								on:submit={() => updateFilter(filter)}
-								on:focusout={() => updateFilter(filter)}
+								on:submit={() => updatePreset(preset)}
+								on:focusout={() => updatePreset(preset)}
 								class="w-full">
 								<Input
 									class="w-fit h-7 m-1"
-									bind:value={filter.filterName}
+									bind:value={preset.presetName}
 								/>
 							</form>
 						{:else}
 							<button
 								draggable="true"
-								on:click={() => loadFiltersInTable(filter.filters)}
-								on:dragstart={(e) => dragFilter(e, index)}
-								on:dragover={() => setHoveringFilter(index)}
-								on:dragend={(e) => dropFilter(e, hovering)}
+								on:click={() => loadPresetsInTable(preset.presets)}
+								on:dragstart={(e) => dragPreset(e, index)}
+								on:dragover={() => setHoveringPreset(index)}
+								on:dragend={(e) => dropPreset(e, hovering)}
 								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
 							>
-								{filter.filterName}
+								{preset.presetName}
 							</button>
 						{/if}
 
@@ -208,7 +208,7 @@
 							<button
 								on:click={() => {
 									isEditing = !isEditing
-									currentEditedId = filter.id
+									currentEditedId = preset.id
 								}}
 								class="size-5"
 							>
@@ -218,7 +218,7 @@
 							<button
 								on:click={() => {
 									warningDialogOpen = true
-									if (filter.id) currentFilterId = filter.id
+									if (preset.id) currentPresetId = preset.id
 								}}
 								class="size-5"
 							>
@@ -242,9 +242,9 @@
 
 <WarningDialog
 	bind:open={warningDialogOpen}
-	bind:consent={deleteFilterConsent}
+	bind:consent={deleteConsent}
 	message="Opravdu chcete pokračovat?"
 	desription="Tuhle akci nelze vrátit."
-	buttonAllowLabel="Smazat filtr"
+	buttonAllowLabel="Smazat šablonu"
 	buttonDenyLabel="Zrušit"
 />

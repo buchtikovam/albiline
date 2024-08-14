@@ -2,9 +2,9 @@
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
 	import type { RibbonDialogOptions } from '$lib/types/ribbon/ribbonDialogOptions';
 	import MyFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/MyFiltersDialog.svelte';
-	// // import MyPresetsDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/todo-MyPresetsDialog.svelte';
 	import SaveFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/SaveFiltersDialog.svelte';
-	// import SavePresetDialog from './sub-dialogs/SavePresetDialog.svelte';
+	import SavePresetDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/SavePresetDialog.svelte';
+	import MyPresetsDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/MyPresetsDialog.svelte';
 
 	/*
 		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
@@ -14,6 +14,8 @@
 
 	openedDialogStore.subscribe((dialog) => {
 		currentDialog = dialog	
+		console.log(dialog);
+		
 	})
 </script>
 
@@ -27,10 +29,10 @@
 	<SaveFiltersDialog />
 {/if}
 
-<!-- {#if currentDialog === "my-presets"}
+{#if currentDialog === "my-presets"}
 	<MyPresetsDialog />
 {/if}
 
 {#if currentDialog === "save-preset"}
 	<SavePresetDialog />
-{/if} -->
+{/if}

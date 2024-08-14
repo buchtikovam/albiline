@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { columnOrderStore, currentColumnFiltersStore, selectedFilterStore } from "$lib/stores/tableStore";
+	import { columnOrderStore, currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
@@ -18,10 +18,11 @@
 	import { customToast } from "$lib/utils/toast/customToast";
 	import { get } from 'svelte/store';
 
+	// delete, new row, save, save preset, my presets
+	
 	export let columnDefinitions: any[];
 	export let url: string;
 
-	// TODO: listen to ribbon
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
@@ -30,18 +31,18 @@
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
 
-		
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
 			editable: true,
 			minWidth: 100,
 			maxWidth: 400,
-			filter: 'agMultiColumnFilter'
+			hide: false,
+			filter: 'agTextColumnFilter'
 		},	
 
 		onCellValueChanged: (event) => {
-			console.log(`New Cell Value: ${JSON.stringify(event.newValue)}`)
+			addToEditedData(event.data, event.column.getColId(), event.newValue)
 		},
 
 		getRowId: (params: GetRowIdParams) => {			
@@ -54,14 +55,31 @@
 		rowSelection: "multiple",
 		cacheBlockSize: 1000,
 		maxBlocksInCache: 10,
-		// debug: true
+		debug: true
 	}
 
 	// TODO: maintain column widths
 
 	let recentFilters: FilterModel[] = [];
-
 	
+	function addToEditedData(params: Record<string, any>, column: string, newValue: any) {
+		let editedData = get(editedDataStore);
+		let foundMatch = false;
+
+		editedData.forEach((record) => {
+			if (record.id === params.id) {
+				foundMatch = true;
+				record[column] = newValue;
+				editedDataStore.set(editedData);
+			}	
+		})
+
+		if (!foundMatch) {
+			editedDataStore.update((records) => records.concat(params));
+		}
+	}
+
+
 	const datasource: IServerSideDatasource = {
 		getRows(params: IServerSideGetRowsParams) {
 
@@ -120,14 +138,21 @@
 			console.log(filters);
 			gridApi.setFilterModel(filters)
 		})
+
+		selectedPresetStore.subscribe((preset) => {
+			console.log(preset);
+			gridApi.setGridOption("columnDefs", preset)
+		}) 
 	})
 
 
 
 	ribbonActionStore.subscribe((action) => {		
-		if (action === RibbonActionEnum.NEW) { // todo
+		if (action === RibbonActionEnum.NEW) { // todo: ask be for number of rows, use that as id			
 			gridApi.applyServerSideTransaction({
+				addIndex: 0,
 				add: [{
+					// id: "1000",
 					title: "",
 					description: "",
 					category: "",
@@ -156,11 +181,12 @@
 		if (action === RibbonActionEnum.DELETE) { // add post rq
 			const selectedRows = gridApi!.getSelectedRows();
 
-			console.log(selectedRows.map(row => row.id));
+			console.log(selectedRows.map((row) => row.id));
 		}
 
 		if (action === RibbonActionEnum.SAVE) { // todo
-
+			console.log(get(editedDataStore));
+			
 		}
 
 		if (action === RibbonActionEnum.LOAD) { // todo
@@ -193,6 +219,16 @@
 			openedDialogStore.set("my-filters")
 		}
 
+		if(action === RibbonActionEnum.SAVE_PRESET) {
+			openedDialogStore.set("save-preset");
+
+			console.log(gridApi.getColumnDefs());
+			presetStore.set(gridApi.getColumnDefs())
+		}
+
+		if(action === RibbonActionEnum.MY_PRESETS) {
+			openedDialogStore.set("my-presets");
+		}
 
 		ribbonActionStore.set(undefined)
 	})	
@@ -205,6 +241,7 @@
 	id="fulltext-filter"
 	placeholder="Hledat..."
 /> -->
+
 <div class="flex flex-column h-full">
 	<div
 		id="datagrid"
@@ -213,3 +250,5 @@
 		bind:this={gridContainer}
 	></div>
 </div>
+
+<!-- TODO: text selection -->

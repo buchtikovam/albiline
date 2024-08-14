@@ -1,6 +1,7 @@
 import type { ColumnFilters } from '$lib/types/table/columnFilter';
 import { writable, type Writable } from 'svelte/store';
 import { persisted } from 'svelte-persisted-store';
+import type { Preset } from '$lib/types/table/presets';
 
 
 // PERSISTENT STORES
@@ -31,4 +32,8 @@ export const showFulltextSearchStore: Writable<boolean> = writable(false)
 
 export const fulltextFilterValueStore: Writable<string> = writable("")
 
-export const selectedFilterStore: Writable<ColumnFilters> = writable({})
+export const selectedFilterStore: Writable<ColumnFilters> = writable() //
+
+export const presetStore: Writable<Preset[] | undefined> = writable([])
+
+export const selectedPresetStore: Writable<Preset[]> = writable() //

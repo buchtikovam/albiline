@@ -4,7 +4,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
-	import { saveFilters } from '$lib/utils/ribbon/ribbon-actions/filters/saveFilters';
+	import { saveFilters } from '$lib/utils/ribbon/saveFilters';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
@@ -28,7 +28,7 @@
 		dialogOpen = false
 	}
 
-
+ 
 	onMount(() => {
 		dialogOpen = true;
 	});

@@ -16,9 +16,11 @@ export async function saveFilters(inputValue: string, url: string): Promise<void
 		
 		const response = await apiServicePOST('filters', toSave);
 
-		response?.ok
-			? customToast('Success', 'Filtry byly uloženy.')
-			: customToast('Critical', 'Nepodařilo se uložit filtry.');
+		if (response.ok) {
+			customToast('Success', 'Filtry byly uloženy.')
+		} else {
+			customToast('Critical', 'Nepodařilo se uložit filtry.');
+		} 
 
 		currentColumnFiltersStore.set({})
 	} catch (error) {
