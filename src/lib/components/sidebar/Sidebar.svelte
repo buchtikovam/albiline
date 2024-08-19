@@ -141,7 +141,7 @@
 	// event listener pro otevření vyhledávání v dialogu po zmáčknutí CTRL+F, nastavení sidebaru podle aktivní kategorie
 	onMount(() => {
 		function handleKeydown(e: KeyboardEvent) {
-			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
+			if (e.key === 'd' && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
 				isSidebarCommandOpen = !isSidebarCommandOpen;
 			}

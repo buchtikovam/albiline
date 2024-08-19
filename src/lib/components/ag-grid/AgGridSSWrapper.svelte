@@ -18,7 +18,7 @@
 	import { customToast } from "$lib/utils/toast/customToast";
 	import { get } from 'svelte/store';
 
-	// delete, new row, save, save preset, my presets
+	// filter quick
 	
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -49,8 +49,18 @@
 			return String(params.data.id);
 		},
 
-		maintainColumnOrder: true, 
 		columnDefs: columnDefinitions,
+
+		defaultExcelExportParams: {
+			exportAsExcelTable: true,
+		},
+
+		onColumnMoved: () => {console.log("moved")}, // TODO: fix column order on preset change
+		
+		maintainColumnOrder: true, 
+		enableCellTextSelection: true,
+		ensureDomOrder: true,
+		suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
 		cacheBlockSize: 1000,
@@ -134,14 +144,36 @@
 		gridApi.setGridOption('serverSideDatasource', datasource);
 
 		selectedFilterStore.subscribe((filters) => {
-			console.log(filters);
-			gridApi.setFilterModel(filters)
+			if (filters) {
+				gridApi.setFilterModel(filters)
+			}
 		})
 
 		selectedPresetStore.subscribe((preset) => {
-			console.log(preset);
-			gridApi.setGridOption("columnDefs", preset)
+			if (preset) {
+				gridApi.setGridOption("columnDefs", preset)
+			}
 		}) 
+
+
+		function handleKeydown(e: KeyboardEvent) {
+			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				ribbonActionStore.set(RibbonActionEnum.FILTER_QUICK)
+			}
+
+			if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				ribbonActionStore.set(RibbonActionEnum.SAVE);
+			}
+
+			if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				ribbonActionStore.set(RibbonActionEnum.LOAD);
+			}
+		}
+
+		document.addEventListener('keydown', handleKeydown);
 	})
 
 
@@ -190,6 +222,24 @@
 
 		if (action === RibbonActionEnum.LOAD) { // todo
 			gridApi.refreshServerSide()
+		}
+
+		if (action === RibbonActionEnum.FILTER_QUICK) {
+			console.log(window.getSelection()?.toString()); 
+			const columnName = gridApi.getFocusedCell()?.column.getColId();
+
+			console.log(columnName);
+			
+			
+			if (columnName) {
+				gridApi.setColumnFilterModel(columnName, {
+					filterType: "text",
+					type: "contains",
+					filter: window.getSelection()?.toString().trim()
+				})
+
+				gridApi.onFilterChanged()
+			}
 		}
 
 		if (action === RibbonActionEnum.FILTER_UNDO) {
@@ -249,5 +299,3 @@
 		bind:this={gridContainer}
 	></div>
 </div>
-
-<!-- TODO: text selection -->

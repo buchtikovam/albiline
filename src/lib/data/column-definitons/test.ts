@@ -1,8 +1,17 @@
-export let testColDef = [
+export const testColDef = [
 	{ 
 		headerCheckboxSelection: true,
-		editable: true,
+		editable: false,
+		filter: false,
+		resizable: false, 
+		pinned: true,
+		suppressHeaderMenuButton: true,
+		suppressHeaderFilterButton: true, 
+		suppressMovable: true,
 		checkboxSelection: true,
+		maxWidth: 36,
+	},
+	{ 
 		field: "title",
 		headerName: "Název",
 		width: 240,
