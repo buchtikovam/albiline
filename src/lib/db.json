@@ -223,7 +223,7 @@
     {
       "id": "3d00",
       "pageOrigin": "/test",
-      "filterName": "abcde",
+      "filterName": "abcded",
       "filters": {
         "price": {
           "filterType": "text",
@@ -250,18 +250,6 @@
           "filterType": "text",
           "type": "contains",
           "filter": "da"
-        }
-      }
-    },
-    {
-      "id": "34b6",
-      "pageOrigin": "/test",
-      "filterName": "abc",
-      "filters": {
-        "description": {
-          "filterType": "text",
-          "type": "contains",
-          "filter": "aaa"
         }
       }
     }

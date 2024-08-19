@@ -58,7 +58,6 @@
 		debug: true
 	}
 
-	// TODO: maintain column widths
 
 	let recentFilters: FilterModel[] = [];
 	
@@ -190,7 +189,7 @@
 		}
 
 		if (action === RibbonActionEnum.LOAD) { // todo
-			
+			gridApi.refreshServerSide()
 		}
 
 		if (action === RibbonActionEnum.FILTER_UNDO) {
