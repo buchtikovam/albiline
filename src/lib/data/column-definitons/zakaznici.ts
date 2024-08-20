@@ -7,400 +7,425 @@ export const zakazniciColDef = [
 		suppressMovable: true,
 		filter: false,
 		lockPosition: "left",
-		maxWidth: 50,
+		maxWidth: 36,
 	},
 	{ 
-		field: "CustomerAddressCode",
+		field: "customerAddressCode",
 		headerName: "ID zákazníka",
 		editable: true,
 		cellDataType: "number",
+		filter: 'agNumberColumnFilter',
+		// filterParams: {
+		// 	filters: [
+		// 		{
+		// 			filter: 'agNumberColumnFilter',
+		// 		},
+				// {
+				// 	filter: 'agSetColumnFilter',
+				// },
+		// 	]
+		// }
 	},
 	{ 
-		field: "CustomerNodeCode",
+		field: "customerNodeCode",
 		headerName: "Řetězec",
 		editable: true,
 		cellDataType: "number",
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agNumberColumnFilter',
+				},
+			]
+		}
 	},
 	{ 
-		field: "AddressType",
+		field: "addressType",
 		headerName: "Typ adresy",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "Name",
+		field: "name",
 		headerName: "Jméno",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "Street",
+		field: "city",
+		headerName: "Město",
+		editable: true,
+		cellDataType: "text",
+	},
+	{ 
+		field: "street",
 		headerName: "Ulice",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "PostalCode",
+		field: "postalCode",
 		headerName: "PSČ",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "CountryCode", 
+		field: "countryCode", 
 		headerName: "Země",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "CompanyName", 
+		field: "companyName", 
 		headerName: "Název společnosti",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "Enabled",
+		field: "enabled",
 		headerName: "Aktivní",
 		editable: true,
 		cellDataType: "boolean",
 	},
 	{ 
-		field: "ConsignmentSaleEnabled",
+		field: "consignmentSaleEnabled",
 		headerName: "Komise",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "PaymentTypeCode",
+		field: "paymentTypeCode",
 		headerName: "Typ platby",
 		editable: true,				
 		cellDataType: "text",
 	},
 	{ 
-		field: "DueDays", 
+		field: "dueDays", 
 		headerName: "Splatnost",
 		editable: true,
 		cellDataType: "number",
 	},
 	{ 
-		field: "InvoiceCopies",
+		field: "invoiceCopies",
 		headerName: "FA kopie",
 		editable: true,
 		cellDataType: "number",
 	},
 	{ 
-		field: "DeliveryNoteCopies",
+		field: "deliveryNoteCopies",
 		headerName: "DL kopie",
 		editable: true,
 		cellDataType: "number",
 	},
 	{ 
-		field: "CustomerRank",
+		field: "customerRank",
 		headerName: "Bonita",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "RetailStoreTypeId",
+		field: "retailStoreTypeId",
 		headerName: "",
 		editable: true,
 		cellDataType: "text",
 	},
 	{ 
-		field: "DealerCode",
+		field: "dealerCode",
 		headerName: "OZ",
 		editable: true,
 		cellDataType: "text",
 	},
 	{
-		field: "IsReturnAllowed",
+		field: "isReturnAllowed",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "CustomerStoreCode",
+		field: "customerStoreCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: ""
 	},
 	{
-		field: "CustomerStoreEan",
+		field: "customerStoreEan",
 		// headerName: "EAN",
 		editable: true,
 		cellDataType: ""
 	},
 	{
-		field: "DateCreated",
+		field: "dateCreated",
 		// headerName: "",
 		editable: true,
 		cellDataType: "date"
 	},
 	{
-		field: "Note",
+		field: "note",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "FirstOrderDate",
+		field: "firstOrderDate",
 		// headerName: "",
 		editable: true,
 		cellDataType: "date"
 	},
 	{
-		field: "LastOrderDate",
+		field: "lastOrderDate",
 		// headerName: "",
 		editable: true,
 		cellDataType: "date"
 	},
 	{
-		field: "AreaId",
+		field: "areaId",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "MerchandiserCode",
+		field: "aerchandiserCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "Description",
+		field: "description",
 		headerName: "Popis",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "ResponsiblePerson",
+		field: "responsiblePerson",
 		headerName: "Zodpovědná osoba",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "LastChangeUserCode",
+		field: "lastChangeUserCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "LastChangeDateTime",
+		field: "lastChangeDateTime",
 		// headerName: "",
 		editable: true,
 		cellDataType: "datetime"
 	},
 	{
-		field: "UseAssortedEanCodes",
+		field: "lseAssortedEanCodes",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "SendInvoiceViaEmail",
+		field: "sendInvoiceViaEmail",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "EmailForInvoicing",
+		field: "emailForInvoicing",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "SendDeliveryNoteViaEmail",
+		field: "sendDeliveryNoteViaEmail",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "EmailForDeliveryNotes",
+		field: "emailForDeliveryNotes",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "SendShippingNotificationViaEmail",
+		field: "sendShippingNotificationViaEmail",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "SendReturnsShippingNotificationViaEmail",
+		field: "sendReturnsShippingNotificationViaEmail",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "SmailForShippingNotifications",
+		field: "smailForShippingNotifications",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_ID",
+		field: "i_ID",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_CustomerAddressCode",
+		field: "i_CustomerAddressCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_CustomerNodeCode",
+		field: "i_CustomerNodeCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_AddressType",
+		field: "i_AddressType",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_Name",
+		field: "i_Name",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_Street",
+		field: "i_Street",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_City",
+		field: "i_City",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_PostalCode",
+		field: "i_PostalCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_CountryCode",
+		field: "i_CountryCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_CompanyName",
+		field: "i_CompanyName",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_Enabled",
+		field: "i_Enabled",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "I_ConsignmentSaleEnabled",
+		field: "i_ConsignmentSaleEnabled",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "I_PaymentTypeCode",
+		field: "i_PaymentTypeCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_DueDays",
+		field: "i_DueDays",
 		// headerName: "",
 		editable: true,
 		cellDataType: "number"
 	},
 	{
-		field: "I_ICO",
+		field: "i_ICO",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_DIC",
+		field: "i_DIC",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_IcDph",
+		field: "i_IcDph",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_CustomerStoreCode",
+		field: "i_CustomerStoreCode",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "I_CustomerStoreEan",
+		field: "i_CustomerStoreEan",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "IsBadPayer",
+		field: "isBadPayer",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "OM",
+		field: "om",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "NodeEmail",
+		field: "nodeEmail",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "RetailStoreTypeName",
+		field: "retailStoreTypeName",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "PickingBoxPacking",
+		field: "pickingBoxPacking",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "PackingNote",
+		field: "packingNote",
 		// headerName: "",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
-		field: "IsForConsignmentReturn",
+		field: "isForConsignmentReturn",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "SplitOrderByFood",
+		field: "splitOrderByFood",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
-		field: "B2BeshopEnabled",
+		field: "b2BeshopEnabled",
 		// headerName: "",
 		editable: true,
 		cellDataType: "boolean"

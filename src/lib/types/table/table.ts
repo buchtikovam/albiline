@@ -1,16 +1,13 @@
-export type TableColumn = {
-	id: number,
-	accessor: string,
-	header: string,
-	type: string,
-	size: string,
-	sortDisabled: 0 | 1,
-	resizeDisabled: 0 | 1,
+import type { IServerSideGetRowsRequest } from "ag-grid-enterprise";
+
+export interface TableRowRequest extends IServerSideGetRowsRequest {
+	fulltext?: string,
+	lastStoredIndex?: number | null,
+	rowAmount?: number
 }
 
-export type TableRows = Record<string, any>[]
+export type ColumnOrder = ColId[]
 
-export type TableType = {
-	items: TableRows,
-	columnInfo: TableColumn[]
+type ColId = {
+	colId: string
 }

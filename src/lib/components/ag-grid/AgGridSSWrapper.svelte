@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { columnOrderStore, currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
@@ -17,9 +17,15 @@
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
 	import { customToast } from "$lib/utils/toast/customToast";
 	import { get } from 'svelte/store';
+	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
+	
 
 	// filter quick
 	
+    // TODO: table side panel 
+
+	// TODO: last displayed index + amount of rows
+
 	export let columnDefinitions: any[];
 	export let url: string;
 
@@ -38,15 +44,16 @@
 			minWidth: 100,
 			maxWidth: 400,
 			hide: false,
-			filter: 'agTextColumnFilter'
+			filter: 'agMultiColumnFilter'
 		},	
 
 		onCellValueChanged: (event) => {
 			addToEditedData(event.data, event.column.getColId(), event.newValue)
 		},
 
-		getRowId: (params: GetRowIdParams) => {			
-			return String(params.data.id);
+		getRowId: (params: GetRowIdParams) => {
+			return String(params.data.rowNumber); 
+			// return String(params.data.id); 
 		},
 
 		columnDefs: columnDefinitions,
@@ -55,7 +62,9 @@
 			exportAsExcelTable: true,
 		},
 
-		onColumnMoved: () => {console.log("moved")}, // TODO: fix column order on preset change
+		// onColumnMoved: () => {
+		// 	// console.log("moved")
+		// },
 		
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
@@ -63,9 +72,9 @@
 		suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
-		cacheBlockSize: 1000,
+		cacheBlockSize: 500,
 		maxBlocksInCache: 10,
-		debug: true
+		// debug: true
 	}
 
 
@@ -88,23 +97,43 @@
 		}
 	}
 
+	
+
+	let runCount = 0;
+
+	export function customDebounce (callback: Function, wait = 500) {
+		let timeout: ReturnType<typeof setTimeout>;
+		return (...args: any[]) => {
+			clearTimeout(timeout);
+			timeout = setTimeout(() => callback(...args), wait);
+		};
+	};
+		
+
+	const lastStoredIndex = null;
+	const rowAmount = 500;
 
 	const datasource: IServerSideDatasource = {
-		getRows(params: IServerSideGetRowsParams) {
-
+		getRows: customDebounce((params: IServerSideGetRowsParams) => {
+			runCount++;
+			console.log("RUN", runCount);
+			
 			// infinite scroll model
-			let updatedParamsRequest = params.request
-			updatedParamsRequest.fullText = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
+			let updatedParamsRequest: TableRowRequest = params.request
+			updatedParamsRequest.fulltext = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
+			updatedParamsRequest.lastStoredIndex = lastStoredIndex;
+			updatedParamsRequest.rowAmount = rowAmount;
+
 			console.log(JSON.stringify(updatedParamsRequest, null, 1));
 			
 
-			// column order
-			const cols = gridApi!.getAllGridColumns();
-			const colOrder: string[] = [] // remove hidden columns ? 
-			cols.map((column) => {
-				colOrder.push(column.getId());
-			});
-			columnOrderStore.set(colOrder);
+			// // column order
+			// const cols = gridApi!.getAllGridColumns();
+			// const colOrder: string[] = [] // remove hidden columns ? 
+			// cols.map((column) => {
+			// 	colOrder.push(column.getId());
+			// });
+			// columnOrderStore.set(colOrder);
 
 
 			// store latest filters in variable
@@ -116,26 +145,27 @@
 					recentFilters.push(currentFilter)
 				}
 			}
-
-			console.log(recentFilters);
-
+			
 
 			fetch(url
-				// ,{
-				// 	method: "post",
-				// 	body: JSON.stringify(params.request),
-				// 	headers: {"Content-Type": "application/json"}
-				// }
+				,{ // hide
+					method: "post",
+					body: JSON.stringify(params.request),
+					headers: {"Content-Type": "application/json"}
+				}
 			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {		
-				params.success({ rowData: response.products})
+				// params.success({ rowData: response.products }) 
+				params.success({ rowData: response.items })
+				console.log(response.items);
+
 			})
 			.catch(error => {
 				console.log(error);
 				params.fail();
 			});
-		}
+		}, 500)
 	};
 
 
@@ -150,8 +180,20 @@
 		})
 
 		selectedPresetStore.subscribe((preset) => {
-			if (preset) {
+			if (preset) {				
+				let columnOrder: ColumnOrder = []
+
+				preset.forEach(obj => {
+					columnOrder.push({ colId: obj.colId})
+				})
+
+				
 				gridApi.setGridOption("columnDefs", preset)
+
+				gridApi.applyColumnState({
+					state: columnOrder,
+					applyOrder: true
+				});
 			}
 		}) 
 
@@ -198,11 +240,15 @@
 
 			let isEditable = get(isEditAllowedStore)
 		
-			columnDefinitions.map((column) => {
-				column.editable = isEditable
-			}) 
+			const currentColDef = gridApi.getColumnDefs()
 			
-			gridApi.setGridOption("columnDefs", columnDefinitions);
+			if (currentColDef) {
+				currentColDef.map((column) => {
+					column.editable = isEditable
+				}) 
+
+				gridApi.setGridOption("columnDefs", currentColDef);
+			}
 
 			isEditable === true 
 				? customToast("InfoToast", "Editace byla povolena.")
@@ -210,14 +256,13 @@
 		}
 
 		if (action === RibbonActionEnum.DELETE) { // add post rq
-			const selectedRows = gridApi!.getSelectedRows();
+			const selectedRows = gridApi!.getServerSideSelectionState();
 
-			console.log(selectedRows.map((row) => row.id));
+			console.log(selectedRows);
 		}
 
 		if (action === RibbonActionEnum.SAVE) { // todo
-			console.log(get(editedDataStore));
-			
+			console.log(get(editedDataStore));	
 		}
 
 		if (action === RibbonActionEnum.LOAD) { // todo

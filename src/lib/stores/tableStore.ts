@@ -5,15 +5,12 @@ import type { Preset } from '$lib/types/table/presets';
 
 
 // PERSISTENT STORES
-export const columnWidthStore: Writable<Record<string, number>> = persisted(
-	'columnWidths',
-	{}
-);
-
-export const columnOrderStore: Writable<string[]> = persisted(
-	'columnOrder',
-	[]
-);
+// export const columnWidthStore: Writable<Record<string, number>> = persisted(
+// 	'columnWidths', 
+// 	{
+// 		storage: "session" 
+// 	}
+// );
 
 export const pageCompactStore: Writable<'standard' | 'compact'> = persisted(
 	'rowHeight',
