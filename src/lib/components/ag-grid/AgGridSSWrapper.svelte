@@ -5,6 +5,7 @@
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
 	import { onMount } from "svelte";
 	import { 
+	ColumnApplyStateService,
 		createGrid, 
 		type FilterModel, 
 		type GetRowIdParams, 
@@ -20,11 +21,13 @@
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
 	
 
-	// filter quick
+	// TODO: fix filter quick
 	
     // TODO: table side panel 
 
 	// TODO: last displayed index + amount of rows
+
+	// TODO: multi filter breaks quick and load filter - provide setValues async, cant read undefined
 
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -44,7 +47,7 @@
 			minWidth: 100,
 			maxWidth: 400,
 			hide: false,
-			filter: 'agMultiColumnFilter'
+			filter: 'agMultiColumnFilter' 
 		},	
 
 		onCellValueChanged: (event) => {
@@ -59,7 +62,7 @@
 		columnDefs: columnDefinitions,
 
 		defaultExcelExportParams: {
-			exportAsExcelTable: true,
+			exportAsExcelTable: true, 
 		},
 
 		// onColumnMoved: () => {
@@ -79,6 +82,8 @@
 
 
 	let recentFilters: FilterModel[] = [];
+	let currentSort = []
+	let previousSort = []
 	
 	function addToEditedData(params: Record<string, any>, column: string, newValue: any) {
 		let editedData = get(editedDataStore);
@@ -110,24 +115,18 @@
 	};
 		
 
-	const lastStoredIndex = null;
-	const rowAmount = 500;
+	let lastRow: number|null = null;
+	const rowBatchSize = 500;
 
 	const datasource: IServerSideDatasource = {
 		getRows: customDebounce((params: IServerSideGetRowsParams) => {
 			runCount++;
 			console.log("RUN", runCount);
 			
-			// infinite scroll model
-			let updatedParamsRequest: TableRowRequest = params.request
-			updatedParamsRequest.fulltext = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
-			updatedParamsRequest.lastStoredIndex = lastStoredIndex;
-			updatedParamsRequest.rowAmount = rowAmount;
-
-			console.log(JSON.stringify(updatedParamsRequest, null, 1));
 			
+			// TODO: reset with sort
 
-			// // column order
+			// column order
 			// const cols = gridApi!.getAllGridColumns();
 			// const colOrder: string[] = [] // remove hidden columns ? 
 			// cols.map((column) => {
@@ -143,9 +142,34 @@
 			if (Object.keys(currentFilter).length > 0) {
 				if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
 					recentFilters.push(currentFilter)
+					console.log(recentFilters);
 				}
 			}
 			
+
+			currentSort = gridApi.getColumnState().map((state) => { return state.sort })
+
+			if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
+				lastRow = null
+				console.log("sort reset");
+				
+			}			
+
+			previousSort = currentSort;
+			
+			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
+				lastRow = null
+				console.log("filter reset");
+			}
+			
+
+			// infinite scroll model
+			let updatedParamsRequest: TableRowRequest = params.request
+			updatedParamsRequest.fulltext = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
+			updatedParamsRequest.lastRow = lastRow;
+			updatedParamsRequest.rowBatchSize = rowBatchSize;
+			console.log(JSON.stringify(updatedParamsRequest, null, 1));
+
 
 			fetch(url
 				,{ // hide
@@ -155,11 +179,14 @@
 				}
 			)
 			.then(httpResponse => httpResponse.json())
-			.then(response => {		
-				// params.success({ rowData: response.products }) 
+			.then(response => {
+				
 				params.success({ rowData: response.items })
-				console.log(response.items);
+				// params.success({ rowData: response.products }) 
+				lastRow = response.items.slice(-1)[0].rowNumber
+				// lastRow = response.products.slice(-1)[0].rowNumber
 
+				console.log("newLastRow", lastRow);
 			})
 			.catch(error => {
 				console.log(error);
@@ -216,6 +243,7 @@
 		}
 
 		document.addEventListener('keydown', handleKeydown);
+		
 	})
 
 

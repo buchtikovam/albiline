@@ -5,8 +5,28 @@ import HandCoins from 'lucide-svelte/icons/hand-coins';
 
 import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 import CodeXml from 'lucide-svelte/icons/code-xml';
+import Braces from 'lucide-svelte/icons/braces';
 
 export const allItems: SidebarItem[] = [
+	
+	{
+		name: 'Client Side',
+		value: 'test',
+		href: '/test-cs',
+		open: false,
+		hide: false,
+		icon: CodeXml,
+		children: [],
+	},
+	{
+		name: 'Server Side',
+		value: 'test',
+		href: '/test-ss',
+		open: false,
+		hide: false,
+		icon: Braces,
+		children: [],
+	},
 	{
 		name: 'Průvodní list',
 		value: 'pruvodni-list',
@@ -14,15 +34,6 @@ export const allItems: SidebarItem[] = [
 		open: false,
 		hide: false,
 		icon: TableProperties,
-		children: [],
-	},
-	{
-		name: 'Test',
-		value: 'test',
-		href: '/test',
-		open: false,
-		hide: false,
-		icon: CodeXml,
 		children: [],
 	},
 	{

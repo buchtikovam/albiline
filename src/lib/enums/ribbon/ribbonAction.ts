@@ -5,7 +5,7 @@ export enum RibbonActionEnum {
 	FILL_DOWN = "fill-down",
 	SAVE = "save",
 	LOAD = "load",
-	PRINT_CHOICE = "print-choice",
+	PRINT = "print",
 	EXPORT_CHOICE = "export-choice",
 	EXPORT_EXCEL = "export-excel",
 	EXPORT_PDF = "export-pdf",

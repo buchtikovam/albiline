@@ -74,24 +74,10 @@ export const ribbonItems: RibbonItems[] = [
 	},
 
 	{
-		name: "Tisk sestav",
-		type: RibbonTypeEnum.DROPDOWN,
+		name: "Tisk",
+		type: RibbonTypeEnum.ITEM,
 		icon: Printer,
-		action: RibbonActionEnum.PRINT_CHOICE,
-		children: [
-			{
-				name: "Volba 1",
-				action: RibbonActionEnum.UNKNOWN
-			},
-			{
-				name: "Volba 2",
-				action: RibbonActionEnum.UNKNOWN
-			},
-			{
-				name: "Volba 3",
-				action: RibbonActionEnum.UNKNOWN
-			},
-		]
+		action: RibbonActionEnum.PRINT,
 	},
 	{
 		name: "Export jako",
@@ -113,15 +99,7 @@ export const ribbonItems: RibbonItems[] = [
 			},
 		]
 	},
-	{
-		name: "Hromadný export",
-		type: RibbonTypeEnum.ITEM,
-		icon: FolderUp,
-		action: RibbonActionEnum.GROUP_EXPORT,
-	},
-	{
-		type: RibbonTypeEnum.SEPARATOR,
-	},
+
 
 	{
 		name: "Import",
@@ -129,26 +107,7 @@ export const ribbonItems: RibbonItems[] = [
 		icon: FileDown,
 		action: RibbonActionEnum.IMPORT,
 	},
-	{
-		name: "Import šablony",
-		type: RibbonTypeEnum.DROPDOWN,
-		icon: FolderDown,
-		action: RibbonActionEnum.IMPORT,
-		children: [
-			{
-				name: "Volba 1",
-				action: RibbonActionEnum.UNKNOWN
-			},
-			{
-				name: "Volba 2",
-				action: RibbonActionEnum.UNKNOWN
-			},
-			{
-				name: "Volba 3",
-				action: RibbonActionEnum.UNKNOWN
-			},
-		]
-	},
+
 	{
 		type: RibbonTypeEnum.SEPARATOR,
 	},
