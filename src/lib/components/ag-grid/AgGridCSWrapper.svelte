@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
-	import 'ag-grid-community/styles/ag-theme-quartz.css'
+	import '$lib/ag-grid-theme-builder.pcss'
 	import { onMount } from "svelte";
 	import { 
 		createGrid, 
@@ -62,7 +62,7 @@
 <div class="flex flex-column h-full">
 	<div
 		id="datagrid"
-		class="ag-theme-quartz"
+		class="ag-theme-custom"
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>

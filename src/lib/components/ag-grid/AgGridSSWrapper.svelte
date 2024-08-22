@@ -2,7 +2,7 @@
 	import { currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
-	import 'ag-grid-community/styles/ag-theme-quartz.css'
+	import '$lib/ag-grid-theme-builder.pcss'
 	import { onMount } from "svelte";
 	import { 
 	ColumnApplyStateService,
@@ -24,8 +24,6 @@
 	// TODO: fix filter quick
 	
     // TODO: table side panel 
-
-	// TODO: last displayed index + amount of rows
 
 	// TODO: multi filter breaks quick and load filter - provide setValues async, cant read undefined
 
@@ -367,7 +365,7 @@
 <div class="flex flex-column h-full">
 	<div
 		id="datagrid"
-		class="ag-theme-quartz"
+		class="ag-theme-custom"
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>

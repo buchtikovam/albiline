@@ -7,7 +7,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 
-.ag-root-wrapper, .ag-measurement-container, .ag-apply-theme-variables {
+.ag-theme-custom .ag-header-checkbox .ag-header-cell-comp-wrapper {
+	display: none !important;
+}
+
+.ag-theme-custom .ag-header-checkbox .ag-header-select-all {
+	margin: 0 !important;
+}
+
+.ag-theme-custom .ag-header-checkbox {
+	gap: 0 !important;
+}
+
+.ag-theme-custom, .ag-root-wrapper, .ag-measurement-container, .ag-apply-theme-variables {
 	--ag-background-color: var(--ag-inherited-background-color, #FFFFFF);
 	--ag-foreground-color: var(--ag-inherited-foreground-color, #073545);
 	--ag-text-color: var(--ag-inherited-text-color, var(--ag-foreground-color));
