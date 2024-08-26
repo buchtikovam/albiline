@@ -106,7 +106,6 @@
 
 	function loadFiltersInTable(filters: ColumnFilters) {
 		selectedFilterStore.set(filters)
-		
 		ribbonActionStore.set(undefined);
 		dialogOpen = false;
 		setTimeout(() => {

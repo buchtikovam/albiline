@@ -29,8 +29,8 @@ export const showFulltextSearchStore: Writable<boolean> = writable(false)
 
 export const fulltextFilterValueStore: Writable<string> = writable("")
 
-export const selectedFilterStore: Writable<ColumnFilters> = writable() //
+export const selectedFilterStore: Writable<ColumnFilters> = writable({})
 
 export const presetStore: Writable<Preset[] | undefined> = writable([])
 
-export const selectedPresetStore: Writable<Preset[]> = writable() //
+export const selectedPresetStore: Writable<Preset> = writable()

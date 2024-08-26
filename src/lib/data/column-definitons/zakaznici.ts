@@ -1,13 +1,16 @@
 export const zakazniciColDef = [ // TODO: add widths
 	{ 
-		headerName: "",
-		checkboxSelection: true,
 		headerCheckboxSelection: true,
-		suppressHeaderMenuButton: true,
-		suppressMovable: true,
+		editable: false,
 		filter: false,
-		lockPosition: "left",
-		maxWidth: 36,
+		resizable: false, 
+		pinned: true,
+		suppressHeaderMenuButton: true,
+		suppressHeaderFilterButton: true, 
+		suppressMovable: true,
+		checkboxSelection: true,
+		maxWidth: 32,
+		headerClass: 'ag-header-checkbox',
 	},
 	{ 
 		field: "customerAddressCode",

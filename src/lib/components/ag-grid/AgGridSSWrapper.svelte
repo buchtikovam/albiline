@@ -53,8 +53,8 @@
 		},
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data.rowNumber); 
-			// return String(params.data.id); 
+			// return String(params.data.rowNumber); 
+			return String(params.data.id); 
 		},
 
 		columnDefs: columnDefinitions,
@@ -67,6 +67,8 @@
 		// 	// console.log("moved")
 		// },
 		
+		// TODO: filters dont work until loading preset 
+
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
@@ -146,15 +148,14 @@
 			
 
 			currentSort = gridApi.getColumnState().map((state) => { return state.sort })
-
 			if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
 				lastRow = null
 				console.log("sort reset");
 				
 			}			
-
 			previousSort = currentSort;
 			
+
 			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
 				lastRow = null
 				console.log("filter reset");
@@ -170,21 +171,18 @@
 
 
 			fetch(url
-				,{ // hide
-					method: "post",
-					body: JSON.stringify(params.request),
-					headers: {"Content-Type": "application/json"}
-				}
+				// ,{ // hide
+				// 	method: "post",
+				// 	body: JSON.stringify(params.request),
+				// 	headers: {"Content-Type": "application/json"}
+				// }
 			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
-				
-				params.success({ rowData: response.items })
-				// params.success({ rowData: response.products }) 
-				lastRow = response.items.slice(-1)[0].rowNumber
-				// lastRow = response.products.slice(-1)[0].rowNumber
-
-				console.log("newLastRow", lastRow);
+				// params.success({ rowData: response.items })
+				params.success({ rowData: response.products }) 
+				// lastRow = response.items.slice(-1)[0].rowNumber
+				lastRow = response.products.slice(-1)[0].id
 			})
 			.catch(error => {
 				console.log(error);
@@ -201,17 +199,19 @@
 		selectedFilterStore.subscribe((filters) => {
 			if (filters) {
 				gridApi.setFilterModel(filters)
+				gridApi.onFilterChanged()
 			}
 		})
 
 		selectedPresetStore.subscribe((preset) => {
-			if (preset) {				
+			console.log(preset);
+			
+			if (preset) {								
 				let columnOrder: ColumnOrder = []
 
 				preset.forEach(obj => {
 					columnOrder.push({ colId: obj.colId})
 				})
-
 				
 				gridApi.setGridOption("columnDefs", preset)
 
@@ -241,9 +241,7 @@
 		}
 
 		document.addEventListener('keydown', handleKeydown);
-		
 	})
-
 
 
 	ribbonActionStore.subscribe((action) => {		
