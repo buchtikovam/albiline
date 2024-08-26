@@ -9,7 +9,7 @@ export const testCSColDef = [
 		suppressHeaderFilterButton: true, 
 		suppressMovable: true,
 		checkboxSelection: true,
-		maxWidth: 32,
+		maxWidth: 34,
 		headerClass: 'ag-header-checkbox',
 	},
 	{ 

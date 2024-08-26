@@ -1,5 +1,8 @@
 export const zakazniciColDef = [ // TODO: add widths
 	{ 
+		field: "rowNumber",
+		headerName: "Číslo řádku",
+		headerClass: 'ag-header-checkbox',
 		headerCheckboxSelection: true,
 		editable: false,
 		filter: false,
@@ -9,14 +12,13 @@ export const zakazniciColDef = [ // TODO: add widths
 		suppressHeaderFilterButton: true, 
 		suppressMovable: true,
 		checkboxSelection: true,
-		maxWidth: 32,
-		headerClass: 'ag-header-checkbox',
+		maxWidth: 34,
 	},
 	{ 
 		field: "customerAddressCode",
 		headerName: "ID zákazníka",
-		editable: true,
 		cellDataType: "number",
+		editable: true,
 		width: 140,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -31,8 +33,8 @@ export const zakazniciColDef = [ // TODO: add widths
 	{ 
 		field: "customerNodeCode",
 		headerName: "Řetězec",
-		editable: true,
 		cellDataType: "number",
+		editable: true,
 		width: 120,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -46,8 +48,8 @@ export const zakazniciColDef = [ // TODO: add widths
 	{ 
 		field: "addressType",
 		headerName: "Typ adresy",
-		editable: true,
 		cellDataType: "text",
+		editable: true,
 		width: 130,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -61,8 +63,8 @@ export const zakazniciColDef = [ // TODO: add widths
 	{ 
 		field: "name",
 		headerName: "Jméno",
-		editable: true,
 		cellDataType: "text",
+		editable: true,
 		width: 280,
 		cellEditor: 'agLargeTextCellEditor',
 		filter: 'agMultiColumnFilter',
@@ -315,7 +317,7 @@ export const zakazniciColDef = [ // TODO: add widths
 	},
 	{
 		field: "dateCreated",
-		// headerName: "",
+		headerName: "Datum vytvoření",
 		editable: true,
 		cellDataType: "date"
 	},
@@ -379,7 +381,7 @@ export const zakazniciColDef = [ // TODO: add widths
 		field: "lastChangeDateTime",
 		// headerName: "",
 		editable: true,
-		cellDataType: "datetime"
+		cellDataType: "date"
 	},
 	{
 		field: "lseAssortedEanCodes",

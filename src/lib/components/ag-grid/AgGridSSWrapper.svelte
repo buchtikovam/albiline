@@ -5,7 +5,6 @@
 	import '$lib/ag-grid-theme-builder.pcss'
 	import { onMount } from "svelte";
 	import { 
-	ColumnApplyStateService,
 		createGrid, 
 		type FilterModel, 
 		type GetRowIdParams, 
@@ -20,20 +19,13 @@
 	import { get } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
 	
-
-	// TODO: fix filter quick
-	
-    // TODO: table side panel 
-
-	// TODO: multi filter breaks quick and load filter - provide setValues async, cant read undefined
+    // TODO: implement table side panel 
 
 	export let columnDefinitions: any[];
 	export let url: string;
 
-
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
-
 	
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
@@ -54,7 +46,7 @@
 
 		getRowId: (params: GetRowIdParams) => {
 			// return String(params.data.rowNumber); 
-			return String(params.data.id); 
+			return String(params.data.id); // setup
 		},
 
 		columnDefs: columnDefinitions,
@@ -63,28 +55,23 @@
 			exportAsExcelTable: true, 
 		},
 
-		// onColumnMoved: () => {
-		// 	// console.log("moved")
-		// },
-		
-		// TODO: filters dont work until loading preset 
-
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
 		suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
+		rowBuffer: 50,
 		cacheBlockSize: 500,
 		maxBlocksInCache: 10,
-		// debug: true
 	}
+
 
 
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
-	let previousSort = []
-	
+	let previousSort: ("asc" | "desc" | null | undefined)[] = []
+
 	function addToEditedData(params: Record<string, any>, column: string, newValue: any) {
 		let editedData = get(editedDataStore);
 		let foundMatch = false;
@@ -102,10 +89,8 @@
 		}
 	}
 
+
 	
-
-	let runCount = 0;
-
 	export function customDebounce (callback: Function, wait = 500) {
 		let timeout: ReturnType<typeof setTimeout>;
 		return (...args: any[]) => {
@@ -114,7 +99,9 @@
 		};
 	};
 		
+		
 
+	let runCount = 0;
 	let lastRow: number|null = null;
 	const rowBatchSize = 500;
 
@@ -122,47 +109,33 @@
 		getRows: customDebounce((params: IServerSideGetRowsParams) => {
 			runCount++;
 			console.log("RUN", runCount);
-			
-			
-			// TODO: reset with sort
-
-			// column order
-			// const cols = gridApi!.getAllGridColumns();
-			// const colOrder: string[] = [] // remove hidden columns ? 
-			// cols.map((column) => {
-			// 	colOrder.push(column.getId());
-			// });
-			// columnOrderStore.set(colOrder);
-
 
 			// store latest filters in variable
 			const currentFilter = gridApi.getFilterModel();
-			const lastStoredFilter = recentFilters[recentFilters.length - 1]
+			const lastStoredFilter = recentFilters[recentFilters.length - 1];
 
+			
+			// add filter to recent filters (undo filter logic)
 			if (Object.keys(currentFilter).length > 0) {
 				if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-					recentFilters.push(currentFilter)
-					console.log(recentFilters);
+					recentFilters.push(currentFilter);
 				}
 			}
 			
-
+			
+			// if filter or sort has changed, set lastRow to null
+			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
+				lastRow = null
+			}
+			
 			currentSort = gridApi.getColumnState().map((state) => { return state.sort })
 			if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
-				lastRow = null
-				console.log("sort reset");
-				
+				lastRow = null	
 			}			
 			previousSort = currentSort;
 			
 
-			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-				lastRow = null
-				console.log("filter reset");
-			}
-			
-
-			// infinite scroll model
+			// custom request model
 			let updatedParamsRequest: TableRowRequest = params.request
 			updatedParamsRequest.fulltext = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
 			updatedParamsRequest.lastRow = lastRow;
@@ -170,8 +143,9 @@
 			console.log(JSON.stringify(updatedParamsRequest, null, 1));
 
 
+			// AG-Grid SSRM
 			fetch(url
-				// ,{ // hide
+				// ,{ // setup
 				// 	method: "post",
 				// 	body: JSON.stringify(params.request),
 				// 	headers: {"Content-Type": "application/json"}
@@ -180,9 +154,11 @@
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
 				// params.success({ rowData: response.items })
-				params.success({ rowData: response.products }) 
-				// lastRow = response.items.slice(-1)[0].rowNumber
-				lastRow = response.products.slice(-1)[0].id
+				params.success({ rowData: response.products }) // setup
+				// lastRow = response.items.slice(-1)[0].rowNumber 
+				lastRow = response.products.slice(-1)[0].id // setup
+				
+				console.log("new last row", lastRow);
 			})
 			.catch(error => {
 				console.log(error);
@@ -190,6 +166,7 @@
 			});
 		}, 500)
 	};
+
 
 
 	onMount(() => {
@@ -203,9 +180,7 @@
 			}
 		})
 
-		selectedPresetStore.subscribe((preset) => {
-			console.log(preset);
-			
+		selectedPresetStore.subscribe((preset) => {			
 			if (preset) {								
 				let columnOrder: ColumnOrder = []
 
@@ -221,7 +196,6 @@
 				});
 			}
 		}) 
-
 
 		function handleKeydown(e: KeyboardEvent) {
 			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
@@ -242,6 +216,7 @@
 
 		document.addEventListener('keydown', handleKeydown);
 	})
+
 
 
 	ribbonActionStore.subscribe((action) => {		
@@ -294,18 +269,38 @@
 		}
 
 		if (action === RibbonActionEnum.FILTER_QUICK) {
-			console.log(window.getSelection()?.toString()); 
 			const columnName = gridApi.getFocusedCell()?.column.getColId();
-
-			console.log(columnName);
+			const selection = window.getSelection()?.toString().trim();
+			console.log(selection);
 			
 			
 			if (columnName) {
-				gridApi.setColumnFilterModel(columnName, {
-					filterType: "text",
-					type: "contains",
-					filter: window.getSelection()?.toString().trim()
-				})
+				const cellType = "text";
+				// const quickFilterObj: Record<string, any> = {};
+
+				// quickFilterObj[columnName] = {
+				// 	filterType: "multi",
+				// 	filterModels: [{
+				// 		filterType: cellType,
+				// 		type: "contains",
+				// 		filter: selection
+				// 	}, null]
+				// };
+
+				// TODO: add new filter to current filters, if contains filter name, update that
+
+				let currentFilters = gridApi.getFilterModel();
+
+				currentFilters[columnName] = {
+					filterType: "multi",
+					filterModels: [{
+						filterType: cellType,
+						type: "contains",
+						filter: selection
+					}, null]
+				}
+
+				gridApi.setFilterModel(currentFilters)
 
 				gridApi.onFilterChanged()
 			}
@@ -354,11 +349,6 @@
 
 
 
-<!-- <input 
-	type="text"
-	id="fulltext-filter"
-	placeholder="Hledat..."
-/> -->
 
 <div class="flex flex-column h-full">
 	<div

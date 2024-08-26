@@ -8,8 +8,9 @@ export const testSSColDef = [
 		suppressHeaderMenuButton: true,
 		suppressHeaderFilterButton: true, 
 		suppressMovable: true,
+		field: "rowNumber",
 		checkboxSelection: true,
-		maxWidth: 32,
+		maxWidth: 34,
 		headerClass: 'ag-header-checkbox',
 	},
 	{ 
