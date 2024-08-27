@@ -26,7 +26,7 @@
 		<div class="min-w-12 max-w-12">
 			<DropdownMenu.Trigger class="mt-auto">
 				<button
-					class="text-[10px] size-12 leading-3 rounded hover:bg-muted/70"
+					class="text-[10px] size-12 leading-none rounded hover:bg-muted/70"
 				>
 					<span class="flex w-12 items-center justify-center ml-1">
 						<svelte:component

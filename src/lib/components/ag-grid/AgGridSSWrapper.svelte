@@ -52,7 +52,7 @@
 		columnDefs: columnDefinitions,
 
 		defaultExcelExportParams: {
-			exportAsExcelTable: true, 
+			exportAsExcelTable: true, // TODO: export with all data, not just the loaded
 		},
 
 		maintainColumnOrder: true, 
@@ -99,7 +99,9 @@
 		};
 	};
 		
-		
+	// TODO: add button to fulltext
+
+	// TODO: add button to filters to avoid unnecessary requests 
 
 	let runCount = 0;
 	let lastRow: number|null = null;
@@ -276,19 +278,6 @@
 			
 			if (columnName) {
 				const cellType = "text";
-				// const quickFilterObj: Record<string, any> = {};
-
-				// quickFilterObj[columnName] = {
-				// 	filterType: "multi",
-				// 	filterModels: [{
-				// 		filterType: cellType,
-				// 		type: "contains",
-				// 		filter: selection
-				// 	}, null]
-				// };
-
-				// TODO: add new filter to current filters, if contains filter name, update that
-
 				let currentFilters = gridApi.getFilterModel();
 
 				currentFilters[columnName] = {
@@ -301,7 +290,6 @@
 				}
 
 				gridApi.setFilterModel(currentFilters)
-
 				gridApi.onFilterChanged()
 			}
 		}

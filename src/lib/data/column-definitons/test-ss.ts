@@ -90,8 +90,17 @@ export const testSSColDef = [
 	}
 ]
 
-async function getCategoryValues() {
+async function getCategoryValues() { 
 	return await fetch('https://dummyjson.com/products?limit=1000')
 		.then(res => res.json())
 		.then((data) => data.products.map((product) => product.category));
 }
+
+/* TODO: Top-level await is not available in the configured target environment ("chrome87", "edge88", "es2020", "firefox78", "safari14" + 2 overrides)
+	59 |            filter: "agSetColumnFilter",
+	60 |            filterParams: {
+	61 |              values: await getCategoryValues()
+	   |                     ^
+	62 |            }
+	63 |          }
+*/ 

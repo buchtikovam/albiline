@@ -505,7 +505,7 @@ export const zakazniciColDef = [ // TODO: add widths
 	},
 	{
 		field: "i_PaymentTypeCode",
-		// headerName: "",
+		headerName: "Typ platby",
 		editable: true,
 		cellDataType: "text"
 	},
@@ -517,19 +517,19 @@ export const zakazniciColDef = [ // TODO: add widths
 	},
 	{
 		field: "i_ICO",
-		// headerName: "",
+		headerName: "IČO",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
 		field: "i_DIC",
-		// headerName: "",
+		headerName: "DIČ",
 		editable: true,
 		cellDataType: "text"
 	},
 	{
 		field: "i_IcDph",
-		// headerName: "",
+		headerName: "IčDPH",
 		editable: true,
 		cellDataType: "text"
 	},
@@ -553,7 +553,7 @@ export const zakazniciColDef = [ // TODO: add widths
 	},
 	{
 		field: "om",
-		// headerName: "",
+		headerName: "OM",
 		editable: true,
 		cellDataType: "text"
 	},
@@ -577,7 +577,7 @@ export const zakazniciColDef = [ // TODO: add widths
 	},
 	{
 		field: "packingNote",
-		// headerName: "",
+		headerName: "Poznámka pro balení",
 		editable: true,
 		cellDataType: "text"
 	},
@@ -589,13 +589,13 @@ export const zakazniciColDef = [ // TODO: add widths
 	},
 	{
 		field: "splitOrderByFood",
-		// headerName: "",
+		headerName: "Food / NonFood",
 		editable: true,
 		cellDataType: "boolean"
 	},
 	{
 		field: "b2BeshopEnabled",
-		// headerName: "",
+		headerName: "Aktivní B2B",
 		editable: true,
 		cellDataType: "boolean"
 	}

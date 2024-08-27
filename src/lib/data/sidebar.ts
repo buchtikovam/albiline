@@ -4,22 +4,11 @@ import Hammer from 'lucide-svelte/icons/hammer';
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
 import type { SidebarItem } from '$lib/types/sidebar/sidebar';
-import CodeXml from 'lucide-svelte/icons/code-xml';
 import Braces from 'lucide-svelte/icons/braces';
 
 export const allItems: SidebarItem[] = [
-	
 	{
-		name: 'Client Side',
-		value: 'test',
-		href: '/test-cs',
-		open: false,
-		hide: false,
-		icon: CodeXml,
-		children: [],
-	},
-	{
-		name: 'Server Side',
+		name: 'Test',
 		value: 'test',
 		href: '/test-ss',
 		open: false,

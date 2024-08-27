@@ -17,10 +17,10 @@
 
 	<div class="flex h-dvh flex-col">
 		<header class="flex flex-col border-b lg:h-fit">
-			<div class="pl-2 border-b">
+			<div class="pl-2 ">
 				<Header />
 			</div>
-			<Ribbon />
+			
 		</header>
 
 		<div class="flex flex-row flex-1">
@@ -28,6 +28,8 @@
 				<Sidebar />
 			</div>
 			<main class="flex flex-1 flex-col rounded-l-md bg-muted">
+				<Ribbon />
+				
 				<div class="flex flex-1 flex-col rounded-md p-4 pr-0">
 					<slot />
 				</div>

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { handleTabClick } from '$lib/utils/header/handleTabClick';
 	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
-	import { writable, get } from 'svelte/store';
-	import type { Writable } from 'svelte/store';
+	import { get } from 'svelte/store';
 	import {
 		sidebarStateStore,
 		recentItemsStore,
@@ -24,8 +23,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
-	import { onNavigate } from '$app/navigation';
-	import { editedDataStore } from '$lib/stores/tableStore';
 
 
 	/*
@@ -38,7 +35,7 @@
 
 	// otevírání sidebaru
 	sidebarStateStore.subscribe(data => {
-		isSidebarOpen = data;
+		isSidebarOpen = data; // TODO: open sidebar based on current url
 	});
 
 	// otevírání vyhledávání v dialogu

@@ -18,7 +18,7 @@
 
 {#if isRibbonOpen === true}
 	<button
-		class="text-[10px] min-w-11 w-11 h-12 rounded hover:bg-muted/70 leading-3 overflow-visible"
+		class="text-[10px] min-w-11 w-11 h-12 rounded hover:bg-muted/70 leading-none overflow-visible"
 		on:click={setRibbonAction}
 	>
 		<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />

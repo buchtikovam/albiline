@@ -21,7 +21,7 @@
 
 
 
-<div class="flex items-center p-2 px-4 overflow-auto">
+<div class="flex items-center p-2 px-4 overflow-auto bg-white border-b">
 	{#each ribbonItems as ribbonItem}
 		{#if Array.isArray(ribbonItem)}
 			<RibbonItemsNarrow
@@ -44,7 +44,7 @@
 			{/if}
 
 			{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
-				<Separator orientation="vertical" class="mx-2.5" />
+				<Separator orientation="vertical" class="mx-2.5 bg-border h-[40px]" />
 			{/if}
 		{/if}
 	{/each}
