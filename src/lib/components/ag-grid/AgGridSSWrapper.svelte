@@ -98,6 +98,8 @@
 			timeout = setTimeout(() => callback(...args), wait);
 		};
 	};
+
+	// BUG: filters and presets don't update, on page toggle resetting old values => update svelte stores on every order and filter change ? 
 		
 	// TODO: add button to fulltext
 

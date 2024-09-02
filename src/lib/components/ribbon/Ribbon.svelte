@@ -50,11 +50,12 @@
 	{/each}
 </div>
 
+<!-- TODO: gone arrow -->
 <div
 	class={
 		(isRibbonOpen
-			? "mt-[88px]"
-			: "mt-[66px]")
+			? "mt-[20px]"
+			: "mt-[20px]")
 			+ " absolute w-full flex justify-end items-center"
 	}
 >

@@ -23,6 +23,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
+	import { goto } from '$app/navigation';
 
 
 	/*
@@ -331,6 +332,7 @@
 			</Accordion.Root>
 
 			<div class="mt-auto ml-auto pt-4">
+				<button on:click={() => goto("/pdf/test/1")}>test</button>
 				<SidebarToggleButton bind:isSidebarOpen />
 			</div>
 		</div>
