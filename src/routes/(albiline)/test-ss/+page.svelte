@@ -5,7 +5,7 @@
 
 
 <svelte:head>
-	<title>Test Server Side</title>
+	<title>Albiline | Test</title>
 </svelte:head>
 
 

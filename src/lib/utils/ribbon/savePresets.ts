@@ -8,23 +8,28 @@ export async function savePresets(inputValue: string, url: string): Promise<void
 	try {
 		const presets = get(presetStore);
 
-		const toSave = {
-			pageOrigin: url,
-			presetName: inputValue,
-			presets: presets
-		};
-		
-		const response = await apiServicePOST('presets', toSave);
+		if (presets.length > 0) {
+			const toSave = {
+				pageOrigin: url,
+				presetName: inputValue,
+				presets: presets
+			};
+			
+			const response = await apiServicePOST('presets', toSave);
 
-		if (response.ok) {
-			customToast('Success', 'Šablona byla uložena.')
+			if (response.ok) {
+				customToast('Success', 'Šablona byla uložena')
+			} else {
+				customToast('Critical', 'Nepodařilo se uložit šablonu');
+			} 
+
+			presetStore.set([])
 		} else {
-			customToast('Critical', 'Nepodařilo se uložit šablonu.');
-		} 
-
-		presetStore.set([])
+			customToast("InfoToast", "Zde není co uložit")
+		}
+		
 	} catch (error) {
-		customToast('Critical', 'Nepodařilo se uložit filtry.')
+		customToast('Critical', 'Nepodařilo se uložit šablonu')
 		console.log(error);
 	}
 }

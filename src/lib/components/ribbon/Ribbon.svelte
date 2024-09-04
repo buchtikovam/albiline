@@ -8,9 +8,13 @@
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
 
+	// TODO: save open in local storage
+
 	/*
 		Resizable ribbon container obsahující různé ribbon items
 	*/
+
+	// TODO: context
 
 	let isRibbonOpen: boolean = true;
 
@@ -44,22 +48,15 @@
 			{/if}
 
 			{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
-				<Separator orientation="vertical" class="mx-2.5 bg-border h-[40px]" />
+				<Separator orientation="vertical" class="mx-2.5 bg-border h-[20px]" />
 			{/if}
 		{/if}
 	{/each}
-</div>
-
-<!-- TODO: gone arrow -->
-<div
-	class={
-		(isRibbonOpen
-			? "mt-[20px]"
-			: "mt-[20px]")
-			+ " absolute w-full flex justify-end items-center"
-	}
->
-	<button on:click={toggleRibbonOpen}>
+	
+	<button 
+		on:click={toggleRibbonOpen} 
+		class={(isRibbonOpen ? "top-[88px]" : "top-[66px]") + " absolute right-0"}
+	>
 		{#if isRibbonOpen}
 			<ChevronDown class="h-4 w-4 bg-background" />
 		{:else}

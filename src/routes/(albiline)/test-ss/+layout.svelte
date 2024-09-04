@@ -47,6 +47,6 @@
 	<!-- {/if} -->
 </div>
 
-<div class="h-full bg-background rounded-bl rounded-none ">
+<div class="h-full bg-background rounded-bl rounded-none border">
 	<slot />
 </div>

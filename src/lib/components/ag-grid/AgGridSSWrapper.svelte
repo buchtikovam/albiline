@@ -44,6 +44,18 @@
 			addToEditedData(event.data, event.column.getColId(), event.newValue)
 		},
 
+		onColumnResized: () => {
+			presetStore.set(gridApi.getColumnDefs() || [])
+		},
+
+		onColumnMoved: () => {
+			presetStore.set(gridApi.getColumnDefs() || [])
+		},
+
+		onColumnVisible: () => {
+			presetStore.set(gridApi.getColumnDefs() || [])
+		},
+
 		getRowId: (params: GetRowIdParams) => {
 			// return String(params.data.rowNumber); 
 			return String(params.data.id); // setup
@@ -51,10 +63,9 @@
 
 		columnDefs: columnDefinitions,
 
-		defaultExcelExportParams: {
-			exportAsExcelTable: true, // TODO: export with all data, not just the loaded
-		},
-
+		suppressExcelExport: true,
+		suppressCsvExport: true,
+		sideBar: true,
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
@@ -98,12 +109,14 @@
 			timeout = setTimeout(() => callback(...args), wait);
 		};
 	};
-
-	// BUG: filters and presets don't update, on page toggle resetting old values => update svelte stores on every order and filter change ? 
 		
 	// TODO: add button to fulltext
 
-	// TODO: add button to filters to avoid unnecessary requests 
+	// TODO: custom excel export 
+
+	// TODO: custom csv export
+
+	// TODO: snapshots for columnDefs and filters
 
 	let runCount = 0;
 	let lastRow: number|null = null;
@@ -201,6 +214,21 @@
 			}
 		}) 
 
+		if (get(presetStore)?.length > 0) {										
+			let columnOrder: ColumnOrder = []
+
+			get(presetStore).forEach(obj => {
+				columnOrder.push({ colId: obj.colId})
+			})
+			
+			gridApi.setGridOption("columnDefs", get(presetStore))
+
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+		}
+
 		function handleKeydown(e: KeyboardEvent) {
 			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
@@ -220,7 +248,6 @@
 
 		document.addEventListener('keydown', handleKeydown);
 	})
-
 
 
 	ribbonActionStore.subscribe((action) => {		
@@ -254,8 +281,8 @@
 			}
 
 			isEditable === true 
-				? customToast("InfoToast", "Editace byla povolena.")
-				: customToast("InfoToast", "Editace byla zakázána.")
+				? customToast("InfoToast", "Editace byla povolena")
+				: customToast("InfoToast", "Editace byla zakázána")
 		}
 
 		if (action === RibbonActionEnum.DELETE) { // add post rq
@@ -270,6 +297,16 @@
 
 		if (action === RibbonActionEnum.LOAD) { // todo
 			gridApi.refreshServerSide()
+		}
+
+		if (action === RibbonActionEnum.EXPORT_EXCEL) {
+			console.log("excel");
+			
+		}
+
+		if (action === RibbonActionEnum.EXPORT_CSV) {
+			console.log("csv");
+			
 		}
 
 		if (action === RibbonActionEnum.FILTER_QUICK) {
@@ -326,7 +363,7 @@
 			openedDialogStore.set("save-preset");
 
 			console.log(gridApi.getColumnDefs());
-			presetStore.set(gridApi.getColumnDefs())
+			presetStore.set(gridApi.getColumnDefs() || [])
 		}
 
 		if(action === RibbonActionEnum.MY_PRESETS) {

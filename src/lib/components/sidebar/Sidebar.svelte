@@ -26,6 +26,10 @@
 	import { goto } from '$app/navigation';
 
 
+	// TODO: save open in local storage
+
+	// TODO: refactor sidebar
+
 	/*
 		Resizeble sidebar se třemi kategoriemi,
 		tlačítky pro přepínání kategorií a inputem
