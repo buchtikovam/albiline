@@ -10,7 +10,7 @@ export const allItems: SidebarItem[] = [
 	{
 		name: 'Test',
 		value: 'test',
-		href: '/test-ss',
+		href: '/templates-ss',
 		open: false,
 		hide: false,
 		icon: Braces,
@@ -99,7 +99,7 @@ export const allItems: SidebarItem[] = [
 					{
 						name: "test",
 						value: "test",
-						href: "/vyroba/raznice/test",
+						href: "/vyroba/raznice/templates",
 						open: false,
 						hide: false,
 						icon: null,
