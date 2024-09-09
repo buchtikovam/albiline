@@ -2,4 +2,7 @@
 	import './../../app.pcss';
 </script>
 
-<slot />
+<div class="h-dvh overflow-auto bg-albi-50">
+
+	<slot />
+</div>
