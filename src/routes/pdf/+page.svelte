@@ -12,9 +12,4 @@
 		<PdfPrintButton url="/pdf/templates/A4/invoices/202414294" />
 		: invoice small
 	</div>
-
-	<!-- <div class="border">
-		<PdfPrintButton url="/pdf/templates/A4/test" />
-		: invoice large
-	</div> -->
 </div>
