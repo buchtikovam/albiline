@@ -1,15 +1,18 @@
 <script lang="ts">
 	import type { InvoiceData } from '$lib/types/pdf/invoiceData';
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
+	import { albiConst } from '$lib/constants/albiConst';
+	import { onMount } from 'svelte';
 
-	export let data: InvoiceData;
-
-	const header = data.header || {};
-	const items = data.items;
-	const vat = data.vat;
-
+	export let data: { data: InvoiceData, url: string };
 	console.log(data);
 	
+
+	const header = data.data.header || {};
+	const items = data.data.items;
+	const vat = data.data.vat;
+
+
 </script>
 
 <div 
@@ -36,40 +39,42 @@
 			<p class="text-gray-500 text-sm float-end">Daňový doklad</p>
 		</div>
 
-		<div class="bg-albi-500 px-8 py-6 flex text-sm gap-20"> <!-- billing info -->
-			<div>
-				<p class="text-black ">
-					Prosíme o zaplacení částky
-				</p>
-				<p class="text-black text-3xl font-bold">
-					{ header.cena_final || "{{cena_final}}"} Kč
-				</p>
-			</div>
-
-			
-			<div class="flex gap-4">
-				<div class="flex flex-col items-end">
-					<p class="text-black">Bankovní účet</p>
-					<p class="text-black">Variabilní symbol</p>
-					<p class="text-black">Způsob platby</p>
-				</div>
-
+		<div class="flex">
+			<div class="bg-albi-500 flex-1 px-8 py-6 flex text-sm gap-20"> <!-- billing info -->
 				<div>
-					<p class="text-black">123</p>
-					<p class="text-black">123</p>
-					<p class="text-black">Převodem</p>
+					<p class="text-black ">
+						Prosíme o zaplacení částky
+					</p>
+					<p class="text-black text-3xl font-bold">
+						{ header.cena_final || "{{cena_final}}"} Kč
+					</p>
 				</div>
+
+				
+				<div class="flex gap-4">
+					<div class="flex flex-col items-end">
+						<p class="text-black">Bankovní účet:</p>
+						<p class="text-black">Variabilní symbol:</p>
+						<p class="text-black">Způsob platby:</p>
+					</div>
+
+					<div>
+						<p class="text-black">{`${albiConst.accountNumber}/${albiConst.bankCode}`}</p>
+						<p class="text-black">{ header.documentCode || "{{paymentReference}}"}</p>
+						<p class="text-black">{ header.zpusob_platba || "{{zpusob_platba}}"}</p>
+					</div>
+				</div> 
+			</div>
+		
+		
+			<div class="w-fit mr-8">
+				<img src={data.url} alt="qrcode" width="108px" height="108px" />
 			</div>
 
-			
-			
+		<div class="bg-albi-400 h-20">
+			<div class=""></div>
 		</div>
 		
-		
-
-		<div>
-			<img src={`http://api.paylibo.com/paylibo/generator/czech/image?accountNumber=222885&bankCode=5500&amount=${header.cena_final}&currency=CZK&`} alt="invoiceQRCode" width="120px" height="120px"/>
-		</div>
 
 	</header>
 
