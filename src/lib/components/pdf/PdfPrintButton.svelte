@@ -20,6 +20,7 @@
 			html2canvas: {
 				scale: 4,
 				letterRendering: true,
+				allowTaint: true,
 				backgroundColor: null,
 				useCORS: true,
 			},

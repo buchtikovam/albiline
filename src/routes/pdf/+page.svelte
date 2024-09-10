@@ -10,6 +10,6 @@
 
 	<div class="border">
 		<PdfPrintButton url="/pdf/templates/A4/invoices/324068102" />
-		: invoice small
+		: invoice
 	</div>
 </div>
