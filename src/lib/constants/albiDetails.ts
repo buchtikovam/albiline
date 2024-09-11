@@ -1,4 +1,4 @@
-export const albiConst = {
+export const albiDetails = {
 	name: "ALBI Česká republika a.s.",
 	street: "Thámova 289/13",
 	city: "186 00 Praha 8",

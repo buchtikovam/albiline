@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import type { InputDialog, InputDialogItem } from '$lib/types/input-dialog/inputDialog';
 	import { onMount } from 'svelte';
-	import { customToast } from '$lib/utils/toast/customToast';
+	import { customToast } from '$lib/utils/customToast';
 	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
 	import InputStringNumber from '$lib/components/dialog/input-dialog/dialog-components/InputStringNumber.svelte';
 	import DateRange from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';

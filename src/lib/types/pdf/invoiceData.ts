@@ -4,7 +4,7 @@ export type InvoiceData = {
 	vat: InvoiceVat
 }
 
-type InvoiceHeader = {
+export type InvoiceHeader = {
   documentCode: number;
   cislO_OBJEDNAVKA: number | null;
   prodejna: number;
@@ -50,7 +50,7 @@ type InvoiceHeader = {
   packagingInfo: string;
 }
 
-type InvoiceItem = {
+export type InvoiceItem = {
       id_aplikace: number,
       cena_rabat: number
       celkem: number,
@@ -67,7 +67,7 @@ type InvoiceItem = {
       id_obi: null
 }
 
-type InvoiceVat = {
+export type InvoiceVat = {
 	sazba_dph_0: number,
     cenabezdph_0: number,
     cenasdph_0: number,

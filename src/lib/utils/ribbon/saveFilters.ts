@@ -1,7 +1,7 @@
 import { currentColumnFiltersStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import { apiServicePOST } from '$lib/api/apiService';
-import { customToast } from '$lib/utils/toast/customToast';
+import { customToast } from '$lib/utils/customToast';
 
 
 export async function saveFilters(inputValue: string, url: string): Promise<void> {

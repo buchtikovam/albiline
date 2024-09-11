@@ -6,7 +6,7 @@
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedPreset, Preset } from '$lib/types/table/presets';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
-	import { customToast } from '$lib/utils/toast/customToast';
+	import { customToast } from '$lib/utils/customToast';
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import Pencil from 'lucide-svelte/icons/pencil';

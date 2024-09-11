@@ -15,7 +15,7 @@
 	} from "ag-grid-enterprise";
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
-	import { customToast } from "$lib/utils/toast/customToast";
+	import { customToast } from "$lib/utils/customToast";
 	import { get } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
 	

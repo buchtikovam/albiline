@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { handleTabClick } from '$lib/utils/header/handleTabClick';
+	import { handleTabClick } from '$lib/utils/handleTabClick';
 	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 	import { get } from 'svelte/store';
 	import {
@@ -12,7 +12,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { onMount } from 'svelte';
-	import { buttonBorderSwitch } from '$lib/utils/button/buttonBorderSwitch';
+	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
 	import deepcopy from 'deepcopy';
 	import Search from 'lucide-svelte/icons/search';
 	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';

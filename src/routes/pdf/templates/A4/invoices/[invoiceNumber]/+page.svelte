@@ -1,40 +1,89 @@
 <script lang="ts">
-	import type { InvoiceData } from '$lib/types/pdf/invoiceData';
+	import type { InvoiceData, InvoiceItem } from '$lib/types/pdf/invoiceData';
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
-	import { albiConst } from '$lib/constants/albiConst';
+	import { albiDetails } from '$lib/constants/albiDetails';
+	import { formatDate } from '$lib/utils/formatting/formatDate';
+	import { currencyCZ } from '$lib/constants/currency';
 
 	export let data: { response: InvoiceData, url: string };
 	
-	const czk = new Intl.NumberFormat("cz", {
-		style: "currency",
-		currency: "CZK"
-	})
+	let header;
+	let items: InvoiceItem[];
+	let vat;
 
-	let header, items, vat;
-	data.response.header === null ? header = {} : header = data.response.header;
-	data.response.items === null ? items = {} : items = data.response.items;
-	data.response.vat === null ? vat = {} : vat = data.response.vat;
+	if (Object.keys(data).length > 0) {
+		data.response.header === null ? header = {} : header = data.response.header;
+		data.response.items === null ? items = [] : items = data.response.items;
+		data.response.vat === null ? vat = {} : vat = data.response.vat;
+	} else {
+		header = {};
+		items = [];
+		vat = {};
+	}
 
-	console.log(items);
+	let vatArr = [];
+	let vatSummary: { cenaBezDph: number, dph: number, cenaSDph: number};
+	
+	if (vat && Object.keys(vat).length > 0) {
+		vatArr.push({
+			sazbaDph: vat.sazba_dph_0,
+			cenaBezDph: vat.cenabezdph_0,
+			dph: vat.cenasdph_0 - vat.cenabezdph_0,
+			cenaSDph: vat.cenasdph_0,
+		});
+
+		vatArr.push({
+			sazbaDph: vat.sazba_dph_l,
+			cenaBezDph: vat.cenabezdph_l,
+			dph: vat.cenasdph_l - vat.cenabezdph_l,
+			cenaSDph: vat.cenasdph_l,
+		});
+
+		vatArr.push({
+			sazbaDph: vat.sazba_dph_l2,
+			cenaBezDph: vat.cenabezdph_l2,
+			dph: vat.cenasdph_l2 - vat.cenabezdph_l2,
+			cenaSDph: vat.cenasdph_l2,
+		});
+
+		vatArr.push({
+			sazbaDph: vat.sazba_dph_h,
+			cenaBezDph: vat.cenabezdph_h,
+			dph: vat.cenasdph_h - vat.cenabezdph_h,
+			cenaSDph: vat.cenasdph_h,
+		});
+
+		let soucetBezDhp = vatArr.reduce((acc, el) => acc + el.cenaBezDph, 0)
+		let soucetDph = vatArr.reduce((acc, el) => acc + el.dph, 0)
+		let soucetSDph = vatArr.reduce((acc, el) => acc + el.cenaSDph, 0)
+
+		vatSummary = {
+			cenaBezDph: soucetBezDhp,
+			dph: soucetDph,
+			cenaSDph: soucetSDph
+		}; 
+	}
+
+	console.log(vatArr);
+	console.log(vatSummary);
 </script>
 
-<!-- TODO: cena final bug -->
 <div 
 	style="width: 797px; height: 1126px"
-	class="m-auto border border-black bg-white"
+	class="m-auto border bg-white "
 >
     <header class="w-full">
 		<div class="px-8 py-8" > <!-- header -->
-			<div class="">
+			<div>
 				<div class="mt-auto text-albi-500 absolute top-10">
 					<AlbiLogo/>
 				</div>
 
 				<div class="flex justify-end gap-2 font-bold text-xl">
-					<p class="text-black font-bold">
+					<p class="text-slate-950 font-bold">
 						FAKTURA
 					</p>
-					<p class="text-gray-500">
+					<p class="text-slate-500">
 						{ header.documentCode || '{{documentCode}}' }
 					</p>
 				</div>
@@ -43,61 +92,82 @@
 			<p class="text-gray-500 text-sm float-end">Daňový doklad</p>
 		</div>
 
-
-		<div class="w-full mb-8 flex px-8 text-sm text-black">
+		<div class="w-full mb-8 flex px-8 text-sm text-slate-950"> <!-- dodavatel + odběratel info -->
 			<div class="w-1/2">
-				<h1 class="text-gray-500">DODAVATEL</h1>
-				<h1 class="font-bold">{albiConst.name}</h1>
-				<p>{albiConst.street},</p>
-				<p>{albiConst.city}</p>
-				<div class="flex gap-4">
-					<p>IČ: {albiConst.ič}</p>
-					<p>DIČ: {albiConst.dič}</p>
-				</div>
-				
+				<h1 class="text-slate-500">DODAVATEL</h1>
+				<h1 class="font-bold">{albiDetails.name}</h1>
+				<p>{albiDetails.street},</p>
+				<p>{albiDetails.city}</p>
+				<p>IČ: {albiDetails.ič}</p>
+				<p>DIČ: {albiDetails.dič}</p>
 			</div>
 
 			<div class="w-1/2">
-				<h1 class="text-gray-500">ODBĚRATEL</h1>
+				<h1 class="text-slate-500">ODBĚRATEL</h1>
 				<h1 class="font-bold">{ header.nazev_fa || "{{nazef_fa}}" }</h1>
-				<p>{header.ulice_fa},</p>
-				<p>{header.misto_fa}</p>
-				<div class="flex gap-4">
-					{#if header.ico !== null}
-						<p>IČ: {header.ico || "{{ico}}"}</p>
-					{/if}
-					{#if header.ic_dph !== null}
-						<p>DIČ: {header.ic_dph || "{{dic}}"}</p>
-					{/if}
-				</div>
-				
+				<p>{header.ulice_fa || "{{ulice_fa}}"},</p>
+				<p>{header.misto_fa || "{{misto_fa}}"}</p>
+				{#if header.ico !== null}
+					<p>IČ: {header.ico || "{{ico}}"}</p>
+				{/if}
+				{#if header.ic_dph !== null}
+					<p>DIČ: {header.ic_dph || "{{ic_dph}}"}</p>
+				{/if}
 			</div> 
+
+			<!-- <div class="w-1/3">
+				<h1 class="text-slate-500">MÍSTO DODÁNÍ</h1>
+				<h1 class="font-bold">{ header.mdnazev || "{{mdnazev}}" }</h1>
+				<p>{header.jmeno || "{{jmeno}}"}</p>
+				<p>{header.mdulice || "{{mdulice}}"},</p>
+				<p>{header.mdmisto || "{{mdmisto}}"}</p>
+			</div>  -->
+		</div>
+
+		<!-- <div class="w-full mb-8 flex px-8 text-sm text-slate-950"> 
+			<div class="w-1/2">
+				<h1 class="text-slate-500">FAKTURA</h1>
+				
+			</div>
+ 
+			<div class="w-1/2">
+				<h1 class="text-slate-500">MÍSTO DODÁNÍ</h1>
+				<h1 class="font-bold">{ header.mdnazev || "{{mdnazev}}" }</h1>
+				<p>{header.jmeno || "{{jmeno}}"}</p>
+				<p>{header.mdulice || "{{mdulice}}"},</p>
+				<p>{header.mdmisto || "{{mdmisto}}"}</p>
+			</div> 
+		</div> -->
+		
+		<div class="flex text-xs gap-4 pb-2 ml-8 text-slate-950">
+<p>Datum zd. plnění: <b>{ header.datplneni ? formatDate(header.datplneni) : "{{datplneni}}" }</b></p>
+				<p>Datum vystavení: <b>{ header.datprod ? formatDate(header.datprod) : "{{datprod}}"}</b></p>
+				<p>Datum splatnosti: <b>{ header.datsplat ? formatDate(header.datsplat) : "{{datsplat}}"}</b></p>		
 		</div>
 		
-			
 		<div class="flex">
 			<div class="bg-albi-500 flex-1 px-8 py-6 flex text-sm gap-20"> <!-- billing info -->
-				<div>
-					<p class="text-black ">
+				<div class="text-slate-50">
+					<p>
 						Prosíme o zaplacení částky
 					</p>
 					
-					<p class="text-black text-3xl font-bold">
-						{ header.cena_final ? czk.format(header.cena_final) : "{{cena_final}}" } 
+					<p class="text-3xl font-bold">
+						{ header.cena_final ? currencyCZ.format(header.cena_final) : "{{cena_final}}" } 
 					</p>
 				</div>
 				
-				<div class="flex gap-4">
+				<div class="flex gap-4 text-slate-50">
 					<div class="flex flex-col items-end">
-						<p class="text-black">Bankovní účet:</p>
-						<p class="text-black">Variabilní symbol:</p>
-						<p class="text-black">Způsob platby:</p>
+						<p>Bankovní účet:</p>
+						<p>Variabilní symbol:</p>
+						<p>Způsob platby:</p>
 					</div>
 
 					<div>
-						<p class="text-black">{ `${albiConst.accountNumber}/${albiConst.bankCode}`}</p>
-						<p class="text-black">{ header.documentCode || "{{paymentReference}}"}</p>
-						<p class="text-black">{ header.zpusob_platba || "{{zpusob_platba}}"}</p>
+						<p>{ `${albiDetails.accountNumber}/${albiDetails.bankCode}`}</p>
+						<p>{ header.documentCode || "{{paymentReference}}"}</p>
+						<p>{ header.zpusob_platba || "{{zpusob_platba}}"}</p>
 					</div>
 				</div> 
 			</div>
@@ -108,17 +178,17 @@
 		</div>
 		
 		<div class="px-8 pt-8">
-			<p class="text-black text-sm">Fakturujeme vám za následující zboží:</p>
+			<p class="text-slate-950 text-xs pb-4">Fakturujeme Vám za následující zboží:</p>
 
-			<table class="mt-4 w-full bg-red-400">
-				<thead>
-					<td>Název</td>
-					<td>EAN</td>
-					<td>Počet</td>
-					<td>Recykl. přísp</td>
-					<td>Jedn. cena</td>
-					<td>DPH</td>
-					<td>Celkem bez DPH</td>
+			<table class="w-full">
+				<thead class="text-[10px] font-bold text-center leading-4 text-slate-950 border-b-2 border-albi-500">
+					<td class="">Název</td>
+					<td class="w-24">EAN</td>
+					<td class="w-16">Počet</td>
+					<td class="w-20">Recykl. přísp.</td>
+					<td class="w-16">Jedn. cena</td>
+					<td class="w-16">DPH</td>
+					<td class="w-24">Celkem bez DPH</td>
 				</thead>
 			</table>
 		</div>
@@ -128,53 +198,78 @@
     <main>
 			
 		<div class="px-8">
-			<table class="w-full bg-red-600">
+			<table class="w-full">
 				<tbody>
-					<tr>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-					</tr>
-					
-					<tr>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-					</tr>
-					<tr>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-					</tr>
-					<tr>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-					</tr>
-					<tr>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-					</tr>
-					<tr>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-						<td>test</td>
-					</tr>
-				
+					{#each items as item (item)}
+					   <tr class="text-xs text-slate-950 border-b">
+							<td class="pb-1 ">
+								{item.popis}
+							</td>
+							<td class="pb-1 w-24 text-center">
+								{item.ean !== null ? item.ean : ""}
+							</td>
+							<td class="pb-1 w-16 text-right">
+								{item.quantity} ks
+							</td>
+							<td class="pb-1 w-20 text-center">
+								{item.recyclingfee_cz !== null ? item.recyclingfee_cz : ""}
+							</td>
+							<td class="pb-1 w-16 text-right">
+								{currencyCZ.format(item.cena_rabat)}
+							</td>
+							<td class="pb-1 w-16 text-right">
+								{item.sazba_dph}%
+							</td>
+							<td class="pb-1 w-24 text-right">
+								{currencyCZ.format(item.celkem)}
+							</td>
+						</tr>
+					{/each}
 				</tbody>
 			</table>
+		</div>
+
+		<div class="my-8 px-8 flex">
+			<div class="w-1/2 text-sm font-bold text-slate-950">
+				Razítko a podpis: 
+			</div>
+
+			<div class="w-1/2">
+				<table class="w-full">
+					<thead class="text-[10px] text-center font-bold border-b-2 border-albi-500 text-slate-950">
+						<td>Sazba DPH</td>
+						<td>Bez DPH</td>
+						<td>DPH</td>
+						<td>Celkem</td>
+					</thead>
+					<tbody>
+						{#each vatArr as vatObject (vatObject)}
+							<tr class="text-xs text-right border-b text-slate-950">
+								<td class="pb-1">{vatObject.sazbaDph}%</td>
+								<td class="pb-1">{currencyCZ.format(vatObject.cenaBezDph)}</td>
+								<td class="pb-1">{currencyCZ.format(vatObject.dph)}</td>
+								<td class="pb-1">{currencyCZ.format(vatObject.cenaSDph)}</td>
+							</tr>
+						{/each}
+
+						<tr class="text-xs text-albi-500 border-b font-bold text-right">
+							<td class="pb-1">Celkem:</td>
+							<td class="pb-1">{currencyCZ.format(vatSummary.cenaBezDph)}</td>
+							<td class="pb-1">{currencyCZ.format(vatSummary.dph)}</td>
+							<td class="pb-1">{currencyCZ.format(vatSummary.cenaSDph)}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
     </main>
 
     <footer>
-        <div class="w-full h-20">footer</div>
+        <div class="w-full h-20 bg-red-100 px-8 pb-8 text-sm text-center ">
+			<p>Děkujeme Vám za objednávku a těšíme se na další spolupráci. </p>
+
+
+		</div>
     </footer>
 </div>

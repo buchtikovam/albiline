@@ -1,4 +1,4 @@
-import { albiConst } from '$lib/constants/albiConst';
+import { albiDetails } from '$lib/constants/albiDetails';
 import type { InvoiceData } from '$lib/types/pdf/invoiceData';
 import type { PageLoad } from './$types';
 
@@ -8,7 +8,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	if (res.ok) {		
 		const response: InvoiceData = await res.json()
 
-		const url = `http://api.paylibo.com/paylibo/generator/czech/image?accountNumber=${albiConst.accountNumber}&bankCode=${albiConst.bankCode}&amount=${response.header.cena_final}&currency=CZK&random${Math.random()}`;
+		let url = "";
+		
+		if (response.header !== null) {
+			url = `http://api.paylibo.com/paylibo/generator/czech/image?accountNumber=${albiDetails.accountNumber}&bankCode=${albiDetails.bankCode}&amount=${response.header.cena_final}&currency=CZK&random${Math.random()}`;
+		}
 
 		return {
 			response: response,
