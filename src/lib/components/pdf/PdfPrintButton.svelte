@@ -51,8 +51,6 @@
 			const main = loadWindow.document.body.getElementsByTagName("main")[0];
 			const footer = loadWindow.document.body.getElementsByTagName("footer")[0];
 
-			// TODO: přidat logiku aby se vzalo width a height s templatu a nasadit se na options.jsPDF.format
-
 			await html2pdf()
 				.set({
 					...options,

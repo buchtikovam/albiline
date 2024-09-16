@@ -1,4 +1,4 @@
-export const zakazniciColDef = [ // TODO: add widths
+export const zakazniciColDef = [
 	{ 
 		field: "rowNumber",
 		headerName: "Číslo řádku",

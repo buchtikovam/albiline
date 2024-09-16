@@ -26,10 +26,6 @@
 	import { goto } from '$app/navigation';
 
 
-	// TODO: save open in local storage
-
-	// TODO: refactor sidebar
-
 	/*
 		Resizeble sidebar se třemi kategoriemi,
 		tlačítky pro přepínání kategorií a inputem
@@ -40,7 +36,7 @@
 
 	// otevírání sidebaru
 	sidebarStateStore.subscribe(data => {
-		isSidebarOpen = data; // TODO: open sidebar based on current url
+		isSidebarOpen = data; 
 	});
 
 	// otevírání vyhledávání v dialogu

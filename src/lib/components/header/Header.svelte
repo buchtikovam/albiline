@@ -28,8 +28,6 @@ import * as Tabs from '$lib/components/ui/tabs';
 	})
 	
 
-	// TODO: when unsaved data, prevent tab from switching
-
 	$: pathname = getTabValue($page.url.pathname)
 
 	

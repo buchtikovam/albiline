@@ -11,7 +11,8 @@
 		type GridApi, 
 		type GridOptions, 
 		type IServerSideDatasource, 
-		type IServerSideGetRowsParams, 
+		type IServerSideGetRowsParams,
+		type ITextFilterParams, 
 	} from "ag-grid-enterprise";
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
@@ -19,7 +20,6 @@
 	import { get } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
 	
-    // TODO: implement table side panel 
 
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -37,7 +37,10 @@
 			minWidth: 100,
 			maxWidth: 400,
 			hide: false,
-			filter: 'agMultiColumnFilter' 
+			filter: 'agMultiColumnFilter',
+			filterParams: {
+				buttons: ["clear", "apply"],
+			} as ITextFilterParams,
 		},	
 
 		onCellValueChanged: (event) => {
@@ -65,7 +68,7 @@
 
 		suppressExcelExport: true,
 		suppressCsvExport: true,
-		sideBar: true,
+		// sideBar: true,
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
@@ -110,13 +113,6 @@
 		};
 	};
 		
-	// TODO: add button to fulltext
-
-	// TODO: custom excel export 
-
-	// TODO: custom csv export
-
-	// TODO: snapshots for columnDefs and filters
 
 	let runCount = 0;
 	let lastRow: number|null = null;
@@ -287,8 +283,6 @@
 
 		if (action === RibbonActionEnum.DELETE) { // add post rq
 			const selectedRows = gridApi!.getServerSideSelectionState();
-
-			console.log(selectedRows);
 		}
 
 		if (action === RibbonActionEnum.SAVE) { // todo

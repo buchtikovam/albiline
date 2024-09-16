@@ -4,9 +4,10 @@
 	import { albiDetails } from '$lib/constants/albiDetails';
 	import { formatDate } from '$lib/utils/formatting/formatDate';
 	import { currencyCZ } from '$lib/constants/currency';
+	import { getVAT } from '$lib/utils/getVAT';
 
-	export let data: { response: InvoiceData, url: string };
-	
+	export let data: { response: InvoiceData, qrCode: string, url: string };
+
 	let header;
 	let items: InvoiceItem[];
 	let vat;
@@ -25,33 +26,7 @@
 	let vatSummary: { cenaBezDph: number, dph: number, cenaSDph: number};
 	
 	if (vat && Object.keys(vat).length > 0) {
-		vatArr.push({
-			sazbaDph: vat.sazba_dph_0,
-			cenaBezDph: vat.cenabezdph_0,
-			dph: vat.cenasdph_0 - vat.cenabezdph_0,
-			cenaSDph: vat.cenasdph_0,
-		});
-
-		vatArr.push({
-			sazbaDph: vat.sazba_dph_l,
-			cenaBezDph: vat.cenabezdph_l,
-			dph: vat.cenasdph_l - vat.cenabezdph_l,
-			cenaSDph: vat.cenasdph_l,
-		});
-
-		vatArr.push({
-			sazbaDph: vat.sazba_dph_l2,
-			cenaBezDph: vat.cenabezdph_l2,
-			dph: vat.cenasdph_l2 - vat.cenabezdph_l2,
-			cenaSDph: vat.cenasdph_l2,
-		});
-
-		vatArr.push({
-			sazbaDph: vat.sazba_dph_h,
-			cenaBezDph: vat.cenabezdph_h,
-			dph: vat.cenasdph_h - vat.cenabezdph_h,
-			cenaSDph: vat.cenasdph_h,
-		});
+		vatArr = getVAT(vat);
 
 		let soucetBezDhp = vatArr.reduce((acc, el) => acc + el.cenaBezDph, 0)
 		let soucetDph = vatArr.reduce((acc, el) => acc + el.dph, 0)
@@ -63,14 +38,14 @@
 			cenaSDph: soucetSDph
 		}; 
 	}
-
-	console.log(vatArr);
-	console.log(vatSummary);
 </script>
 
+
+
+
 <div 
-	style="width: 797px; height: 1126px"
-	class="m-auto border bg-white "
+	style="width: 794px; height: 1123px"
+	class="m-auto bg-white "
 >
     <header class="w-full">
 		<div class="px-8 py-8" > <!-- header -->
@@ -93,7 +68,7 @@
 		</div>
 
 		<div class="w-full mb-8 flex px-8 text-sm text-slate-950"> <!-- dodavatel + odběratel info -->
-			<div class="w-1/2">
+			<div class="w-1/3">
 				<h1 class="text-slate-500">DODAVATEL</h1>
 				<h1 class="font-bold">{albiDetails.name}</h1>
 				<p>{albiDetails.street},</p>
@@ -102,7 +77,7 @@
 				<p>DIČ: {albiDetails.dič}</p>
 			</div>
 
-			<div class="w-1/2">
+			<div class="w-1/3 pl-8">
 				<h1 class="text-slate-500">ODBĚRATEL</h1>
 				<h1 class="font-bold">{ header.nazev_fa || "{{nazef_fa}}" }</h1>
 				<p>{header.ulice_fa || "{{ulice_fa}}"},</p>
@@ -115,38 +90,23 @@
 				{/if}
 			</div> 
 
-			<!-- <div class="w-1/3">
-				<h1 class="text-slate-500">MÍSTO DODÁNÍ</h1>
-				<h1 class="font-bold">{ header.mdnazev || "{{mdnazev}}" }</h1>
-				<p>{header.jmeno || "{{jmeno}}"}</p>
-				<p>{header.mdulice || "{{mdulice}}"},</p>
-				<p>{header.mdmisto || "{{mdmisto}}"}</p>
-			</div>  -->
-		</div>
-
-		<!-- <div class="w-full mb-8 flex px-8 text-sm text-slate-950"> 
-			<div class="w-1/2">
-				<h1 class="text-slate-500">FAKTURA</h1>
-				
-			</div>
- 
-			<div class="w-1/2">
+			<div class="w-1/3 pl-8">
 				<h1 class="text-slate-500">MÍSTO DODÁNÍ</h1>
 				<h1 class="font-bold">{ header.mdnazev || "{{mdnazev}}" }</h1>
 				<p>{header.jmeno || "{{jmeno}}"}</p>
 				<p>{header.mdulice || "{{mdulice}}"},</p>
 				<p>{header.mdmisto || "{{mdmisto}}"}</p>
 			</div> 
-		</div> -->
-		
+		</div>
+
 		<div class="flex text-xs gap-4 pb-2 ml-8 text-slate-950">
-<p>Datum zd. plnění: <b>{ header.datplneni ? formatDate(header.datplneni) : "{{datplneni}}" }</b></p>
-				<p>Datum vystavení: <b>{ header.datprod ? formatDate(header.datprod) : "{{datprod}}"}</b></p>
-				<p>Datum splatnosti: <b>{ header.datsplat ? formatDate(header.datsplat) : "{{datsplat}}"}</b></p>		
+			<p>Datum zd. plnění: <b>{ header.datplneni ? formatDate(header.datplneni) : "{{datplneni}}" }</b></p>
+			<p>Datum vystavení: <b>{ header.datprod ? formatDate(header.datprod) : "{{datprod}}"}</b></p>
+			<p>Datum splatnosti: <b>{ header.datsplat ? formatDate(header.datsplat) : "{{datsplat}}"}</b></p>		
 		</div>
 		
 		<div class="flex">
-			<div class="bg-albi-500 flex-1 px-8 py-6 flex text-sm gap-20"> <!-- billing info -->
+			<div class="bg-albi-500 flex-1 px-8 py-6 flex text-sm gap-20 mr-4"> <!-- billing info -->
 				<div class="text-slate-50">
 					<p>
 						Prosíme o zaplacení částky
@@ -173,7 +133,7 @@
 			</div>
 
 			<div class="w-fit mr-8">
-				<img src={data.url} alt="qrcode" width="108px" height="108px" />
+				<img src={data.qrCode} alt="qrcode" width="108px" height="108px" />
 			</div>
 		</div>
 		
@@ -181,7 +141,7 @@
 			<p class="text-slate-950 text-xs pb-4">Fakturujeme Vám za následující zboží:</p>
 
 			<table class="w-full">
-				<thead class="text-[10px] font-bold text-center leading-4 text-slate-950 border-b-2 border-albi-500">
+				<thead class="text-[10px] font-bold text-center text-slate-950 border-b-2 border-albi-500">
 					<td class="">Název</td>
 					<td class="w-24">EAN</td>
 					<td class="w-16">Počet</td>
@@ -192,11 +152,10 @@
 				</thead>
 			</table>
 		</div>
-	
 	</header>
 
-    <main>
-			
+
+    <main>	
 		<div class="px-8">
 			<table class="w-full">
 				<tbody>
@@ -230,7 +189,7 @@
 		</div>
 
 		<div class="my-8 px-8 flex">
-			<div class="w-1/2 text-sm font-bold text-slate-950">
+			<div class="w-1/2 text-xs font-bold text-slate-950">
 				Razítko a podpis: 
 			</div>
 
@@ -262,14 +221,14 @@
 				</table>
 			</div>
 		</div>
-
     </main>
 
+
     <footer>
-        <div class="w-full h-20 bg-red-100 px-8 pb-8 text-sm text-center ">
+        <div class="w-full px-8 pb-8 pt-4 text-xs text-center text-slate-950 leading-4">
 			<p>Děkujeme Vám za objednávku a těšíme se na další spolupráci. </p>
-
-
+			<p class="text-[10px] text-slate-500">Kontakt: </p>
+			<p class="text-[10px] text-slate-500">{albiDetails.or}</p>
 		</div>
     </footer>
 </div>

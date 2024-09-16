@@ -20,11 +20,10 @@
 			<div class="pl-2 ">
 				<Header />
 			</div>
-			
 		</header>
 
 		<div class="flex flex-row flex-1">
-			<div class="hidden lg:block">
+			<div class="hidden md:block">
 				<Sidebar />
 			</div>
 			<main class="flex flex-1 flex-col rounded-l-md bg-muted">

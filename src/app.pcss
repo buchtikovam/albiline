@@ -7,11 +7,19 @@
 }
 @tailwind utilities;
 
-@layer base {
-	html {
-		font-family: 'Inter', system-ui, sans-serif;
-	}
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 500;
+	src: url('/fonts/Inter_18pt-Regular.ttf');
+}
 
+html {
+	font-family: Inter;
+	font-weight: 500;
+}
+
+@layer base {
 	:root {
 		--albi-50: #ecffff;
 		--albi-100: #cefdff;

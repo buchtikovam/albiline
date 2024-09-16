@@ -8,13 +8,10 @@
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
 
-	// TODO: save open in local storage
 
 	/*
 		Resizable ribbon container obsahující různé ribbon items
 	*/
-
-	// TODO: context
 
 	let isRibbonOpen: boolean = true;
 
