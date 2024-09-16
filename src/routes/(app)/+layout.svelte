@@ -9,27 +9,25 @@
 
 
 
-<div class="wrapper h-dvh w-dvh font-plus-jakarta-sans">
+<div class="wrapper h-dvh w-dvh bg-albi-50">
 	<Toaster
 		position="bottom-right"
 		class="flex justify-end h-56"
 	/>
 
 	<div class="flex h-dvh flex-col">
-		<header class="flex flex-col border-b lg:h-fit">
-			<div class="pl-2 ">
-				<Header />
-			</div>
+		<header>
+			<Header />
 		</header>
 
-		<div class="flex flex-row flex-1">
-			<div class="hidden md:block">
+		<div class="flex flex-row flex-1 pb-4">
+			<div class="hidden md:block pl-4">
 				<Sidebar />
 			</div>
-			<main class="flex flex-1 flex-col rounded-l-md bg-muted">
+			<main class="flex flex-1 flex-col rounded-l-md">
 				<Ribbon />
 				
-				<div class="flex flex-1 flex-col rounded-md p-4 pr-0">
+				<div class="pl-4 pb-4 flex flex-col flex-1 rounded-lg md:p-2 md:pr-0 md:pb-0">
 					<slot />
 				</div>
 			</main>

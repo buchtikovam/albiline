@@ -175,7 +175,7 @@
 
 
 
-<div class="flex h-full flex-col border-r overflow-auto">
+<div class="flex h-full flex-col overflow-auto bg-background rounded-lg border border-albi-200">
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if isSidebarOpen === true}
 		<div class="flex justify-center pt-3 px-4 gap-4 text-sm w-[320px]">
@@ -208,7 +208,7 @@
 										<ContextMenu.Trigger>
 											<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 												<div
-													class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+													class="flex text-sm font-bold w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
 													<svelte:component this={item.icon} />
 													<a
 														href={item.href}
@@ -316,7 +316,7 @@
 										<a
 											href={item.href}
 											on:click={() => handleTabClick(item, 0)}
-											class="flex text-sm font-medium  items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
+											class="flex text-sm font-bold items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
 										>
 											<svelte:component this={item.icon} />
 											{item.name}
@@ -332,7 +332,6 @@
 			</Accordion.Root>
 
 			<div class="mt-auto ml-auto pt-4">
-				<button on:click={() => goto("/pdf/test/1")}>test</button>
 				<SidebarToggleButton bind:isSidebarOpen />
 			</div>
 		</div>

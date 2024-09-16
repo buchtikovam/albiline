@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { InvoiceData, InvoiceItem } from '$lib/types/pdf/invoiceData';
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
+	import type { InvoiceData, InvoiceItem } from '$lib/types/pdf/invoiceData';
 	import { albiDetails } from '$lib/constants/albiDetails';
 	import { formatDate } from '$lib/utils/formatting/formatDate';
 	import { currencyCZ } from '$lib/constants/currency';
 	import { getVAT } from '$lib/utils/getVAT';
 
-	export let data: { response: InvoiceData, qrCode: string, url: string };
+	export let data: { response: InvoiceData, qrCode: string };
 
 	let header;
 	let items: InvoiceItem[];
@@ -22,15 +22,15 @@
 		vat = {};
 	}
 
-	let vatArr = [];
+	let vatArr: { sazbaDph: number, cenaBezDph: number, dph: number, cenaSDph: number}[];
 	let vatSummary: { cenaBezDph: number, dph: number, cenaSDph: number};
 	
 	if (vat && Object.keys(vat).length > 0) {
 		vatArr = getVAT(vat);
 
-		let soucetBezDhp = vatArr.reduce((acc, el) => acc + el.cenaBezDph, 0)
-		let soucetDph = vatArr.reduce((acc, el) => acc + el.dph, 0)
-		let soucetSDph = vatArr.reduce((acc, el) => acc + el.cenaSDph, 0)
+		const soucetBezDhp = vatArr.reduce((acc, el) => acc + el.cenaBezDph, 0)
+		const soucetDph = vatArr.reduce((acc, el) => acc + el.dph, 0)
+		const soucetSDph = vatArr.reduce((acc, el) => acc + el.cenaSDph, 0)
 
 		vatSummary = {
 			cenaBezDph: soucetBezDhp,
@@ -99,14 +99,14 @@
 			</div> 
 		</div>
 
-		<div class="flex text-xs gap-4 pb-2 ml-8 text-slate-950">
+		<div class="flex text-xs gap-10 pb-0.5 ml-8 text-slate-950"> <!-- dates -->
 			<p>Datum zd. plnění: <b>{ header.datplneni ? formatDate(header.datplneni) : "{{datplneni}}" }</b></p>
 			<p>Datum vystavení: <b>{ header.datprod ? formatDate(header.datprod) : "{{datprod}}"}</b></p>
 			<p>Datum splatnosti: <b>{ header.datsplat ? formatDate(header.datsplat) : "{{datsplat}}"}</b></p>		
 		</div>
 		
-		<div class="flex">
-			<div class="bg-albi-500 flex-1 px-8 py-6 flex text-sm gap-20 mr-4"> <!-- billing info -->
+		<div class="flex"> <!-- billing info -->
+			<div class="bg-albi-500 flex-1 px-8 py-6 flex text-sm gap-20 mr-4"> 
 				<div class="text-slate-50">
 					<p>
 						Prosíme o zaplacení částky
@@ -137,7 +137,7 @@
 			</div>
 		</div>
 		
-		<div class="px-8 pt-8">
+		<div class="px-8 pt-8"> <!-- thead -->
 			<p class="text-slate-950 text-xs pb-4">Fakturujeme Vám za následující zboží:</p>
 
 			<table class="w-full">
@@ -156,30 +156,30 @@
 
 
     <main>	
-		<div class="px-8">
+		<div class="px-8"> <!-- tbody -->
 			<table class="w-full">
 				<tbody>
 					{#each items as item (item)}
 					   <tr class="text-xs text-slate-950 border-b">
-							<td class="pb-1 ">
+							<td class="pb-0.5">
 								{item.popis}
 							</td>
-							<td class="pb-1 w-24 text-center">
+							<td class="w-24 text-left pb-0.5">
 								{item.ean !== null ? item.ean : ""}
 							</td>
-							<td class="pb-1 w-16 text-right">
+							<td class="w-16 text-right pb-0.5">
 								{item.quantity} ks
 							</td>
-							<td class="pb-1 w-20 text-center">
+							<td class="w-20 text-center pb-0.5">
 								{item.recyclingfee_cz !== null ? item.recyclingfee_cz : ""}
 							</td>
-							<td class="pb-1 w-16 text-right">
+							<td class="w-16 text-right pb-0.5">
 								{currencyCZ.format(item.cena_rabat)}
 							</td>
-							<td class="pb-1 w-16 text-right">
+							<td class="w-16 text-right pb-0.5">
 								{item.sazba_dph}%
 							</td>
-							<td class="pb-1 w-24 text-right">
+							<td class="w-24 text-right pb-0.5">
 								{currencyCZ.format(item.celkem)}
 							</td>
 						</tr>
@@ -188,7 +188,7 @@
 			</table>
 		</div>
 
-		<div class="my-8 px-8 flex">
+		<div class="my-8 px-8 flex"> <!-- vat -->
 			<div class="w-1/2 text-xs font-bold text-slate-950">
 				Razítko a podpis: 
 			</div>
@@ -202,21 +202,23 @@
 						<td>Celkem</td>
 					</thead>
 					<tbody>
-						{#each vatArr as vatObject (vatObject)}
-							<tr class="text-xs text-right border-b text-slate-950">
-								<td class="pb-1">{vatObject.sazbaDph}%</td>
-								<td class="pb-1">{currencyCZ.format(vatObject.cenaBezDph)}</td>
-								<td class="pb-1">{currencyCZ.format(vatObject.dph)}</td>
-								<td class="pb-1">{currencyCZ.format(vatObject.cenaSDph)}</td>
-							</tr>
-						{/each}
+						{#if vatArr !== undefined}
+						   {#each vatArr as vatObject (vatObject)}
+								<tr class="text-xs text-right border-b text-slate-950">
+									<td class="pb-0.5">{vatObject.sazbaDph}%</td>
+									<td class="pb-0.5">{currencyCZ.format(vatObject.cenaBezDph)}</td>
+									<td class="pb-0.5">{currencyCZ.format(vatObject.dph)}</td>
+									<td class="pb-0.5">{currencyCZ.format(vatObject.cenaSDph)}</td>
+								</tr>
+							{/each}
 
-						<tr class="text-xs text-albi-500 border-b font-bold text-right">
-							<td class="pb-1">Celkem:</td>
-							<td class="pb-1">{currencyCZ.format(vatSummary.cenaBezDph)}</td>
-							<td class="pb-1">{currencyCZ.format(vatSummary.dph)}</td>
-							<td class="pb-1">{currencyCZ.format(vatSummary.cenaSDph)}</td>
-						</tr>
+							<tr class="text-xs text-slate-950 border-b font-bold text-right">
+								<td class="pb-0.5">Celkem:</td>
+								<td class="pb-0.5">{currencyCZ.format(vatSummary.cenaBezDph)}</td>
+								<td class="pb-0.5">{currencyCZ.format(vatSummary.dph)}</td>
+								<td class="pb-0.5">{currencyCZ.format(vatSummary.cenaSDph)}</td>
+							</tr>
+						{/if}
 					</tbody>
 				</table>
 			</div>
@@ -227,7 +229,7 @@
     <footer>
         <div class="w-full px-8 pb-8 pt-4 text-xs text-center text-slate-950 leading-4">
 			<p>Děkujeme Vám za objednávku a těšíme se na další spolupráci. </p>
-			<p class="text-[10px] text-slate-500">Kontakt: </p>
+			<p class="text-[10px] text-slate-500">Kontakt: {header.dealer || "{{dealer}}"}</p>
 			<p class="text-[10px] text-slate-500">{albiDetails.or}</p>
 		</div>
     </footer>

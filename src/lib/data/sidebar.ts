@@ -10,7 +10,7 @@ export const allItems: SidebarItem[] = [
 	{
 		name: 'Test',
 		value: 'test',
-		href: '/templates-ss',
+		href: '/test-ss',
 		open: false,
 		hide: false,
 		icon: Braces,

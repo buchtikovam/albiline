@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { editedDataStore } from '$lib/stores/tableStore';
-import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
-import { page } from '$app/stores';
-import type { HeaderTab } from '$lib/types/sidebar/sidebar';
-import { goto, preloadData } from '$app/navigation';
-import { get } from 'svelte/store';
-import X from 'lucide-svelte/icons/x';
-import Home from 'lucide-svelte/icons/home';
-import Avatar from '$lib/components/avatar/Avatar.svelte';
-import * as Tabs from '$lib/components/ui/tabs';
+	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
+	import type { HeaderTab } from '$lib/types/sidebar/sidebar';
+	import { goto, preloadData } from '$app/navigation';
+	import { get } from 'svelte/store';
+	import X from 'lucide-svelte/icons/x';
+	import Home from 'lucide-svelte/icons/home';
+	import Avatar from '$lib/components/avatar/Avatar.svelte';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import Menu from 'lucide-svelte/icons/menu';
+	import { page } from '$app/stores';
 
+	console.log(get(page));
+	
 
 	/*
 	Header komponenent s hlavními taby a avatarem
@@ -85,8 +88,8 @@ import * as Tabs from '$lib/components/ui/tabs';
 
 
 
-<div class="flex justify-between bg-muted">
-    <Tabs.Root class="w-fit h-fit pt-2" value={pathname}>
+<div class="flex justify-between px-4 pt-2 md:py-2 md:px-4">
+    <Tabs.Root class="hidden w-fit h-fit md:block rounded-md " value={pathname}>
         <Tabs.List>
             <!-- Výchozí taby -->
             <Tabs.Trigger
@@ -107,7 +110,7 @@ import * as Tabs from '$lib/components/ui/tabs';
 					on:click={() => goto(tab.url)}
 				>
 					<button
-						class="flex items-center"
+						class="flex items-center font-bold"
 						on:mouseenter={() => showTabClosingButton(tab)}
 						on:mouseleave={() => hideTabClosingButton(tab)}
 					>
@@ -125,7 +128,12 @@ import * as Tabs from '$lib/components/ui/tabs';
 		</Tabs.List>
 	</Tabs.Root>
 
-	<div class="my-auto pr-2">
+	<div class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0">
 		<Avatar />
+
+		
+		<button class="block rounded-md bg-albi-500 size-[32px] md:hidden">
+			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
+		</button>
 	</div>
 </div>

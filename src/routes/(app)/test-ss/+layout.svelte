@@ -15,11 +15,11 @@
 </svelte:head>
 
 
-
-<div class="w-full flex items-center justify-between">
-	<Tabs.Root value={$page.url.pathname}>
+<div class="w-full flex items-center justify-between pb-2">
+	<Tabs.Root value={$page.url.pathname} class="rounded-md hidden md:block">
 		<Tabs.List class="w-fit">
 			<Tabs.Trigger
+				class="font-bold"
 				value="/test-ss"
 				on:click={() => goto("/test-ss")}
 			>
@@ -27,6 +27,7 @@
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
+				class="font-bold"
 				value="/test-ss/detail"
 				on:click={() => goto("test-ss/detail")}
 			>
@@ -38,7 +39,7 @@
 	<!-- {#if $showFulltextSearchStore === true} -->
 		<div class="flex items-center">
 			<Input
-				class="max-w-sm h-[31px] mr-4 border-b-white rounded-md rounded-b-none focus-visible:ring-0"
+				class="hidden md:block w-40 h-[31px] mr-4 rounded-md border border-albi-200 focus-visible:ring-0"
 				placeholder="Filtrovat..."
 				type="text"
 				bind:value={$fulltextFilterValueStore}
@@ -47,6 +48,6 @@
 	<!-- {/if} -->
 </div>
 
-<div class="h-full bg-background rounded-bl rounded-none border">
+<div class="h-full bg-white rounded-lg border border-albi-200">
 	<slot />
 </div>

@@ -1,30 +1,22 @@
 <script lang="ts">
-	import User from 'lucide-svelte/icons/user';
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
-	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import User from 'lucide-svelte/icons/user';
 
 	/*
 		Avatar komponent s dropdownem a uživatelskými nastaveními
 	*/
 
 	export let userName: string = 'MBUC';
-	export let userImage: string = '';
 </script>
 
 
 
 <DropdownMenu.Root closeOnItemClick={false}>
-	<DropdownMenu.Trigger>
-		<Avatar.Root class="w-7 h-7 ">
-			<Avatar.Image src={`/${userImage}`} alt="icon" />
-			<Avatar.Fallback class="bg-albi-500">
-				<User class="w-5 h-5 text-white" />
-			</Avatar.Fallback>
-		</Avatar.Root>
+	<DropdownMenu.Trigger class="rounded-md bg-albi-500 size-[32px]">
+		<User class="size-5 m-1 mx-auto text-slate-50"/>
 	</DropdownMenu.Trigger>
-
 
 	<DropdownMenu.Content class="w-60">
 		<DropdownMenu.Label class="font-bold text-base">

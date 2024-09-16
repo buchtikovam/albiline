@@ -9,7 +9,7 @@
 	</div>
 
 	<div class="border">
-		<PdfPrintButton url="/pdf/templates/A4/invoices/324051346" />
+		<PdfPrintButton url="/pdf/templates/A4/invoices/324051223" />
 		: invoice
 	</div>
 </div>
