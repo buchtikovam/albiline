@@ -1,10 +1,10 @@
 <script lang="ts">
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
 	import type { InvoiceData, InvoiceItem } from '$lib/types/pdf/invoiceData';
-	import { albiDetails } from '$lib/constants/albiDetails';
 	import { formatDate } from '$lib/utils/formatting/formatDate';
 	import { currencyCZ } from '$lib/constants/currency';
 	import { getVAT } from '$lib/utils/getVAT';
+	import { albiDetails } from '$lib/constants/albiDetails';
 
 	export let data: { response: InvoiceData, qrCode: string };
 

@@ -18,7 +18,7 @@
 
 {#if isRibbonOpen === true}
 	<button
-		class="text-[10px] min-w-11 w-11 h-12 rounded hover:bg-muted/70 leading-none overflow-visible"
+		class="text-[9px] min-w-10 w-10 h-11 rounded hover:bg-muted/70 leading-none overflow-visible"
 		on:click={setRibbonAction}
 	>
 		<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
@@ -26,9 +26,9 @@
 	</button>
 {:else}
 	<Tooltip.Root openDelay={250}>
-		<Tooltip.Trigger class="mt-auto min-w-5 mx-0.5">
+		<Tooltip.Trigger class="mt-auto min-w-5 mx-0.5 p-1 md:p-0">
 			<button
-				class="w-5 rounded hover:bg-muted/70"
+				class="w-5 h-5 flex items-center rounded hover:bg-muted/70"
 				on:click={setRibbonAction}
 			>
 				<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />

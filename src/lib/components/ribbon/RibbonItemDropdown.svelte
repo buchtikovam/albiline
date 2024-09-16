@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import type { RibbonItem, RibbonSubItem } from '$lib/types/ribbon/ribbon';
 	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	export let ribbonItem: RibbonItem;
 	export let isRibbonOpen: boolean = true;
 
 	let children: RibbonSubItem[] = ribbonItem.children || [];
-
 
 	function setRibbonAction(itemAction: RibbonActionEnum | undefined) {
 		if (itemAction) {
@@ -23,12 +22,12 @@
 
 {#if isRibbonOpen === true}
 	<DropdownMenu.Root>
-		<div class="min-w-12 max-w-12">
+		<div class="min-w-11 max-w-11">
 			<DropdownMenu.Trigger class="mt-auto">
 				<button
-					class="text-[10px] size-12 leading-none rounded hover:bg-muted/70"
+					class="text-[9px] size-11 leading-none rounded hover:bg-muted/70"
 				>
-					<span class="flex w-12 items-center justify-center ml-1">
+					<span class="flex w-11 items-center justify-center ml-1">
 						<svelte:component
 							this={ribbonItem.icon}
 							class="size-4 muted-foreground"
@@ -52,13 +51,13 @@
 	</DropdownMenu.Root>
 {:else}
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="min-w-6">
+		<DropdownMenu.Trigger class="min-w-6 h-5 pl-1 ">
 			<Tooltip.Root openDelay={250}>
-				<Tooltip.Trigger class="min-w-6">
+				<Tooltip.Trigger class="min-w-6 h-5 flex items-center">
 					<button class="size-6 rounded hover:bg-muted/70 flex items-center">
 						<svelte:component
 							this={ribbonItem.icon}
-							class="size-4 mx-auto muted-foreground"
+							class="size-5 mx-auto muted-foreground"
 						/>
 						<ChevronDown class="size-2 mr-0.5" />
 					</button>

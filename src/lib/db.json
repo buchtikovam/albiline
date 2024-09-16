@@ -265,6 +265,209 @@
           "sortIndex": null
         }
       ]
+    },
+    {
+      "id": "1c93",
+      "pageOrigin": "/test-ss",
+      "presetName": "4 columns",
+      "presets": [
+        {
+          "sortable": true,
+          "resizable": false,
+          "editable": false,
+          "minWidth": 100,
+          "maxWidth": 34,
+          "filter": false,
+          "filterParams": {
+            "buttons": [
+              "clear",
+              "apply"
+            ]
+          },
+          "cellDataType": false,
+          "headerCheckboxSelection": true,
+          "pinned": "left",
+          "suppressHeaderMenuButton": true,
+          "suppressHeaderFilterButton": true,
+          "suppressMovable": true,
+          "field": "rowNumber",
+          "checkboxSelection": true,
+          "headerClass": "ag-header-checkbox",
+          "colId": "rowNumber",
+          "width": 34,
+          "rowGroup": false,
+          "rowGroupIndex": null,
+          "pivot": false,
+          "pivotIndex": null,
+          "aggFunc": null,
+          "sort": null,
+          "sortIndex": null
+        },
+        {
+          "sortable": true,
+          "resizable": true,
+          "editable": true,
+          "minWidth": 100,
+          "maxWidth": 400,
+          "filter": "agMultiColumnFilter",
+          "filterParams": {
+            "buttons": [
+              "clear",
+              "apply"
+            ],
+            "filters": [
+              {
+                "filter": "agTextColumnFilter"
+              }
+            ]
+          },
+          "cellDataType": false,
+          "field": "description",
+          "headerName": "Popis",
+          "width": 240,
+          "colId": "description",
+          "rowGroup": false,
+          "rowGroupIndex": null,
+          "pivot": false,
+          "pivotIndex": null,
+          "aggFunc": null,
+          "pinned": null,
+          "sort": null,
+          "sortIndex": null
+        },
+        {
+          "sortable": true,
+          "resizable": true,
+          "editable": true,
+          "minWidth": 100,
+          "maxWidth": 400,
+          "hide": true,
+          "filter": "agMultiColumnFilter",
+          "filterParams": {
+            "buttons": [
+              "clear",
+              "apply"
+            ],
+            "filters": [
+              {
+                "filter": "agNumberColumnFilter"
+              }
+            ]
+          },
+          "cellDataType": false,
+          "field": "price",
+          "headerName": "Cena",
+          "width": 100,
+          "colId": "price",
+          "rowGroup": false,
+          "rowGroupIndex": null,
+          "pivot": false,
+          "pivotIndex": null,
+          "aggFunc": null,
+          "pinned": null,
+          "sort": null,
+          "sortIndex": null
+        },
+        {
+          "sortable": true,
+          "resizable": true,
+          "editable": true,
+          "minWidth": 100,
+          "maxWidth": 400,
+          "filter": "agMultiColumnFilter",
+          "filterParams": {
+            "buttons": [
+              "clear",
+              "apply"
+            ],
+            "filters": [
+              {
+                "filter": "agTextColumnFilter"
+              },
+              {
+                "filter": "agSetColumnFilter"
+              }
+            ]
+          },
+          "cellDataType": false,
+          "field": "category",
+          "headerName": "Kategorie",
+          "width": 130,
+          "colId": "category",
+          "rowGroup": false,
+          "rowGroupIndex": null,
+          "pivot": false,
+          "pivotIndex": null,
+          "aggFunc": null,
+          "pinned": null,
+          "sort": null,
+          "sortIndex": null
+        },
+        {
+          "sortable": true,
+          "resizable": true,
+          "editable": true,
+          "minWidth": 100,
+          "maxWidth": 400,
+          "filter": "agMultiColumnFilter",
+          "filterParams": {
+            "buttons": [
+              "clear",
+              "apply"
+            ],
+            "filters": [
+              {
+                "filter": "agNumberColumnFilter"
+              }
+            ]
+          },
+          "cellDataType": false,
+          "field": "discountPercentage",
+          "headerName": "Výše slevy",
+          "width": 157,
+          "colId": "discountPercentage",
+          "rowGroup": false,
+          "rowGroupIndex": null,
+          "pivot": false,
+          "pivotIndex": null,
+          "aggFunc": null,
+          "pinned": null,
+          "sort": null,
+          "sortIndex": null
+        },
+        {
+          "sortable": true,
+          "resizable": true,
+          "editable": true,
+          "minWidth": 100,
+          "maxWidth": 400,
+          "filter": "agMultiColumnFilter",
+          "filterParams": {
+            "buttons": [
+              "clear",
+              "apply"
+            ],
+            "filters": [
+              {
+                "filter": "agTextColumnFilter"
+              }
+            ]
+          },
+          "cellDataType": false,
+          "field": "title",
+          "width": 240,
+          "headerName": "Název",
+          "colId": "title",
+          "rowGroup": false,
+          "rowGroupIndex": null,
+          "pivot": false,
+          "pivotIndex": null,
+          "aggFunc": null,
+          "pinned": null,
+          "sort": null,
+          "sortIndex": null
+        }
+      ]
     }
   ],
   "invoice": {

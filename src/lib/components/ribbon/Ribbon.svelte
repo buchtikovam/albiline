@@ -22,7 +22,7 @@
 
 
 
-<div class="ribbon mx-4 mt-2 p-0.5 md:mx-2 md:my-0 md:p-1 flex items-center rounded-lg bg-white border border-albi-200 overflow-auto">
+<div class="ribbon mx-4 mt-2 p-0.5 flex items-center rounded-lg bg-white border border-albi-200 overflow-auto md:mx-2 md:my-0 md:p-2 md:mr-4">
 	{#each ribbonItems as ribbonItem}
 		{#if Array.isArray(ribbonItem)}
 			<RibbonItemsNarrow
@@ -45,7 +45,7 @@
 			{/if}
 
 			{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
-				<Separator orientation="vertical" class="mx-1 md:mx-2.5 bg-border h-[20px]" />
+				<Separator orientation="vertical" class="mx-1 md:mx-2.5 bg-albi-100 h-[20px] w-[1px]" />
 			{/if}
 		{/if}
 	{/each}

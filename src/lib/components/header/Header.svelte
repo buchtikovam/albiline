@@ -10,8 +10,6 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import Menu from 'lucide-svelte/icons/menu';
 	import { page } from '$app/stores';
-
-	console.log(get(page));
 	
 
 	/*

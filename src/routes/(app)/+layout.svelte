@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Toaster } from '$lib/components/ui/sonner';
 	import './../../app.pcss';
+	import { Toaster } from '$lib/components/ui/sonner';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
