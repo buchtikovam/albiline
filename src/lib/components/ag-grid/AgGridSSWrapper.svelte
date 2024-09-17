@@ -20,7 +20,6 @@
 	import { get } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
 	
-
 	export let columnDefinitions: any[];
 	export let url: string;
 
@@ -60,8 +59,8 @@
 		},
 
 		getRowId: (params: GetRowIdParams) => {
-			// return String(params.data.rowNumber); 
-			return String(params.data.id); // setup
+			return String(params.data.rowNumber); 
+			// return String(params.data.id); // setup
 		},
 
 		columnDefs: columnDefinitions,
@@ -158,18 +157,18 @@
 
 			// AG-Grid SSRM
 			fetch(url
-				// ,{ // setup
-				// 	method: "post",
-				// 	body: JSON.stringify(params.request),
-				// 	headers: {"Content-Type": "application/json"}
-				// }
+				,{ // setup
+					method: "post",
+					body: JSON.stringify(params.request),
+					headers: {"Content-Type": "application/json"}
+				}
 			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
-				// params.success({ rowData: response.items })
-				params.success({ rowData: response.products }) // setup
-				// lastRow = response.items.slice(-1)[0].rowNumber 
-				lastRow = response.products.slice(-1)[0].id // setup
+				params.success({ rowData: response.items })
+				// params.success({ rowData: response.products }) // setup
+				lastRow = response.items.slice(-1)[0].rowNumber 
+				// lastRow = response.products.slice(-1)[0].id // setup
 				
 				console.log("new last row", lastRow);
 			})

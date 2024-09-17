@@ -8,12 +8,11 @@
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
 
-
 	/*
 		Resizable ribbon container obsahující různé ribbon items
 	*/
 
-	let isRibbonOpen: boolean = true;
+	let isRibbonOpen: boolean = false;
 
 	function toggleRibbonOpen() {
 		isRibbonOpen = !isRibbonOpen;
@@ -22,7 +21,10 @@
 
 
 
-<div class="ribbon mx-4 mt-2 p-0.5 flex items-center rounded-lg bg-white border border-albi-200 overflow-auto md:mx-2 md:my-0 md:p-2 md:mr-4">
+<div class="
+	hidden mx-4 mt-2 p-0.5 items-center rounded-lg bg-white border border-albi-200 overflow-auto 
+	md:mx-2 md:my-0 md:p-2 md:mr-4 md:flex
+">
 	{#each ribbonItems as ribbonItem}
 		{#if Array.isArray(ribbonItem)}
 			<RibbonItemsNarrow
@@ -45,29 +47,30 @@
 			{/if}
 
 			{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
-				<Separator orientation="vertical" class="mx-1 md:mx-2.5 bg-albi-100 h-[20px] w-[1px]" />
+				<Separator orientation="vertical" class={
+					(isRibbonOpen 
+						? "h-[20px]" 
+						: "h-[14px]")
+						+ " mx-1 md:mx-2.5 bg-albi-200 w-[2px]"
+					}
+				/>
 			{/if}
 		{/if}
 	{/each}
 	
 	<button 
 		on:click={toggleRibbonOpen} 
-		class={(isRibbonOpen ? "top-[88px]" : "top-[66px]") + " absolute right-0"}
+		class={
+			(isRibbonOpen 
+				? "top-[88px]" 
+				: "top-[66px]") 
+				+ " absolute right-0"
+			}
 	>
 		{#if isRibbonOpen}
-			<ChevronDown class="h-4 w-4 bg-background" />
+			<ChevronDown class="h-4 w-4 mr-5 bg-background" />
 		{:else}
-			<ChevronUp class="h-4 w-4 bg-background" />
+			<ChevronUp class="h-4 w-4 mr-5 bg-background" />
 		{/if}
 	</button>
 </div>
-
-
-
-<style>
-	@media (max-width: 768px) {
-		.ribbon::-webkit-scrollbar {
-			display: none;
-		}
-	}
-</style>

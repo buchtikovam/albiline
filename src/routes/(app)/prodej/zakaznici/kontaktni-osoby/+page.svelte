@@ -1,8 +1,12 @@
+<script>
+	import { showFulltextSearchStore } from "$lib/stores/tableStore";
+
+	showFulltextSearchStore.set(false)
+</script>
+
 
 <svelte:head>
-	<title>Zákazníci | kontaktní osoby</title>
+	<title>Zákazníci | Kontaktní osoby</title>
 </svelte:head>
 
-<div class="h-full border rounded-bl rounded-none">
-
-</div>
+<div class="h-full"></div>

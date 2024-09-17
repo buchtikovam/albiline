@@ -15,7 +15,7 @@
 	import { buttonBorderSwitch } from '$lib/utils/buttonBorderSwitch';
 	import deepcopy from 'deepcopy';
 	import Search from 'lucide-svelte/icons/search';
-	import CategoryButton from '$lib/components/sidebar/CategoryButton.svelte';
+	import CategoryButton from '$lib/components/sidebar/SidebarCategoryTabs.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';
 	import SidebarToggleButton from '$lib/components/sidebar/SidebarToggleButton.svelte';
@@ -24,6 +24,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import { goto } from '$app/navigation';
+	import SidebarItemOpenNoChild from './SidebarItemOpenNoChild.svelte';
 
 
 	/*
@@ -175,16 +176,17 @@
 
 
 
-<div class="flex h-full flex-col overflow-auto bg-background rounded-lg border border-albi-200">
+<div class="
+	{isSidebarOpen ? "w-[320px] p-4" : "w-fit p-2"}
+	flex flex-col h-full overflow-auto bg-white rounded-lg border border-albi-200 "
+>
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if isSidebarOpen === true}
-		<div class="flex justify-center pt-3 px-4 gap-4 text-sm w-[320px]">
-			<CategoryButton buttonName="Všechny" category="all"/>
-			<CategoryButton buttonName="Nedávné" category="recent" />
-			<CategoryButton buttonName="Oblíbené" category="favorite" />
+		<div class="flex justify-center text-sm mb-4">
+			<CategoryButton  />
 		</div>
 
-		<div class="flex-1 flex flex-col p-4">
+		<div class="flex-1 flex flex-col">
 			<Input
 				class="mb-4"
 				placeholder="Vyhledat..."
@@ -197,7 +199,7 @@
 				multiple
 				value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.value) : []}
 			>
-				<div class="gap-2 h-full overflow-auto">
+				<div class="h-full overflow-auto text-sm">
 					{#each filteredItems as item}
 						<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2"}>
 							<!-- accordiony první vrstvy (item má children položky) -->
@@ -208,7 +210,7 @@
 										<ContextMenu.Trigger>
 											<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 												<div
-													class="flex text-sm font-bold w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary">
+													class="flex text-sm font-bold w-full items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:text-primary">
 													<svelte:component this={item.icon} />
 													<a
 														href={item.href}
@@ -311,20 +313,7 @@
 
 							{:else}
 								<!-- accordiony první vrstvy (item nemá children položky) -->
-								<ContextMenu.Root>
-									<ContextMenu.Trigger>
-										<a
-											href={item.href}
-											on:click={() => handleTabClick(item, 0)}
-											class="flex text-sm font-bold items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
-										>
-											<svelte:component this={item.icon} />
-											{item.name}
-										</a>
-									</ContextMenu.Trigger>
-
-									<ContextMenuContent itemValue={item.value} />
-								</ContextMenu.Root>
+								<SidebarItemOpenNoChild item={item}/>
 							{/if}
 						</div>
 					{/each}
@@ -338,7 +327,7 @@
 		<!-- konec otevřeného sidebaru-->
 	{:else}
 		<!-- zavřený sidebar (ikony s tooltipem a popoverem) -->
-		<div class="flex-1 w-[60px]">
+		<div class="flex-1">
 			<nav class="grid pt-4 gap-2 justify-center">
 				<Tooltip.Root openDelay={250}>
 					<Tooltip.Trigger>
@@ -355,7 +344,7 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 
-				<Separator />
+				<Separator class="mx-auto w-8"/>
 
 				{#each filteredItems as item}
 					<!-- item s children položkami. Po najetí myši ukáže tooltip a po kliknutí popover se všemi children položkami -->

@@ -11,27 +11,18 @@
 	import Menu from 'lucide-svelte/icons/menu';
 	import { page } from '$app/stores';
 	
-
 	/*
 	Header komponenent s hlavními taby a avatarem
 	*/
 
 	let storedTabs: HeaderTab[];
-	
-	openedTabsStore.subscribe((data) => {
-		storedTabs = data;
-	});
+	openedTabsStore.subscribe(data => storedTabs = data);
 
 	let editedData;
-
-	editedDataStore.subscribe((data) => {
-		editedData = data
-	})
-	
+	editedDataStore.subscribe(data => editedData = data);
 
 	$: pathname = getTabValue($page.url.pathname)
 
-	
 	function getTabValue(url :string) {
 		let urlLength = url.split('/').length
 		
@@ -86,7 +77,10 @@
 
 
 
-<div class="flex justify-between px-4 pt-2 md:py-2 md:px-4">
+<div class="
+	flex justify-between px-4 pt-2 
+	md:pt-2 md:pb-2 md:px-4"
+>
     <Tabs.Root class="hidden w-fit h-fit md:block rounded-md " value={pathname}>
         <Tabs.List>
             <!-- Výchozí taby -->
@@ -128,7 +122,6 @@
 
 	<div class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0">
 		<Avatar />
-
 		
 		<button class="block rounded-md bg-albi-500 size-[32px] md:hidden">
 			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 

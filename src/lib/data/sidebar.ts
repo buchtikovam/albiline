@@ -4,18 +4,17 @@ import Hammer from 'lucide-svelte/icons/hammer';
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
 import type { SidebarItem } from '$lib/types/sidebar/sidebar';
-import Braces from 'lucide-svelte/icons/braces';
 
 export const allItems: SidebarItem[] = [
-	{
-		name: 'Test',
-		value: 'test',
-		href: '/test-ss',
-		open: false,
-		hide: false,
-		icon: Braces,
-		children: [],
-	},
+	// {
+	// 	name: 'Test',
+	// 	value: 'test',
+	// 	href: '/test-ss',
+	// 	open: false,
+	// 	hide: false,
+	// 	icon: Braces,
+	// 	children: [],
+	// },
 	{
 		name: 'Průvodní list',
 		value: 'pruvodni-list',

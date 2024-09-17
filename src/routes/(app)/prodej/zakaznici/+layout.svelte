@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { showFulltextSearchStore } from '$lib/stores/tableStore';
-	import { fulltextFilterValueStore } from '$lib/stores/tableStore';
+	import { fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -10,16 +9,16 @@
 
 <svelte:head>
 	<title>
-		Zákazníci
+		Test
 	</title>
 </svelte:head>
 
 
-
-<div class="w-full flex items-center justify-between">
-	<Tabs.Root value={$page.url.pathname}>
+<div class="w-full flex items-center justify-between pb-2">
+	<Tabs.Root value={$page.url.pathname} class="rounded-md hidden md:block">
 		<Tabs.List class="w-fit">
 			<Tabs.Trigger
+				class="font-bold"
 				value="/prodej/zakaznici"
 				on:click={() => goto("/prodej/zakaznici")}
 			>
@@ -27,6 +26,7 @@
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
+				class="font-bold"
 				value="/prodej/zakaznici/detail"
 				on:click={() => goto("/prodej/zakaznici/detail")}
 			>
@@ -34,6 +34,7 @@
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
+				class="font-bold"
 				value="/prodej/zakaznici/fakturacni-adresy"
 				on:click={() => goto("/prodej/zakaznici/fakturacni-adresy")}
 			>
@@ -41,28 +42,27 @@
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
+				class="font-bold"
 				value="/prodej/zakaznici/kontaktni-osoby"
 				on:click={() => goto("/prodej/zakaznici/kontaktni-osoby")}
 			>
 				Kontaktní osoby
 			</Tabs.Trigger>
-
-			
 		</Tabs.List>
 	</Tabs.Root>
 
-	<!-- {#if $showFulltextSearchStore === true} -->
-		<div class="flex items-center">
+	{#if $showFulltextSearchStore === true}
+		<div class="flex items-center pr-[1px] overflow-visible">
 			<Input
-				class="max-w-sm h-[31px] mr-4 border-b-white rounded-md rounded-b-none focus-visible:ring-0"
-				placeholder="Filtrovat..."
+				class=" w-40 h-[31px] rounded-md border border-albi-200 "
+				placeholder="Hledat..."
 				type="text"
 				bind:value={$fulltextFilterValueStore}
 			/>
 		</div>
-	<!-- {/if} -->
+	{/if}
 </div>
 
-<div class="h-full bg-background rounded-bl rounded-none ">
+<div class="h-full bg-white rounded-lg border border-albi-200">
 	<slot />
 </div>

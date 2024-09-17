@@ -10,5 +10,4 @@ export const albiDetails = {
 	bankCode: "0800",
 	ibanShow: "CZ77 0800 0000 0000 0104 9252",
 	iban: "CZ7708000000000001049252",
-
 }

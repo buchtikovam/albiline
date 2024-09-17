@@ -27,7 +27,7 @@
 			<main class="flex flex-1 flex-col rounded-l-md">
 				<Ribbon />
 				
-				<div class="pl-4 pb-4 flex flex-col flex-1 rounded-lg md:p-2 md:pr-0 md:pb-0">
+				<div class="pl-4 pb-4 flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0">
 					<slot />
 				</div>
 			</main>

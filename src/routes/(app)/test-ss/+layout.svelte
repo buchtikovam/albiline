@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { showFulltextSearchStore } from '$lib/stores/tableStore';
-	import { fulltextFilterValueStore } from '$lib/stores/tableStore';
+	import { fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -36,16 +35,16 @@
 		</Tabs.List>
 	</Tabs.Root>
 
-	<!-- {#if $showFulltextSearchStore === true} -->
-		<div class="flex items-center">
+	{#if $showFulltextSearchStore === true}
+		<div class="flex items-center py-0.5 pr-[1px] overflow-visible">
 			<Input
-				class="hidden md:block w-40 h-[31px] mr-4 rounded-md border border-albi-200 focus-visible:ring-0"
-				placeholder="Filtrovat..."
+				class=" w-40 h-[31px] rounded-md border border-albi-200 "
+				placeholder="Hledat..."
 				type="text"
 				bind:value={$fulltextFilterValueStore}
 			/>
 		</div>
-	<!-- {/if} -->
+	{/if}
 </div>
 
 <div class="h-full bg-white rounded-lg border border-albi-200">
