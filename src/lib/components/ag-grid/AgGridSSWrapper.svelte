@@ -12,7 +12,6 @@
 		type GridOptions, 
 		type IServerSideDatasource, 
 		type IServerSideGetRowsParams,
-		type ITextFilterParams, 
 	} from "ag-grid-enterprise";
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
@@ -37,9 +36,6 @@
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
-			filterParams: {
-				buttons: ["clear", "apply"],
-			} as ITextFilterParams,
 		},	
 
 		onCellValueChanged: (event) => {
@@ -58,13 +54,15 @@
 			presetStore.set(gridApi.getColumnDefs() || [])
 		},
 
+		onFilterModified: (e) => {
+		},
+
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data.rowNumber); 
 			// return String(params.data.id); // setup
 		},
 
 		columnDefs: columnDefinitions,
-
 		suppressExcelExport: true,
 		suppressCsvExport: true,
 		// sideBar: true,
@@ -79,11 +77,10 @@
 		maxBlocksInCache: 10,
 	}
 
-
-
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
 	let previousSort: ("asc" | "desc" | null | undefined)[] = []
+
 
 	function addToEditedData(params: Record<string, any>, column: string, newValue: any) {
 		let editedData = get(editedDataStore);
@@ -102,7 +99,6 @@
 		}
 	}
 
-
 	
 	export function customDebounce (callback: Function, wait = 500) {
 		let timeout: ReturnType<typeof setTimeout>;
@@ -113,9 +109,9 @@
 	};
 		
 
-	let runCount = 0;
-	let lastRow: number|null = null;
 	const rowBatchSize = 500;
+	let lastRow: number|null = null;
+	let runCount = 0;
 
 	const datasource: IServerSideDatasource = {
 		getRows: customDebounce((params: IServerSideGetRowsParams) => {
@@ -366,7 +362,6 @@
 		ribbonActionStore.set(undefined)
 	})	
 </script>
-
 
 
 

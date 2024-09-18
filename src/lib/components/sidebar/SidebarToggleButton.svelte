@@ -3,7 +3,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Menu from 'lucide-svelte/icons/menu';
 
-	export let isSidebarOpen: boolean = true;
+	export let isSidebarOpen: boolean;
 
 
 	function toggleOpen() {

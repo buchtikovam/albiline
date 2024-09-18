@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
-	import { handleTabClick } from '$lib/utils/handleTabClick';
+	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
 
 	export let item;
 </script>	

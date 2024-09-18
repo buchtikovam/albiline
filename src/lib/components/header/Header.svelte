@@ -78,7 +78,7 @@
 
 
 <div class="
-	flex justify-between px-4 pt-2 
+	flex justify-between px-4 py-4 
 	md:pt-2 md:pb-2 md:px-4"
 >
     <Tabs.Root class="hidden w-fit h-fit md:block rounded-md " value={pathname}>

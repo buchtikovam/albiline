@@ -1,3 +1,5 @@
+import type { ITextFilterParams } from "ag-grid-enterprise";
+
 export const testSSColDef = [
 	{ 
 		headerCheckboxSelection: true,
@@ -17,14 +19,10 @@ export const testSSColDef = [
 		field: "title",
 		width: 240,
 		headerName: "Název",
-		filter: 'agMultiColumnFilter',
+		filter: 'agTextColumnFilter',
 		filterParams: {
-			filters: [
-				{
-					filter: 'agTextColumnFilter',
-				},
-			],
-		},
+			buttons: ["apply"],
+		} as ITextFilterParams
 	},
 	{ 
 		field: "description",
@@ -36,9 +34,11 @@ export const testSSColDef = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					
 				},
 			],
-		},
+			buttons: ["apply"]
+		} as ITextFilterParams
 	},
 	{ 
 		field: "category",

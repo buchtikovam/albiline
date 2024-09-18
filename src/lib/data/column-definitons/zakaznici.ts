@@ -26,8 +26,7 @@ export const zakazniciColDef = [
 				{
 					filter: 'agNumberColumnFilter',
 				},
-				
-			]
+			],
 		}
 	},
 	{ 
@@ -88,12 +87,7 @@ export const zakazniciColDef = [
 				{
 					filter: 'agStringColumnFilter',
 				},
-				{
-					filter: 'agSetColumnFilter',
-					filterParams: {
-						values: ["Praha", "Brno", "Brno", "brno", "Kroměříž", "Zlechov", "Červený Kostelec"]
-					}
-				},
+				
 			]
 		}
 	},
@@ -118,6 +112,7 @@ export const zakazniciColDef = [
 		headerName: "PSČ",
 		editable: true,
 		cellDataType: "text",
+		width: 80,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -131,6 +126,7 @@ export const zakazniciColDef = [
 		field: "countryCode", 
 		headerName: "Země",
 		editable: true,
+		width: 80,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -146,6 +142,7 @@ export const zakazniciColDef = [
 		headerName: "Název společnosti",
 		editable: true,
 		cellDataType: "text",
+		width: 200,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -160,6 +157,7 @@ export const zakazniciColDef = [
 		headerName: "Aktivní",
 		editable: true,
 		cellDataType: "boolean",
+		width: 64,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [

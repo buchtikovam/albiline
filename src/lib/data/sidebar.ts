@@ -94,17 +94,7 @@ export const allItems: SidebarItem[] = [
 				open: false,
 				hide: false,
 				icon: null,
-				children: [
-					{
-						name: "test",
-						value: "test",
-						href: "/vyroba/raznice/templates",
-						open: false,
-						hide: false,
-						icon: null,
-						children: [],
-					},
-				]
+				children: [],
 			},
 			{
 				name: 'Obálky',

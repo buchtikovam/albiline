@@ -5,6 +5,16 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
+	import { browser } from "$app/environment";
+
+    let innerWidth;
+
+    if (browser){
+        innerWidth = window.innerWidth;
+		
+		console.log("innerWidth");
+		console.log(innerWidth);
+    }
 </script>
 
 
@@ -27,7 +37,7 @@
 			<main class="flex flex-1 flex-col rounded-l-md">
 				<Ribbon />
 				
-				<div class="pl-4 pb-4 flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0">
+				<div class="pl-4 flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0">
 					<slot />
 				</div>
 			</main>

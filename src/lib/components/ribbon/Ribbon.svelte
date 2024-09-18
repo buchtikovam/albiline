@@ -22,7 +22,7 @@
 
 
 <div class="
-	hidden mx-4 mt-2 p-0.5 items-center rounded-lg bg-white border border-albi-200 overflow-auto 
+	hidden mx-4 mt-2 p-0.5 items-center rounded-lg bg-white overflow-auto 
 	md:mx-2 md:my-0 md:p-2 md:mr-4 md:flex
 ">
 	{#each ribbonItems as ribbonItem}

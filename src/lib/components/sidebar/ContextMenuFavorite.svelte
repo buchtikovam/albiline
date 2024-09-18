@@ -24,10 +24,10 @@
 
 
 
-<ContextMenu.Content>
+<ContextMenu.Content class="p-0">
 	{#if category !== "favorite"}
 		<ContextMenu.Item
-			class="flex gap-2"
+			class="flex gap-2 text-sm"
 			on:click={addToFavorites}
 		>
 			<Heart class="w-4 h-4 text-red-600" />
@@ -35,7 +35,7 @@
 		</ContextMenu.Item>
 	{:else}
 		<ContextMenu.Item
-			class="flex gap-2"
+			class="flex gap-2 text-sm"
 			on:click={removeFromFavorites}
 		>
 			<HeartCrack class="w-4 h-4 text-red-600" />
