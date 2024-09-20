@@ -16,7 +16,7 @@
 		<a
 			href="{item.href}"
 			on:click={() => handleTabClick(item, 2)}
-			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground/75 transition-all hover:text-primary"
+			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-albi-950 hover:text-black"
 		>
 			{item.name}
 		</a>

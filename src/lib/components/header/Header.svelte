@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { editedDataStore } from '$lib/stores/tableStore';
+	import { editedDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
 	import type { HeaderTab } from '$lib/types/sidebar/sidebar';
 	import { goto, preloadData } from '$app/navigation';
@@ -10,6 +10,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import Menu from 'lucide-svelte/icons/menu';
 	import { page } from '$app/stores';
+	import Input from '../ui/input/input.svelte';
 	
 	/*
 	Header komponenent s hlavními taby a avatarem
@@ -78,7 +79,7 @@
 
 
 <div class="
-	flex justify-between px-4 py-4 
+	flex justify-between px-4 pt-4 pb-2 
 	md:pt-2 md:pb-2 md:px-4"
 >
     <Tabs.Root class="hidden w-fit h-fit md:block rounded-md " value={pathname}>
@@ -122,8 +123,17 @@
 
 	<div class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0">
 		<Avatar />
+
+		{#if $showFulltextSearchStore === true}
+			<Input
+				class="mx-2 h-[32px] rounded-md border-none focus-visible:ring-0"
+				placeholder="Hledat..."
+				type="text"
+				bind:value={$fulltextFilterValueStore}
+			/>
+		{/if}
 		
-		<button class="block rounded-md bg-albi-500 size-[32px] md:hidden">
+		<button class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">
 			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
 		</button>
 	</div>

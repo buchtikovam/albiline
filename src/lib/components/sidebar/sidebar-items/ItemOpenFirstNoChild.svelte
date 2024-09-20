@@ -12,7 +12,7 @@
 		<a
 			href={item.href}
 			on:click={() => handleTabClick(item, 0)}
-			class="flex text-sm font-bold items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted/50 text-muted-foreground/75 transition-all hover:text-primary"
+			class="flex text-sm font-bold items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted/50 text-albi-950 hover:text-black"
 		>
 			<svelte:component this={item.icon} />
 			{item.name}

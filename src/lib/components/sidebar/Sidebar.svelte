@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		sidebarStateStore,
+		sidebarOpenStore,
 		recentItemsStore,
 		favoriteItemsStore,
 		activeCategoryStore
@@ -26,7 +26,7 @@
 
 	let isSidebarCommandOpen: boolean = false;
 	let isSidebarOpen: boolean = true;
-	sidebarStateStore.subscribe(data => {
+	sidebarOpenStore.subscribe(data => {
 		isSidebarOpen = data; 
 	});
 
@@ -113,6 +113,11 @@
 		});
 		}
 	);
+
+
+	onMount(() => {
+		isSidebarOpen = get(sidebarOpenStore);
+	})
 </script>
 
 

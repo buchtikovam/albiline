@@ -24,7 +24,7 @@
 
 
 
-<ContextMenu.Content class="p-0">
+<ContextMenu.Content>
 	{#if category !== "favorite"}
 		<ContextMenu.Item
 			class="flex gap-2 text-sm"

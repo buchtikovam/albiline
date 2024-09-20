@@ -24,7 +24,7 @@
 	<LayoutTabs tabDefinitions={tabDefinitions} />
 
 	{#if $showFulltextSearchStore === true}
-		<div class="flex items-center pr-[1px] overflow-visible">
+		<div class="hidden md:flex items-center pr-[1px] overflow-visible">
 			<Input
 				class="w-40 h-[31px] rounded-md border-none focus-visible:ring-0"
 				placeholder="Hledat..."

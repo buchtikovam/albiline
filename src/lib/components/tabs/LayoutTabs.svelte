@@ -8,7 +8,7 @@
 </script>
 
 
-<Tabs.Root value={$page.url.pathname} class="rounded-md hidden md:block">
+<Tabs.Root value={$page.url.pathname} class="rounded-md block">
 	<Tabs.List class="w-fit">
 		{#each tabDefinitions as tab (tab)}
 		   <Tabs.Trigger

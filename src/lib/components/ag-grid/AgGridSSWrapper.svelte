@@ -72,7 +72,7 @@
 		suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
-		rowBuffer: 50,
+		rowBuffer: 1,
 		cacheBlockSize: 500,
 		maxBlocksInCache: 10,
 	}
@@ -100,7 +100,7 @@
 	}
 
 	
-	export function customDebounce (callback: Function, wait = 500) {
+	export function customDebounce (callback: Function, wait = 500) { // TODO: on fulltext store change, with debounce, call onFilterChanged()
 		let timeout: ReturnType<typeof setTimeout>;
 		return (...args: any[]) => {
 			clearTimeout(timeout);
@@ -114,13 +114,13 @@
 	let runCount = 0;
 
 	const datasource: IServerSideDatasource = {
-		getRows: customDebounce((params: IServerSideGetRowsParams) => {
+		getRows: (params: IServerSideGetRowsParams) => {
 			runCount++;
 			console.log("RUN", runCount);
 
 			// store latest filters in variable
 			const currentFilter = gridApi.getFilterModel();
-			const lastStoredFilter = recentFilters[recentFilters.length - 1];
+			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
 
 			
 			// add filter to recent filters (undo filter logic)
@@ -133,12 +133,15 @@
 			
 			// if filter or sort has changed, set lastRow to null
 			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-				lastRow = null
+				console.log("test");
+				
+				lastRow = null;
 			}
 			
 			currentSort = gridApi.getColumnState().map((state) => { return state.sort })
 			if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
-				lastRow = null	
+				console.log("test2");
+				lastRow = null;
 			}			
 			previousSort = currentSort;
 			
@@ -172,7 +175,7 @@
 				console.log(error);
 				params.fail();
 			});
-		}, 500)
+		}
 	};
 
 

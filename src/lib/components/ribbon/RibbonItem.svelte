@@ -18,17 +18,17 @@
 
 {#if isRibbonOpen === true}
 	<button
-		class="text-[9px] min-w-10 w-10 h-11 rounded hover:bg-muted/70 leading-none overflow-visible"
+		class="text-[10px] text-albi-950 hover:text-black min-w-11 w-11 h-11 rounded hover:bg-muted/80 leading-none overflow-visible"
 		on:click={setRibbonAction}
 	>
 		<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
 		{ribbonItem.name}
 	</button>
 {:else}
-	<Tooltip.Root openDelay={250}>
-		<Tooltip.Trigger class="mt-auto min-w-5 mx-0.5 p-1 md:p-0">
+	<Tooltip.Root openDelay={800}>
+		<Tooltip.Trigger class="mt-auto min-w-5 w-5 mx-0.5 md:p-0">
 			<button
-				class="w-5 h-5 flex items-center rounded hover:bg-muted/70"
+				class="w-5 h-5 flex items-center rounded hover:bg-muted/80 text-albi-950 hover:text-black"
 				on:click={setRibbonAction}
 			>
 				<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />

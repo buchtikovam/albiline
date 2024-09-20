@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sidebarStateStore } from '$lib/stores/sidebarStore';
+	import { sidebarOpenStore } from '$lib/stores/sidebarStore';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Menu from 'lucide-svelte/icons/menu';
 
@@ -7,7 +7,7 @@
 
 
 	function toggleOpen() {
-		sidebarStateStore.update(() => !isSidebarOpen)
+		sidebarOpenStore.update(() => !isSidebarOpen)
 	}
 </script>
 
@@ -16,8 +16,8 @@
 <Button
 	variant="ghost"
 	size="icon"
-	class="hover:bg-muted/50"
+	class="hover:bg-muted/50 text-albi-950 hover:text-black"
 	on:click={toggleOpen}
 >
-	<Menu class="h-5 w-5" />
+	<Menu class="h-6 w-6" />
 </Button>

@@ -3,8 +3,8 @@ import { type Writable, writable } from 'svelte/store';
 import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 import { persisted } from 'svelte-persisted-store';
 
-export const ribbonStateStore: Writable<boolean> = persisted(
-	'ribbonState',
+export const ribbonOpenStore: Writable<boolean> = persisted(
+	'ribbonOpenStore',
 	true
 );
 

@@ -1,12 +1,15 @@
 <script lang="ts">
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import ChevronUp from 'lucide-svelte/icons/chevron-up';
+	import { ribbonOpenStore } from '$lib/stores/ribbonStore';
 	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 	import { ribbonItems } from '$lib/data/ribbon';
 	import { Separator } from '$lib/components/ui/separator';
-	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
+	import ChevronUp from 'lucide-svelte/icons/chevron-up';
 
 	/*
 		Resizable ribbon container obsahující různé ribbon items
@@ -16,14 +19,19 @@
 
 	function toggleRibbonOpen() {
 		isRibbonOpen = !isRibbonOpen;
+		ribbonOpenStore.set(isRibbonOpen)
 	}
+
+	onMount(() => {
+		isRibbonOpen = get(ribbonOpenStore)
+	})
 </script>
 
 
 
 <div class="
-	hidden mx-4 mt-2 p-0.5 items-center rounded-lg bg-white overflow-auto 
-	md:mx-2 md:my-0 md:p-2 md:mr-4 md:flex
+	mx-4 mb-2 p-1.5 items-center rounded-lg bg-white overflow-auto 
+	md:mx-2 md:my-0 md:p-2 md:mr-4 flex
 ">
 	{#each ribbonItems as ribbonItem}
 		{#if Array.isArray(ribbonItem)}
@@ -64,7 +72,7 @@
 			(isRibbonOpen 
 				? "top-[88px]" 
 				: "top-[66px]") 
-				+ " absolute right-0"
+				+ " absolute right-0 hidden md:block"
 			}
 	>
 		{#if isRibbonOpen}

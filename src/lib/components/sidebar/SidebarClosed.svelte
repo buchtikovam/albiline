@@ -19,7 +19,7 @@
 		<Tooltip.Root openDelay={800}>
 			<button on:click={() => isSidebarCommandOpen = !isSidebarCommandOpen}>
 				<Tooltip.Trigger>
-					<span class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+					<span class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
 					<Search />
 					</span>
 				</Tooltip.Trigger>
@@ -31,7 +31,7 @@
 		</Tooltip.Root>
 
 
-		<Separator class="mx-auto w-8"/>
+		<Separator class="mx-auto w-8 bg-albi-200 h-[2px]"/>
 
 
 		{#each filteredItems as item}
@@ -43,7 +43,7 @@
 						<Popover.Root>
 							<Popover.Trigger>
 								<div
-									class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary">
+									class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
 									<svelte:component this={item.icon} />
 								</div>
 							</Popover.Trigger>
@@ -85,7 +85,7 @@
 					<Tooltip.Trigger>
 						<a
 							href={item.href}
-							class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 text-muted-foreground/75 hover:bg-muted/50 transition-all hover:text-primary"
+							class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted/50 text-albi-950 hover:text-black"
 							on:click={() => handleTabClick(item, 0)}
 						>
 							<svelte:component this={item.icon} />

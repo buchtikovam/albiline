@@ -14,7 +14,7 @@
 
 
 <DropdownMenu.Root closeOnItemClick={false}>
-	<DropdownMenu.Trigger class="rounded-md bg-albi-500 size-[32px]">
+	<DropdownMenu.Trigger class="rounded-md bg-albi-500 min-w-8 size-8">
 		<User class="size-5 m-1 mx-auto text-slate-50"/>
 	</DropdownMenu.Trigger>
 
