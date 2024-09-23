@@ -24,61 +24,61 @@
 
 	onMount(() => {
 		isRibbonOpen = get(ribbonOpenStore)
-	})
+	}) // md:mx-2 md:my-0 md:p-2 md:mr-4 
 </script>
 
 
 
 <div class="
-	mx-4 mb-2 p-1.5 items-center rounded-lg bg-white overflow-auto 
-	md:mx-2 md:my-0 md:p-2 md:mr-4 flex
+	mx-4 mb-2 p-1.5 rounded-lg bg-white flex justify-between
+	md:mx-2 md:my-0 md:p-2 md:mr-4 
 ">
-	{#each ribbonItems as ribbonItem}
-		{#if Array.isArray(ribbonItem)}
-			<RibbonItemsNarrow
-				ribbonItems={ribbonItem}
-				isRibbonOpen={isRibbonOpen}
-			/>
-		{:else}
-			{#if ribbonItem.type === RibbonTypeEnum.ITEM}
-				<RibbonItem
-					ribbonItem={ribbonItem}
+	<div class="flex items-center overflow-auto ">
+		{#each ribbonItems as ribbonItem}
+			{#if Array.isArray(ribbonItem)}
+				<RibbonItemsNarrow
+					ribbonItems={ribbonItem}
 					isRibbonOpen={isRibbonOpen}
 				/>
-			{/if}
+			{:else}
+				{#if ribbonItem.type === RibbonTypeEnum.ITEM}
+					<RibbonItem
+						ribbonItem={ribbonItem}
+						isRibbonOpen={isRibbonOpen}
+					/>
+				{/if}
 
-			{#if ribbonItem.type === RibbonTypeEnum.DROPDOWN}
-				<RibbonDropdownItem
-					ribbonItem={ribbonItem}
-					isRibbonOpen={isRibbonOpen}
-				/>
-			{/if}
+				{#if ribbonItem.type === RibbonTypeEnum.DROPDOWN}
+					<RibbonDropdownItem
+						ribbonItem={ribbonItem}
+						isRibbonOpen={isRibbonOpen}
+					/>
+				{/if}
 
-			{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
-				<Separator orientation="vertical" class={
-					(isRibbonOpen 
-						? "h-[20px]" 
-						: "h-[14px]")
-						+ " mx-1 md:mx-2.5 bg-albi-200 w-[2px]"
-					}
-				/>
+				{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
+					<Separator orientation="vertical" class={
+						(isRibbonOpen 
+							? "h-[20px]" 
+							: "h-[14px]")
+							+ " mx-1.5 md:mx-2.5 bg-albi-200 w-[2px]"
+						}
+					/>
+				{/if}
 			{/if}
-		{/if}
-	{/each}
-	
+		{/each}
+	</div>
+
+
 	<button 
 		on:click={toggleRibbonOpen} 
-		class={
-			(isRibbonOpen 
-				? "top-[88px]" 
-				: "top-[66px]") 
-				+ " absolute right-0 hidden md:block"
-			}
+		class="overflow-visible pl-1.5"
 	>
 		{#if isRibbonOpen}
-			<ChevronDown class="h-4 w-4 mr-5 bg-background" />
+			<ChevronDown class="size-4 bg-background text-albi-500" />
 		{:else}
-			<ChevronUp class="h-4 w-4 mr-5 bg-background" />
+			<ChevronUp class="size-4 bg-background text-albi-500" />
 		{/if}
 	</button>
 </div>
+	
+

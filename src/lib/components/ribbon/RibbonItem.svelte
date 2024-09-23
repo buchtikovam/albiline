@@ -35,7 +35,7 @@
 			</button>
 		</Tooltip.Trigger>
 
-		<Tooltip.Content class="mt-16">
+		<Tooltip.Content>
 			{ribbonItem.name}
 		</Tooltip.Content>
 	</Tooltip.Root>

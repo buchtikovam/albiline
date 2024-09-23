@@ -80,7 +80,7 @@
 
 <div class="
 	flex justify-between px-4 pt-4 pb-2 
-	md:pt-2 md:pb-2 md:px-4"
+	md:pt-2 "
 >
     <Tabs.Root class="hidden w-fit h-fit md:block rounded-md " value={pathname}>
         <Tabs.List>
@@ -125,12 +125,14 @@
 		<Avatar />
 
 		{#if $showFulltextSearchStore === true}
-			<Input
-				class="mx-2 h-[32px] rounded-md border-none focus-visible:ring-0"
-				placeholder="Hledat..."
-				type="text"
-				bind:value={$fulltextFilterValueStore}
-			/>
+			<div class="md:hidden w-full px-2">
+				<Input
+					class="h-[32px] rounded-md border-none focus-visible:ring-0"
+					placeholder="Hledat..."
+					type="text"
+					bind:value={$fulltextFilterValueStore}
+				/>
+			</div>
 		{/if}
 		
 		<button class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">

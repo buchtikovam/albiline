@@ -34,7 +34,7 @@
 	</div>
 {:else}
 	{#each ribbonItems as ribbonItem}
-		<Tooltip.Root openDelay={250}>
+		<Tooltip.Root openDelay={800}>
 			<Tooltip.Trigger class="min-w-5 mx-0.5 mt-auto">
 				<button
 					class="size-5 pt-1 rounded hover:bg-muted/70"
@@ -47,7 +47,7 @@
 				</button>
 			</Tooltip.Trigger>
 
-			<Tooltip.Content class="mt-16">
+			<Tooltip.Content>
 				{ribbonItem.name}
 			</Tooltip.Content>
 		</Tooltip.Root>

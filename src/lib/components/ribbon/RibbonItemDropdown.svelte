@@ -51,7 +51,7 @@
 	</DropdownMenu.Root>
 {:else}
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="min-w-6 h-5 pl-1 ">
+		<DropdownMenu.Trigger class="min-w-7 h-5 pl-1 ">
 			<Tooltip.Root openDelay={800}>
 				<Tooltip.Trigger class="min-w-6 h-5 flex items-center">
 					<button class="size-6 rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
@@ -63,7 +63,7 @@
 					</button>
 				</Tooltip.Trigger>
 
-				<Tooltip.Content class="mt-16">
+				<Tooltip.Content>
 					{ribbonItem.name}
 				</Tooltip.Content>
 			</Tooltip.Root>
