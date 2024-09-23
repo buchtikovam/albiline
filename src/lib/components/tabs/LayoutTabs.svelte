@@ -5,6 +5,9 @@
 	import type { Tab } from '$lib/types/tabs/tabs';
 
 	export let tabDefinitions: Tab[];
+
+	$: console.log(tabDefinitions);
+	
 </script>
 
 

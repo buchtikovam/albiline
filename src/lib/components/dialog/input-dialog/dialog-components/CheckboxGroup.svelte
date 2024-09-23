@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
-	import type { InputCheckboxItem } from '$lib/types/input-dialog/inputDialog';
+	import type { InputCheckboxItem } from '$lib/types/components/input-dialog/inputDialog';
 
 	export let items: InputCheckboxItem[];
 </script>

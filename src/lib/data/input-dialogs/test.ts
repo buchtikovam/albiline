@@ -1,4 +1,4 @@
-import type { InputDialog } from '$lib/types/input-dialog/inputDialog';
+import type { InputDialog } from '$lib/types/components/input-dialog/inputDialog';
 
 
 export const params: InputDialog = [

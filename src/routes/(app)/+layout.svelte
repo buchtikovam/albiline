@@ -5,16 +5,16 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
-	import { browser } from "$app/environment";
+	// import { browser } from "$app/environment";
 
-    let innerWidth;
+    // let innerWidth;
 
-    if (browser){
-        innerWidth = window.innerWidth;
+    // if (browser){
+    //     innerWidth = window.innerWidth;
 		
-		console.log("innerWidth");
-		console.log(innerWidth);
-    }
+	// 	console.log("innerWidth");
+	// 	console.log(innerWidth);
+    // }
 </script>
 
 

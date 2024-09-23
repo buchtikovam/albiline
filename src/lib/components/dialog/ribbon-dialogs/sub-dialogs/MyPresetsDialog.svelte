@@ -4,7 +4,7 @@
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import type { FetchedPreset, Preset } from '$lib/types/table/presets';
+	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/customToast';
 	import { writable, type Writable } from 'svelte/store';

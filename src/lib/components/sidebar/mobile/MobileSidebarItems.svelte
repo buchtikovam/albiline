@@ -7,7 +7,7 @@
 	import ItemOpenSecondNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenSecondNoChild.svelte';
 	import ItemOpenThirdNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenThirdNoChild.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
-	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
+	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 
 	export let searchTerm: string;
 	export let filteredItems: SidebarItem[];

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -17,7 +17,7 @@
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
 	import { customToast } from "$lib/utils/customToast";
 	import { get } from 'svelte/store';
-	import type { ColumnOrder, TableRowRequest } from "$lib/types/table/table";
+	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
 	
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -62,6 +62,13 @@
 			// return String(params.data.id); // setup
 		},
 
+		onRowSelected: (event) => {
+			console.log(event.data.customerAddressCode);
+
+			selectedRowIdStore.set(event.data.customerAddressCode)
+		},
+
+
 		columnDefs: columnDefinitions,
 		suppressExcelExport: true,
 		suppressCsvExport: true,
@@ -74,7 +81,6 @@
 		rowSelection: "multiple",
 		rowBuffer: 1,
 		cacheBlockSize: 500,
-		maxBlocksInCache: 10,
 	}
 
 	let recentFilters: FilterModel[] = [];

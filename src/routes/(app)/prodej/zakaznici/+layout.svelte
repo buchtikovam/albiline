@@ -1,27 +1,50 @@
 <script lang="ts">
-	import { fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { fulltextFilterValueStore, selectedRowIdStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
-	import LayoutTabs from '$lib/components/tabs/LayoutTabs.svelte';
-	import type { Tab } from '$lib/types/tabs/tabs';
-
-	const tabDefinitions: Tab[] = [
-		{ name: "Seznam", value: "/prodej/zakaznici"},
-		{ name: "Detail", value: "/prodej/zakaznici/detail"},
-		{ name: "Fakturační adresy", value: "/prodej/zakaznici/fakturacni-adresy"},
-		{ name: "Kontaktní osoby", value: "/prodej/zakaznici/kontaktni-osoby"},
-	]
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { goto } from '$app/navigation';	
 </script>
 
 
-<svelte:head>
-	<title>
-		Test
-	</title>
-</svelte:head>
-
 
 <div class="w-full flex items-center justify-between pb-2">
-	<LayoutTabs tabDefinitions={tabDefinitions} />
+	<Tabs.Root value={$page.url.pathname} class="rounded-md block">
+		<Tabs.List class="w-fit">
+			<Tabs.Trigger
+					class="font-bold"
+					value={"/prodej/zakaznici"}
+					on:click={() => goto("/prodej/zakaznici")}
+				>
+					Seznam
+			</Tabs.Trigger>
+
+			<Tabs.Trigger
+					class="font-bold"
+					value={`/prodej/zakaznici/detail/${$selectedRowIdStore}`}
+					on:click={() => goto(`/prodej/zakaznici/detail/${$selectedRowIdStore}`)}
+				>
+					Detail
+			</Tabs.Trigger>
+
+			<Tabs.Trigger
+					class="font-bold"
+					value={`/prodej/zakaznici/fakturacni-adresy`}
+					on:click={() => goto(`/prodej/zakaznici/fakturacni-adresy`)}
+				>
+					Fakturační adresy
+			</Tabs.Trigger>
+
+			<Tabs.Trigger
+					class="font-bold"
+					value={`/prodej/zakaznici/kontaktni-osoby`}
+					on:click={() => goto(`/prodej/zakaznici/kontaktni-osoby`)}
+				>
+					Kontaktní osoby
+			</Tabs.Trigger>
+		</Tabs.List>
+	</Tabs.Root>
+
 
 	{#if $showFulltextSearchStore === true}
 		<div class="hidden md:flex items-center pr-[1px] overflow-visible">

@@ -1,4 +1,4 @@
-import type { RibbonDialogOptions } from '$lib/types/ribbon/ribbonDialogOptions';
+import type { RibbonDialogOptions } from '$lib/types/components/ribbon/ribbonDialogOptions';
 import { type Writable, writable } from 'svelte/store';
 import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 import { persisted } from 'svelte-persisted-store';

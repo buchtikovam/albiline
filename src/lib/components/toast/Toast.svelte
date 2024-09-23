@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ToastVariant } from '$lib/types/toast';
+	import type { ToastVariant } from '$lib/types/components/toast';
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import CircleCheck from 'lucide-svelte/icons/circle-check';
 	import CircleX from 'lucide-svelte/icons/circle-x';

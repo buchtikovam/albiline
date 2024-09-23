@@ -1,6 +1,6 @@
 import { currentActiveTabStore, openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
 import { recentItemsStore } from '$lib/stores/sidebarStore';
-import type { SidebarItem, HeaderTab } from '$lib/types/sidebar/sidebar';
+import type { SidebarItem, HeaderTab } from '$lib/types/components/sidebar/sidebar';
 import { get } from 'svelte/store';
 import { editedDataStore } from '$lib/stores/tableStore';
 

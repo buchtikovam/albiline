@@ -1,6 +1,6 @@
 import { ribbonActionStore } from '$lib/stores/ribbonStore';
 import { currentColumnFiltersStore } from '$lib/stores/tableStore';
-import type { ColumnFilters } from '$lib/types/table/columnFilter';
+import type { ColumnFilters } from '$lib/types/components/table/columnFilter';
 import { get } from 'svelte/store';
 
 

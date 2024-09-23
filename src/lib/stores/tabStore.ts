@@ -1,4 +1,4 @@
-import type { HeaderTab } from '$lib/types/sidebar/sidebar';
+import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 import { persisted } from 'svelte-persisted-store';
 import { writable, type Writable } from 'svelte/store';
 

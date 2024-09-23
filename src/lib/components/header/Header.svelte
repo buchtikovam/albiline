@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { editedDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
-	import type { HeaderTab } from '$lib/types/sidebar/sidebar';
+	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 	import { goto, preloadData } from '$app/navigation';
 	import { get } from 'svelte/store';
 	import X from 'lucide-svelte/icons/x';

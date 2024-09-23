@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
+	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
 

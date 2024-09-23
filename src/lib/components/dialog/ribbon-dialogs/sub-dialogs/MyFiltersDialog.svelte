@@ -4,7 +4,7 @@
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import type { FetchedFilter, ColumnFilters } from '$lib/types/table/columnFilter';
+	import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/customToast';
 	import { writable, type Writable } from 'svelte/store';

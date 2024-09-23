@@ -1,5 +1,5 @@
 import { albiDetails } from '$lib/constants/albiDetails';
-import type { InvoiceData } from '$lib/types/pdf/invoiceData';
+import type { InvoiceData } from '$lib/types/pdfs/invoiceData';
 import QRCode, { type QRCodeToDataURLOptions } from 'qrcode';
 import type { PageLoad } from './$types';
 

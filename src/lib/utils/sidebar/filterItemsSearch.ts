@@ -1,4 +1,4 @@
-import type { SidebarItem } from "$lib/types/sidebar/sidebar";
+import type { SidebarItem } from "$lib/types/components/sidebar/sidebar";
 
 export function filterItemsSearch(items: SidebarItem[], searchTerm: string): SidebarItem[] {
 	if (searchTerm === '') {

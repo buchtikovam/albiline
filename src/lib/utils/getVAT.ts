@@ -1,4 +1,4 @@
-import type { InvoiceVat } from "$lib/types/pdf/invoiceData";
+import type { InvoiceVat } from "$lib/types/pdfs/invoiceData";
 
 export function getVAT(vatInfo: InvoiceVat) {
 	let vatArr = []

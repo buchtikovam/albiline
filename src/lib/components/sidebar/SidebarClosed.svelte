@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
 	import { Separator } from '$lib/components/ui/separator';
-	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
+	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import SidebarToggleButton from './SidebarToggleButton.svelte';
 	import Search from 'lucide-svelte/icons/search';
 	import * as Tooltip from '$lib/components/ui/tooltip';
