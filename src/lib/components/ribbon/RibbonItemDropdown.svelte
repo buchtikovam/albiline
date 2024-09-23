@@ -3,7 +3,7 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import type { RibbonItem, RibbonSubItem } from '$lib/types/ribbon/ribbon';
+	import type { RibbonItem, RibbonSubItem } from '$lib/types/components/ribbon/ribbon';
 	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
 	export let ribbonItem: RibbonItem;

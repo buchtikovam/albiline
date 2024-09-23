@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
-	import type { InvoiceData, InvoiceItem } from '$lib/types/pdf/invoiceData';
+	import type { InvoiceData, InvoiceItem } from '$lib/types/pdfs/invoiceData';
 	import { formatDate } from '$lib/utils/formatting/formatDate';
 	import { currencyCZ } from '$lib/constants/currency';
 	import { getVAT } from '$lib/utils/getVAT';

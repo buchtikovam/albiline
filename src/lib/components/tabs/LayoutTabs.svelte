@@ -2,12 +2,10 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import type { Tab } from '$lib/types/tabs/tabs';
+	import type { Tab } from '$lib/types/components/tabs/tabs';
 
 	export let tabDefinitions: Tab[];
 
-	$: console.log(tabDefinitions);
-	
 </script>
 
 

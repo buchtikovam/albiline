@@ -12,7 +12,7 @@
 	import { filterItemsSearch } from '$lib/utils/sidebar/filterItemsSearch';
 	import { buttonBorderSwitch } from '$lib/utils/sidebar/buttonBorderSwitch';
 	import { filterItemsCategory } from '$lib/utils/sidebar/filterItemsCategory';
-	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
+	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import deepcopy from 'deepcopy';
 	import CategoryButton from '$lib/components/sidebar/SidebarCategoryTabs.svelte';
 	import SidebarCommand from '$lib/components/sidebar/SidebarCommand.svelte';

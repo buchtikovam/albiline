@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
-	import type { RibbonDialogOptions } from '$lib/types/ribbon/ribbonDialogOptions';
+	import type { RibbonDialogOptions } from '$lib/types/components/ribbon/ribbonDialogOptions';
 	import MyFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/MyFiltersDialog.svelte';
 	import SaveFiltersDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/SaveFiltersDialog.svelte';
 	import SavePresetDialog from '$lib/components/dialog/ribbon-dialogs/sub-dialogs/SavePresetDialog.svelte';
