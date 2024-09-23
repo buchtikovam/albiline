@@ -3,15 +3,17 @@
 	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
-	import ItemOpenFirstNoChild from './sidebar-items/ItemOpenFirstNoChild.svelte';
-	import ItemOpenSecondNoChild from './sidebar-items/ItemOpenSecondNoChild.svelte';
-	import ItemOpenThirdNoChild from './sidebar-items/ItemOpenThirdNoChild.svelte';
+	import ItemOpenFirstNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenFirstNoChild.svelte';
+	import ItemOpenSecondNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenSecondNoChild.svelte';
+	import ItemOpenThirdNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenThirdNoChild.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import type { SidebarItem } from '$lib/types/sidebar/sidebar';
 
 	export let searchTerm: string;
 	export let filteredItems: SidebarItem[];
-	export let isSidebarOpen: boolean = true;
+	export let isOpen: boolean;
+
+	let isMobile = true;
 </script>
 
 
@@ -36,7 +38,10 @@
 										<svelte:component this={item.icon} />
 										<a
 											href={item.href}
-											on:click={() => handleTabClick(item, 0)}
+											on:click={() => {
+												handleTabClick(item, 0);
+												isOpen = false;
+											}}
 										>
 											{item.name}
 										</a>
@@ -59,10 +64,13 @@
 														<Accordion.Trigger
 															class="hover:bg-muted/50 rounded-md">
 															<div
-																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-albi-950 hover:text-black">
+																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black">
 																<a
 																	href={secondChild.href}
-																	on:click={() => handleTabClick(secondChild, 1)}
+																	on:click={() => {
+																		handleTabClick(secondChild, 1);
+																		isOpen = false;
+																	}}
 																>
 																	{secondChild.name}
 																</a>
@@ -79,7 +87,7 @@
 																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
 																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<ItemOpenThirdNoChild item={thirdChild} />
+																		<ItemOpenThirdNoChild item={thirdChild} isMobile bind:isOpen/>
 																	{/each}
 																</Accordion.Root>
 															</ContextMenu.Root>
@@ -91,7 +99,7 @@
 											</ContextMenu.Root>
 										{:else}
 											<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-											<ItemOpenSecondNoChild item={secondChild} />
+											<ItemOpenSecondNoChild item={secondChild} isMobile bind:isOpen/>
 										{/if}
 									{/each}
 								</Accordion.Root>
@@ -103,13 +111,9 @@
 
 				{:else}
 					<!-- accordiony první vrstvy (item nemá children položky) -->
-					<ItemOpenFirstNoChild item={item}/>
+					<ItemOpenFirstNoChild item={item} isMobile bind:isOpen/>
 				{/if}
 			</div>
 		{/each}
 	</div>
 </Accordion.Root>
-
-<div class="mt-auto ml-auto pt-4 hidden md:block">
-	<SidebarToggleButton bind:isSidebarOpen/>
-</div>

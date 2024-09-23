@@ -11,6 +11,7 @@
 	import Menu from 'lucide-svelte/icons/menu';
 	import { page } from '$app/stores';
 	import Input from '../ui/input/input.svelte';
+	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
 	
 	/*
 	Header komponenent s hlavními taby a avatarem
@@ -74,6 +75,8 @@
 		tab.closingState = 'hidden';
 		openedTabsStore.update(() => storedTabs);
 	}
+
+	let openMobileSidebar : boolean = false;
 </script>
 
 
@@ -135,8 +138,10 @@
 			</div>
 		{/if}
 		
-		<button class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">
+		<button on:click={() => openMobileSidebar = true} class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">
 			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
 		</button>
 	</div>
 </div>
+
+<MobileSidebar bind:isOpen={openMobileSidebar}/>
