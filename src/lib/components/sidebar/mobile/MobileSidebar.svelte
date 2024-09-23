@@ -92,7 +92,7 @@
 
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="h-full flex flex-col bg-albi-50 p-2">
+	<Dialog.Content class="h-full flex flex-col bg-albi-50 p-2 border-none">
 		<div class="bg-white h-full rounded-lg p-4">
 			<div class="flex justify-center text-sm mb-4 h-fit">
 			<CategoryButton color="primary" />
