@@ -37,7 +37,7 @@ export const schema = z.object({
 	isReturnAllowed: z.boolean(), // vratka povolena
 	customerStoreCode: z.string(), // id zákazníka dle zákazníka
 	customerStoreEan: z.string(), // ean zákazníka
-	// používat asortní eany
+	useAssortedEanCodes: z.boolean(), // používat asortní eany
 	// balit do klt
 	sendInvoiceViaEmail: z.boolean(), // faktury emailem
 	emailForInvoicing: z.string().email(), // email pro fakturaci
@@ -48,10 +48,24 @@ export const schema = z.object({
 
 
 	// POPIS
+	description: z.string(), // bližší popis
+	note: z.string(), // poznámka
+	responsiblePerson: z.string(), // zodpovědná osoba
+	packingNote: z.string(), // poznámka pro balení
 
 	// OZ a oblasti
+	// oz
+	// om
+	// oblast
+	// merchendiser
 
 	// STRUKTURA
+	// customerAdressId
+	// customerNodeCode
+	// addressType
 
 	// AVÍZA
+	// avízo o svozu zásilky 
+	// avízo o expedici objednávky
+	// email pro avíza
 });

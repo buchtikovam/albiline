@@ -1,14 +1,14 @@
 export type CustomerData = {
 	item: {
-		customerAddressCode: number,
+		customerAddressCode: number, //
 		customerNodeCode: number,
 		addressType: string,
-		name: string,
-		street: string,
-		city: string,
-		postalCode: number,
-		countryCode: string,
-		companyName: string|null,
+		name: string, //
+		street: string, //
+		city: string, //
+		postalCode: number, //
+		countryCode: string, //
+		companyName: string|null, //
 		enabled: number,
 		consignmentSaleEnabled: boolean|null,
 		paymentTypeCode: string,
@@ -43,19 +43,19 @@ export type CustomerData = {
 		i_CustomerAddressCode: number,
 		i_CustomerNodeCode: number,
 		i_AddressType: string,
-		i_Name: string,
-		i_Street: string,
-		i_City: string,
-		i_PostalCode: string,
-		i_CountryCode: string,
+		i_Name: string, //
+		i_Street: string, //
+		i_City: string, //
+		i_PostalCode: string, //
+		i_CountryCode: string, //
 		i_CompanyName: string|null,
 		i_Enabled: boolean|number,
 		i_ConsignmentSaleEnabled: boolean|null,
 		i_PaymentTypeCode: string,
 		i_DueDays: number,
-		i_ICO: string|null,
-		i_DIC: string|null,
-		i_IcDph: string|null,
+		i_ICO: string|null, //
+		i_DIC: string|null, //
+		i_IcDph: string|null, //
 		i_CustomerStoreCode: string,
 		i_CustomerStoreEan: string|null,
 		isBadPayer: number,

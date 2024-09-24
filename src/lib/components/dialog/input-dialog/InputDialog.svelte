@@ -4,13 +4,13 @@
 	import type { InputDialog, InputDialogItem } from '$lib/types/components/input-dialog/inputDialog';
 	import { onMount } from 'svelte';
 	import { customToast } from '$lib/utils/customToast';
-	import DatePicker from '$lib/components/date-picker/DatePicker.svelte';
+	import DatePicker from '$lib/components/date/DatePicker.svelte';
 	import InputStringNumber from '$lib/components/dialog/input-dialog/dialog-components/InputStringNumber.svelte';
 	import DateRange from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';
 	import RadioGroup from '$lib/components/dialog/input-dialog/dialog-components/RadioGroup.svelte';
 	import CheckboxGroup from '$lib/components/dialog/input-dialog/dialog-components/CheckboxGroup.svelte';
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import LastYearButton from '$lib/components/button/date-range-buttons/LastYearButton.svelte';
+	import LastYearButton from '$lib/components/date/range-buttons/LastYearButton.svelte';
 
 	/*
 		Vstupní parametry pro získávání dat jednotlivých stránek.

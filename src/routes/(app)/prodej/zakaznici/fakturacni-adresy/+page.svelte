@@ -1,8 +1,10 @@
 
 <script>
+	import { isMobileLayoutExpandedStore } from "$lib/stores/pageStore";
 	import { showFulltextSearchStore } from "$lib/stores/tableStore";
 
-	showFulltextSearchStore.set(false)
+	showFulltextSearchStore.set(false);
+	isMobileLayoutExpandedStore.set(false);
 </script>
 
 <svelte:head>

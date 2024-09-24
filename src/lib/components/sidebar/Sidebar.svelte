@@ -129,7 +129,7 @@
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if isSidebarOpen === true}
 		<div class="flex justify-center text-sm mb-4">
-			<CategoryButton  />
+			<CategoryButton color="secondary" />
 		</div>
 
 		<div class="flex-1 flex flex-col">

@@ -1,9 +1,11 @@
 <script lang="ts">
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import { zakazniciColDef } from '$lib/data/column-definitons/zakaznici';
+	import { isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 
-	showFulltextSearchStore.set(true)
+	showFulltextSearchStore.set(true);
+	isMobileLayoutExpandedStore.set(true);
 </script>
 
 

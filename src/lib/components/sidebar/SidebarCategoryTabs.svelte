@@ -3,13 +3,14 @@
 	import * as Tabs from "$lib/components/ui/tabs";
 
 	let value = "all";
+	export let color: "primary" | "secondary" = "secondary";
 	
 	$: activeCategoryStore.set(value)
 </script>
 
 
 <Tabs.Root bind:value={value}>
-    <Tabs.List class="bg-[#ccd1d9]">
+    <Tabs.List class={ color === "primary" ? "bg-albi-500" : "bg-[#ccd1d9]"}>
 		<Tabs.Trigger value="all" class="font-bold">
 			Všechny
 		</Tabs.Trigger>
