@@ -8,9 +8,9 @@
 
 
 
-<div class="w-full flex items-center justify-between pb-2">
-	<Tabs.Root value={$page.url.pathname} class="rounded-md block">
-		<Tabs.List class="w-fit">
+<div class="w-full flex items-center justify-between">
+	<Tabs.Root value={$page.url.pathname} class="w-full h-8 overflow-auto rounded-md md:w-fit mb-2">
+		<Tabs.List class="h-8">
 			<Tabs.Trigger
 					class="font-bold"
 					value={"/prodej/zakaznici"}
@@ -42,12 +42,13 @@
 				>
 					Kontaktní osoby
 			</Tabs.Trigger>
+
 		</Tabs.List>
 	</Tabs.Root>
 
 
 	{#if $showFulltextSearchStore === true}
-		<div class="hidden md:flex items-center pr-[1px] overflow-visible">
+		<div class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible">
 			<Input
 				class="w-40 h-[31px] rounded-md border-none focus-visible:ring-0"
 				placeholder="Hledat..."

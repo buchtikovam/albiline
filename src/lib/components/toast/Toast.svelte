@@ -18,7 +18,7 @@
 
 <div
 	id="toast"
-	class="flex items-center max-w-[300px] p-2 text-primary bg-background rounded-lg border-2 dark:text-albi-50 dark:bg-albi-800 pr-3"
+	class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-2 text-primary bg-background rounded-lg border-2 dark:text-albi-50 dark:bg-albi-800 pr-3"
 >
 	{#if type === 'InfoToast'}
 		<div

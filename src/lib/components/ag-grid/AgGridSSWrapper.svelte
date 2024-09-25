@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, deletedColumnsStore, editedColumnsStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -25,7 +25,7 @@
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
 	
-	const gridOptions: GridOptions = {
+	const gridOptions: GridOptions = { // return from grid options 
 		localeText: AG_GRID_LOCALE_CZ,
 
 		defaultColDef: {
@@ -54,12 +54,8 @@
 			presetStore.set(gridApi.getColumnDefs() || [])
 		},
 
-		onFilterModified: (e) => {
-		},
-
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data.rowNumber); 
-			// return String(params.data.id); // setup
 		},
 
 		onRowSelected: (event) => {
@@ -68,11 +64,9 @@
 			selectedRowIdStore.set(event.data.customerAddressCode)
 		},
 
-
 		columnDefs: columnDefinitions,
 		suppressExcelExport: true,
 		suppressCsvExport: true,
-		// sideBar: true,
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
@@ -81,6 +75,7 @@
 		rowSelection: "multiple",
 		rowBuffer: 1,
 		cacheBlockSize: 500,
+		debug:true,
 	}
 
 	let recentFilters: FilterModel[] = [];
@@ -89,23 +84,30 @@
 
 
 	function addToEditedData(params: Record<string, any>, column: string, newValue: any) {
-		let editedData = get(editedDataStore);
+		let editedData = get(editedColumnsStore);
 		let foundMatch = false;
+		let newRecord = {};
 
 		editedData.forEach((record) => {
-			if (record.id === params.id) {
+			if (record.id === params["customerAddressCode"]) {
 				foundMatch = true;
 				record[column] = newValue;
-				editedDataStore.set(editedData);
+				editedColumnsStore.set(editedData);
 			}	
 		})
 
 		if (!foundMatch) {
-			editedDataStore.update((records) => records.concat(params));
+			newRecord["id"] = params["customerAddressCode"];
+			newRecord[column] = newValue;
+			
+			editedColumnsStore.update((records) => records.concat(newRecord));
 		}
 	}
 
-	
+	editedColumnsStore.subscribe((records) => console.log(records));
+
+
+
 	export function customDebounce (callback: Function, wait = 500) { // TODO: on fulltext store change, with debounce, call onFilterChanged()
 		let timeout: ReturnType<typeof setTimeout>;
 		return (...args: any[]) => {
@@ -162,7 +164,7 @@
 
 			// AG-Grid SSRM
 			fetch(url
-				,{ // setup
+				,{ 
 					method: "post",
 					body: JSON.stringify(params.request),
 					headers: {"Content-Type": "application/json"}
@@ -171,11 +173,7 @@
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
 				params.success({ rowData: response.items })
-				// params.success({ rowData: response.products }) // setup
-				lastRow = response.items.slice(-1)[0].rowNumber 
-				// lastRow = response.products.slice(-1)[0].id // setup
-				
-				console.log("new last row", lastRow);
+				lastRow = response.items.slice(-1)[0].rowNumber || null
 			})
 			.catch(error => {
 				console.log(error);
@@ -183,7 +181,6 @@
 			});
 		}
 	};
-
 
 
 	onMount(() => {
@@ -249,19 +246,11 @@
 		document.addEventListener('keydown', handleKeydown);
 	})
 
-
 	ribbonActionStore.subscribe((action) => {		
-		if (action === RibbonActionEnum.NEW) { // todo: ask be for number of rows, use that as id			
+		if (action === RibbonActionEnum.NEW) { 
 			gridApi.applyServerSideTransaction({
 				addIndex: 0,
-				add: [{
-					// id: "1000",
-					title: "",
-					description: "",
-					category: "",
-					price: "",
-					discountPercentage: ""
-				}]
+				add: []
 			})	
 		}
 
@@ -290,12 +279,18 @@
 		}
 
 		if (action === RibbonActionEnum.SAVE) { // todo
-			console.log(get(editedDataStore));	
+			let requestData = {
+				insert: [],
+				update: get(editedColumnsStore),
+				delete: get(deletedColumnsStore)
+			}
+			
+			console.log(requestData);	
 		}
 
 		if (action === RibbonActionEnum.LOAD) { // todo
 			gridApi.refreshServerSide()
-		}
+		}editedColumnsStore
 
 		if (action === RibbonActionEnum.EXPORT_EXCEL) {
 			console.log("excel");

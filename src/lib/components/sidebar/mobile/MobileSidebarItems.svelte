@@ -1,5 +1,4 @@
 <script lang="ts">
-	import SidebarToggleButton from '$lib/components/sidebar/SidebarToggleButton.svelte';
 	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
@@ -19,17 +18,16 @@
 
 
 <Accordion.Root
-	class="flex-1"
+	class="flex-1 overflow-auto"
 	multiple
 	value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.value) : []}
 >
-	<div class="h-full overflow-auto text-sm">
+	<div class="text-sm">
 		{#each filteredItems as item}
 			<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2"}>
 				<!-- accordiony první vrstvy (item má children položky) -->
 				{#if item.children.length > 0 }
 					<ContextMenu.Root>
-
 						<Accordion.Item value={item.value}>
 							<ContextMenu.Trigger>
 								<Accordion.Trigger class="hover:bg-muted/50 rounded-md">

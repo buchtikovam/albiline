@@ -92,27 +92,36 @@
 
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="h-full flex flex-col bg-albi-50 p-2 border-none">
-		<div class="bg-white h-full rounded-lg p-4">
-			<div class="flex justify-center text-sm mb-4 h-fit">
+	<Dialog.Content class="h-full  bg-albi-50 p-2 border-none">
+		<div class="bg-white h-full flex flex-col items-center rounded-lg p-4">
 			<CategoryButton color="primary" />
+
+
+			<div class="flex flex-col w-full h-full">
+				<Input
+					class="my-4 focus-visible:ring-0"
+					placeholder="Filtrovat..."
+					bind:value={searchTerm}
+					on:input={() => search(searchTerm)}
+				/>
+	
+				<div class="h-full overflow-auto">
+					<MobileSidebarItems
+						bind:searchTerm
+						bind:filteredItems
+						bind:isOpen
+					/>
+				</div>
+			</div>		
 		</div>
 
-		<div class="flex flex-col">
-			<Input
-				class="mb-4 focus-visible:ring-0"
-				placeholder="Filtrovat..."
-				bind:value={searchTerm}
-				on:input={() => search(searchTerm)}
-			/>
-
-			<MobileSidebarItems
-				bind:searchTerm
-				bind:filteredItems
-				bind:isOpen
-			/>
-		</div>
-		</div>
 		
 	</Dialog.Content>
 </Dialog.Root>
+
+
+<style>
+	::-webkit-scrollbar {
+		width: 0px;
+	}
+</style>

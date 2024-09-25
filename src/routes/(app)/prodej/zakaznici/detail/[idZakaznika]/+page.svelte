@@ -120,18 +120,7 @@
 
 		<div id="nastaveni" class="flex flex-col gap-2 mt-5 h-80">
 			<SectionLabel name="NASTAVENÍ" />
-
-
-
 		</div>
-
-
-
-
-
-
-
-
 
 		<div id="popis" class="flex flex-col gap-2 mt-5 h-80">
 			<SectionLabel name="POPIS" />

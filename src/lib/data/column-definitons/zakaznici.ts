@@ -18,7 +18,7 @@ export const zakazniciColDef = [
 		field: "customerAddressCode",
 		headerName: "ID zákazníka",
 		cellDataType: "number",
-		editable: true,
+		editable: false,
 		width: 140,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
