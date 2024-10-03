@@ -6,6 +6,9 @@
 	import Header from '$lib/components/header/Header.svelte';
 	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
 	import { isMobileStore, isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
+	import { onMount } from 'svelte';
+	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
     let innerWidth: number;
 
@@ -20,6 +23,27 @@
 
 	let isMobileLayoutExpanded: boolean;
 	isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
+
+	onMount(() => {
+		function handleKeydown(e: KeyboardEvent) {
+			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				ribbonActionStore.set(RibbonActionEnum.FILTER_QUICK)
+			}
+
+			if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				ribbonActionStore.set(RibbonActionEnum.SAVE);
+			}
+
+			if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
+				e.preventDefault();
+				ribbonActionStore.set(RibbonActionEnum.LOAD);
+			}
+		}
+
+		document.addEventListener('keydown', handleKeydown);
+	})
 </script>
 
 

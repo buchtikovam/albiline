@@ -5,4 +5,4 @@
 </script>
 
 
-<Label class="text-sm text-slate-500">{name}</Label>
+<Label class="text-sm mx-auto line-clamp-1 w-full text-slate-500 ">{name}</Label>

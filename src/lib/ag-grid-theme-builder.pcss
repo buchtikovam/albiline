@@ -18,6 +18,16 @@
 	gap: 0 !important;
 }
 
+.ag-theme-custom .ag-cell-class:focus-visible {
+	border: none;
+	outline: none;
+}
+
+.ag-theme-custom .ag-checkbox-input-wrapper.ag-checked::after,
+.ag-theme-custom .ag-checkbox-input-wrapper.ag-indeterminate::after {
+	content: '';
+}
+
 .ag-theme-custom,
 .ag-root-wrapper,
 .ag-measurement-container,

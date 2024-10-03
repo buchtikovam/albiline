@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, deletedColumnsStore, editedColumnsStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, deletedColumnsStore, editedColumnsStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, tableRowDataStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -18,6 +18,8 @@
 	import { customToast } from "$lib/utils/customToast";
 	import { get } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
+	import { addToEditedData } from "$lib/utils/addToEditedData";
+	import { generateRow } from "$lib/utils/generateRow";
 	
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -74,50 +76,14 @@
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
 		rowBuffer: 1,
-		cacheBlockSize: 500,
-		debug:true,
+		cacheBlockSize: 100,
 	}
+
 
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
 	let previousSort: ("asc" | "desc" | null | undefined)[] = []
-
-
-	function addToEditedData(params: Record<string, any>, column: string, newValue: any) {
-		let editedData = get(editedColumnsStore);
-		let foundMatch = false;
-		let newRecord = {};
-
-		editedData.forEach((record) => {
-			if (record.id === params["customerAddressCode"]) {
-				foundMatch = true;
-				record[column] = newValue;
-				editedColumnsStore.set(editedData);
-			}	
-		})
-
-		if (!foundMatch) {
-			newRecord["id"] = params["customerAddressCode"];
-			newRecord[column] = newValue;
-			
-			editedColumnsStore.update((records) => records.concat(newRecord));
-		}
-	}
-
-	editedColumnsStore.subscribe((records) => console.log(records));
-
-
-
-	export function customDebounce (callback: Function, wait = 500) { // TODO: on fulltext store change, with debounce, call onFilterChanged()
-		let timeout: ReturnType<typeof setTimeout>;
-		return (...args: any[]) => {
-			clearTimeout(timeout);
-			timeout = setTimeout(() => callback(...args), wait);
-		};
-	};
-		
-
-	const rowBatchSize = 500;
+	const rowBatchSize = 100;
 	let lastRow: number|null = null;
 	let runCount = 0;
 
@@ -129,7 +95,6 @@
 			// store latest filters in variable
 			const currentFilter = gridApi.getFilterModel();
 			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
-
 			
 			// add filter to recent filters (undo filter logic)
 			if (Object.keys(currentFilter).length > 0) {
@@ -138,21 +103,16 @@
 				}
 			}
 			
-			
 			// if filter or sort has changed, set lastRow to null
 			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-				console.log("test");
-				
 				lastRow = null;
 			}
 			
 			currentSort = gridApi.getColumnState().map((state) => { return state.sort })
 			if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
-				console.log("test2");
 				lastRow = null;
 			}			
 			previousSort = currentSort;
-			
 
 			// custom request model
 			let updatedParamsRequest: TableRowRequest = params.request
@@ -160,7 +120,6 @@
 			updatedParamsRequest.lastRow = lastRow;
 			updatedParamsRequest.rowBatchSize = rowBatchSize;
 			console.log(JSON.stringify(updatedParamsRequest, null, 1));
-
 
 			// AG-Grid SSRM
 			fetch(url
@@ -181,6 +140,7 @@
 			});
 		}
 	};
+
 
 
 	onMount(() => {
@@ -225,33 +185,27 @@
 				applyOrder: true
 			});
 		}
-
-		function handleKeydown(e: KeyboardEvent) {
-			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				ribbonActionStore.set(RibbonActionEnum.FILTER_QUICK)
-			}
-
-			if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				ribbonActionStore.set(RibbonActionEnum.SAVE);
-			}
-
-			if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				ribbonActionStore.set(RibbonActionEnum.LOAD);
-			}
-		}
-
-		document.addEventListener('keydown', handleKeydown);
 	})
+
+
 
 	ribbonActionStore.subscribe((action) => {		
 		if (action === RibbonActionEnum.NEW) { 
-			gridApi.applyServerSideTransaction({
+			let rowData = [];
+			gridApi.forEachNode(node => rowData.push(node.data));
+
+			// const newArray = [generateRow()].concat(rowData)
+			console.log(rowData);
+
+			// gridApi.setGridOption("rowData", []);
+			
+			const transaction = {
 				addIndex: 0,
-				add: []
-			})	
+				add: [ generateRow() ],
+			};
+
+			const result = gridApi!.applyServerSideTransactionAsync(transaction);
+			console.log(transaction, result);
 		}
 
 		if (action === RibbonActionEnum.EDIT) {

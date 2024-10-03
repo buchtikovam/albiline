@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Field, Control, Label, FieldErrors } from "formsnap";
-	import { get } from "svelte/store";
+	import { Field, Control, FieldErrors } from "formsnap";
   	import InputLabel from '$lib/components/label/InputLabel.svelte';
 	import Input from "$lib/components/ui/input/input.svelte";
  

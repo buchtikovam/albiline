@@ -2,9 +2,14 @@ import type { ColumnFilters } from '$lib/types/components/table/columnFilter';
 import { writable, type Writable } from 'svelte/store';
 import type { Preset } from '$lib/types/components/table/presets';
 
+export const tableRowDataStore: Writable<any[]> = writable([]);
+
+
 export const editedColumnsStore: Writable<any[]> = writable([]);
 
 export const deletedColumnsStore: Writable<any[]> = writable([]);
+
+
 
 
 

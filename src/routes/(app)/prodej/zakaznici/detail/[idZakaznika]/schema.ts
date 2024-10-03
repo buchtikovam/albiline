@@ -1,9 +1,5 @@
 import { z } from "zod";
- 
-export const themes = ["light", "dark"] as const;
-export const languages = ["en", "es", "fr"] as const;
-export const allergies = ["peanuts", "dairy", "gluten", "soy", "shellfish"] as const;
- 
+
 export const schema = z.object({
 	// FAKTURAČNÍ ÚDAJE
 	i_Name: z.string(),
@@ -28,30 +24,30 @@ export const schema = z.object({
 
 	// NASTAVENÍ
 	consignmentSaleEnabled: z.boolean(), // komise ?
-	paymentTypeCode: z.string(), // typ platby
+	paymentTypeCode: z.enum(['V', 'U', 'K', 'D']), // typ platby
 	dueDays: z.number(), // splatnost
 	invoiceCopies: z.number(), // počet faktur
 	deliveryNoteCopies: z.number(), // počet dodacích listů
-	customerRank: z.string(), // bonita
-	retailStoreTypeId: z.string(), // typ prodejny
-	isReturnAllowed: z.boolean(), // vratka povolena
+	customerRank: z.enum(['A', 'B', 'C', 'D', 'E', 'T']), // bonita
+	retailStoreTypeId: z.number(), // typ prodejny
+	// isReturnAllowed: z.boolean(), // vratka povolena
 	customerStoreCode: z.string(), // id zákazníka dle zákazníka
 	customerStoreEan: z.string(), // ean zákazníka
-	useAssortedEanCodes: z.boolean(), // používat asortní eany
-	// balit do klt
-	sendInvoiceViaEmail: z.boolean(), // faktury emailem
-	emailForInvoicing: z.string().email(), // email pro fakturaci
-	sendDeliveryNoteViaEmail: z.boolean(), // dodací listy emailem
-	emailForDeliveryNotes: z.string().email(), // email pro dodací listy
-	// provádět kontrolu u vratek
-	splitOrderByFood: z.boolean(),
-
-
-	// POPIS
-	description: z.string(), // bližší popis
-	note: z.string(), // poznámka
-	responsiblePerson: z.string(), // zodpovědná osoba
-	packingNote: z.string(), // poznámka pro balení
+	// useAssortedEanCodes: z.boolean(), // používat asortní eany
+	// // balit do klt
+	// sendInvoiceViaEmail: z.boolean(), // faktury emailem
+	// emailForInvoicing: z.string().email(), // email pro fakturaci
+	// sendDeliveryNoteViaEmail: z.boolean(), // dodací listy emailem
+	// emailForDeliveryNotes: z.string().email(), // email pro dodací listy
+	// // provádět kontrolu u vratek
+	// splitOrderByFood: z.boolean(),
+	//
+	//
+	// // POPIS
+	// description: z.string(), // bližší popis
+	// note: z.string(), // poznámka
+	// responsiblePerson: z.string(), // zodpovědná osoba
+	// packingNote: z.string(), // poznámka pro balení
 
 	// OZ a oblasti
 	// oz
