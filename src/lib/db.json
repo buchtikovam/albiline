@@ -61,6 +61,33 @@
           ]
         }
       }
+    },
+    {
+      "id": "33ba",
+      "pageOrigin": "/prodej/zakaznici",
+      "filterName": "Praha > 300 000",
+      "filters": {
+        "city": {
+          "filterType": "multi",
+          "filterModels": [
+            {
+              "filterType": "text",
+              "type": "contains",
+              "filter": "Praha"
+            }
+          ]
+        },
+        "customerAddressCode": {
+          "filterType": "multi",
+          "filterModels": [
+            {
+              "filterType": "number",
+              "type": "greaterThan",
+              "filter": 300000
+            }
+          ]
+        }
+      }
     }
   ],
   "presets": [

@@ -30,24 +30,25 @@ export const schema = z.object({
 	deliveryNoteCopies: z.number(), // počet dodacích listů
 	customerRank: z.enum(['A', 'B', 'C', 'D', 'E', 'T']), // bonita
 	retailStoreTypeId: z.number(), // typ prodejny
-	// isReturnAllowed: z.boolean(), // vratka povolena
+	isReturnAllowed: z.boolean(), // vratka povolena
 	customerStoreCode: z.string(), // id zákazníka dle zákazníka
 	customerStoreEan: z.string(), // ean zákazníka
-	// useAssortedEanCodes: z.boolean(), // používat asortní eany
-	// // balit do klt
-	// sendInvoiceViaEmail: z.boolean(), // faktury emailem
-	// emailForInvoicing: z.string().email(), // email pro fakturaci
-	// sendDeliveryNoteViaEmail: z.boolean(), // dodací listy emailem
-	// emailForDeliveryNotes: z.string().email(), // email pro dodací listy
-	// // provádět kontrolu u vratek
-	// splitOrderByFood: z.boolean(),
-	//
-	//
-	// // POPIS
+	useAssortedEanCodes: z.boolean(), // používat asortní eany
+	pickingBoxPackaging: z.boolean(), // balit do klt
+	sendInvoiceViaEmail: z.boolean(), // faktury emailem
+	emailForInvoicing: z.string().email(), // email pro fakturaci
+	sendDeliveryNoteViaEmail: z.boolean(), // dodací listy emailem
+	emailForDeliveryNotes: z.string().email(), // email pro dodací listy
+	// provádět kontrolu u vratek
+	splitOrderByFood: z.boolean(),
+
+
+	// POPIS
 	// description: z.string(), // bližší popis
 	// note: z.string(), // poznámka
 	// responsiblePerson: z.string(), // zodpovědná osoba
 	// packingNote: z.string(), // poznámka pro balení
+
 
 	// OZ a oblasti
 	// oz
@@ -55,10 +56,12 @@ export const schema = z.object({
 	// oblast
 	// merchendiser
 
+
 	// STRUKTURA
 	// customerAdressId
 	// customerNodeCode
 	// addressType
+
 
 	// AVÍZA
 	// avízo o svozu zásilky 

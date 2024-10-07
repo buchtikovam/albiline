@@ -125,7 +125,9 @@
 	</Tabs.Root>
 
 	<div class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0">
-		<Avatar />
+		<button on:click={() => openMobileSidebar = true} class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">
+			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
+		</button>
 
 		{#if $showFulltextSearchStore === true}
 			<div class="md:hidden w-full px-2">
@@ -138,9 +140,7 @@
 			</div>
 		{/if}
 		
-		<button on:click={() => openMobileSidebar = true} class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">
-			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
-		</button>
+		<Avatar />
 	</div>
 </div>
 

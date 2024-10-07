@@ -41,8 +41,6 @@
 </script>
 
 
-
-
 <div 
 	style="width: 794px; height: 1123px"
 	class="m-auto bg-white "

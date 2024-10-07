@@ -1,7 +1,8 @@
 <script lang="ts">
-	import FormContainer from '$lib/components/formsnap/FormContainer.svelte';
-	import FormSectionFull from '$lib/components/formsnap/FormSectionFull.svelte';
-	import FormSectionHalf from '$lib/components/formsnap/FormSectionHalf.svelte';
+	import FSCheckboxInputWrapper from './../../../../../../lib/components/formsnap/FSCheckboxInputWrapper.svelte';
+	import FormContainer from '$lib/components/form/FormContainer.svelte';
+	import FormSectionFull from '$lib/components/form/FormSectionFull.svelte';
+	import FormSectionHalf from '$lib/components/form/FormSectionHalf.svelte';
 	import SectionLabel from '$lib/components/label/SectionLabel.svelte';
 	import { superForm } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
@@ -57,6 +58,8 @@
 	initialFormData.retailStoreTypeId = initialData.retailStoreTypeId || null;
 	initialFormData.customerStoreCode = initialData.customerStoreCode || null;
 	initialFormData.customerStoreEan = initialData.customerStoreEan || null;
+	initialFormData.sendInvoiceViaEmail = initialData.sendInvoiceViaEmail || null;
+	initialFormData.emailForInvoicing = initialData.emailForInvoicing || null;
 
 	$: console.log($formData);
 </script>
@@ -90,7 +93,7 @@
 					<FSInputWrapper bind:value={$formData.i_Street} form={form} name="i_Street" label="Ulice" />
 					<FSInputWrapper bind:value={$formData.i_City} form={form} name="i_City" label="Město" />
 				</FormSectionFull>
-
+				
 				<FormSectionFull>
 					<FSInputWrapper bind:value={$formData.i_PostalCode} form={form} name="i_PostalCode" label="PSČ" />
 					<FSInputWrapper bind:value={$formData.i_CountryCode} form={form} name="i_CountryCode" label="Země" />
@@ -162,29 +165,21 @@
 					<FSInputWrapper bind:value={$formData.customerStoreCode} form={form} name="customerStoreCode" label="ID zákazníka dle zákazníka" type="number" />
 					<FSInputWrapper bind:value={$formData.customerStoreEan} form={form} name="customerStoreEan" label="EAN zákazníka" />
 				</FormSectionFull>
+				
+				<!-- <FormSectionFull>
+					<FSCheckboxInputWrapper bind:isChecked={$formData.sendInvoiceViaEmail} bind:value={$formData.emailForInvoicing} form={form} name="customerStoreCode" label="Email pro fakturaci" type="number" />
+					<FSInputWrapper bind:value={$formData.customerStoreEan} form={form} name="customerStoreEan" label="EAN zákazníka" />
+				</FormSectionFull>  -->
 
 				<FormSectionFull>
-
-
+					<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Vratka povolena" />
+					<FSCheckboxWrapper bind:value={$formData.consignmentSadleEnabled} form={form} name="consignmentSaleEnabled" label="Požívat asortní EANy" />
 				</FormSectionFull>
-
 				
 				<FormSectionFull>
-					<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Vratka povolena" />
-					<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Požívat asortní EANy" />
+					<FSCheckboxWrapper bind:value={$formData.consignmentSaleEndabled} form={form} name="consignmentSaleEnabled" label="Balit do KLT" />
+					<FSCheckboxWrapper bind:value={$formData.consignmentSaleEdnabled} form={form} name="consignmentSaleEnabled" label="Food/Nonfood" />
 				</FormSectionFull>
-				
-				<FormSectionFull>
-					<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Balit do KLT" />
-					<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Food/Nonfood" />
-				</FormSectionFull>
-
-					
-					
-
-
-
-
 			</FormContainer>
 		</div>
 
@@ -192,7 +187,7 @@
 			<SectionLabel name="POPIS" />
 
 			<FormContainer>
-				lalala
+				popis
 			</FormContainer>
 		</div>
 
@@ -200,7 +195,7 @@
 			<SectionLabel name="OZ A OBLASTI" />
 
 			<FormContainer>
-				lalala
+				oz a oblasti
 			</FormContainer>
 		</div>
 
@@ -208,7 +203,7 @@
 			<SectionLabel name="STRUKTURA" />
 
 			<FormContainer>
-				lalala
+				struktura
 			</FormContainer>
 		</div>
 
@@ -216,7 +211,7 @@
 			<SectionLabel name="AVÍZA" />
 
 			<FormContainer>
-				lalala
+				aviza
 			</FormContainer>
 		</div>
 	</form>

@@ -123,7 +123,7 @@
 
 
 <div class="
-	{isSidebarOpen ? "w-[320px] p-4" : "w-fit p-2"}
+	{isSidebarOpen ? "w-[280px] p-4" : "w-fit p-2"}
 	flex flex-col h-full overflow-auto bg-white rounded-lg "
 >
 	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->

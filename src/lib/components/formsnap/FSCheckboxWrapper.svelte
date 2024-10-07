@@ -16,7 +16,7 @@
 		<Control let:attrs>
 		<div class="flex w-full flex-col justify-between  h-[60px]">
 			<InputLabel name={label} />
-			<Checkbox bind:checked={value} size="large" class="size-[36px]"/>
+			<Checkbox bind:checked={value} class="size-[36px]"/>
 		</div>
 		</Control>
 		<FieldErrors />

@@ -14,14 +14,12 @@
 </script>
 
 
-
-<div class="w-full flex">
+<div class="w-full flex items-end ">
 	<Field {form} name={name}>
 		<Control let:attrs>
-		<div class="flex w-full flex-col justify-between  h-[40px]">
-			<InputLabel name={label} />
-			<Checkbox bind:checked={isChecked} />
-		</div>
+			<div class="flex flex-col  justify-end mr-2 w-[48px] ">
+				<Checkbox bind:checked={isChecked} />
+			</div>
 		</Control>
 		<FieldErrors />
 	</Field>
@@ -31,7 +29,11 @@
 		<Control let:attrs>
 		<div class="w-full">
 			<InputLabel name={label} />
-			<Input {...attrs} type={type} bind:value />
+			{#if isChecked}
+				<Input {...attrs} type={type} bind:value />			
+			{:else}
+				<Input {...attrs} disabled type={type} bind:value />
+			{/if}
 		</div>
 		</Control>
 		<FieldErrors />

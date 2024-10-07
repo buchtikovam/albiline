@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, deletedColumnsStore, editedColumnsStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, tableRowDataStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, deletedColumnsStore, editedColumnsStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -67,6 +67,7 @@
 		},
 
 		columnDefs: columnDefinitions,
+		debug: true,
 		suppressExcelExport: true,
 		suppressCsvExport: true,
 		maintainColumnOrder: true, 
@@ -87,6 +88,12 @@
 	let lastRow: number|null = null;
 	let runCount = 0;
 
+	// TODO: disable tabs on edited data
+
+	// TODO: novy zakaznik dialog
+
+	
+	
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
 			runCount++;
@@ -187,27 +194,27 @@
 		}
 	})
 
+	// TODO: refresh bug - adding to last row ? 
 
-
-	ribbonActionStore.subscribe((action) => {		
+	ribbonActionStore.subscribe((action) => {
 		if (action === RibbonActionEnum.NEW) { 
 			let rowData = [];
 			gridApi.forEachNode(node => rowData.push(node.data));
 
-			// const newArray = [generateRow()].concat(rowData)
+			const newArray = [generateRow()].concat(rowData)
 			console.log(rowData);
 
-			// gridApi.setGridOption("rowData", []);
+			gridApi.setGridOption("rowData", newArray);
 			
 			const transaction = {
 				addIndex: 0,
 				add: [ generateRow() ],
-			};
+			}; 
 
 			const result = gridApi!.applyServerSideTransactionAsync(transaction);
 			console.log(transaction, result);
 		}
-
+		
 		if (action === RibbonActionEnum.EDIT) {
 			isEditAllowedStore.update((data) => !data)
 
@@ -244,7 +251,7 @@
 
 		if (action === RibbonActionEnum.LOAD) { // todo
 			gridApi.refreshServerSide()
-		}editedColumnsStore
+		}
 
 		if (action === RibbonActionEnum.EXPORT_EXCEL) {
 			console.log("excel");
