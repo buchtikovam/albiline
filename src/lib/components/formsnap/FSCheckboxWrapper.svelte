@@ -11,10 +11,10 @@
 </script>
 
 
-<div class="w-full pr-8 flex flex-col items-start">
+<div class="w-full pr-2 flex flex-col items-start">
 	<Field {form} name={name}>
 		<Control let:attrs>
-		<div class="flex w-full flex-col justify-between  h-[60px]">
+		<div class="!w-full flex flex-col justify-between  h-[60px]">
 			<InputLabel name={label} />
 			<Checkbox bind:checked={value} class="size-[36px]"/>
 		</div>

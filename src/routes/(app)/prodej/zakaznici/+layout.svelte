@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { fulltextFilterValueStore, selectedRowIdStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { editedDataStore, fulltextFilterValueStore, selectedRowIdStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';	
+
+	let disableTabs: boolean = true;
+	editedDataStore.subscribe(data => disableTabs = data.length > 0)
 </script>
 
 
@@ -12,37 +15,41 @@
 	<Tabs.Root value={$page.url.pathname} class="w-full h-8 overflow-auto rounded-md md:w-fit mb-2">
 		<Tabs.List class="h-8">
 			<Tabs.Trigger
-					class="font-bold"
-					value={"/prodej/zakaznici"}
-					on:click={() => goto("/prodej/zakaznici")}
-				>
-					Seznam
+				class="font-bold"
+				disabled={`/prodej/zakaznici` !== $page.url.pathname && disableTabs}
+				value={"/prodej/zakaznici"}
+				on:click={() => goto("/prodej/zakaznici")}
+			>
+				Seznam
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
-					class="font-bold"
-					value={`/prodej/zakaznici/detail/${$selectedRowIdStore}`}
-					on:click={() => goto(`/prodej/zakaznici/detail/${$selectedRowIdStore}`)}
-				>
-					Detail
+				class="font-bold"
+				disabled={`/prodej/zakaznici/detail/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/detail/${$selectedRowIdStore}`}
+				on:click={() => goto(`/prodej/zakaznici/detail/${$selectedRowIdStore}`)}
+			>
+				Detail
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
-					class="font-bold"
-					value={`/prodej/zakaznici/fakturacni-adresy`}
-					on:click={() => goto(`/prodej/zakaznici/fakturacni-adresy`)}
-				>
-					Fakturační adresy
+				class="font-bold"
+				disabled={`/prodej/zakaznici/fakturacni-adresy` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/fakturacni-adresy`}
+				on:click={() => goto(`/prodej/zakaznici/fakturacni-adresy`)}
+			>
+				Fakturační adresy
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
-					class="font-bold"
-					value={`/prodej/zakaznici/kontaktni-osoby`}
-					on:click={() => goto(`/prodej/zakaznici/kontaktni-osoby`)}
-				>
-					Kontaktní osoby
+				class="font-bold"
+				disabled={`/prodej/zakaznici/kontaktni-osoby` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/kontaktni-osoby`}
+				on:click={() => goto(`/prodej/zakaznici/kontaktni-osoby`)}
+			>
+				Kontaktní osoby
 			</Tabs.Trigger>
-
+		
 		</Tabs.List>
 	</Tabs.Root>
 

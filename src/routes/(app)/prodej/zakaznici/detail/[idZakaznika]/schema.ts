@@ -30,6 +30,7 @@ export const schema = z.object({
 	deliveryNoteCopies: z.number(), // počet dodacích listů
 	customerRank: z.enum(['A', 'B', 'C', 'D', 'E', 'T']), // bonita
 	retailStoreTypeId: z.number(), // typ prodejny
+	retailStoreTypeName: z.string(), // jméno prodejny
 	isReturnAllowed: z.boolean(), // vratka povolena
 	customerStoreCode: z.string(), // id zákazníka dle zákazníka
 	customerStoreEan: z.string(), // ean zákazníka
@@ -44,13 +45,13 @@ export const schema = z.object({
 
 
 	// POPIS
-	// description: z.string(), // bližší popis
-	// note: z.string(), // poznámka
-	// responsiblePerson: z.string(), // zodpovědná osoba
-	// packingNote: z.string(), // poznámka pro balení
+	description: z.string(), // bližší popis
+	note: z.string(), // poznámka
+	responsiblePerson: z.string(), // zodpovědná osoba
+	packingNote: z.string(), // poznámka pro balení
 
 
-	// OZ a oblasti
+	// OZ A OBLASTI
 	// oz
 	// om
 	// oblast
@@ -58,9 +59,8 @@ export const schema = z.object({
 
 
 	// STRUKTURA
-	// customerAdressId
-	// customerNodeCode
-	// addressType
+	customerNodeCode: z.number(), // customerNodeCode
+	addressType: z.string(), // addressType
 
 
 	// AVÍZA

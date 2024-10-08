@@ -1,1 +1,1 @@
-<div class="w-full h-10"></div>
+<div class="w-full h-10 hidden md:block"></div>

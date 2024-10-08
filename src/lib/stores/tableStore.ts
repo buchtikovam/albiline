@@ -5,7 +5,7 @@ import type { Preset } from '$lib/types/components/table/presets';
 export const tableRowDataStore: Writable<any[]> = writable([]);
 
 
-export const editedColumnsStore: Writable<any[]> = writable([]);
+export const editedDataStore: Writable<any[]> = writable([]);
 
 export const deletedColumnsStore: Writable<any[]> = writable([]);
 

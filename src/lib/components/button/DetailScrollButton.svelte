@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
 	export let href: string;
 	export let label: string;
 
@@ -8,6 +10,7 @@
 		if (!el) return;
 		el.scrollIntoView({ behavior: 'smooth'});
 	}
+
 </script>
 
 

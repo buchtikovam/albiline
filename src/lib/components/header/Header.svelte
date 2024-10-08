@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { editedColumnsStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { editedDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
 	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 	import { goto, preloadData } from '$app/navigation';
@@ -21,7 +21,7 @@
 	openedTabsStore.subscribe(data => storedTabs = data);
 
 	let editedData;
-	editedColumnsStore.subscribe(data => editedData = data);
+	editedDataStore.subscribe(data => editedData = data);
 
 	$: pathname = getTabValue($page.url.pathname)
 
@@ -75,6 +75,8 @@
 		tab.closingState = 'hidden';
 		openedTabsStore.update(() => storedTabs);
 	}
+
+	console.log()
 
 	let openMobileSidebar : boolean = false;
 </script>

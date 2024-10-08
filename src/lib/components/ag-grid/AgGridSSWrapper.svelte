@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, deletedColumnsStore, editedColumnsStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, deletedColumnsStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -67,7 +67,6 @@
 		},
 
 		columnDefs: columnDefinitions,
-		debug: true,
 		suppressExcelExport: true,
 		suppressCsvExport: true,
 		maintainColumnOrder: true, 
@@ -80,6 +79,10 @@
 		cacheBlockSize: 100,
 	}
 
+	editedDataStore.subscribe((data) => {
+		console.log(data)
+		
+	})
 
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
@@ -239,14 +242,9 @@
 			const selectedRows = gridApi!.getServerSideSelectionState();
 		}
 
-		if (action === RibbonActionEnum.SAVE) { // todo
-			let requestData = {
-				insert: [],
-				update: get(editedColumnsStore),
-				delete: get(deletedColumnsStore)
-			}
-			
-			console.log(requestData);	
+		if (action === RibbonActionEnum.SAVE) { // todo			
+			console.log(get(editedDataStore));	
+			editedDataStore.set([])
 		}
 
 		if (action === RibbonActionEnum.LOAD) { // todo

@@ -6,7 +6,7 @@
 	import Input from "$lib/components/ui/input/input.svelte";
  
 	export let isChecked: boolean;
-	export let value;
+	export let value: string;
 	export let form;
 	export let name;
 	export let label;
@@ -14,27 +14,21 @@
 </script>
 
 
-<div class="w-full flex items-end ">
+<div class="w-full">
 	<Field {form} name={name}>
 		<Control let:attrs>
-			<div class="flex flex-col  justify-end mr-2 w-[48px] ">
-				<Checkbox bind:checked={isChecked} />
+			<div class="w-full flex flex-col justify-end mr-2 ">
+				<InputLabel name={label} />
+
+				<div class="flex gap-1">
+					<Checkbox bind:checked={isChecked} />
+					{#if isChecked}
+						<Input {...attrs} type={type} bind:value />			
+					{:else}
+						<Input {...attrs} disabled type={type} bind:value />
+					{/if}
+				</div>
 			</div>
-		</Control>
-		<FieldErrors />
-	</Field>
-	
-	
-	<Field {form} name={name}>
-		<Control let:attrs>
-		<div class="w-full">
-			<InputLabel name={label} />
-			{#if isChecked}
-				<Input {...attrs} type={type} bind:value />			
-			{:else}
-				<Input {...attrs} disabled type={type} bind:value />
-			{/if}
-		</div>
 		</Control>
 		<FieldErrors />
 	</Field>

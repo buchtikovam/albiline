@@ -546,7 +546,7 @@ export const zakazniciColDef = [
 	// },
 	// {
 	// 	field: "isBadPayer",
-	// 	// headerName: "",
+	// 	headerName: "",
 	// 	editable: true,
 	// 	cellDataType: "boolean"
 	// },
