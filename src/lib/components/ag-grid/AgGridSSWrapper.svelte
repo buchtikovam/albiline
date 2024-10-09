@@ -34,7 +34,7 @@
 			sortable: true,
 			resizable: true,
 			editable: true,
-			minWidth: 100,
+			minWidth: 80,
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
@@ -90,12 +90,6 @@
 	const rowBatchSize = 100;
 	let lastRow: number|null = null;
 	let runCount = 0;
-
-	// TODO: disable tabs on edited data
-
-	// TODO: novy zakaznik dialog
-
-	
 	
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
@@ -142,6 +136,7 @@
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
 				params.success({ rowData: response.items })
+				console.log(response.items[0])
 				lastRow = response.items.slice(-1)[0].rowNumber || null
 			})
 			.catch(error => {

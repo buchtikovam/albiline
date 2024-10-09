@@ -23,25 +23,26 @@ export const schema = z.object({
 
 
 	// NASTAVENÍ
-	consignmentSaleEnabled: z.boolean(), // komise ?
+	consignmentSaleEnabled: z.boolean(), 
 	paymentTypeCode: z.enum(['V', 'U', 'K', 'D']), // typ platby
 	dueDays: z.number(), // splatnost
 	invoiceCopies: z.number(), // počet faktur
 	deliveryNoteCopies: z.number(), // počet dodacích listů
-	customerRank: z.enum(['A', 'B', 'C', 'D', 'E', 'T']), // bonita
+	customerRank: z.enum(['A', 'B', 'C', 'D', 'E']), // bonita
 	retailStoreTypeId: z.number(), // typ prodejny
 	retailStoreTypeName: z.string(), // jméno prodejny
 	isReturnAllowed: z.boolean(), // vratka povolena
 	customerStoreCode: z.string(), // id zákazníka dle zákazníka
 	customerStoreEan: z.string(), // ean zákazníka
 	useAssortedEanCodes: z.boolean(), // používat asortní eany
+
 	pickingBoxPackaging: z.boolean(), // balit do klt
 	sendInvoiceViaEmail: z.boolean(), // faktury emailem
 	emailForInvoicing: z.string().email(), // email pro fakturaci
 	sendDeliveryNoteViaEmail: z.boolean(), // dodací listy emailem
 	emailForDeliveryNotes: z.string().email(), // email pro dodací listy
-	// provádět kontrolu u vratek
-	splitOrderByFood: z.boolean(),
+	isForConsignmentReturn: z.boolean(), // provádět kontrolu u vratek
+	splitOrderByFood: z.boolean(), // food / non food
 
 
 	// POPIS
@@ -52,19 +53,20 @@ export const schema = z.object({
 
 
 	// OZ A OBLASTI
-	// oz
-	// om
-	// oblast
-	// merchendiser
+	dealerCode: z.number(), // oz
+	areaManager: z.number(), // om
+	areaId: z.number(), // oblast
+	merchandiserCode: z.number(), // merchendiser
 
 
 	// STRUKTURA
+	id: z.number(),
 	customerNodeCode: z.number(), // customerNodeCode
 	addressType: z.string(), // addressType
 
 
 	// AVÍZA
-	// avízo o svozu zásilky 
-	// avízo o expedici objednávky
-	// email pro avíza
+	sendReturnsShippingNotificationViaEmail: z.boolean(), // avízo o svozu zásilky 
+	sendShippingNotificationViaEmail: z.boolean(), // avízo o expedici objednávky
+	emailForShippingNotifications: z.string().email(),// email pro avíza
 });

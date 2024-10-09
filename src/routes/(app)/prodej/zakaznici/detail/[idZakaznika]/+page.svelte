@@ -211,7 +211,7 @@
 						<FSCheckboxInputWrapper bind:isChecked={$formData.sendInvoiceViaEmail} bind:value={$formData.emailForInvoicing} form={form} name="sendInvoiceViaEmail" label="Zasílat faktury e-mailem" />
 					</FormSectionFull>
 					
-					<div class="w-full flex gap-2.5">
+					<!-- <div class="w-full flex gap-2.5">
 						<div class="w-1/3 pr-2">
 							<FSCheckboxInputWrapper bind:isChecked={$formData.sendDeliveryNoteViaEmail} bind:value={$formData.emailForDeliveryNotes} form={form} name="sendDeliveryNoteViaEmail" label="Zasílat dodací listy e-mailem" />
 						</div>
@@ -230,7 +230,7 @@
 
 							</div>
 						</div>
-					</div>  
+					</div>   -->
 				</div>
 
 				<div class="flex flex-col 2xl:hidden gap-1">
@@ -259,7 +259,7 @@
 						<FSCheckboxInputWrapper bind:isChecked={$formData.sendDeliveryNoteViaEmail} bind:value={$formData.emailForDeliveryNotes} form={form} name="sendDeliveryNoteViaEmail" label="Zasílat dodací listy e-mailem" />
 					</FormSectionFull>  
 
-					<div class="block md:flex gap-2">
+					<!-- <div class="block md:flex gap-2">
 						<div class="flex w-full">
 							<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Komise" />
 							<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Vratka povolena" />
@@ -279,7 +279,7 @@
 						<div class="w-full">
 							<FormEmptyField/>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</FormContainer>
 		</div>

@@ -5,6 +5,7 @@ export const zakazniciColDef = [
 		headerClass: 'ag-header-checkbox',
 		cellClass: 'ag-cell-class',
 		headerCheckboxSelection: true,
+		blockEditable: true,
 		editable: false,
 		filter: false,
 		resizable: false, 
@@ -19,6 +20,7 @@ export const zakazniciColDef = [
 		field: "customerAddressCode",
 		headerName: "ID zákazníka",
 		cellDataType: "number",
+		blockEditable: true,
 		editable: false,
 		width: 140,
 		filter: 'agMultiColumnFilter',
@@ -31,11 +33,12 @@ export const zakazniciColDef = [
 		}
 	},
 	{ 
-		field: "customerNodeCode",
-		headerName: "Řetězec",
+		field: "dealerCode",
+		headerName: "OZ",
+		blockEditable: true,
+		editable: false,
 		cellDataType: "number",
-		editable: true,
-		width: 120,
+		width: 80,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -45,120 +48,191 @@ export const zakazniciColDef = [
 			]
 		}
 	},
-	{ 
-		field: "addressType",
-		headerName: "Typ adresy",
-		cellDataType: "text",
-		editable: true,
-		width: 130,
+	{
+		field: "om",
+		headerName: "OM",
+		blockEditable: true,
+		editable: false,
+		cellDataType: "number",
+		width: 80,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agNumberColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
-		field: "name",
-		headerName: "Jméno",
-		cellDataType: "text",
-		editable: true,
-		width: 280,
-		cellEditor: 'agLargeTextCellEditor',
+
+	{
+		field: "customerNodeCode",
+		headerName: "NodeCode",
+		width: 124,
+		cellDataType: "number",
+		blockEditable: true,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agNumberColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
-		field: "city",
-		headerName: "Město",
-		editable: true,
+	{
+		field: "i_Name",
+		headerName: "Název FA",
+		width: 240,
 		cellDataType: "text",
-		width: 160,
+		blockEditable: true,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agTextColumnFilter',
 				},
-				
 			]
 		}
 	},
-	{ 
+	{
+		field: "i_ICO",
+		headerName: "IČO",
+		width: 100,
+		cellDataType: "text",
+		blockEditable: true,
+		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agTextColumnFilter',
+				},
+			]
+		}
+	},
+	{
 		field: "street",
-		headerName: "Ulice",
-		editable: true,
+		headerName: "Ulice MD",
+		width: 200,
 		cellDataType: "text",
-		cellEditor: 'agLargeTextCellEditor',
-		width: 280,
+		blockEditable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agTextColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
+	{
+		field: "city",
+		headerName: "Město MD",
+		width: 200,
+		cellDataType: "text",
+		blockEditable: false,
+		editable: true,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agTextColumnFilter',
+				},
+			]
+		}
+	},
+	{
 		field: "postalCode",
-		headerName: "PSČ",
-		editable: true,
+		headerName: "PSČ MD",
+		width: 90,
 		cellDataType: "text",
-		width: 80,
+		blockEditable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agTextColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
-		field: "countryCode", 
-		headerName: "Země",
-		editable: true,
-		width: 80,
+	{
+		field: "countryCode",
+		headerName: "Země MD",
+		width: 100,
 		cellDataType: "text",
+		blockEditable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agTextColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
+	{
+		field: "name",
+		headerName: "Název MD",
+		width: 240,
+		cellDataType: "text",
+		blockEditable: false,
+		editable: true,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agTextColumnFilter',
+				},
+			]
+		}
+	},
+	{
 		field: "companyName", 
 		headerName: "Název společnosti",
-		editable: true,
-		cellDataType: "text",
 		width: 200,
+		cellDataType: "text",
+		blockEditable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agTextColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
-		field: "enabled",
-		headerName: "Aktivní",
-		editable: true,
+	{
+		field: "dueDays", 
+		headerName: "Splatnost",
+		width: 120,
+		cellDataType: "number",
+		blockEditable: true,
+		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agNumberColumnFilter',
+				},
+			]
+		}
+	},
+	{
+		field: "consignmentSaleEnabled", 
+		headerName: "Komise",
+		width: 100,
 		cellDataType: "boolean",
-		width: 64,
+		cellRenderer: booleanCellRenderer, // Apply the custom renderer
+		blockEditable: true,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -168,435 +242,146 @@ export const zakazniciColDef = [
 			]
 		}
 	},
-	{ 
-		field: "consignmentSaleEnabled",
-		headerName: "Komise",
-		editable: true,
-		cellDataType: "text",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agStringColumnFilter',
-				},
-			]
-		}
-	},
-	{ 
-		field: "paymentTypeCode",
+	{
+		field: "paymentTypeCode", 
 		headerName: "Typ platby",
-		editable: true,				
+		width: 100,
 		cellDataType: "text",
+		cellEditor: 'agSelectCellEditor',
+		cellEditorParams: {
+            values: [], // TODO
+        },
+		blockEditable: true,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
-					filter: 'agStringColumnFilter',
+					filter: 'agTextColumnFilter',
 				},
 			]
 		}
 	},
-	{ 
-		field: "dueDays", 
-		headerName: "Splatnost",
-		editable: true,
-		cellDataType: "number",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agNumberColumnFilter',
-				},
-			]
-		}
-	},
-	{ 
+	{
 		field: "invoiceCopies",
 		headerName: "FA kopie",
-		editable: true,
-		cellDataType: "number",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agNumberColumnFilter',
-				},
-			]
-		}
 	},
-	{ 
+	{
 		field: "deliveryNoteCopies",
 		headerName: "DL kopie",
-		editable: true,
-		cellDataType: "number",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agNumberColumnFilter',
-				},
-			]
-		}
 	},
-	{ 
+	{
 		field: "customerRank",
 		headerName: "Bonita",
-		editable: true,
-		cellDataType: "text",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agStringColumnFilter',
-				},
-			]
-		}
 	},
-	{ 
+	{
 		field: "retailStoreTypeId",
 		headerName: "Typ prodejny",
-		editable: true,
-		cellDataType: "text",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agStringColumnFilter',
-				},
-			]
-		}
 	},
-	{ 
-		field: "dealerCode",
-		headerName: "OZ",
-		editable: true,
-		cellDataType: "text",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agStringColumnFilter',
-				},
-			]
-		}
+	{
+		field: "retailStoreTypeName",
+		headerName: "Název typu prodejny",
 	},
 	{
 		field: "isReturnAllowed",
 		headerName: "Vratka povolena",
-		editable: true,
-		cellDataType: "boolean",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agBooleanColumnFilter',
-				},
-			]
-		}
+	},
+	{
+		field: "responsiblePerson",
+		headerName: "Zodpovědná osoba",
 	},
 	{
 		field: "customerStoreCode",
 		headerName: "ID zákazníka dle zákazníka",
-		editable: true,
-		cellDataType: "",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agStringColumnFilter',
-				},
-			]
-		}
 	},
 	{
 		field: "customerStoreEan",
-		headerName: "EAN",
-		editable: true,
-		cellDataType: ""
+		headerName: "EAN zákazníka",
 	},
 	{
 		field: "dateCreated",
 		headerName: "Datum vytvoření",
-		editable: true,
-		cellDataType: "date"
+	},
+	{
+		field: "firstOrderDate",
+		headerName: "První objednávka",
+	},
+	{
+		field: "lastOrderDate",
+		headerName: "Poslední objednávka",
+	},
+	{
+		field: "areaId",
+		headerName: "Oblast",
+	},
+	{
+		field: "merchandiserCode",
+		headerName: "Merchendiser",
+	},
+	{
+		field: "description",
+		headerName: "Bližší popis",
 	},
 	{
 		field: "note",
 		headerName: "Poznámka",
-		editable: true,
-		cellDataType: "text",
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agStringColumnFilter',
-				},
-			]
-		}
 	},
-	// {
-	// 	field: "firstOrderDate",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "date"
-	// },
-	// {
-	// 	field: "lastOrderDate",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "date"
-	// },
-	// {
-	// 	field: "areaId",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "aerchandiserCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "description",
-	// 	headerName: "Popis",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "responsiblePerson",
-	// 	headerName: "Zodpovědná osoba",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "lastChangeUserCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "lastChangeDateTime",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "date"
-	// },
-	// {
-	// 	field: "lseAssortedEanCodes",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "sendInvoiceViaEmail",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "emailForInvoicing",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "sendDeliveryNoteViaEmail",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "emailForDeliveryNotes",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "sendShippingNotificationViaEmail",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "sendReturnsShippingNotificationViaEmail",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "smailForShippingNotifications",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_ID",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_CustomerAddressCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_CustomerNodeCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_AddressType",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_Name",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_Street",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_City",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_PostalCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_CountryCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_CompanyName",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_Enabled",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "i_ConsignmentSaleEnabled",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "i_PaymentTypeCode",
-	// 	headerName: "Typ platby",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_DueDays",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "number"
-	// },
-	// {
-	// 	field: "i_ICO",
-	// 	headerName: "IČO",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_DIC",
-	// 	headerName: "DIČ",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_IcDph",
-	// 	headerName: "IčDPH",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_CustomerStoreCode",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "i_CustomerStoreEan",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "isBadPayer",
-	// 	headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "om",
-	// 	headerName: "OM",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "nodeEmail",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "retailStoreTypeName",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "pickingBoxPacking",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "packingNote",
-	// 	headerName: "Poznámka pro balení",
-	// 	editable: true,
-	// 	cellDataType: "text"
-	// },
-	// {
-	// 	field: "isForConsignmentReturn",
-	// 	// headerName: "",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-		// field: "splitOrderByFood",
-		// headerName: "Food / NonFood",
-		// editable: true,
-	// 	cellDataType: "boolean"
-	// },
-	// {
-	// 	field: "b2BeshopEnabled",
-	// 	headerName: "Aktivní B2B",
-	// 	editable: true,
-	// 	cellDataType: "boolean"
-	// }
+	{
+		field: "splitOrderByFood",
+		headerName: "Food / NonFood",
+	},
+	{
+		field: "isBadPayer",
+		headerName: "Neplatič",
+	},
+	{
+		field: "b2BeshopEnabled",
+		headerName: "Aktivní B2B",
+	},
+	{
+		field: "i_Street",
+		headerName: "Ulice FA",
+	},
+	{
+		field: "i_City",
+		headerName: "Město FA",
+	},
+	{
+		field: "i_PostalCode",
+		headerName: "PSČ FA",
+	},
+	{
+		field: "i_CountryCode",
+		headerName: "Země FA",
+	},
+	{
+		field: "i_Enabled",
+		headerName: "Aktivní FA",
+	},
+	{
+		field: "i_DIC",
+		headerName: "DIČ",
+	},
+	{
+		field: "i_IcDph",
+		headerName: "IčDPH",
+	},
+	{
+		field: "useAssortedEanCodes",
+		headerName: "Používat as. EANy",
+	},
+	{
+		field: "pickingBoxPacking",
+		headerName: "Balit do KLT",
+	},
+	{
+		field: "packingNote",
+		headerName: "Poznámka pro balení",
+	},
 ]
 
+
+
+function booleanCellRenderer(params) {
+  return `<input type="checkbox" ${params.value ? 'checked' : ''} style="">`;
+}
