@@ -6,15 +6,6 @@ import HandCoins from 'lucide-svelte/icons/hand-coins';
 import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 
 export const allItems: SidebarItem[] = [
-	// {
-	// 	name: 'Test',
-	// 	value: 'test',
-	// 	href: '/test-ss',
-	// 	open: false,
-	// 	hide: false,
-	// 	icon: Braces,
-	// 	children: [],
-	// },
 	{
 		name: 'Průvodní list',
 		value: 'pruvodni-list',

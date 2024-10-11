@@ -1,4 +1,4 @@
-import type { PageLoad } from './$types';
+import type { PageLoad } from '../../detail/[idZakaznika]/$types';
 
 
 export const load: PageLoad = async ({ data, params, fetch }) => {

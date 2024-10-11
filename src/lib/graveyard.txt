@@ -1,0 +1,344 @@
+	// export let data: { superForms: any, response: CustomerData};
+	// const initialData = data.response.item || {};
+	// console.log(initialData);
+	
+	// const form = superForm(data.superForms.form, {
+	// 	validators: zodClient(schema),
+	// });
+
+	// const { form: formData, enhance } = form;
+	// showFulltextSearchStore.set(false);
+	// isMobileLayoutExpandedStore.set(false);
+
+	// $: console.log($formData);
+
+initialFormData.i_Name = initialData.i_Name || null;
+initialFormData.i_Street = initialData.i_Street || null;
+initialFormData.i_City = initialData.i_City || null;
+initialFormData.i_PostalCode = initialData.i_PostalCode || null;
+initialFormData.i_CountryCode = initialData.i_CountryCode || null;
+initialFormData.i_ICO = initialData.i_ICO || null;
+initialFormData.i_DIC = initialData.i_DIC || null;
+initialFormData.i_IcDph = initialData.i_IcDph || null;
+
+initialFormData.customerAddressCode = initialData.customerAddressCode || null;
+initialFormData.name = initialData.name || null;
+initialFormData.companyName = initialData.companyName || null;
+initialFormData.street = initialData.street || null;
+initialFormData.city = initialData.city || null;
+initialFormData.postalCode = initialData.postalCode || null;
+initialFormData.countryCode = initialData.countryCode || null;
+
+initialFormData.consignmentSaleEnabled = initialData.consignmentSaleEnabled || null;
+initialFormData.paymentTypeCode = initialData.paymentTypeCode || "";
+initialFormData.dueDays = initialData.dueDays || null;
+initialFormData.invoiceCopies = initialData.invoiceCopies || null; 
+initialFormData.deliveryNoteCopies = initialData.deliveryNoteCopies || null;
+initialFormData.customerRank = initialData.customerRank || "";
+initialFormData.retailStoreTypeId = initialData.retailStoreTypeId || null;
+initialFormData.retailStoreTypeName = initialData.retailStoreTypeName || null;
+initialFormData.customerStoreCode = initialData.customerStoreCode || null;
+initialFormData.customerStoreEan = initialData.customerStoreEan || null;
+initialFormData.sendInvoiceViaEmail = initialData.sendInvoiceViaEmail || null;
+initialFormData.emailForInvoicing = initialData.emailForInvoicing || null;
+initialFormData.sendDeliveryNoteViaEmail = initialData.sendDeliveryNoteViaEmail || null;
+initialFormData.emailForDeliveryNotes = initialData.emailForDeliveryNotes || null;
+
+<!-- <div class="hidden lg:block sticky w-[200px] h-fit ">
+		<p class="font-bold">Detail zákazníka <br/>č. {initialData.customerAddressCode}</p>
+
+		<div class="flex flex-col gap-1 items-start mt-4 text-slate-500 text-sm">
+			<DetailScrollButton href="fakturacni-udaje" label="Fakturační údaje" />
+			<DetailScrollButton href="dodaci-adresa" label="Dodací adresa" />
+			<DetailScrollButton href="nastaveni" label="Nastavení" />
+			<DetailScrollButton href="popis" label="Popis" />
+			<DetailScrollButton href="oz-a-oblasti" label="OZ a oblasti" />
+			<DetailScrollButton href="struktura" label="Struktura" />
+			<DetailScrollButton href="aviza" label="Avíza" />
+		</div>
+	</div> -->
+
+
+	<!-- <form use:enhance class="w-full overflow-auto" method="POST">
+		<div id="fakturacni-udaje" class="flex flex-col gap-2">
+			<SectionLabel name="FAKTURAČNÍ ÚDAJE" />
+
+			<FormContainer>
+				<div class="hidden 2xl:flex flex-col gap-1">
+					<div class="flex">
+						<div class="w-2/3 pr-1">
+							<FSInputWrapper bind:value={$formData.i_Name} form={form} name="i_Name" label="Jméno"/>
+						</div>
+						<div class="w-1/3 pl-2.5">
+							<FSInputWrapper bind:value={$formData.i_Street} form={form} name="i_Street" label="Ulice" />
+						</div>
+					</div>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.i_City} form={form} name="i_City" label="Město" />
+						<FSInputWrapper bind:value={$formData.i_PostalCode} form={form} name="i_PostalCode" label="PSČ" />
+						<FSInputWrapper bind:value={$formData.i_CountryCode} form={form} name="i_CountryCode" label="Země" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.i_ICO} form={form} name="i_ICO" label="IČO" />
+						<FSInputWrapper bind:value={$formData.i_DIC} form={form} name="i_DIC" label="DIČ" />
+						<FSInputWrapper bind:value={$formData.i_IcDph} form={form} name="i_IcDph" label="IčDPH" />
+					</FormSectionFull>
+				</div>
+
+				<div class="flex flex-col 2xl:hidden gap-1">
+					<FSInputWrapper bind:value={$formData.i_Name} form={form} name="i_Name" label="Jméno" />
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.i_Street} form={form} name="i_Street" label="Ulice" />
+						<FSInputWrapper bind:value={$formData.i_City} form={form} name="i_City" label="Město" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.i_PostalCode} form={form} name="i_PostalCode" label="PSČ" />
+						<FSInputWrapper bind:value={$formData.i_CountryCode} form={form} name="i_CountryCode" label="Země" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.i_ICO} form={form} name="i_ICO" label="IČO" />
+						<FSInputWrapper bind:value={$formData.i_DIC} form={form} name="i_DIC" label="DIČ" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.i_IcDph} form={form} name="i_IcDph" label="IčDPH" />
+						<FormEmptyField/>
+					</FormSectionFull>
+				</div>
+			</FormContainer>
+		</div>
+
+		<div id="dodaci-adresa" class="flex flex-col gap-2 mt-4">
+			<SectionLabel name="DODACÍ ADRESA" />
+
+			<FormContainer>
+				<div class="hidden 2xl:flex flex-col gap-1">
+					<div class="flex">
+						<div class="w-2/3 pr-1">
+							<FSInputWrapper bind:value={$formData.name} form={form} name="name" label="Název" />
+						</div>
+						<div class="w-1/3 pl-2.5">
+							<FSInputWrapper bind:value={$formData.street} form={form} name="street" label="Ulice" />
+						</div>
+					</div>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.city} form={form} name="city" label="Město" />
+						<FSInputWrapper bind:value={$formData.postalCode} form={form} name="postalCode" label="PSČ" />
+						<FSInputWrapper bind:value={$formData.countryCode} form={form} name="countryCode" label="Země" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.companyName} form={form} name="companyName" label="Společnost" />
+						<FSInputWrapper bind:value={$formData.customerAddressCode} form={form} name="i_customerAddressCode" label="Číslo zákazníka" type="number" />
+						<FormEmptyField/>
+					</FormSectionFull>
+				</div>
+				
+				<div class="flex flex-col 2xl:hidden gap-1">
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.name} form={form} name="name" label="Název" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.street} form={form} name="street" label="Ulice" />
+						<FSInputWrapper bind:value={$formData.city} form={form} name="city" label="Město" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.postalCode} form={form} name="postalCode" label="PSČ" />
+						<FSInputWrapper bind:value={$formData.countryCode} form={form} name="countryCode" label="Země" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.companyName} form={form} name="companyName" label="Společnost" />
+						<FSInputWrapper bind:value={$formData.customerAddressCode} form={form} name="i_customerAddressCode" label="Číslo zákazníka" type="number" />
+					</FormSectionFull>
+				</div>
+			</FormContainer>	
+		</div>
+
+		<div id="nastaveni" class="flex flex-col gap-2 mt-4">
+			<SectionLabel name="NASTAVENÍ" />
+			
+			<FormContainer>
+				<div class="hidden 2xl:flex flex-col gap-1">
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.dueDays} form={form} name="dueDays" label="Splatnost" type="number" />
+						<FSInputWrapper bind:value={$formData.invoiceCopies} form={form} name="invoiceCopies" label="Počet faktur" type="number" />
+						<FSInputWrapper bind:value={$formData.deliveryNoteCopies} form={form} name="deliveryNoteCopies" label="Počet dodacích listů" type="number" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSDropdownWrapper bind:value={$formData.customerRank} form={form} options={customerRank} name="customerRank" label="Bonita" />
+						<FSDropdownWrapper bind:value={$formData.paymentTypeCode} form={form} options={paymentTypeCode} name="paymentTypeCode" label="Typ platby" />
+						<FSDropdownWrapper bind:value={$formData.paymentTypeCode} form={form} options={paymentTypeCode} name="paymentTypeCode" label="Typ platby" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.customerStoreCode} form={form} name="customerStoreCode" label="ID zákazníka dle zákazníka" type="number" />
+						<FSInputWrapper bind:value={$formData.customerStoreEan} form={form} name="customerStoreEan" label="EAN zákazníka" />
+						<FSCheckboxInputWrapper bind:isChecked={$formData.sendInvoiceViaEmail} bind:value={$formData.emailForInvoicing} form={form} name="sendInvoiceViaEmail" label="Zasílat faktury e-mailem" />
+					</FormSectionFull>
+					
+					<!-- <div class="w-full flex gap-2.5">
+						<div class="w-1/3 pr-2">
+							<FSCheckboxInputWrapper bind:isChecked={$formData.sendDeliveryNoteViaEmail} bind:value={$formData.emailForDeliveryNotes} form={form} name="sendDeliveryNoteViaEmail" label="Zasílat dodací listy e-mailem" />
+						</div>
+
+						<div class="flex w-2/3 gap-3.5">
+							<div class="flex w-full">
+								<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Komise" />
+								<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Vratka povolena" />
+								<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Kontrola u vratek" />
+							</div>
+
+							<div class="flex w-full">
+								<FSCheckboxWrapper bind:value={$formData.consignmentSadleEnabled} form={form} name="consignmentSaleEnabled" label="Požívat as. EANy" />
+								<FSCheckboxWrapper bind:value={$formData.consignmentSaleEndabled} form={form} name="consignmentSaleEnabled" label="Balit do KLT" />
+								<FSCheckboxWrapper bind:value={$formData.consignmentSaleEdnabled} form={form} name="consignmentSaleEnabled" label="Food/Nonfood" />
+
+							</div>
+						</div>
+					</div>   -->
+				</div>
+
+				<div class="flex flex-col 2xl:hidden gap-1">
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.dueDays} form={form} name="dueDays" label="Splatnost" type="number" />
+						<FSInputWrapper bind:value={$formData.invoiceCopies} form={form} name="invoiceCopies" label="Počet faktur" type="number" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.deliveryNoteCopies} form={form} name="deliveryNoteCopies" label="Počet dodacích listů" type="number" />
+						<FSDropdownWrapper bind:value={$formData.customerRank} form={form} options={customerRank} name="customerRank" label="Bonita" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSDropdownWrapper bind:value={$formData.paymentTypeCode} form={form} options={paymentTypeCode} name="paymentTypeCode" label="Typ platby" />
+						<FSDropdownWrapper bind:value={$formData.paymentTypeCode} form={form} options={paymentTypeCode} name="paymentTypeCode" label="Typ platby" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.customerStoreCode} form={form} name="customerStoreCode" label="ID zákazníka dle zákazníka" type="number" />
+						<FSInputWrapper bind:value={$formData.customerStoreEan} form={form} name="customerStoreEan" label="EAN zákazníka" />
+					</FormSectionFull>
+					
+					<FormSectionFull>
+						<FSCheckboxInputWrapper bind:isChecked={$formData.sendInvoiceViaEmail} bind:value={$formData.emailForInvoicing} form={form} name="sendInvoiceViaEmail" label="Zasílat faktury e-mailem" />
+						<FSCheckboxInputWrapper bind:isChecked={$formData.sendDeliveryNoteViaEmail} bind:value={$formData.emailForDeliveryNotes} form={form} name="sendDeliveryNoteViaEmail" label="Zasílat dodací listy e-mailem" />
+					</FormSectionFull>  
+
+					<!-- <div class="block md:flex gap-2">
+						<div class="flex w-full">
+							<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Komise" />
+							<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Vratka povolena" />
+						</div>
+
+						<div class="flex w-full pl-0 md:pl-1">
+							<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Kontrola u vratek" />
+							<FSCheckboxWrapper bind:value={$formData.consignmentSadleEnabled} form={form} name="consignmentSaleEnabled" label="Požívat as. EANy" />
+						</div>
+					</div>  
+
+					<div class="block md:flex  gap-2">
+						<div class="w-full flex">
+							<FSCheckboxWrapper bind:value={$formData.consignmentSaleEndabled} form={form} name="consignmentSaleEnabled" label="Balit do KLT" />
+							<FSCheckboxWrapper bind:value={$formData.consignmentSaleEdnabled} form={form} name="consignmentSaleEnabled" label="Food/Nonfood" />
+						</div>
+						<div class="w-full">
+							<FormEmptyField/>
+						</div>
+					</div> -->
+				<!-- </div>
+			</FormContainer>
+		</div>
+
+		<div id="popis" class="flex flex-col gap-2 mt-4">
+			<SectionLabel name="POPIS" />
+
+			<FormContainer>
+
+				<div class="hidden 2xl:flex flex-col gap-1">
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.invoiceCopies} form={form} name="invoiceCopies" label="Poznámka" />
+						<FSInputWrapper bind:value={$formData.dueDays} form={form} name="dueDays" label="Bližší popis"  />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.dueDays} form={form} name="dueDays" label="Zodpovědná osoba"  />
+						<FSInputWrapper bind:value={$formData.invoiceCopies} form={form} name="invoiceCopies" label="Poznámka pro balení" />
+					</FormSectionFull>
+				</div>
+
+				<div class="flex flex-col 2xl:hidden gap-1">
+					<FSInputWrapper bind:value={$formData.invoiceCopies} form={form} name="invoiceCopies" label="Poznámka" />
+					
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.dueDays} form={form} name="dueDays" label="Bližší popis"  />
+						<FSInputWrapper bind:value={$formData.dueDays} form={form} name="dueDays" label="Zodpovědná osoba"  />
+					</FormSectionFull>
+
+					<FSInputWrapper bind:value={$formData.invoiceCopies} form={form} name="invoiceCopies" label="Poznámka pro balení" />
+				</div>
+			</FormContainer>
+		</div>
+
+		<div id="oz-a-oblasti" class="flex flex-col gap-2 mt-4">
+			<SectionLabel name="OZ A OBLASTI" />
+
+			<FormContainer>
+				oz a oblasti
+			</FormContainer>
+		</div>
+
+		<div id="struktura" class="flex flex-col gap-2 mt-4">
+			<SectionLabel name="STRUKTURA" />
+
+			<FormContainer>
+				<div class="hidden 2xl:flex flex-col gap-1">
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.city} form={form} name="city" label="CustomerAddressId" />
+						<FSInputWrapper bind:value={$formData.postalCode} form={form} name="postalCode" label="CustomerNodeCode" />
+						<FSInputWrapper bind:value={$formData.countryCode} form={form} name="countryCode" label="AdressType" />
+					</FormSectionFull>
+				</div>
+
+				<div class="flex flex-col 2xl:hidden gap-1">
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.city} form={form} name="city" label="CustomerAddressId" />
+						<FSInputWrapper bind:value={$formData.postalCode} form={form} name="postalCode" label="CustomerNodeCode" />
+					</FormSectionFull>
+
+					<FormSectionFull>
+						<FSInputWrapper bind:value={$formData.countryCode} form={form} name="countryCode" label="AdressType" />
+						<FormEmptyField/>
+					</FormSectionFull>
+				</div>
+			</FormContainer>
+		</div>
+
+		<div id="aviza" class="flex flex-col gap-2 mt-4">
+			<SectionLabel name="AVÍZA" />
+
+			<FormContainer>
+				<FormSectionFull>
+					<FSInputWrapper bind:value={$formData.city} form={form} name="city" label="Email pro avíza" />
+					
+					<div class="w-full flex">
+						<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Avízo o svozu zásilky" />
+						<FSCheckboxWrapper bind:value={$formData.consignmentSadleEnabled} form={form} name="consignmentSaleEnabled" label="Avízo o expedici obj." />
+					</div>
+
+					<div class="w-full hidden 2xl:block">
+						<FormEmptyField/>
+					</div>
+				</FormSectionFull>
+			</FormContainer>
+		</div>
+	</form> --> 

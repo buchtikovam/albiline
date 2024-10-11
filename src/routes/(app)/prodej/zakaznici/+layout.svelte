@@ -29,27 +29,17 @@
 				value={`/prodej/zakaznici/detail/${$selectedRowIdStore}`}
 				on:click={() => goto(`/prodej/zakaznici/detail/${$selectedRowIdStore}`)}
 			>
-				Detail
+				Detail zákazníka
 			</Tabs.Trigger>
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/fakturacni-adresy` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/fakturacni-adresy`}
-				on:click={() => goto(`/prodej/zakaznici/fakturacni-adresy`)}
+				disabled={`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}`}
+				on:click={() => goto(`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}`)}
 			>
-				Fakturační adresy
+				Dodací adresy
 			</Tabs.Trigger>
-
-			<Tabs.Trigger
-				class="font-bold"
-				disabled={`/prodej/zakaznici/kontaktni-osoby` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/kontaktni-osoby`}
-				on:click={() => goto(`/prodej/zakaznici/kontaktni-osoby`)}
-			>
-				Kontaktní osoby
-			</Tabs.Trigger>
-		
 		</Tabs.List>
 	</Tabs.Root>
 

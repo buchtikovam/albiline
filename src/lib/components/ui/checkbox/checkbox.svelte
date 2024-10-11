@@ -14,7 +14,7 @@
 
 <CheckboxPrimitive.Root
 	class={cn(
-		"peer box-content !h-[38px] !w-[38px] shrink-0 rounded-md border bg-white border-border ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled=true]:cursor-not-allowed data-[state=checked]:bg-white data-[state=checked]:text-primary-foreground data-[disabled=true]:opacity-50",
+		"peer box-content size-5 shrink-0 rounded-md border bg-white border-border ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled=true]:cursor-not-allowed data-[state=checked]:bg-white data-[state=checked]:text-primary-foreground data-[disabled=true]:opacity-50",
 		className
 	)}
 	bind:checked
@@ -27,7 +27,7 @@
 		let:isIndeterminate
 	>
 		{#if isChecked}
-			<Check class="mx-auto"/>
+			<Check class="mx-auto size-4"/>
 		{:else if isIndeterminate}
 			<Minus class="h-3.5 w-3.5" />s
 		{/if}
