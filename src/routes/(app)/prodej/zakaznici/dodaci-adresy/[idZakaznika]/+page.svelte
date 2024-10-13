@@ -40,17 +40,14 @@
 
 
 <div class="flex h-full  max-w-[1400px]  overflow-auto">
-
-
-
-	<Accordion.Root multiple value={["item-1", "item-2", "item-3"]} class={(hasMultipleAdresses ? "block " : "hidden ") + "w-full flex flex-col "} >
+	<Accordion.Root multiple  class={(hasMultipleAdresses ? "block " : "hidden ") + "w-full flex flex-col "} >
 		<Accordion.Item value="item-1" class="w-full">
 			<div class="w-full p-4 rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left">
 					<p class="font-bold w-full text-lg">Dodací adresy zákazníka 123456789</p>
 				</Accordion.Trigger>
 
-				<Accordion.Content class="mt-4 bg-slate-50 px-2  rounded-lg">
+				<Accordion.Content class="mt-2 bg-slate-50 px-2  rounded-lg">
 					<Table.Root>
 						<Table.Body class="">
 							<Table.Row>
