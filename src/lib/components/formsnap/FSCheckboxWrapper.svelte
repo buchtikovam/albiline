@@ -9,11 +9,13 @@
 	export let label;
 </script>
 
-<div class="w-full flex flex-col gap-0.5">
+<div class="w-full ">
 	<Field {form} name={name}>
 		<Control let:attrs>
-			<InputLabel name={label} />
-			<Checkbox bind:checked={value} />
+			<div class="flex items-center gap-1.5">
+				<Checkbox bind:checked={value} />
+				<InputLabel name={label} />
+			</div>
 		</Control>
 		<FieldErrors />
 	</Field>

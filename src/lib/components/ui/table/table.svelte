@@ -11,7 +11,7 @@
 	};
 </script>
 
-<div class="relative w-full h-full" bind:this={wrapper}>
+<div class="relative w-full h-full overflow-auto" bind:this={wrapper}>
 	<table class={cn("w-full caption-bottom text-sm", className)} {...$$restProps}>
 		<slot />
 	</table>

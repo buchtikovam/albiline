@@ -14,9 +14,7 @@
 	import FormSectionFull from '$lib/components/form/FormSectionFull.svelte';
 	import FormContainer from "$lib/components/form/FormContainer.svelte";
 	import { customerRank, paymentTypeCode } from "$lib/constants/detailConstants";
-
-
-
+	import FormCheckboxSection from "$lib/components/form/FormCheckboxSection.svelte";
 
 	let hasMultipleAdresses = true;
 
@@ -33,38 +31,50 @@
 	isMobileLayoutExpandedStore.set(false);
 
 	$: console.log($formData);
-
-
 </script>
 
 
 
-<div class="flex h-full  max-w-[1400px]  overflow-auto">
-	<Accordion.Root multiple  class={(hasMultipleAdresses ? "block " : "hidden ") + "w-full flex flex-col "} >
+<div class="h-full max-w-[1600px] p-3 md:p-4 overflow-auto">
+	<Accordion.Root multiple value={["item-"]} class={(hasMultipleAdresses ? "block " : "hidden ") + "flex flex-col w-full"} >
 		<Accordion.Item value="item-1" class="w-full">
-			<div class="w-full p-4 rounded-lg">
+			<div class="w-full rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left">
-					<p class="font-bold w-full text-lg">Dodací adresy zákazníka 123456789</p>
+					<p class="font-bold w-full text-lg">Adresy zákazníka 123456789</p>
 				</Accordion.Trigger>
 
-				<Accordion.Content class="mt-2 bg-slate-50 px-2  rounded-lg">
-					<Table.Root>
-						<Table.Body class="">
+				<Accordion.Content class="mt-2 rounded-lg">
+					<Table.Root class="">
+						<Table.Header class="border-b">
+						<!-- <Table.Row> -->
+							<Table.Head>Číslo</Table.Head> 
+							<Table.Head>Jméno</Table.Head>
+							<Table.Head>Ulice</Table.Head>
+							<Table.Head>PSČ</Table.Head>
+							<Table.Head>Město</Table.Head>
+
+						<!-- </Table.Row> -->
+					</Table.Header>
+						<Table.Body class="overflow-x-auto">
+
 							<Table.Row>
-								<Table.Cell>Albert Česká republika</Table.Cell>
-								<Table.Cell>Karla Hynka Máchy 736/7</Table.Cell>
-								<Table.Cell>500 02</Table.Cell>
-								<Table.Cell>Hradec Králové</Table.Cell>
-								<Table.Cell>
+								<Table.Cell class="whitespace-nowrap">123456</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">Albi Česká republika</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">Lhota za Červeným Kostelcem 436</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">500 02</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">Červený Kostelec</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">
 									<button class="font-bold">vybrat</button>
 								</Table.Cell>
 							</Table.Row>
+
 							<Table.Row>
-								<Table.Cell>Albert Česká republika</Table.Cell>
-								<Table.Cell>Zlechov 3</Table.Cell>
-								<Table.Cell>687 10</Table.Cell>
-								<Table.Cell>Zlechov</Table.Cell>
-								<Table.Cell>
+								<Table.Cell class="whitespace-nowrap">654321</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">Albi Česká republika</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">Lhota za Červeným Kostelcem 436</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">500 02</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">Červený Kostelec</Table.Cell>
+								<Table.Cell class="whitespace-nowrap">
 									<button class="font-bold">vybrat</button>
 								</Table.Cell>
 							</Table.Row>
@@ -74,17 +84,16 @@
 			</div>
 		</Accordion.Item>
 
-		<Accordion.Item value="item-2" class="w-full overflow-auto">
-			<div class="w-full p-4 pt-0 rounded-lg ">
-				<form use:enhance class="" method="POST">
+		<Accordion.Item value="item-2" class="w-full  md:mt-4">
+			<div class="w-full rounded-lg">
+				<form use:enhance class="" method="POST" autocomplete="off">
 					<div class="xl:flex gap-4">
 						<div class="w-full">
-							<div>
+							<div class="mt-2 xl:mt-0">
 								<SectionLabel name="Detail adresy"/>
 
 								<FormContainer>
 									<FormSectionFull>
-										<FSInputWrapper bind:value={$formData.customerAddressCode} form={form} name="i_customerAddressCode" label="Číslo dodací adresy" type="number" />
 										<FSInputWrapper bind:value={$formData.name} form={form} name="name" label="Název" />
 									</FormSectionFull>
 									
@@ -99,6 +108,7 @@
 									</FormSectionFull>
 									
 									<FormSectionFull>
+										<FSInputWrapper bind:value={$formData.customerAddressCode} form={form} name="i_customerAddressCode" label="Číslo dodací adresy" type="number" />
 										<FSInputWrapper bind:value={$formData.companyName} form={form} name="companyName" label="Společnost" />
 									</FormSectionFull>
 								</FormContainer>
@@ -121,7 +131,7 @@
 						</div>
 
 						<div class="w-full">
-							<div>
+							<div class="mt-2 xl:mt-0">
 								<SectionLabel name="Nastavení"/>
 
 								<FormContainer>
@@ -145,17 +155,14 @@
 										<FSInputWrapper bind:value={$formData.customerStoreEan} form={form} name="customerStoreEan" label="EAN zákazníka" />
 									</FormSectionFull>
 									
-									<FormSectionFull>
+									<FormCheckboxSection>
 										<FSCheckboxWrapper bind:value={$formData.consignmentSaleEnabled} form={form} name="consignmentSaleEnabled" label="Komise" />
 										<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Vratka povolena" />
 										<FSCheckboxWrapper bind:value={$formData.consignmentSaldeEnabled} form={form} name="consignmentSaleEnabled" label="Kontrola u vratek" />
-									</FormSectionFull>
-
-									<FormSectionFull>
 										<FSCheckboxWrapper bind:value={$formData.consignmentSadleEnabled} form={form} name="consignmentSaleEnabled" label="Požívat as. EANy" />
 										<FSCheckboxWrapper bind:value={$formData.consignmentSaleEndabled} form={form} name="consignmentSaleEnabled" label="Balit do KLT" />
 										<FSCheckboxWrapper bind:value={$formData.consignmentSaleEdnabled} form={form} name="consignmentSaleEnabled" label="Food/Nonfood" />
-									</FormSectionFull>
+									</FormCheckboxSection>
 								</FormContainer>
 							</div>
 							
@@ -178,6 +185,41 @@
 					</div>
 				</form>
 			</div>
+		</Accordion.Item>
+
+		<Accordion.Item value="item-3" class="w-full mt-2 xl:mt-0 ">
+
+			<SectionLabel name="Kontaktní adresy"/>
+
+			<Table.Root>
+				<Table.Header class="border-b">
+					<!-- <Table.Row> -->
+						<Table.Head>Výchozí</Table.Head> 
+						<Table.Head>Aktivní</Table.Head>
+						<Table.Head>Jméno</Table.Head>
+						<Table.Head>Příjmení</Table.Head>
+						<Table.Head>Mobil</Table.Head>
+						<Table.Head>Fax</Table.Head>
+						<Table.Head>Pevná linka</Table.Head>
+						<Table.Head>Email</Table.Head>
+						<Table.Head>Poznámka</Table.Head>
+					<!-- </Table.Row> -->
+				</Table.Header>
+
+				<Table.Body class="overflow-auto">
+					<Table.Row>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+						<Table.Cell>.</Table.Cell>
+					</Table.Row>
+				</Table.Body>
+			</Table.Root>
 		</Accordion.Item>
 
 	</Accordion.Root>

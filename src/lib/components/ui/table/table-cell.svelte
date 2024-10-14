@@ -13,7 +13,7 @@
 </script>
 
 <td
-	class={cn("px-2 py-2.5 align-middle w-fit border-t", className)}
+	class={cn("px-2 py-1.5 align-middle w-fit", className)}
 	{...$$restProps}
 	on:click
 	on:keydown

@@ -40,6 +40,14 @@
 			>
 				Dodací adresy
 			</Tabs.Trigger>
+
+			<Tabs.Trigger
+				class="font-bold"
+				value={`/prodej/zakaznici/testicek`}
+				on:click={() => goto(`/prodej/zakaznici/testicek`)}
+			>
+				dnd
+			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>
 
