@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Label } from "$lib/components/ui/label";
 	import * as RadioGroup from "$lib/components/ui/radio-group";
-	import type { InputRadioGroup } from "$lib/types/components/input-dialog/inputDialog";
+	import type { InputRadioGroup } from "$lib/types/components/form/input-dialog/inputDialog";
 
 	export let item: InputRadioGroup;
 </script>

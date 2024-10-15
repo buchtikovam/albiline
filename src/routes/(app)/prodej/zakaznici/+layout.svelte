@@ -7,6 +7,9 @@
 
 	let disableTabs: boolean = true;
 	editedDataStore.subscribe(data => disableTabs = data.length > 0)
+
+	selectedRowIdStore.subscribe(data => console.log("rowId", data));
+	
 </script>
 
 
@@ -39,14 +42,6 @@
 				on:click={() => goto(`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}`)}
 			>
 				Dodací adresy
-			</Tabs.Trigger>
-
-			<Tabs.Trigger
-				class="font-bold"
-				value={`/prodej/zakaznici/testicek`}
-				on:click={() => goto(`/prodej/zakaznici/testicek`)}
-			>
-				dnd
 			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>

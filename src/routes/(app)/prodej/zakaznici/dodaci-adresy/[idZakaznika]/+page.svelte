@@ -40,7 +40,7 @@
 		<Accordion.Item value="item-1" class="w-full">
 			<div class="w-full rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left">
-					<p class="font-bold w-full text-lg">Adresy zákazníka 123456789</p>
+					<p class="font-bold w-full text-lg">Adresy zákazníka {initialData.customerNodeCode}</p>
 				</Accordion.Trigger>
 
 				<Accordion.Content class="mt-2 rounded-lg">

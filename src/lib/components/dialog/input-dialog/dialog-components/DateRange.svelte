@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { InputDialogDateRange } from '$lib/types/components/input-dialog/inputDialog';
+	import type { InputDialogDateRange } from '$lib/types/components/form/input-dialog/inputDialog';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import DatePicker from '$lib/components/date/DatePicker.svelte';
 	import LastYearButton from '$lib/components/date/range-buttons/LastYearButton.svelte';

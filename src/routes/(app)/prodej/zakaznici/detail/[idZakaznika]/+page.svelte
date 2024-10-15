@@ -7,12 +7,15 @@
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import FSInputWrapper from '$lib/components/formsnap/FSInputWrapper.svelte';
 	import { schema } from "./schema";
-	import FormContainer from "$lib/components/form/FormContainer.svelte";
-	import FormSectionFull from "$lib/components/form/FormSectionFull.svelte";
 	import FormEmptyField from "$lib/components/form/FormEmptyField.svelte";
 	import SectionLabel from "$lib/components/label/SectionLabel.svelte";
 	import FSCheckboxWrapper from '$lib/components/formsnap/FSCheckboxWrapper.svelte';
 	import FormCheckboxSection from '$lib/components/form/FormCheckboxSection.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import { zakazniciDetailFormDef } from '$lib/data/autoform/zakaznici-detail';
+	import FormContainer from '$lib/components/form/FormContainer.svelte';
+	import FormSectionFull from '$lib/components/form/FormSectionFull.svelte';
+
 
 	export let data: { superForms: any, response: CustomerData};
 	const initialData = data.response.item || {};
@@ -27,11 +30,12 @@
 
 
 <div class="h-full max-w-[1600px] overflow-auto p-3 md:p-4">
-	<p class="font-bold w-full text-lg mb-2 md:mb-4">Detail zákazníka 123456789</p>
+	<p class="font-bold w-full text-lg mb-2 md:mb-4">Detail zákazníka {initialData.customerNodeCode}</p>
 
 	<form use:enhance method="POST" autocomplete="off">
 		<div class="xl:flex gap-4">
 			<div class="w-full">
+
 				<div>
 					<SectionLabel name="Název sekce"/>
 

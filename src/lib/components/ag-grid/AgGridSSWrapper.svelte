@@ -20,6 +20,7 @@
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
 	import { addToEditedData } from "$lib/utils/addToEditedData";
 	import { generateRow } from "$lib/utils/generateRow";
+	import { goto } from "$app/navigation";
 	
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -61,9 +62,19 @@
 		},
 
 		onRowSelected: (event) => {
-			console.log(event.data.customerAddressCode);
+			selectedRowIdStore.set(event.data.customerNodeCode)
+		},
 
-			selectedRowIdStore.set(event.data.customerAddressCode)
+		onCellDoubleClicked(event) {
+			console.log(event.column.colId);
+			console.log(event.data.customerNodeCode);
+			selectedRowIdStore.set(event.data.customerNodeCode)
+			
+			if (get(editedDataStore).length === 0) {
+				goto(`/prodej/zakaznici/detail/${event.data.customerNodeCode}`)
+			} else {
+				customToast("Warning", "Error")
+			}
 		},
 
 		columnDefs: columnDefinitions,

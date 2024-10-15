@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { page } from '$app/stores';
-	import type { InputDialog, InputDialogItem } from '$lib/types/components/input-dialog/inputDialog';
+	import type { InputDialog, InputDialogItem } from '$lib/types/components/form/input-dialog/inputDialog';
 	import { onMount } from 'svelte';
 	import { customToast } from '$lib/utils/customToast';
 	import DatePicker from '$lib/components/date/DatePicker.svelte';
