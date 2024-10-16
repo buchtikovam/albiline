@@ -1,20 +1,21 @@
 <script lang="ts">
-	import * as Table from "$lib/components/ui/table";
-	import * as Accordion from "$lib/components/ui/accordion";
-	import type { CustomerData } from "$lib/types/tables/zakaznici";
+	import { customerRank, paymentTypeCode } from "$lib/constants/detailConstants";
+	import { isMobileLayoutExpandedStore } from "$lib/stores/pageStore";
+	import { showFulltextSearchStore } from "$lib/stores/tableStore";
 	import { superForm } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { schema } from "./schema";
-	import { showFulltextSearchStore } from "$lib/stores/tableStore";
-	import { isMobileLayoutExpandedStore } from "$lib/stores/pageStore";
-	import FSInputWrapper from '$lib/components/formsnap/FSInputWrapper.svelte';
+	import type { CustomerData } from "$lib/types/tables/zakaznici";
+	import FormCheckboxSection from "$lib/components/form/FormCheckboxSection.svelte";
 	import FSDropdownWrapper from '$lib/components/formsnap/FSDropdownWrapper.svelte';
 	import FSCheckboxWrapper from '$lib/components/formsnap/FSCheckboxWrapper.svelte';
-	import SectionLabel from "$lib/components/label/SectionLabel.svelte";
+	import FSInputWrapper from '$lib/components/formsnap/FSInputWrapper.svelte';
 	import FormSectionFull from '$lib/components/form/FormSectionFull.svelte';
 	import FormContainer from "$lib/components/form/FormContainer.svelte";
-	import { customerRank, paymentTypeCode } from "$lib/constants/detailConstants";
-	import FormCheckboxSection from "$lib/components/form/FormCheckboxSection.svelte";
+	import SectionLabel from "$lib/components/label/SectionLabel.svelte";
+	import * as Accordion from "$lib/components/ui/accordion";
+	import * as Table from "$lib/components/ui/table";
+	import { Checkbox } from "$lib/components/ui/checkbox";
 
 	let hasMultipleAdresses = true;
 
@@ -35,11 +36,11 @@
 
 
 
-<div class="h-full max-w-[1600px] p-3 md:p-4 overflow-auto">
+<div class="h-full max-w-[1850px] p-3 md:p-4 overflow-auto">
 	<Accordion.Root multiple value={["item-"]} class={(hasMultipleAdresses ? "block " : "hidden ") + "flex flex-col w-full"} >
 		<Accordion.Item value="item-1" class="w-full">
 			<div class="w-full rounded-lg">
-				<Accordion.Trigger class="hover:underline-none text-left">
+				<Accordion.Trigger class="hover:underline-none text-left gap-1">
 					<p class="font-bold w-full text-lg">Adresy zákazníka {initialData.customerNodeCode}</p>
 				</Accordion.Trigger>
 
@@ -194,7 +195,7 @@
 			<Table.Root>
 				<Table.Header class="border-b">
 					<!-- <Table.Row> -->
-						<Table.Head>Výchozí</Table.Head> 
+						<Table.Head class="w-12">Výchozí</Table.Head> 
 						<Table.Head>Aktivní</Table.Head>
 						<Table.Head>Jméno</Table.Head>
 						<Table.Head>Příjmení</Table.Head>
@@ -208,7 +209,9 @@
 
 				<Table.Body class="overflow-auto">
 					<Table.Row>
-						<Table.Cell>.</Table.Cell>
+						<Table.Cell class="flex justify-center">
+							<Checkbox/>
+						</Table.Cell>
 						<Table.Cell>.</Table.Cell>
 						<Table.Cell>.</Table.Cell>
 						<Table.Cell>.</Table.Cell>
@@ -221,7 +224,6 @@
 				</Table.Body>
 			</Table.Root>
 		</Accordion.Item>
-
 	</Accordion.Root>
 </div>
 

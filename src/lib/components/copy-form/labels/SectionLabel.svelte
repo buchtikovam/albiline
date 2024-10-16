@@ -3,4 +3,4 @@
 </script>
 
 
-<p class="text-albi-500 pb-2 font-bold">{name}</p>
+<p class="text-albi-500 mb-0 font-bold">{name}</p>

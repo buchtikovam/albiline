@@ -1,54 +1,26 @@
 <script lang="ts">
 	import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
-	import SectionLabel from "../label/SectionLabel.svelte";
-	import FormSectionFull from "$lib/components/form/FormSectionFull.svelte";
-	import FSInputWrapper from '$lib/components/formsnap/FSInputWrapper.svelte';
-	import FormContainer from "$lib/components/form/FormContainer.svelte";
-	import { get } from "svelte/store";
+	import DndColumn from "../copy-form/DndColumn.svelte";
+	import type { CustomerData } from "$lib/types/tables/zakaznici";
+	import { writable, type Writable } from "svelte/store";
 
 	export let autoform: AutoForm;
-	export let form;
-	export let formValues;
+	export let formValues: Writable<CustomerData>;
 
-	console.log(form);
-	
+	let autoformWritable = writable(autoform);
 
-	const { enhance } = form;
+	let colDef: AutoForm;
+	autoformWritable.subscribe((data) => {
+		colDef = data;
+	})
 
+	console.log(Object.values(autoform));
 </script>
 
-<form use:enhance method="POST" autocomplete="off">
-	<div class="xl:flex gap-4 h-full">
-		<div class="w-full">
-			{#each autoform.formDef as section (section.id)}
-				<div>
-					<SectionLabel name={section.label} />
-
-					<FormContainer>
-						{#each section.sectionDef as row (row.id)}
-							{#if row.rowType === "full"}
-								<FormSectionFull>
-									{#each row.rowInputs as input (input.variableName)}
-										<FSInputWrapper bind:value={$formValues[input.variableName]} form={form} name={input.variableName} label={input.label}/>
-									{/each}
-									
-
-								</FormSectionFull>
-							{/if}
-							
-						{/each}
-					</FormContainer>
-
-					
-					
-
-				</div>	
-			{/each}
-			
-
-
-
-
-		</div>
+<form method="POST" autocomplete="off">
+	<div class="w-full gap-4 xl:flex ">
+		{#each Object.values(colDef) as items}
+			<DndColumn bind:items={items} bind:formValues={formValues}/>
+		{/each}
 	</div>
 </form>

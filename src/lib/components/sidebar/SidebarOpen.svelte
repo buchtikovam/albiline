@@ -30,7 +30,7 @@
 
 						<Accordion.Item value={item.value}>
 							<ContextMenu.Trigger>
-								<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
+								<Accordion.Trigger class="hover:bg-muted/50 rounded-md flex-1">
 									<div
 										class="flex text-sm font-bold w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black">
 										<svelte:component this={item.icon} />
@@ -57,7 +57,7 @@
 												<Accordion.Item value={secondChild.value}>
 													<ContextMenu.Trigger>
 														<Accordion.Trigger
-															class="hover:bg-muted/50 rounded-md">
+															class="hover:bg-muted/50 rounded-md flex-1">
 															<div
 																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-albi-950 hover:text-black">
 																<a

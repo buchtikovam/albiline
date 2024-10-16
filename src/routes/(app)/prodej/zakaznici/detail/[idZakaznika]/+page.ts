@@ -1,18 +1,16 @@
-import type { PageLoad } from '../../detail/[idZakaznika]/$types';
+import type { PageLoad } from "./$types";
 
 
-export const load: PageLoad = async ({ data, params, fetch }) => {
-	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.idZakaznika}`)
+export const load: PageLoad = async ({ params, fetch }) => {
+	const res = await fetch(`http://localhost:3000/autoforms`)
 
 	if (res.ok) {		
 		return {
-			superForms: data,
 			response: await res.json()
 		};
 	}
 	
 	return {
-		superForms: data, 
 		response: {}
 	}
 };

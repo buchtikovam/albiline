@@ -4,7 +4,7 @@
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
-	import MainDialog from '$lib/components/dialog/ribbon-dialogs/MainDialog.svelte';
+	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
 	import { isMobileStore, isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
 	import { onMount } from 'svelte';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';

@@ -1,4 +1,5 @@
 import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
+import Pencil from "lucide-svelte/icons/pencil";
 
 export const zakazniciDetailFormDef: AutoForm = 
 {
@@ -202,12 +203,13 @@ export const zakazniciDetailFormDef: AutoForm =
 		},
 	],
 
-
-
 	col2 : [
 		{ // ?section 5
 			id: 5,
 			label: "Fakturační údaje",
+			hasDialog: true,
+			dialogId: "customer-detail-invoice-addresses",
+			dialogIcon: Pencil,
 			isOpen: true,
 			sectionDef: [
 				{ // ?row 1
@@ -367,7 +369,7 @@ export const zakazniciDetailFormDef: AutoForm =
 		},
 
 		{ // ?section 8
-			id: 4,
+			id: 8,
 			label: "Sekce 8",
 			isOpen: true,
 			sectionDef: [
@@ -405,4 +407,6 @@ export const zakazniciDetailFormDef: AutoForm =
 			]
 		},
 	],
+
+	// col3 : []
 }
