@@ -1,6 +1,80 @@
 import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
 import Pencil from "lucide-svelte/icons/pencil";
 
+// "customers": [
+// 	"details": [
+// 		"form": [
+// 			"section_1": [
+// 				"label": "sekce první",
+// 				"fields": [
+// 					"first_name": "Jméno",
+// 				],
+// 			]
+// 		]
+// 	]
+// ]
+
+
+//
+// const form = [
+// 	"section_1": [
+// 		"first_name": [
+// 			size: 3,
+// 			schema: z.string().max(250),
+// 		],
+// 		"last_name": [
+// 			size: 3,
+// 			schema: z.enum(["Salmon", "Tuna", "Trout"]),
+// 		],
+// 		"stores": [
+// 			size: 3,
+// 			schema: z.string().required(),
+// 		],
+// 	},
+// 	"section_2": [
+// 		"order_count": [
+// 			size: 3,
+// 			schema: z.number().max(250),
+// 		],
+// 		"last_name": [
+// 			size: 3,
+// 			schema: z.string().max(250),
+// 		],
+// 	},
+// };
+//
+//
+// const form = z.object({
+// 	z.discriminatedUnion("section_1", [
+// 		first_name: z.string().max(250).
+// 	})
+// })
+//
+// //
+// // //forms[0].["first_name"]
+// //
+// // foreach(sections as seciton => key)  {
+// // 	foreach(setions.fields as field => $key) {
+// // 		// key je "first_name"
+// // 		// field je [size:3,schema:Z]
+// //
+//
+// stores = wawait fetch('api/stores').json();
+//
+// field.schema.enum(stores)
+//
+// field.schema.optins
+
+
+// 		<Input on:change="field.schema.parse($this.value)"
+// 	}
+//
+// }
+
+// {
+// 	first_name: "pepík"
+// }
+
 export const zakazniciDetailFormDef: AutoForm = 
 {
 	col1 : [

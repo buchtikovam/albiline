@@ -2,9 +2,9 @@
 	import {dndzone} from 'svelte-dnd-action';
 	import type { AutoFormSection } from "$lib/types/components/form/autoform/autoform";
 	import SectionLabel from './labels/SectionLabel.svelte';
-	import FormContainer from './containers/FormContainer.svelte';
-	import FormSectionFull from '../form/FormSectionFull.svelte';
 	import InputWrapper from './inputs/InputWrapper.svelte';
+	import FormContainer from './containers/FormContainer.svelte';
+	import FormInputSection from './containers/FormInputSection.svelte';
 	import type { CustomerData } from '$lib/types/tables/zakaznici';
 	import type { Writable } from 'svelte/store';
 	import * as Accordion from "$lib/components/ui/accordion";
@@ -60,7 +60,7 @@
 						<FormContainer>
 							{#each item.sectionDef as row (row.id)}
 								{#if row.rowType === "full"}
-									<FormSectionFull>
+									<FormInputSection>
 										{#each row.rowInputs as input}
 											{#if input.type === "text" || input.type === "number"}
 												<InputWrapper bind:value={$formValues[input.variableName]} label={input.label} type={input.type} />
@@ -74,7 +74,7 @@
 											<EmptyField/>
 											{/if}
 										{/each}
-									</FormSectionFull>
+									</FormInputSection>
 								{/if}
 
 								{#if row.rowType === "checkbox"}

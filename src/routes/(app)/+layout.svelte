@@ -10,7 +10,14 @@
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
-    let innerWidth: number;
+	// PWA
+	import { pwaInfo } from 'virtual:pwa-info';
+	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
+	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
+
+
+
+	let innerWidth: number;
 
     $: if (innerWidth < 768) {
 		isMobileStore.set(true)
@@ -46,9 +53,22 @@
 	})
 </script>
 
+<svelte:head>
+	{#if pwaAssetsHead.themeColor}
+		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />
+	{/if}
+	{#each pwaAssetsHead.links as link}
+		<link {...link} />
+	{/each}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html webManifest}
+</svelte:head>
 
 <svelte:window bind:innerWidth/>
 
+{#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}
+	<ReloadPrompt />
+{/await}
 
 <Toaster
 	position={isMobile ? "top-center" : "bottom-right"}

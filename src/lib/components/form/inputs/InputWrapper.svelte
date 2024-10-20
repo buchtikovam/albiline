@@ -1,5 +1,5 @@
 <script lang="ts">
-  	import InputLabel from '$lib/components/copy-form/labels/InputLabel.svelte';
+  	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
  
 	export let value: string|number;
 	export let label;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
-	import DndColumn from "../copy-form/DndColumn.svelte";
+	import DndColumn from "../form/DndColumn.svelte";
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
 	import { writable, type Writable } from "svelte/store";
 
