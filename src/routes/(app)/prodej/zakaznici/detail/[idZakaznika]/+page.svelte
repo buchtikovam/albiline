@@ -3,8 +3,8 @@
 	import { writable } from 'svelte/store';
 	import * as Table from "$lib/components/ui/table";
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
-	import AutoForm from '$lib/components/copy-form/AutoForm.svelte';
-	import SectionLabel from '$lib/components/copy-form/labels/SectionLabel.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 
 	export let data: { response: CustomerData };
 
