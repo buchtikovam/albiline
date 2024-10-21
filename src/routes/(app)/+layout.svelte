@@ -76,7 +76,6 @@
 />
 
 <div class="h-dvh w-dvh bg-albi-50">
-	
 	<div class="flex h-dvh flex-col">
 		<header>
 			<Header />

@@ -10,8 +10,6 @@ export const params: InputDialog = [
 		id: "param1",
 		value: "test"
 	},
-	//
-	// // NUMBER
 	{
 		name: "Number",
 		type: "number",

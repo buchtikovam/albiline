@@ -14,9 +14,9 @@
 		onRegistered(r) {
 			if (autoreload) {
 				r && setInterval(() => {
-					console.log('Checking for sw update')
+					// console.log('Checking for sw update')
 					r.update()
-				}, 1000 /* 1s for testing purposes */)
+				}, 4000 /* 4s for testing purposes */)
 			} else {
 				console.log(`SW Registered: ${r}`)
 			}

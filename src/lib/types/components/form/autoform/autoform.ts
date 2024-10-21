@@ -24,5 +24,6 @@ type AutoFormRow = {
 type AutoFormInput = {
 	label?: string,
 	type: "text" | "number" | "checkbox" | "empty",
-	variableName?: string
+	variableName?: string,
+	schema: z.ZodType<T>
 }

@@ -9,9 +9,9 @@ export const editedDataStore: Writable<any[]> = writable([]);
 
 export const deletedColumnsStore: Writable<any[]> = writable([]);
 
+export const setColDefToDefault: Writable<boolean> = writable(false)
 
-
-
+export const defaultColDef = writable([])
 
 
 

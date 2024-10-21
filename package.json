@@ -64,6 +64,7 @@
 		"lucide-svelte": "^0.373.0",
 		"mode-watcher": "^0.3.0",
 		"qrcode": "^1.5.4",
+		"svelte-i18n": "^4.0.1",
 		"svelte-persisted-store": "^0.9.2",
 		"svelte-sonner": "^0.3.24",
 		"svelte-tiny-virtual-list": "^2.1.2",

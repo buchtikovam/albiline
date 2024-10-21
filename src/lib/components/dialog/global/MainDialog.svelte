@@ -11,7 +11,7 @@
 		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
 	*/
 
-	let currentDialog: GlobalDialogOptions | undefined = $openedDialogStore;
+	let currentDialog: GlobalDialogOptions | undefined = undefined;
 
 	openedDialogStore.subscribe((dialog) => {
 		console.log(dialog);
@@ -20,6 +20,7 @@
 </script>
 
 
+<!-- DETAIL DIALOGY -->
 
 {#if currentDialog === "customer-detail-invoice-addresses"}
 	<CustomerDetailInvoiceAdressesDialog />

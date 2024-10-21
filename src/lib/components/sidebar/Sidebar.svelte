@@ -6,7 +6,7 @@
 		activeCategoryStore
 	} from '$lib/stores/sidebarStore';
 	import { get } from 'svelte/store';
-	import { allItems } from '$lib/data/componentDef/sidebar';
+	import { allItems } from '$lib/data/components/sidebar';
 	import { Input } from '$lib/components/ui/input';
 	import { onMount } from 'svelte';
 	import { filterItemsSearch } from '$lib/utils/sidebar/filterItemsSearch';

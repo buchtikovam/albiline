@@ -63,7 +63,7 @@
 									<FormInputSection>
 										{#each row.rowInputs as input}
 											{#if input.type === "text" || input.type === "number"}
-												<InputWrapper bind:value={$formValues[input.variableName]} label={input.label} type={input.type} />
+												<InputWrapper bind:value={$formValues[input.variableName]} label={input.label} type={input.type} schema={input.schema}/>
 											{/if}
 
 											{#if input.type === "checkbox"}

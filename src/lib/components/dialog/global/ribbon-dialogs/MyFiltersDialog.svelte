@@ -11,7 +11,7 @@
 	import { onMount } from 'svelte';
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import X from 'lucide-svelte/icons/x';
-	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
+	import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	/*

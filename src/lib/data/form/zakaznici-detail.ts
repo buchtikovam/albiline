@@ -1,6 +1,7 @@
 import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
 import Pencil from "lucide-svelte/icons/pencil";
 
+
 // "customers": [
 // 	"details": [
 // 		"form": [
@@ -75,8 +76,17 @@ import Pencil from "lucide-svelte/icons/pencil";
 // 	first_name: "pepík"
 // }
 
-export const zakazniciDetailFormDef: AutoForm = 
-{
+// export const zakazniciDetailFormDef: AutoForm = [
+// 	"Sekce 1" : {
+// 		id: 1,
+
+
+// 	},
+
+// ]
+
+
+export const zakazniciDetailFormDef: AutoForm = {
 	col1 : [
 		{ // ?section 1
 			id: 1,

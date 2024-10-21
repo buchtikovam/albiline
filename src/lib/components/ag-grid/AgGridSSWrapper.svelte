@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, deletedColumnsStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, defaultColDef, deletedColumnsStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, setColDefToDefault } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -160,6 +160,7 @@
 
 
 	onMount(() => {
+		defaultColDef.set(columnDefinitions)
 		gridApi = createGrid(gridContainer, gridOptions);
 		gridApi.setGridOption('serverSideDatasource', datasource);
 
@@ -177,6 +178,8 @@
 				preset.forEach(obj => {
 					columnOrder.push({ colId: obj.colId})
 				})
+
+				console.log(columnOrder);
 				
 				gridApi.setGridOption("columnDefs", preset)
 
@@ -186,6 +189,29 @@
 				});
 			}
 		}) 
+
+		setColDefToDefault.subscribe((data) => {
+			if (data === true) {
+				let columnOrder: ColumnOrder = [];
+				let defaultColumnDef = get(defaultColDef);
+
+				defaultColumnDef.forEach(obj => {
+					columnOrder.push({ colId: obj.field});
+				});
+
+				console.log(defaultColumnDef);
+				console.log(columnOrder);
+
+				gridApi.setGridOption("columnDefs", defaultColumnDef);
+
+				gridApi.applyColumnState({
+					state: columnOrder,
+					applyOrder: true
+				});
+
+				setColDefToDefault.set(false);
+			}
+		})
 
 		if (get(presetStore)?.length > 0) {										
 			let columnOrder: ColumnOrder = []
@@ -202,8 +228,6 @@
 			});
 		}
 	})
-
-	// TODO: refresh bug - adding to last row ? 
 
 	ribbonActionStore.subscribe((action) => {
 		if (action === RibbonActionEnum.NEW) { 
@@ -306,7 +330,7 @@
 
 		if (action === RibbonActionEnum.SAVE_FILTERS) {
 			if (Object.keys(gridApi.getFilterModel()).length > 0) {
-				openedDialogStore.set("save-filters")
+				openedDialogStore.set("ribbon-save-filters")
 				currentColumnFiltersStore.set(gridApi.getFilterModel())
 			} else {
 				customToast("InfoToast", "Nemáte žádné filtry k uložení.")
@@ -314,18 +338,18 @@
 		}
 
 		if (action === RibbonActionEnum.MY_FILTERS) {
-			openedDialogStore.set("my-filters")
+			openedDialogStore.set("ribbon-my-filters")
 		}
 
 		if(action === RibbonActionEnum.SAVE_PRESET) {
-			openedDialogStore.set("save-preset");
+			openedDialogStore.set("ribbon-save-preset");
 
 			console.log(gridApi.getColumnDefs());
 			presetStore.set(gridApi.getColumnDefs() || [])
 		}
 
 		if(action === RibbonActionEnum.MY_PRESETS) {
-			openedDialogStore.set("my-presets");
+			openedDialogStore.set("ribbon-my-presets");
 		}
 
 		ribbonActionStore.set(undefined)

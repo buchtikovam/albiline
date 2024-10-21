@@ -1,20 +1,27 @@
 <script lang="ts">
+	import { z } from "zod";
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
  
 	export let value: string|number;
+	export let schema: z.ZodType<T>;
 	export let label;
 	export let type = 'text'; 
 
-	let errorMessage = ""
+	let errorMessage = "";
+	let hasError: boolean = false;
 
-	function validateText(ev: Event) {
+
+	function validateSchema(ev: Event) {
 		const inputValue = ev.target?.value;
 
-		if (inputValue.length < 3) {
-			errorMessage = "test"
-		} else {
-			errorMessage = " "
-		}
+		try {
+			schema.parse(inputValue);
+			hasError = false;
+			console.log("yay");
+		} catch (e) {
+			console.log(e);
+			hasError = true;
+		}	
 	}
 </script>
 
@@ -27,9 +34,9 @@
 		{#if type = "text"}
 			<input 
 				type="text"
-				on:input={(e) => validateText(e)}
+				on:input={(e) => validateSchema(e)}
 				bind:value 
-				class="h-[36px] w-full border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500"
+				class={`${hasError ? "focus-visible:border-red-500" : ""} h-[36px] w-full border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
 			>
 		{/if}
 

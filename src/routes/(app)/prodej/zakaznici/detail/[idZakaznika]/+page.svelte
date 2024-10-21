@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { zakazniciDetailFormDef } from '$lib/data/autoform/zakaznici-detail';
+	import { zakazniciDetailFormDef } from '$lib/data/form/zakaznici-detail';
 	import { writable } from 'svelte/store';
 	import * as Table from "$lib/components/ui/table";
 	import type { CustomerData } from "$lib/types/tables/zakaznici";

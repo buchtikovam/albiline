@@ -17,13 +17,13 @@ export default defineConfig({
 				config: true,
 			},
 			manifest: {
-				short_name: 'Albiline',
-				name: 'Albiline',
+				short_name: 'Albiline 2',
+				name: 'Albiline 2',
 				start_url: '/',
 				scope: '/',
 				display: 'standalone',
-				theme_color: "#FF0000",
-				background_color: "#FF0000",
+				theme_color: "#073545",
+				background_color: "#073545",
 			},
 			injectManifest: {
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']

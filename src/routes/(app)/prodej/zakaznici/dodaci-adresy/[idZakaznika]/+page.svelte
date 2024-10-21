@@ -5,9 +5,8 @@
 	import * as Table from "$lib/components/ui/table";
 	import { Checkbox } from "$lib/components/ui/checkbox";
 	import { writable } from 'svelte/store';
-	import { zakazniciDetailFormDef } from '$lib/data/autoform/zakaznici-detail';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { zakazniciDodaciAdresyFormDef } from '$lib/data/autoform/zakaznici-dodaci-adresy.js';
+	import { zakazniciDodaciAdresyFormDef } from '$lib/data/form/zakaznici-dodaci-adresy.js';
 
 	let hasMultipleAdresses = true;
 

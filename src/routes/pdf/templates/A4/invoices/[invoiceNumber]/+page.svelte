@@ -2,9 +2,10 @@
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
 	import type { InvoiceData, InvoiceItem } from '$lib/types/pdfs/invoiceData';
 	import { formatDate } from '$lib/utils/formatting/formatDate';
-	import { currencyCZ } from '$lib/constants/currency';
+	import { currencyCZ } from '$lib/constants/currency-formatters/currency-cz';
 	import { getVAT } from '$lib/utils/getVAT';
-	import { albiDetails } from '$lib/constants/albiDetails';
+	import { albiInfo } from '$lib/constants/info/albiInfo';
+	import { A4 } from '$lib/constants/pdf/pageSizes';
 
 	export let data: { response: InvoiceData, qrCode: string };
 
@@ -42,8 +43,8 @@
 
 
 <div 
-	style="width: 794px; height: 1123px"
-	class="m-auto bg-white "
+	style={`width: ${A4.width}px; height: ${A4.height}px`}
+	class="m-auto bg-white"
 >
     <header class="w-full">
 		<div class="px-8 py-8" > <!-- header -->
@@ -68,11 +69,11 @@
 		<div class="w-full mb-8 flex px-8 text-sm text-slate-950"> <!-- dodavatel + odběratel info -->
 			<div class="w-1/3">
 				<h1 class="text-slate-500">DODAVATEL</h1>
-				<h1 class="font-bold">{albiDetails.name}</h1>
-				<p>{albiDetails.street},</p>
-				<p>{albiDetails.city}</p>
-				<p>IČ: {albiDetails.ič}</p>
-				<p>DIČ: {albiDetails.dič}</p>
+				<h1 class="font-bold">{albiInfo.name}</h1>
+				<p>{albiInfo.street},</p>
+				<p>{albiInfo.city}</p>
+				<p>IČ: {albiInfo.ič}</p>
+				<p>DIČ: {albiInfo.dič}</p>
 			</div>
 
 			<div class="w-1/3 pl-8">
@@ -123,7 +124,7 @@
 					</div>
 
 					<div>
-						<p>{ `${albiDetails.accountNumber}/${albiDetails.bankCode}`}</p>
+						<p>{ `${albiInfo.accountNumber}/${albiInfo.bankCode}`}</p>
 						<p>{ header.documentCode || "{{paymentReference}}"}</p>
 						<p>{ header.zpusob_platba || "{{zpusob_platba}}"}</p>
 					</div>
@@ -228,7 +229,7 @@
         <div class="w-full px-8 pb-8 pt-4 text-xs text-center text-slate-950 leading-4">
 			<p>Děkujeme Vám za objednávku a těšíme se na další spolupráci. </p>
 			<p class="text-[10px] text-slate-500">Kontakt: {header.dealer || "{{dealer}}"}</p>
-			<p class="text-[10px] text-slate-500">{albiDetails.or}</p>
+			<p class="text-[10px] text-slate-500">{albiInfo.or}</p>
 		</div>
     </footer>
 </div>

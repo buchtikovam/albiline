@@ -249,7 +249,7 @@ export const zakazniciColDef = [
 		cellDataType: "text",
 		cellEditor: 'agSelectCellEditor',
 		cellEditorParams: {
-            values: [], // TODO
+            values: [], 
         },
 		blockEditable: true,
 		editable: false,

@@ -8,7 +8,7 @@
 	import { activeCategoryStore, favoriteItemsStore, recentItemsStore } from '$lib/stores/sidebarStore';
 	import { filterItemsCategory } from '$lib/utils/sidebar/filterItemsCategory';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
-	import { allItems } from '$lib/data/componentDef/sidebar';
+	import { allItems } from '$lib/data/components/sidebar';
 	import MobileSidebarItems from './MobileSidebarItems.svelte';
 	import { buttonBorderSwitch } from '$lib/utils/sidebar/buttonBorderSwitch';
 	import { onMount } from 'svelte';

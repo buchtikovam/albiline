@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { selectedFilterStore, selectedPresetStore } from '$lib/stores/tableStore';
+	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/stores/tableStore';
 	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';
 	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/customToast';
-	import { writable, type Writable } from 'svelte/store';
+	import { get, writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import X from 'lucide-svelte/icons/x';
-	import WarningDialog from '$lib/components/dialog/warning-dialog/WarningDialog.svelte';
+	import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	/*
@@ -147,9 +147,19 @@
 		deleteConsent.set(false);
 	});
 
+	function setDefault() {
+		setColDefToDefault.set(true)
+		ribbonActionStore.set(undefined);
+		dialogOpen = false;
+		setTimeout(() => {
+			openedDialogStore.set(undefined);
+		}, 250);
+	}
 
 	onMount(() => {
 		dialogOpen = true;
+		console.log("open");
+		
 		fetchPresets()
 	});
 </script>
@@ -176,10 +186,17 @@
 			{/if}
 
 			<div>
+				<button
+					class="hover:bg-muted/70 rounded-md text-left text-sm w-full hover:text-primary px-1.5 py-2"
+					on:click={setDefault}
+				>
+					Výchozí
+				</button>
+				
 				{#each presets as preset, index (preset.id)}
 					<div
 						role="listitem"
-						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
+						class=" flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
 					>
 						{#if isEditing && currentEditedId === preset.id}
 							<form
