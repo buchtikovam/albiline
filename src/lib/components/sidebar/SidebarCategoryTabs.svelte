@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { activeCategoryStore } from '$lib/stores/sidebarStore';
 	import * as Tabs from "$lib/components/ui/tabs";
+	import TabSeparator from '../tabs/TabSeparator.svelte';
 
 	let value = "all";
 	export let color: "primary" | "secondary" = "secondary";
@@ -15,9 +16,13 @@
 			Všechny
 		</Tabs.Trigger>
 
+		<TabSeparator color={color}/>
+
 		<Tabs.Trigger value="recent" class="font-bold">
 			Nedávné
 		</Tabs.Trigger>
+
+		<TabSeparator color={color}/>
 
 		<Tabs.Trigger value="favorite" class="font-bold">
 			Oblíbené

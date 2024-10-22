@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { zakazniciDetailFormDef } from '$lib/data/form/zakaznici-detail';
+	import { customerDetailFormDef } from '$lib/data/form/zakaznici/customerDetail';
 	import { writable } from 'svelte/store';
 	import * as Table from "$lib/components/ui/table";
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
@@ -15,7 +15,7 @@
 <div class="h-full max-w-[1850px] overflow-auto p-3 md:p-4">
 	<p class="font-bold w-full text-lg mb-2 md:mb-4">Detail zákazníka 123</p>
 
-	<AutoForm autoform={zakazniciDetailFormDef} bind:formValues/>
+	<AutoForm autoform={customerDetailFormDef} bind:formValues/>
 
 	<div>
 		<SectionLabel name="Kontaktní adresy"/>

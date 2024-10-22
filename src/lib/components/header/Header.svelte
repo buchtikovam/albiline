@@ -12,6 +12,7 @@
 	import { page } from '$app/stores';
 	import Input from '../ui/input/input.svelte';
 	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
+	import TabSeparator from '../tabs/TabSeparator.svelte';
 	
 	/*
 	Header komponenent s hlavními taby a avatarem
@@ -99,29 +100,31 @@
 
             <!-- Taby otevřené uživatelem -->
             {#each storedTabs as tab}
-            <button
-                on:mouseenter={() => preloadData(tab.url)}
-                class="flex"
-            >
-                <Tabs.Trigger
-					value={tab.url}
-					on:click={() => goto(tab.url)}
+				<TabSeparator/>
+
+				<button
+					on:mouseenter={() => preloadData(tab.url)}
+					class="flex"
 				>
-					<button
-						class="flex items-center font-bold"
-						on:mouseenter={() => showTabClosingButton(tab)}
-						on:mouseleave={() => hideTabClosingButton(tab)}
+					<Tabs.Trigger
+						value={tab.url}
+						on:click={() => goto(tab.url)}
 					>
-					{tab.name}
 						<button
-							on:click={() => removeTab(tab.name)}
-							class={`${tab.closingState}`}
-							>
-							<X class="ml-1 text-red-600 size-3.5"/>
+							class="flex items-center font-bold"
+							on:mouseenter={() => showTabClosingButton(tab)}
+							on:mouseleave={() => hideTabClosingButton(tab)}
+						>
+						{tab.name}
+							<button
+								on:click={() => removeTab(tab.name)}
+								class={`${tab.closingState}`}
+								>
+								<X class="ml-1 text-red-600 size-3.5"/>
+							</button>
 						</button>
-					</button>
-				</Tabs.Trigger>
-			</button>
+					</Tabs.Trigger>
+				</button>
 			{/each}
 		</Tabs.List>
 	</Tabs.Root>

@@ -2,7 +2,7 @@ import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
 import { z } from "zod";
 
 
-export const zakazniciDodaciAdresyFormDef: AutoForm =
+export const addressDetailFormDef: AutoForm =
 	{
 		col1 : [
 			{ // ?section 1

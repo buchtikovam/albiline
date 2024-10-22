@@ -86,7 +86,7 @@ import Pencil from "lucide-svelte/icons/pencil";
 // ]
 
 
-export const zakazniciDetailFormDef: AutoForm = {
+export const customerDetailFormDef: AutoForm = {
 	col1 : [
 		{ // ?section 1
 			id: 1,

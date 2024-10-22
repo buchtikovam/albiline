@@ -16,6 +16,7 @@ export const zakazniciColDef = [
 		checkboxSelection: true,
 		maxWidth: 34,
 	},
+	
 	{ 
 		field: "customerAddressCode",
 		headerName: "ID zákazníka",
@@ -227,12 +228,18 @@ export const zakazniciColDef = [
 	},
 	{
 		field: "consignmentSaleEnabled", 
+		// valueFormatter: (params) => {
+		// 	console.log(params.value === 1);
+		// 	return Boolean(params.value);
+		// },
 		headerName: "Komise",
 		width: 100,
 		cellDataType: "boolean",
-		cellRenderer: booleanCellRenderer, // Apply the custom renderer
+		// cellRenderer: params => {
+		// 	return `<input type='checkbox' ${params.value ? 'checked' : ''} />`;
+		// },
 		blockEditable: true,
-		editable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -379,9 +386,3 @@ export const zakazniciColDef = [
 		headerName: "Poznámka pro balení",
 	},
 ]
-
-
-
-function booleanCellRenderer(params) {
-  return `<input type="checkbox" ${params.value ? 'checked' : ''} style="">`;
-}

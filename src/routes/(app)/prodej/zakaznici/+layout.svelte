@@ -4,6 +4,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';	
+	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 
 	let disableTabs: boolean = true;
 	editedDataStore.subscribe(data => disableTabs = data.length > 0)
@@ -25,6 +26,7 @@
 			>
 				Seznam
 			</Tabs.Trigger>
+			<TabSeparator color="primary"/>
 
 			<Tabs.Trigger
 				class="font-bold"
@@ -34,6 +36,7 @@
 			>
 				Detail zákazníka
 			</Tabs.Trigger>
+			<TabSeparator color="primary"/>
 
 			<Tabs.Trigger
 				class="font-bold"
@@ -50,9 +53,9 @@
 	{#if $showFulltextSearchStore === true}
 		<div class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible">
 			<Input
-				class="w-40 h-[31px] rounded-md border-none focus-visible:ring-0"
+				class="xl:w-80 lg:w-60 w-40 h-[31px] rounded-md border-white focus-visible:ring-0 focus-visible:border-albi-500"
 				placeholder="Hledat..."
-				type="text"
+				type="search"
 				bind:value={$fulltextFilterValueStore}
 			/>
 		</div>

@@ -6,7 +6,7 @@
 	import { Checkbox } from "$lib/components/ui/checkbox";
 	import { writable } from 'svelte/store';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { zakazniciDodaciAdresyFormDef } from '$lib/data/form/zakaznici-dodaci-adresy.js';
+	import { addressDetailFormDef } from '$lib/data/form/zakaznici/addressDetail';
 
 	let hasMultipleAdresses = true;
 
@@ -67,7 +67,7 @@
 		</Accordion.Item>
 
 		<Accordion.Item value="item-2" class="w-full  md:mt-4">
-			<AutoForm autoform={zakazniciDodaciAdresyFormDef} bind:formValues/>
+			<AutoForm autoform={addressDetailFormDef} bind:formValues/>
 		</Accordion.Item>
 
 		<Accordion.Item value="item-3" class="w-full mt-2 xl:mt-0 ">

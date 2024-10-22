@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, defaultColDef, deletedColumnsStore, editedDataStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, setColDefToDefault } from "$lib/stores/tableStore";
+	import { currentColumnFiltersStore, defaultColDef, deletedColumnsStore, editedDataStore, fulltextFilterValueStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, setColDefToDefault } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import { 
 		createGrid, 
 		type FilterModel, 
@@ -16,17 +16,20 @@
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
 	import { customToast } from "$lib/utils/customToast";
-	import { get } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
 	import { addToEditedData } from "$lib/utils/addToEditedData";
 	import { generateRow } from "$lib/utils/generateRow";
 	import { goto } from "$app/navigation";
+	import { boolean } from "zod";
 	
 	export let columnDefinitions: any[];
 	export let url: string;
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
+	let updateLastRow = writable(false);
+
 	
 	const gridOptions: GridOptions = { // return from grid options 
 		localeText: AG_GRID_LOCALE_CZ,
@@ -77,6 +80,18 @@
 			}
 		},
 
+		onBodyScroll(event) {
+			console.log(event);
+			
+			if (event.top > 0) {
+				updateLastRow.set(true)
+			}
+		},
+
+		onBodyScrollEnd() {
+			updateLastRow.set(false)
+		},
+
 		columnDefs: columnDefinitions,
 		suppressExcelExport: true,
 		suppressCsvExport: true,
@@ -102,6 +117,8 @@
 	let lastRow: number|null = null;
 	let runCount = 0;
 	
+	updateLastRow.subscribe(bool => console.log(bool))
+
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
 			runCount++;
@@ -131,7 +148,7 @@
 
 			// custom request model
 			let updatedParamsRequest: TableRowRequest = params.request
-			updatedParamsRequest.fulltext = gridApi.getQuickFilter() === undefined ? "" : gridApi.getQuickFilter()
+			updatedParamsRequest.fulltext = get(fulltextFilterValueStore)
 			updatedParamsRequest.lastRow = lastRow;
 			updatedParamsRequest.rowBatchSize = rowBatchSize;
 			console.log(JSON.stringify(updatedParamsRequest, null, 1));
@@ -146,9 +163,11 @@
 			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
-				params.success({ rowData: response.items })
-				console.log(response.items[0])
-				lastRow = response.items.slice(-1)[0].rowNumber || null
+				params.success({ rowData: response.items });
+				console.log(response.items);
+				if (get(updateLastRow) === true) {
+					lastRow = response.items.slice(-1)[0].rowNumber || null;
+				}
 			})
 			.catch(error => {
 				console.log(error);
@@ -157,9 +176,8 @@
 		}
 	};
 
-
-
 	onMount(() => {
+		updateLastRow.set(false);
 		defaultColDef.set(columnDefinitions)
 		gridApi = createGrid(gridContainer, gridOptions);
 		gridApi.setGridOption('serverSideDatasource', datasource);
@@ -213,6 +231,17 @@
 			}
 		})
 
+		let timer;
+		fulltextFilterValueStore.subscribe((data) => {
+			if (data !== undefined) {
+				clearTimeout(timer)
+				timer = setTimeout(() => {
+					lastRow = null;
+					gridApi.onFilterChanged()
+				}, 1000);
+			}
+		})
+
 		if (get(presetStore)?.length > 0) {										
 			let columnOrder: ColumnOrder = []
 
@@ -229,7 +258,16 @@
 		}
 	})
 
+	onDestroy(() => {
+		fulltextFilterValueStore.set(undefined)
+	})
+
 	ribbonActionStore.subscribe((action) => {
+		if (action === RibbonActionEnum.LOAD) { 
+			updateLastRow.set(false);
+			gridApi.refreshServerSide();
+		}
+
 		if (action === RibbonActionEnum.NEW) { 
 			let rowData = [];
 			gridApi.forEachNode(node => rowData.push(node.data));
@@ -275,10 +313,6 @@
 		if (action === RibbonActionEnum.SAVE) { // todo			
 			console.log(get(editedDataStore));	
 			editedDataStore.set([])
-		}
-
-		if (action === RibbonActionEnum.LOAD) { // todo
-			gridApi.refreshServerSide()
 		}
 
 		if (action === RibbonActionEnum.EXPORT_EXCEL) {

@@ -1,0 +1,19 @@
+{
+	"lib": {
+		"components": {
+			"sidebar": {},
+			"ribbon": {},
+			"header_menu": {},
+			"input_placeholder": {}
+		}
+	},
+
+	"routes": {
+		"prodej_zakaznici": {
+			"tabs": {},
+			"ag_grid_header": {},
+			"customer_detail": {},
+			"address_detail": {}
+		}
+	}
+}
