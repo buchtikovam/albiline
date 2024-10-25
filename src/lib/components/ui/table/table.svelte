@@ -16,3 +16,12 @@
 		<slot />
 	</table>
 </div>
+
+
+<style>
+	::-webkit-scrollbar {
+		width: 0px;
+		height: 0px;
+	}
+</style>
+

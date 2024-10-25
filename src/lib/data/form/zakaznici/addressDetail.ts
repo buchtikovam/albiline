@@ -97,24 +97,7 @@ export const addressDetailFormDef: AutoForm =
 
 						]
 					},
-					{ // ?row 2
-						id: 2,
-						rowType: "full",
-						rowInputs: [
-							{ // ?input 1
-								label: "Bližší popis",
-								type: "text",
-								variableName: "closer-desc",
-								schema: z.string().min(3).max(9),
-							},
-							{ // ?input 2
-								label: "Zodpovědná osoba",
-								type: "text",
-								variableName: "resp-person",
-								schema: z.string().min(3).max(9),
-							},
-						]
-					},
+
 					{ // ?row 3
 						id: 3,
 						rowType: "full",
@@ -288,11 +271,8 @@ export const addressDetailFormDef: AutoForm =
 								schema: z.string(),
 							},
 							{
-								label: "Merchendiser",
-								type: "text",
-								variableName: "Merchendiser",
-								schema: z.string(),
-							},
+								type: 'empty'
+							}
 						]
 					},
 				]

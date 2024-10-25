@@ -90,6 +90,7 @@
 				</Table.Header>
 
 				<Table.Body class="overflow-auto">
+
 					<Table.Row>
 						<Table.Cell class="flex justify-center">
 							<Checkbox/>

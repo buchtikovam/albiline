@@ -10,11 +10,13 @@
 	let className: $$Props["class"] = undefined;
 	export let checked: $$Props["checked"] = false;
 	export { className as class };
+	export let field: string;
 </script>
 
 <CheckboxPrimitive.Root
+	id="{field}"
 	class={cn(
-		"peer box-content size-5 shrink-0 rounded-md border bg-white border-border ring-offset-background focus-visible:outline-none focus-visible:ring-0 focus-visible:border-albi-500 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled=true]:cursor-not-allowed data-[state=checked]:bg-white data-[state=checked]:text-primary-foreground data-[disabled=true]:opacity-50",
+		"peer box-content size-5 shrink-0 rounded-md border bg-white border-border ring-offset-background focus-visible:outline-none focus-visible:ring-0 focus-visible:border-albi-500 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled=true]:cursor-not-allowed data-[state=checked]:bg-albi-500 data-[state=checked]:text-white data-[disabled=true]:opacity-50",
 		className
 	)}
 	bind:checked
@@ -22,12 +24,12 @@
 	on:click
 >
 	<CheckboxPrimitive.Indicator
-		class={cn("text-albi-500")}
+		class={cn("text-white")}
 		let:isChecked
 		let:isIndeterminate
 	>
 		{#if isChecked}
-			<Check class="mx-auto size-4"/>
+			<Check strokeWidth={3} class="mx-auto size-4"/>
 		{:else if isIndeterminate}
 			<Minus class="h-3.5 w-3.5" />s
 		{/if}

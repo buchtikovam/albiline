@@ -10,7 +10,7 @@
 
 <th
 	class={cn(
-		"h-6 px-2 text-left text-xs align-middle font-medium text-muted-foreground/75",
+		"h-6 px-3 text-left whitespace-nowrap text-xs align-middle font-medium text-muted-foreground/75",
 		className
 	)}
 	{...$$restProps}

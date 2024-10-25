@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let label;
+	export let field;
 </script>
 
-<p class="text-sm mx-auto line-clamp-1 w-full text-slate-500 ">{label}</p>
+<label for={field} class="text-sm mx-auto line-clamp-1 w-full text-slate-500 ">{label}</label>

@@ -74,7 +74,7 @@
 			selectedRowIdStore.set(event.data.customerNodeCode)
 			
 			if (get(editedDataStore).length === 0) {
-				goto(`/prodej/zakaznici/detail/${event.data.customerNodeCode}`)
+				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`)
 			} else {
 				customToast("Warning", "Error")
 			}

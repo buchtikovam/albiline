@@ -30,21 +30,21 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/detail/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/detail/${$selectedRowIdStore}`}
-				on:click={() => goto(`/prodej/zakaznici/detail/${$selectedRowIdStore}`)}
+				disabled={`/prodej/zakaznici/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/${$selectedRowIdStore}`}
+				on:click={() => goto(`/prodej/zakaznici/${$selectedRowIdStore}`)}
 			>
-				Detail zákazníka
+				Zákazník
 			</Tabs.Trigger>
 			<TabSeparator color="primary"/>
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}`}
-				on:click={() => goto(`/prodej/zakaznici/dodaci-adresy/${$selectedRowIdStore}`)}
+				disabled={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`}
+				on:click={() => goto(`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`)}
 			>
-				Dodací adresy
+				Prodejny
 			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>
@@ -53,7 +53,7 @@
 	{#if $showFulltextSearchStore === true}
 		<div class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible">
 			<Input
-				class="xl:w-80 lg:w-60 w-40 h-[31px] rounded-md border-white focus-visible:ring-0 focus-visible:border-albi-500"
+				class="xl:w-80 lg:w-60 w-40 h-[30px] rounded-md border-white focus-visible:ring-0 focus-visible:border-albi-500"
 				placeholder="Hledat..."
 				type="search"
 				bind:value={$fulltextFilterValueStore}

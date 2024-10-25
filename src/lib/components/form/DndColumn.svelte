@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {dndzone} from 'svelte-dnd-action';
+	import {dragHandleZone, dragHandle} from 'svelte-dnd-action';
 	import type { AutoFormSection } from "$lib/types/components/form/autoform/autoform";
 	import SectionLabel from './labels/SectionLabel.svelte';
 	import InputWrapper from './inputs/InputWrapper.svelte';
@@ -13,6 +13,8 @@
 	import EmptyField from './inputs/EmptyField.svelte';
 	import { flip } from 'svelte/animate';
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
+	import Grip from 'lucide-svelte/icons/grip';
+	import Move from 'lucide-svelte/icons/move';
 
 	export let items: AutoFormSection[];
 	export let formValues:  Writable<CustomerData[]>;
@@ -29,8 +31,8 @@
 </script>
 
 
-<section 
-	use:dndzone={{items: items, flipDurationMs}}
+<section
+	use:dragHandleZone="{{ items, flipDurationMs }}"
 	on:consider={handleDndConsider}
 	on:finalize={handleDndFinalize}
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
@@ -45,14 +47,28 @@
 								<SectionLabel name={item.label} />
 							</Accordion.Trigger>
 
-							<button type="button" on:click={() => openedDialogStore.set("customer-detail-invoice-addresses")}>
-								<svelte:component this={item.dialogIcon} class="size-4 text-albi-500"/>
-							</button>
+						   <div class="flex items-center gap-2">
+							   <button type="button" on:click={() => openedDialogStore.set("customer-detail-invoice-addresses")}>
+								   <svelte:component this={item.dialogIcon} class="size-4 text-albi-500"/>
+							   </button>
+
+							   <div use:dragHandle aria-label="drag-handle" class="handle">
+								   <Grip class="size-4 text-slate-300"/>
+							   </div>
+						   </div>
+
 					   </div>
 					{:else}
-						<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2 pb-2">
-							<SectionLabel name={item.label} />
-						</Accordion.Trigger>
+						<div class="flex justify-between items-center">
+							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2 pb-2">
+								<SectionLabel name={item.label} />
+							</Accordion.Trigger>
+
+							<div use:dragHandle aria-label="drag-handle" class="handle">
+								<Grip class="size-4 text-slate-300"/>
+							</div>
+						</div>
+
 					{/if}
 					
 					
@@ -67,7 +83,7 @@
 											{/if}
 
 											{#if input.type === "checkbox"}
-												<CheckboxWrapper bind:value={$formValues[input.variableName]} label={input.label} />
+												<CheckboxWrapper field={input.variableName} bind:value={$formValues[input.variableName]} label={input.label} />
 											{/if}
 
 											{#if input.type === "empty"}
@@ -80,7 +96,7 @@
 								{#if row.rowType === "checkbox"}
 									<FormCheckboxSection>
 										{#each row.rowInputs as input}
-											<CheckboxWrapper bind:value={$formValues[input.variableName]} label={input.label} />
+											<CheckboxWrapper field={input.variableName} bind:value={$formValues[input.variableName]} label={input.label} />
 										{/each}
 									</FormCheckboxSection>
 								{/if}
