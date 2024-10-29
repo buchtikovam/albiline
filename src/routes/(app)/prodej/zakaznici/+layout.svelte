@@ -7,10 +7,8 @@
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 
 	let disableTabs: boolean = true;
-	editedDataStore.subscribe(data => disableTabs = data.length > 0)
 
-	selectedRowIdStore.subscribe(data => console.log("rowId", data));
-	
+	editedDataStore.subscribe(data => disableTabs = data.length > 0)
 </script>
 
 

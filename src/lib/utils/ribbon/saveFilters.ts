@@ -1,4 +1,4 @@
-import { currentColumnFiltersStore } from '$lib/stores/tableStore';
+import { filtersStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import { apiServicePOST } from '$lib/api/apiService';
 import { customToast } from '$lib/utils/customToast';
@@ -6,7 +6,7 @@ import { customToast } from '$lib/utils/customToast';
 
 export async function saveFilters(inputValue: string, url: string): Promise<void> {
 	try {
-		const columnFilters = get(currentColumnFiltersStore);
+		const columnFilters = get(filtersStore);
 
 		const toSave = {
 			pageOrigin: url,
@@ -22,7 +22,7 @@ export async function saveFilters(inputValue: string, url: string): Promise<void
 			customToast('Critical', 'Nepodařilo se uložit filtry.');
 		} 
 
-		currentColumnFiltersStore.set({})
+		filtersStore.set({})
 	} catch (error) {
 		customToast('Critical', 'Nepodařilo se uložit filtry.')
 		console.log(error);

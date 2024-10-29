@@ -4,7 +4,7 @@
 	import { useRegisterSW } from 'virtual:pwa-register/svelte';
 
 	const autoreload = true;
-	console.log('PWAReloadPrompt');
+	// console.log('PWAReloadPrompt');
 
 	const {
 		offlineReady,

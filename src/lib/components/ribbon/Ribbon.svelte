@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ribbonOpenStore } from '$lib/stores/ribbonStore';
 	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
-	import { ribbonItems } from '$lib/data/components/ribbon';
+	import { ribbonItems } from '$lib/data/page-components/ribbon';
 	import { Separator } from '$lib/components/ui/separator';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';

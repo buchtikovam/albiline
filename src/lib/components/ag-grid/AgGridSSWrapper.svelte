@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentColumnFiltersStore, defaultColDef, deletedColumnsStore, editedDataStore, fulltextFilterValueStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, setColDefToDefault } from "$lib/stores/tableStore";
+	import { filtersStore, defaultColDef, editedDataStore, fulltextFilterValueStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, setColDefToDefault } from "$lib/stores/tableStore";
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -365,7 +365,7 @@
 		if (action === RibbonActionEnum.SAVE_FILTERS) {
 			if (Object.keys(gridApi.getFilterModel()).length > 0) {
 				openedDialogStore.set("ribbon-save-filters")
-				currentColumnFiltersStore.set(gridApi.getFilterModel())
+				filtersStore.set(gridApi.getFilterModel())
 			} else {
 				customToast("InfoToast", "Nemáte žádné filtry k uložení.")
 			}	

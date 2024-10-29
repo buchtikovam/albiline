@@ -13,7 +13,7 @@
 </script>
 
 <td
-	class={cn("px-3 py-1.5 align-middle whitespace-nowrap w-fit", className)}
+	class={cn("px-3 py-1.5 align-middle whitespace-nowrap text-albi-950", className)}
 	{...$$restProps}
 	on:click
 	on:keydown

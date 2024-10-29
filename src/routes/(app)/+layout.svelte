@@ -13,6 +13,9 @@
 	// PWA
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
+	import { beforeNavigate } from '$app/navigation';
+	import { get } from 'svelte/store';
+	import { editedDataStore } from '$lib/stores/tableStore';
 	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 
 
@@ -32,6 +35,7 @@
 	isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
 
 	onMount(() => {
+		// klávesové zkratky pro ribbon
 		function handleKeydown(e: KeyboardEvent) {
 			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
@@ -50,6 +54,14 @@
 		}
 
 		document.addEventListener('keydown', handleKeydown);
+	})
+
+	beforeNavigate(({cancel}) => {
+		if (get(editedDataStore).length > 0) {
+			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
+				cancel();
+			}
+		}
 	})
 </script>
 

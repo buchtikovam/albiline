@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import { zakazniciColDef } from '$lib/data/ag-grid/column-definitons/zakaznici';
+	import { zakazniciColDef } from '$lib/data/ag-grid/column-def/zakaznici';
 	import { isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 

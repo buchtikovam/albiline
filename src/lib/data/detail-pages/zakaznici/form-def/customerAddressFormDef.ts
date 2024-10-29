@@ -2,7 +2,7 @@ import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
 import { z } from "zod";
 
 
-export const addressDetailFormDef: AutoForm =
+export const customerAddressDetailFormDef: AutoForm =
 	{
 		col1 : [
 			{ // ?section 1
@@ -270,9 +270,6 @@ export const addressDetailFormDef: AutoForm =
 								variableName: "Oblast",
 								schema: z.string(),
 							},
-							{
-								type: 'empty'
-							}
 						]
 					},
 				]

@@ -1,5 +1,6 @@
 import type { ComponentType } from 'svelte';
 import type { Icon } from 'lucide-svelte';
+import { z } from 'zod';
 
 export type AutoForm = {
 	[key: string]: AutoFormSection[];
@@ -25,5 +26,30 @@ type AutoFormInput = {
 	label?: string,
 	type: "text" | "number" | "checkbox" | "empty",
 	variableName?: string,
-	schema: z.ZodType<T>
+	schema?: z.ZodType
 }
+
+
+/*
+* import { z } from 'zod';
+
+const addressSchema = z.object({
+  street: z.string(),
+  city: z.string(),
+  state: z.string(),
+  zip: z.string(),
+});
+
+const addressDetailFormDef: AutoForm = {
+  col1: [
+    {
+      label: 'Street',
+      type: 'text',
+      variableName: 'street',
+      schema: addressSchema.shape.street,
+    },
+    // ...
+  ],
+  // ...
+};
+* */

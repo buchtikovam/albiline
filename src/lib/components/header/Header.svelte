@@ -21,8 +21,8 @@
 	let storedTabs: HeaderTab[];
 	openedTabsStore.subscribe(data => storedTabs = data);
 
-	let editedData;
-	editedDataStore.subscribe(data => editedData = data);
+	let hasEditedData: boolean;
+	editedDataStore.subscribe(data => data.length > 0 ? hasEditedData = true : hasEditedData = false);
 
 	$: pathname = getTabValue($page.url.pathname)
 
@@ -77,7 +77,6 @@
 		openedTabsStore.update(() => storedTabs);
 	}
 
-	console.log()
 
 	let openMobileSidebar : boolean = false;
 </script>
@@ -94,6 +93,7 @@
             <Tabs.Trigger
                 value="/"
                 on:click={() => goto("/")}
+				disabled={hasEditedData}
                 >
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
@@ -109,9 +109,11 @@
 					<Tabs.Trigger
 						value={tab.url}
 						on:click={() => goto(tab.url)}
+						disabled={hasEditedData && tab.url !== pathname}
 					>
 						<button
 							class="flex items-center font-bold"
+							on:auxclick={() => removeTab(tab.name)}
 							on:mouseenter={() => showTabClosingButton(tab)}
 							on:mouseleave={() => hideTabClosingButton(tab)}
 						>

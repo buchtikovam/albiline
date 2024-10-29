@@ -15,18 +15,29 @@
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
 	import Grip from 'lucide-svelte/icons/grip';
 	import Move from 'lucide-svelte/icons/move';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
 
 	export let items: AutoFormSection[];
+	export let colName: string;
 	export let formValues:  Writable<CustomerData[]>;
+	export let autoformWritable: Writable<AutoForm>;
 	
 	const flipDurationMs = 300;
 
-	function handleDndConsider(ev) {
+	function handleDndConsider(ev: CustomEvent<{ items: AutoFormSection[] }>) {
 		items = ev.detail.items
 	}
 
-	function handleDndFinalize(ev) {		
+	function handleDndFinalize(ev: CustomEvent<{ items: AutoFormSection[] }>) {
 		items = ev.detail.items;
+
+		autoformWritable.update((autoform) => {
+			const columnKey = Object.keys(autoform).find(key => key === colName);
+			if (columnKey) {
+				autoform[columnKey] = items;
+			}
+			return autoform;
+		});
 	}
 </script>
 
@@ -38,7 +49,7 @@
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
 >
 	{#each items as item (item.id)}
-		<div animate:flip={{ duration: 200 }}>
+		<div animate:flip={{ duration: 200 }} class="bg-white rounded-lg">
 			<Accordion.Root value={["item-1"]} >
 				<Accordion.Item value="item-1">
 					{#if item.hasDialog}

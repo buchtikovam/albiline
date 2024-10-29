@@ -14,7 +14,6 @@
 	let currentDialog: GlobalDialogOptions | undefined = undefined;
 
 	openedDialogStore.subscribe((dialog) => {
-		console.log(dialog);
 		currentDialog = dialog
 	})
 </script>
