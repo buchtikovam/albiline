@@ -60,6 +60,8 @@
 		if (get(editedDataStore).length > 0) {
 			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
 				cancel();
+			} else {
+				editedDataStore.set([]);
 			}
 		}
 	})
@@ -81,6 +83,7 @@
 {#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}
 	<ReloadPrompt />
 {/await}
+
 
 <Toaster
 	position={isMobile ? "top-center" : "bottom-right"}

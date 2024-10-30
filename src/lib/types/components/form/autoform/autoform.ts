@@ -10,6 +10,7 @@ export type AutoFormSection = {
 	id: number,
 	label: string,
 	hasDialog?: boolean,
+	type?: string,
 	dialogId?: string,
 	dialogIcon?: ComponentType<Icon>,
 	isOpen: boolean,

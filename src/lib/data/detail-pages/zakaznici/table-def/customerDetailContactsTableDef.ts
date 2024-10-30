@@ -45,15 +45,16 @@ export const customerDetailContactsTableDef = [
 		type: 'checkbox'
 	},
 	{
+		headerName: 'DL <span class="whitespace-nowrap">e-mailem</span> v PDF',
+		variableName: 'dlPDF',
+		type: 'checkbox'
+	},
+	{
 		headerName: 'FA <span class="whitespace-nowrap">e-mailem</span> v CSV',
 		variableName: 'faCSV',
 		type: 'checkbox'
 	},
-	{
-		headerName: 'DL <span class="whitespace-nowrap">e-mailem</span> v PDF',
-		variableName: 'dlCSV',
-		type: 'checkbox'
-	},
+
 	{
 		headerName: 'DL <span class="whitespace-nowrap">e-mailem</span> v CSV',
 		variableName: 'dlCSV',

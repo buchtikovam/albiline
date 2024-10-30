@@ -1,27 +1,26 @@
 <script lang="ts">
-	import {dragHandleZone, dragHandle} from 'svelte-dnd-action';
+	import { openedDialogStore } from '$lib/stores/ribbonStore';
+	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
+	import { flip } from 'svelte/animate';
+	import Grip from 'lucide-svelte/icons/grip';
 	import type { AutoFormSection } from "$lib/types/components/form/autoform/autoform";
+	import type { CustomerData } from '$lib/types/tables/zakaznici';
+	import type { Writable } from 'svelte/store';
 	import SectionLabel from './labels/SectionLabel.svelte';
 	import InputWrapper from './inputs/InputWrapper.svelte';
 	import FormContainer from './containers/FormContainer.svelte';
 	import FormInputSection from './containers/FormInputSection.svelte';
-	import type { CustomerData } from '$lib/types/tables/zakaznici';
-	import type { Writable } from 'svelte/store';
-	import * as Accordion from "$lib/components/ui/accordion";
 	import FormCheckboxSection from './containers/FormCheckboxSection.svelte';
 	import CheckboxWrapper from './inputs/CheckboxWrapper.svelte';
 	import EmptyField from './inputs/EmptyField.svelte';
-	import { flip } from 'svelte/animate';
-	import { openedDialogStore } from '$lib/stores/ribbonStore';
-	import Grip from 'lucide-svelte/icons/grip';
-	import Move from 'lucide-svelte/icons/move';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import * as Accordion from "$lib/components/ui/accordion";
 
 	export let items: AutoFormSection[];
 	export let colName: string;
 	export let formValues:  Writable<CustomerData[]>;
 	export let autoformWritable: Writable<AutoForm>;
-	
+
 	const flipDurationMs = 300;
 
 	function handleDndConsider(ev: CustomEvent<{ items: AutoFormSection[] }>) {
@@ -42,6 +41,7 @@
 </script>
 
 
+
 <section
 	use:dragHandleZone="{{ items, flipDurationMs }}"
 	on:consider={handleDndConsider}
@@ -49,12 +49,12 @@
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
 >
 	{#each items as item (item.id)}
-		<div animate:flip={{ duration: 200 }} class="bg-white rounded-lg">
+		<div animate:flip={{ duration: flipDurationMs }} class="bg-white rounded-lg">
 			<Accordion.Root value={["item-1"]} >
 				<Accordion.Item value="item-1">
 					{#if item.hasDialog}
-					   <div class="flex justify-between">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2 pb-2">
+					   <div class="flex justify-between pb-2">
+							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
 								<SectionLabel name={item.label} />
 							</Accordion.Trigger>
 
@@ -70,8 +70,8 @@
 
 					   </div>
 					{:else}
-						<div class="flex justify-between items-center">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2 pb-2">
+						<div class="flex justify-between items-center pb-2">
+							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
 								<SectionLabel name={item.label} />
 							</Accordion.Trigger>
 

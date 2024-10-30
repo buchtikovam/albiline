@@ -4,6 +4,7 @@
 
 	export let tableDef;
 	export let tableData;
+	export let activeRowId;
 
 	const rowData: {
 		default: boolean;
@@ -21,10 +22,14 @@
 		azSvoz: boolean;
 		azExpedice: boolean;
 	}[] = tableData;
+
+	function selectRow(rowId) {
+		activeRowId = rowId
+	}
 </script>
 
 
-<Table.Root class="w-full mt-2">
+<Table.Root class="w-full mt-1.5">
 	<Table.Header class="border-b">
 		{#each tableDef as column}
 			<Table.Head>
@@ -35,7 +40,7 @@
 
 	<Table.Body>
 		{#each rowData as row}
-			<Table.Row>
+			<Table.Row class="">
 				{#each tableDef as column}
 					{#if column.type === 'checkbox'}
 						<Table.Cell >
@@ -54,6 +59,12 @@
 						</Table.Cell>
 					{/if}
 				{/each}
+
+				<button class="mt-1 p-0.5 rounded font-bold">
+					Vybrat
+				</button>
+
+
 			</Table.Row>
 		{/each}
 	</Table.Body>

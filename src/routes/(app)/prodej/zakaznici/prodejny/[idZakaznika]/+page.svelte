@@ -1,113 +1,98 @@
 <script lang="ts">
+	import { customerAddressDetailFormDef } from '$lib/data/detail-pages/zakaznici/form-def/customerAddressFormDef';
+	import {
+		customerDetailContactsTableData,
+		customerDetailContactsTableDef
+	} from '$lib/data/detail-pages/zakaznici/table-def/customerDetailContactsTableDef';
+	import {
+		customerAddressSelectTableData,
+		customerAddressSelectTableDef
+	} from '$lib/data/detail-pages/zakaznici/table-def/customerAddressSelectTableDef';
+	import { flipItems } from '$lib/utils/flipItems';
+	import { writable } from 'svelte/store';
+	import { flip } from "svelte/animate";
+	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
+	import Plus from 'lucide-svelte/icons/plus';
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
+	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
+	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
 	import * as Table from "$lib/components/ui/table";
-	import { Checkbox } from "$lib/components/ui/checkbox";
-	import { writable } from 'svelte/store';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { customerAddressDetailFormDef } from '$lib/data/detail-pages/zakaznici/form-def/customerAddressFormDef';
-
-	let hasMultipleAdresses = true;
+	import DetailSelectTable from '$lib/components/table/DetailSelectTable.svelte';
+	import { customerDetailFormDef } from '$lib/data/detail-pages/zakaznici/form-def/customerDetailFormDef';
 
 	export let data: { response: CustomerData };
 
-	let formValues = writable(data.response)
+	let hasMultipleAdresses = true;
+	let formValues = writable(data.response);
+
+	let items = [
+		{
+			id: 0,
+			type: "form",
+			isLast: false,
+		},
+		{
+			id: 1,
+			type: "contacts",
+			isLast: true,
+		},
+	];
+
+	const flipDurationMs = 300;
 </script>
 
 
 
 <div class="h-full max-w-[1850px] p-3 md:p-4 overflow-auto">
 	<Accordion.Root multiple value={["item-"]} class={(hasMultipleAdresses ? "block " : "hidden ") + "flex flex-col w-full"} >
-		<Accordion.Item value="item-1" class="w-full">
+		<Accordion.Item value="item-1" class="w-full mb-3">
 			<div class="w-full rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left gap-1">
-					<p class="font-bold w-full text-lg">Adresy zákazníka 123456</p>
+					<DetailPageLabel name="Prodejny zákazníka 123"/>
 				</Accordion.Trigger>
 
 				<Accordion.Content class="mt-2 rounded-lg">
-					<Table.Root class="">
-						<Table.Header class="border-b">
-							<!-- <Table.Row> -->
-							<Table.Head>Číslo</Table.Head>
-							<Table.Head>Jméno</Table.Head>
-							<Table.Head>Ulice</Table.Head>
-							<Table.Head>PSČ</Table.Head>
-							<Table.Head>Město</Table.Head>
-
-							<!-- </Table.Row> -->
-						</Table.Header>
-						<Table.Body class="overflow-x-auto">
-
-							<Table.Row>
-								<Table.Cell class="whitespace-nowrap">123456</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">Albi Česká republika</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">Lhota za Červeným Kostelcem 436</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">500 02</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">Červený Kostelec</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">
-									<button class="font-bold">vybrat</button>
-								</Table.Cell>
-							</Table.Row>
-
-							<Table.Row>
-								<Table.Cell class="whitespace-nowrap">654321</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">Albi Česká republika</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">Lhota za Červeným Kostelcem 436</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">500 02</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">Červený Kostelec</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">
-									<button class="font-bold">vybrat</button>
-								</Table.Cell>
-							</Table.Row>
-						</Table.Body>
-					</Table.Root>
+					<DetailSelectTable tableDef={customerAddressSelectTableDef} tableData={customerAddressSelectTableData} activeRowId={1}/>
 				</Accordion.Content>
 			</div>
 		</Accordion.Item>
-
-		<Accordion.Item value="item-2" class="w-full  md:mt-4">
-			<AutoForm autoform={customerAddressDetailFormDef} bind:formValues/>
-		</Accordion.Item>
-
-		<Accordion.Item value="item-3" class="w-full mt-2 xl:mt-0 ">
-
-			<SectionLabel name="Kontaktní adresy"/>
-
-			<Table.Root>
-				<Table.Header class="border-b">
-					<!-- <Table.Row> -->
-					<Table.Head class="w-12">Výchozí</Table.Head>
-					<Table.Head>Aktivní</Table.Head>
-					<Table.Head>Jméno</Table.Head>
-					<Table.Head>Příjmení</Table.Head>
-					<Table.Head>Mobil</Table.Head>
-					<Table.Head>Fax</Table.Head>
-					<Table.Head>Pevná linka</Table.Head>
-					<Table.Head>Email</Table.Head>
-					<Table.Head>Poznámka</Table.Head>
-					<!-- </Table.Row> -->
-				</Table.Header>
-
-				<Table.Body class="overflow-auto">
-
-					<Table.Row>
-						<Table.Cell class="flex justify-center">
-							<Checkbox/>
-						</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-						<Table.Cell>.</Table.Cell>
-					</Table.Row>
-				</Table.Body>
-			</Table.Root>
-		</Accordion.Item>
 	</Accordion.Root>
+
+	{#each items as item (item.id)}
+		<div animate:flip="{{duration: flipDurationMs}}">
+			{#if item.type === "form"}
+				<div class={item.isLast ? "-mb-2" : ""}>
+					<AutoForm autoform={customerAddressDetailFormDef} bind:formValues/>
+				</div>
+			{/if}
+
+			{#if item.type === "contacts"}
+				<div class={item.isLast ? "" : "mb-4"}>
+					<div class="flex justify-between">
+						<div class="flex gap-2" >
+							<SectionLabel name="Kontakty"/>
+
+							<button id="contacts" on:click={() => items = flipItems(items)}>
+								<ArrowUpDown class="size-4 text-albi-500"/>
+							</button>
+						</div>
+
+						<button class="bg-albi-500 p-1 rounded">
+							<Plus strokeWidth={2.5} class="size-4 text-white"/>
+						</button>
+					</div>
+
+					<DetailTable
+						tableDef={customerDetailContactsTableDef}
+						tableData={customerDetailContactsTableData}
+					/>
+				</div>
+			{/if}
+		</div>
+	{/each}
 </div>
 
 

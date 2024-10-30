@@ -19,7 +19,12 @@
 <form method="POST" autocomplete="off">
 	<div class="w-full gap-4 xl:flex ">
 		{#each Object.entries(colDef) as [key, value]}
-			<DndColumn bind:items={value} bind:formValues={formValues} autoformWritable={autoformWritable} colName={key}/>
+			<DndColumn
+				bind:items={value}
+				bind:formValues={formValues}
+				autoformWritable={autoformWritable}
+				colName={key}
+			/>
 		{/each}
 	</div>
 </form>
