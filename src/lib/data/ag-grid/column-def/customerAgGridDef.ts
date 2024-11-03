@@ -1,4 +1,4 @@
-export const zakazniciColDef = [
+export const customerAgGridDef = [
 	{ 
 		field: "rowNumber",
 		headerName: "Číslo řádku",
@@ -19,7 +19,7 @@ export const zakazniciColDef = [
 	
 	{ 
 		field: "customerAddressCode",
-		headerName: "ID zákazníka",
+		headerName: "ID prodejny",
 		cellDataType: "number",
 		blockEditable: true,
 		editable: false,
@@ -31,6 +31,22 @@ export const zakazniciColDef = [
 					filter: 'agNumberColumnFilter',
 				},
 			],
+		}
+	},
+	{
+		field: "customerNodeCode",
+		headerName: "ID zákazníka",
+		width: 124,
+		cellDataType: "number",
+		blockEditable: true,
+		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agNumberColumnFilter',
+				},
+			]
 		}
 	},
 	{ 
@@ -66,22 +82,7 @@ export const zakazniciColDef = [
 		}
 	},
 
-	{
-		field: "customerNodeCode",
-		headerName: "NodeCode",
-		width: 124,
-		cellDataType: "number",
-		blockEditable: true,
-		editable: false,
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agNumberColumnFilter',
-				},
-			]
-		}
-	},
+
 	{
 		field: "i_Name",
 		headerName: "Název FA",

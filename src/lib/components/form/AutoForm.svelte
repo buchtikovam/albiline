@@ -13,8 +13,8 @@
 	autoformWritable.subscribe((data) => {
 		colDef = data;
 	})
-
 </script>
+
 
 <form method="POST" autocomplete="off">
 	<div class="w-full gap-4 xl:flex ">

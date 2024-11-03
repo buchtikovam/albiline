@@ -114,22 +114,7 @@ export const customerDetailFormDef: AutoForm = {
 						},
 					]
 				},
-				{ // ?row 1
-					id: 0,
-					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "Platnost od",
-							type: "text",
-							variableName: "platnostOd",
-						},
-						{ // ?input 2
-							label: "Platnost do",
-							type: "text",
-							variableName: "platnostDo",
-						},
-					]
-				},
+
 				{ // ?row 1
 					id: 1,
 					rowType: "full",
@@ -455,11 +440,6 @@ export const customerDetailFormDef: AutoForm = {
 							label: "Neupomínat",
 							type: "checkbox",
 							variableName: "9",
-						},
-						{
-							label: "Zasílat novinky",
-							type: "checkbox",
-							variableName: "10",
 						},
 						{
 							label: "B2B aktivní",

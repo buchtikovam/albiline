@@ -31,8 +31,7 @@ export const customerAddressSelectTableDef = [
 	},
 ]
 
-export const customerAddressSelectTableData = [
-
+export const customerAddressSelectTableData = [ // temp
 	{
 		idProdejna: '1773715',
 		nazev: 'Albert Česká republika, s.r.o.',

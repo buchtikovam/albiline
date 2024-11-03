@@ -31,26 +31,48 @@ type AutoFormInput = {
 }
 
 
-/*
-* import { z } from 'zod';
 
-const addressSchema = z.object({
-  street: z.string(),
-  city: z.string(),
-  state: z.string(),
-  zip: z.string(),
-});
 
-const addressDetailFormDef: AutoForm = {
-  col1: [
-    {
-      label: 'Street',
-      type: 'text',
-      variableName: 'street',
-      schema: addressSchema.shape.street,
-    },
-    // ...
-  ],
-  // ...
-};
-* */
+export type AutoFormSimpleType = AutoFormRowSimple[];
+
+type AutoFormRowSimple = {
+	rowType: "full" | "checkbox",
+	rowInputs: {
+		[key: string]: AutoFormInputSimple
+	}
+}
+
+type AutoFormInputSimple = {
+	inputType: "text" | "number" | "checkbox" | "empty",
+	schema: z.ZodType
+}
+
+
+
+
+
+
+
+
+
+
+// const addressSchema = z.object({
+//   street: z.string(),
+//   city: z.string(),
+//   state: z.string(),
+//   zip: z.string(),
+// });
+//
+// const addressDetailFormDef: AutoForm = {
+//   col1: [
+//     {
+//       label: 'Street',
+//       type: 'text',
+//       variableName: 'street',
+//       schema: addressSchema.shape.street,
+//     },
+//     // ...
+//   ],
+//   // ...
+// };
+// * */

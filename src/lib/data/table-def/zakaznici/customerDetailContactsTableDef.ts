@@ -72,7 +72,7 @@ export const customerDetailContactsTableDef = [
 	}
 ]
 
-export const customerDetailContactsTableData = [
+export const customerDetailContactsTableData = [ // temp
 	{
 		default: false,
 		active: true,
@@ -81,7 +81,7 @@ export const customerDetailContactsTableData = [
 		phoneNumber: '+420 123 456 789',
 		pevnaLinka: '+420 987 654 321',
 		email: 'johndoe@example.com',
-		note: 'This is a note about John Doe.',
+		note: 'This is a note.',
 		faPDF: true,
 		faCSV: false,
 		dlPDF: false,

@@ -1,27 +1,29 @@
 <script lang="ts">
-	import { customerAddressDetailFormDef } from '$lib/data/detail-pages/zakaznici/form-def/customerAddressFormDef';
+	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 	import {
 		customerDetailContactsTableData,
 		customerDetailContactsTableDef
-	} from '$lib/data/detail-pages/zakaznici/table-def/customerDetailContactsTableDef';
+	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import {
 		customerAddressSelectTableData,
 		customerAddressSelectTableDef
-	} from '$lib/data/detail-pages/zakaznici/table-def/customerAddressSelectTableDef';
+	} from '$lib/data/table-def/zakaznici/customerAddressSelectTableDef';
 	import { flipItems } from '$lib/utils/flipItems';
 	import { writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
+	import NewCustomerContactDialog
+		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
+	import DetailSelectTable from '$lib/components/table/DetailSelectTable.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
-	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
+	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import * as Accordion from "$lib/components/ui/accordion";
 	import * as Table from "$lib/components/ui/table";
-	import DetailSelectTable from '$lib/components/table/DetailSelectTable.svelte';
-	import { customerDetailFormDef } from '$lib/data/detail-pages/zakaznici/form-def/customerDetailFormDef';
 
 	export let data: { response: CustomerData };
 
@@ -42,6 +44,7 @@
 	];
 
 	const flipDurationMs = 300;
+	let openDialog: boolean = false;
 </script>
 
 
@@ -51,7 +54,7 @@
 		<Accordion.Item value="item-1" class="w-full mb-3">
 			<div class="w-full rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left gap-1">
-					<DetailPageLabel name="Prodejny zákazníka 123"/>
+					<DetailPageLabel name="Prodejny zákazníka Fiori s.r.o. -162"/>
 				</Accordion.Trigger>
 
 				<Accordion.Content class="mt-2 rounded-lg">
@@ -71,17 +74,15 @@
 
 			{#if item.type === "contacts"}
 				<div class={item.isLast ? "" : "mb-4"}>
-					<div class="flex justify-between">
-						<div class="flex gap-2" >
-							<SectionLabel name="Kontakty"/>
+					<div class="flex gap-2" >
+						<SectionLabel name="Kontakty"/>
 
-							<button id="contacts" on:click={() => items = flipItems(items)}>
-								<ArrowUpDown class="size-4 text-albi-500"/>
-							</button>
-						</div>
+						<button id="contacts" on:click={() => items = flipItems(items)}>
+							<ArrowUpDown class="size-4 text-albi-500"/>
+						</button>
 
-						<button class="bg-albi-500 p-1 rounded">
-							<Plus strokeWidth={2.5} class="size-4 text-white"/>
+						<button on:click={() => openDialog = true}>
+							<Plus strokeWidth={2.5} class="text-albi-500 size-4"/>
 						</button>
 					</div>
 
@@ -95,7 +96,10 @@
 	{/each}
 </div>
 
-
+<NewCustomerContactDialog
+	bind:dialogOpen={openDialog}
+	label="Nový kontakt prodejny"
+/>
 
 <style>
 	::-webkit-scrollbar {

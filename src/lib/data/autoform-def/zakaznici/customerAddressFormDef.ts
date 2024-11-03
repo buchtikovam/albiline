@@ -22,6 +22,24 @@ export const customerAddressDetailFormDef: AutoForm =
 							},
 						]
 					},
+					{ // ?row 4
+						id: 4,
+						rowType: "full",
+						rowInputs: [
+							{ // ?input 1
+								label: "Číslo prodejny",
+								type: "number",
+								variableName: "customerAddressCode",
+								schema: z.string().min(3).max(9),
+							},
+							{ // ?input 2
+								label: "Společnost",
+								type: "text",
+								variableName: "company",
+								schema: z.string().min(3).max(9),
+							},
+						]
+					},
 					{ // ?row 2
 						id: 2,
 						rowType: "full",
@@ -58,24 +76,7 @@ export const customerAddressDetailFormDef: AutoForm =
 							},
 						]
 					},
-					{ // ?row 4
-						id: 4,
-						rowType: "full",
-						rowInputs: [
-							{ // ?input 1
-								label: "Číslo dodací adresy",
-								type: "number",
-								variableName: "customerAddressCode",
-								schema: z.string().min(3).max(9),
-							},
-							{ // ?input 2
-								label: "Společnost",
-								type: "text",
-								variableName: "company",
-								schema: z.string().min(3).max(9),
-							},
-						]
-					},
+
 				]
 			},
 
@@ -270,6 +271,9 @@ export const customerAddressDetailFormDef: AutoForm =
 								variableName: "Oblast",
 								schema: z.string(),
 							},
+							{
+								type: 'empty'
+							}
 						]
 					},
 				]

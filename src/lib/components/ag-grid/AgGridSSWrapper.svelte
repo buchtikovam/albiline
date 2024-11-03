@@ -81,8 +81,6 @@
 		},
 
 		onBodyScroll(event) {
-			console.log(event);
-			
 			if (event.top > 0) {
 				updateLastRow.set(true)
 			}

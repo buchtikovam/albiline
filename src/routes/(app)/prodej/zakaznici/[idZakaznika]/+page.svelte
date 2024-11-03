@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { customerDetailFormDef } from '$lib/data/detail-pages/zakaznici/form-def/customerDetailFormDef';
+	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import {
 		customerDetailContactsTableData,
 		customerDetailContactsTableDef
-	} from '$lib/data/detail-pages/zakaznici/table-def/customerDetailContactsTableDef';
+	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import { writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
@@ -14,8 +14,14 @@
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import { flipItems } from '$lib/utils/flipItems';
+	import NewCustomerContactDialog
+		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
+	import { _ } from 'svelte-i18n'
+	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
 
 	export let data: { response: CustomerData };
+
+	let translationRoute = "routes.prodej.zakaznici.customer_detail";
 
 	let formValues = writable(data.response);
 	let items = [
@@ -32,13 +38,16 @@
 	]
 
 	const flipDurationMs = 200;
+	let openDialog: boolean = false;
 </script>
 
 
 
 <div class="h-full max-w-[1850px] overflow-auto p-3 md:p-4">
 	<div class="mb-3">
-		<DetailPageLabel name="Detail zákazníka 123"/>
+		<DetailPageLabel
+			name={`${ $_(translationRoute + '.label') } 123`}
+		/>
 	</div>
 
 	{#each items as item (item.id)}
@@ -58,7 +67,7 @@
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
-						<button class="">
+						<button on:click={() => openDialog = true}>
 							<Plus strokeWidth={2.5} class="size-4 text-albi-500"/>
 						</button>
 					</div>
@@ -73,7 +82,12 @@
 	{/each}
 </div>
 
-
+<NewCustomerContactDialog
+	formDef={newCustomerFormDef}
+	bind:dialogOpen={openDialog}
+	label="Nový kontakt zákazníka"
+	translationRoute={translationRoute}
+/>
 
 <style>
 	::-webkit-scrollbar {

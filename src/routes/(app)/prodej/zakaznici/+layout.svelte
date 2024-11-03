@@ -28,21 +28,21 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/${$selectedRowIdStore}`}
-				on:click={() => goto(`/prodej/zakaznici/${$selectedRowIdStore}`)}
-			>
-				Zákazník
-			</Tabs.Trigger>
-			<TabSeparator color="primary"/>
-
-			<Tabs.Trigger
-				class="font-bold"
 				disabled={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
 				value={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`}
 				on:click={() => goto(`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`)}
 			>
 				Prodejny
+			</Tabs.Trigger>
+			<TabSeparator color="primary"/>
+
+			<Tabs.Trigger
+				class="font-bold"
+				disabled={`/prodej/zakaznici/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/${$selectedRowIdStore}`}
+				on:click={() => goto(`/prodej/zakaznici/${$selectedRowIdStore}`)}
+			>
+				Zákazník
 			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>

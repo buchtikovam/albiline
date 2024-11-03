@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import { zakazniciColDef } from '$lib/data/ag-grid/column-def/zakaznici';
+	import { customerAgGridDef } from '$lib/data/ag-grid/column-def/customerAgGridDef';
 	import { isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 
@@ -15,6 +15,6 @@
 
 
 <AgGridSSWrapper 
-	columnDefinitions={zakazniciColDef}
+	columnDefinitions={customerAgGridDef}
 	url="http://10.2.2.10/albiline.test/api/v1/customers"
 />

@@ -3,4 +3,4 @@
 	export let field;
 </script>
 
-<label for={field} class="text-sm mx-auto line-clamp-1 w-full text-slate-500 ">{label}</label>
+<label for={field} class="text-sm mx-auto line-clamp-1 w-full text-slate-500 ">{@html label}</label>

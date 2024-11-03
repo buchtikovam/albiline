@@ -43,7 +43,7 @@
 
 
 <section
-	use:dragHandleZone="{{ items, flipDurationMs }}"
+	use:dragHandleZone="{{ items, flipDurationMs, type: colName }}"
 	on:consider={handleDndConsider}
 	on:finalize={handleDndFinalize}
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
@@ -54,24 +54,25 @@
 				<Accordion.Item value="item-1">
 					{#if item.hasDialog}
 					   <div class="flex justify-between pb-2">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
-								<SectionLabel name={item.label} />
-							</Accordion.Trigger>
+						   <div class="flex">
+							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
+								   <SectionLabel name={item.label} />
+							   </Accordion.Trigger>
 
-						   <div class="flex items-center gap-2">
 							   <button type="button" on:click={() => openedDialogStore.set("customer-detail-invoice-addresses")}>
 								   <svelte:component this={item.dialogIcon} class="size-4 text-albi-500"/>
 							   </button>
+						   </div>
 
-							   <div use:dragHandle aria-label="drag-handle" class="handle">
-								   <Grip class="size-4 text-slate-300"/>
-							   </div>
+
+						   <div use:dragHandle aria-label="drag-handle" class="handle">
+							   <Grip class="size-4 text-slate-300"/>
 						   </div>
 
 					   </div>
 					{:else}
 						<div class="flex justify-between items-center pb-2">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
+							<Accordion.Trigger hideChevron={true} class="text-albi-500 w-fit justify-start items-center gap-2">
 								<SectionLabel name={item.label} />
 							</Accordion.Trigger>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CustomerDetailInvoiceAdressesDialog from './detail-dialogs/CustomerDetailInvoiceAdressesDialog.svelte';
+	import CustomerDetailInvoiceAdressesDialog from './detail-dialogs/zakaznici/CustomerInvoiceAdressesDialog.svelte';
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
 	import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 	import MyFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/MyFiltersDialog.svelte';
