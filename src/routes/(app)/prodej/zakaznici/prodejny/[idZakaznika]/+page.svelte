@@ -57,7 +57,7 @@
 					<DetailPageLabel name="Prodejny zákazníka Fiori s.r.o. -162"/>
 				</Accordion.Trigger>
 
-				<Accordion.Content class="mt-2 rounded-lg">
+				<Accordion.Content class="mt-2 mb-2 rounded-lg">
 					<DetailSelectTable tableDef={customerAddressSelectTableDef} tableData={customerAddressSelectTableData} activeRowId={1}/>
 				</Accordion.Content>
 			</div>
@@ -68,7 +68,7 @@
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
-					<AutoForm autoform={customerAddressDetailFormDef} bind:formValues/>
+					<AutoForm formDef={customerAddressDetailFormDef} bind:formValues allowCrossColumnDND={true}/>
 				</div>
 			{/if}
 

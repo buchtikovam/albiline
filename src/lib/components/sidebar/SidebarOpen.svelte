@@ -1,6 +1,6 @@
 <script lang="ts">
 	import SidebarToggleButton from '$lib/components/sidebar/SidebarToggleButton.svelte';
-	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
+	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import ItemOpenFirstNoChild from './sidebar-items/ItemOpenFirstNoChild.svelte';

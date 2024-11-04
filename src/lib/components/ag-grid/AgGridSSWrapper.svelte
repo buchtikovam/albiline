@@ -19,7 +19,6 @@
 	import { get, writable } from 'svelte/store';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
 	import { addToEditedData } from "$lib/utils/addToEditedData";
-	import { generateRow } from "$lib/utils/generateRow";
 	import { goto } from "$app/navigation";
 	import { boolean } from "zod";
 	
@@ -267,21 +266,7 @@
 		}
 
 		if (action === RibbonActionEnum.NEW) { 
-			let rowData = [];
-			gridApi.forEachNode(node => rowData.push(node.data));
 
-			const newArray = [generateRow()].concat(rowData)
-			console.log(rowData);
-
-			gridApi.setGridOption("rowData", newArray);
-			
-			const transaction = {
-				addIndex: 0,
-				add: [ generateRow() ],
-			}; 
-
-			const result = gridApi!.applyServerSideTransactionAsync(transaction);
-			console.log(transaction, result);
 		}
 		
 		if (action === RibbonActionEnum.EDIT) {

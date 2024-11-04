@@ -8,7 +8,6 @@
 
 	let className: $$Props["class"] = undefined;
 	export let level: AccordionPrimitive.HeaderProps["level"] = 3;
-	export let hideChevron: boolean = false;
 	export { className as class };
 </script>
 
@@ -22,8 +21,7 @@
 		on:click
 	>
 		<slot />
-		{#if hideChevron === false}
-			<ChevronDown class="h-4 w-4 mr-2 transition-transform duration-200" />
-		{/if}
+
+		<ChevronDown class="h-4 w-4 mr-2 transition-transform duration-200" />
 	</AccordionPrimitive.Trigger>
 </AccordionPrimitive.Header>

@@ -4,13 +4,13 @@
 	import { Input } from '$lib/components/ui/input';
 	import { get } from 'svelte/store';
 	import deepcopy from 'deepcopy';
-	import { filterItemsSearch } from '$lib/utils/sidebar/filterItemsSearch';
+	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';
 	import { activeCategoryStore, favoriteItemsStore, recentItemsStore } from '$lib/stores/sidebarStore';
-	import { filterItemsCategory } from '$lib/utils/sidebar/filterItemsCategory';
+	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { allItems } from '$lib/data/page-components/sidebar';
 	import MobileSidebarItems from './MobileSidebarItems.svelte';
-	import { buttonBorderSwitch } from '$lib/utils/sidebar/buttonBorderSwitch';
+	import { buttonBorderSwitch } from '$lib/utils/components/sidebar/buttonBorderSwitch';
 	import { onMount } from 'svelte';
 
 	export let isOpen: boolean = false;

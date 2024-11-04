@@ -4,10 +4,11 @@
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
 	import { get, writable, type Writable } from 'svelte/store';
 
-	export let autoform: AutoForm;
+	export let formDef: AutoForm;
 	export let formValues: Writable<CustomerData>;
+	export let allowCrossColumnDND: boolean = true;
 
-	let autoformWritable = writable(autoform);
+	let autoformWritable = writable(formDef);
 	let colDef: AutoForm;
 
 	autoformWritable.subscribe((data) => {
@@ -23,6 +24,7 @@
 				bind:items={value}
 				bind:formValues={formValues}
 				autoformWritable={autoformWritable}
+				allowCrossColumnDND={allowCrossColumnDND}
 				colName={key}
 			/>
 		{/each}

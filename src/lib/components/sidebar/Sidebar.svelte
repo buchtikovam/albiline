@@ -9,9 +9,9 @@
 	import { allItems } from '$lib/data/page-components/sidebar';
 	import { Input } from '$lib/components/ui/input';
 	import { onMount } from 'svelte';
-	import { filterItemsSearch } from '$lib/utils/sidebar/filterItemsSearch';
-	import { buttonBorderSwitch } from '$lib/utils/sidebar/buttonBorderSwitch';
-	import { filterItemsCategory } from '$lib/utils/sidebar/filterItemsCategory';
+	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';
+	import { buttonBorderSwitch } from '$lib/utils/components/sidebar/buttonBorderSwitch';
+	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import deepcopy from 'deepcopy';
 	import CategoryButton from '$lib/components/sidebar/SidebarCategoryTabs.svelte';

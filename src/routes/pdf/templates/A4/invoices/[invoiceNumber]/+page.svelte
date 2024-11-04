@@ -3,7 +3,7 @@
 	import type { InvoiceData, InvoiceItem } from '$lib/types/pdfs/invoiceData';
 	import { formatDate } from '$lib/utils/formatting/formatDate';
 	import { currencyCZ } from '$lib/constants/currency-formatters/currency-cz';
-	import { getVAT } from '$lib/utils/getVAT';
+	import { getVAT } from '$lib/utils/formatting/getVAT';
 	import { albiInfo } from '$lib/constants/info/albiInfo';
 	import { A4 } from '$lib/constants/pdf/pageSizes';
 

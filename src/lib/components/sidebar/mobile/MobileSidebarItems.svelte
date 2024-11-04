@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
+	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import ItemOpenFirstNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenFirstNoChild.svelte';

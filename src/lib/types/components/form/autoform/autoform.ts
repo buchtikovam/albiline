@@ -1,5 +1,3 @@
-import type { ComponentType } from 'svelte';
-import type { Icon } from 'lucide-svelte';
 import { z } from 'zod';
 
 export type AutoForm = {
@@ -10,9 +8,7 @@ export type AutoFormSection = {
 	id: number,
 	label: string,
 	hasDialog?: boolean,
-	type?: string,
-	dialogId?: string,
-	dialogIcon?: ComponentType<Icon>,
+
 	isOpen: boolean,
 	sectionDef: AutoFormRow[]
 }

@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { savePresets } from '$lib/utils/ribbon/savePresets';
+	import { savePresets } from '$lib/utils/components/ribbon/savePresets';
 
 	/*
 		Dialog pro uložení nové šablony,

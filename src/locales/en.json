@@ -1,0 +1,38 @@
+{
+	"zod_errors" : {
+		"string" : {
+			"too_small" : "String must contain at least { min } characters",
+			"too_big" : "String must contain at most { max } characters",
+			"invalid_string" : {
+				"default" : "String is not in correct format",
+				"email" : "Please enter correct email"
+			}
+		},
+		"number" : {}
+
+	},
+
+
+
+	"components" : {
+		"sidebar" : {},
+		"ribbon" : {},
+		"header_menu" : {}
+	},
+
+	"routes" : {
+		"test" : {
+			"header" : "Test page",
+			"autoform" : {
+				"section1" : "Section 1",
+				"section2" : "Section 2",
+				"input_text" : "Text input",
+				"input_number" : "Number input",
+				"input_email" : "Email input",
+				"input_date" : "Date input",
+				"input_dropdown" : "Dropdown input",
+				"input_checkbox" : "Checkbox input"
+			}
+		}
+	}
+}

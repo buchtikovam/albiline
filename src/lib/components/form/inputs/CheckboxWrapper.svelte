@@ -3,7 +3,7 @@
 	import InputLabel from '../labels/InputLabel.svelte';
 
 	export let field: string;
-	export let value: boolean;
+	export let value: boolean = false;
 	export let label: string;
 </script>
 

@@ -2,7 +2,7 @@
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import * as Accordion from '$lib/components/ui/accordion/index.js';
-	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
+	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 
 	export let item;
 	export let isMobile: boolean;

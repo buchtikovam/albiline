@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { handleTabClick } from '$lib/utils/sidebar/handleTabClick';
+	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import { Separator } from '$lib/components/ui/separator';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import SidebarToggleButton from './SidebarToggleButton.svelte';

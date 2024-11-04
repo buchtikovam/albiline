@@ -1,4 +1,17 @@
 {
+	"zod_errors" : {
+		"string" : {
+			"too_small" : "Text musí mít alespoň { min } znaky",
+			"too_big" : "Text může mít maximálně { max } znaků",
+			"invalid_string" : {
+				"default" : "Text není ve správném formátu",
+				"email" : "Prosím zadejte správný e-mail"
+			}
+		},
+
+		"number" : {}
+	},
+
 	"components" : {
 		"sidebar" : {},
 		"ribbon" : {},
@@ -6,6 +19,20 @@
 	},
 
 	"routes" : {
+		"test" : {
+			"header" : "Testovací stránka",
+			"autoform" : {
+				"section1" : "Sekce 1",
+				"section2" : "Sekce 2",
+				"input_text" : "Textový input",
+				"input_number" : "Číselný input",
+				"input_date" : "Datum input",
+				"input_email" : "Emailový input",
+				"input_dropdown" : "Dropdown input",
+				"input_checkbox" : "Checkbox input"
+			}
+		},
+
 		"prodej" : {
 			"zakaznici" : {
 				"ag_grid_header" : {},
@@ -32,7 +59,7 @@
 						}
 					}
 				},
-				"adress_detail" : {},
+				"address_detail" : {},
 				"tabs" : {}
 			}
 		}

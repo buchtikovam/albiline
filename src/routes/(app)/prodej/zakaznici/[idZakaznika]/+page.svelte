@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
+	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
 	import {
 		customerDetailContactsTableData,
 		customerDetailContactsTableDef
 	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
+	import { _ } from 'svelte-i18n'
+	import { flipItems } from '$lib/utils/flipItems';
 	import { writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type { CustomerData } from "$lib/types/tables/zakaznici";
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	import DetailTable from '$lib/components/table/DetailTable.svelte';
-	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
-	import { flipItems } from '$lib/utils/flipItems';
 	import NewCustomerContactDialog
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
-	import { _ } from 'svelte-i18n'
-	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
+	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
+	import DetailTable from '$lib/components/table/DetailTable.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
 
 	export let data: { response: CustomerData };
 
@@ -54,7 +54,11 @@
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
-					<AutoForm autoform={customerDetailFormDef} bind:formValues/>
+					<AutoForm
+						allowCrossColumnDND={false}
+						formDef={customerDetailFormDef}
+						bind:formValues
+					/>
 				</div>
 			{/if}
 
