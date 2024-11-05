@@ -20,12 +20,19 @@
 	import InputWrapperNew from '$lib/components/form/inputs/InputWrapperNewText.svelte';
 	import InputWrapperNewText from '$lib/components/form/inputs/InputWrapperNewText.svelte';
 	import InputWrapperNewNumber from '$lib/components/form/inputs/InputWrapperNewNumber.svelte';
+	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
+	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 
 	export let items: AutoFormNewSection[];
 	export let colName: string;
 	export let translationRoute: string;
 	export let autoformWritable: Writable<AutoFormNew>;
 	export let allowCrossColumnDND: boolean = true
+	export let formValues: Writable<customerAddressType>;
+
+	type customerAddressType = {
+		[key: string] : any
+	}
 
 	const flipDurationMs = 300;
 
@@ -98,30 +105,39 @@
 												<InputWrapperNewText
 													label={$_(translationRoute + key)}
 													inputDef={value}
+													bind:value={$formValues[key]}
 												/>
 											{/if}
 
-											{#if value.type === "number"}
-												<InputWrapperNewNumber
-													label={$_(translationRoute + key)}
-													inputDef={value}
-												/>
-											{/if}
+											<!--{#if value.type === "number"}-->
+<!--												<InputWrapperNewNumber-->
+<!--													label={$_(translationRoute + key)}-->
+<!--													inputDef={value}-->
+<!--												/>-->
+<!--											{/if}-->
+										<!---->
+										<!--	{#if value.type === "checkbox"}-->
+										<!--		<div class="mt-5 w-full">-->
+										<!--			<CheckboxWrapper field={key} label={$_(translationRoute + key)} />-->
+										<!--		</div>-->
+										<!--	{/if}-->
 
-											{#if value.type === "checkbox"}
-												<div class="mt-5 w-full">
-													<CheckboxWrapper field={key} label={$_(translationRoute + key)} />
-												</div>
-											{/if}
+										<!--	{#if value.type === "dropdown"}-->
+										<!--		<DropdownWrapper options={value.dropdownOptions} label={$_(translationRoute + key)} />-->
+										<!--	{/if}-->
+
+										<!--	{#if value.type === "date"}-->
+										<!--		<DateWrapper label={$_(translationRoute + key)} />-->
+										<!--	{/if}-->
 										{/each}
 									</FormInputSection>
 								{/if}
 
 								{#if row.rowType === "checkbox"}
 									<FormCheckboxSection>
-<!--										{#each row.rowInputs as input}-->
-<!--											<CheckboxWrapper field={input.variableName} bind:value={$formValues[input.variableName]} label={input.label} />-->
-<!--										{/each}-->
+										{#each Object.entries(row.inputs) as [key]}
+											<CheckboxWrapper field={key} bind:value={$formValues[key]} label={$_(translationRoute + key)} />
+										{/each}
 									</FormCheckboxSection>
 								{/if}
 							{/each}

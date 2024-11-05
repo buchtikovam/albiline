@@ -2,8 +2,8 @@
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import * as Select from "$lib/components/ui/select/index.js";
 
-	export let value: string;
-	export let options: string[];
+	export let value: string = "A";
+	export let options: string[] = [];
 	export let label;
 
 	value = value.toUpperCase();
@@ -19,7 +19,7 @@
 			v && (value = v.value);
 		}}
 	>
-		<Select.Trigger class="focus-visible:ring-0 focus:ring-0">
+		<Select.Trigger>
 			<Select.Value  />
 		</Select.Trigger>
 

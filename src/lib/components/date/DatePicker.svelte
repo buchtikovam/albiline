@@ -10,7 +10,7 @@
 		Kalendář s inputem a popoverem pro výběr datumu
 	*/
 
-	export let dateValue: Date|undefined;
+	export let dateValue: Date|undefined = undefined;
 	export let label: string;
 
 	let value: DateValue|undefined;
@@ -29,7 +29,7 @@
 	bind:value={value}
 	locale="cz"
 >
-	<div class="flex w-full max-w-[220px] flex-col gap-0.5">
+	<div class="flex w-full flex-col gap-0.5">
 		<DatePicker.Label class="block select-none text-sm font-medium">
 			{ label }
 		</DatePicker.Label>
@@ -37,7 +37,7 @@
 
 		<DatePicker.Input
 			let:segments
-			class="flex h-input w-full max-w-[220px] h-10 select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground"
+			class="flex h-input w-full h-10 select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground"
 		>
 			{#each segments as { part, value }}
 				<div class="inline-block select-none">

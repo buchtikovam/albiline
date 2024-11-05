@@ -28,7 +28,7 @@ export type AutoFormNewRow = {
 export type AutoFormNewInput = {
 	type: "text" | "number" | "checkbox" | "date" | "dropdown" | "empty",
 	dropdownOptions?: string[],
-	schema: z.ZodType
+	schema?: z.ZodType
 }
 
 export type AutoFormSimple = {

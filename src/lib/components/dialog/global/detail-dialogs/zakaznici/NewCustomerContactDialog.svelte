@@ -8,8 +8,6 @@
 	export let label: string = "Nový kontakt";
 	export let formDef: AutoFormSimpleType;
 	export let translationRoute: string;
-
-	console.log(formDef);
 </script>
 
 

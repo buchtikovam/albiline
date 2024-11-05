@@ -10,7 +10,7 @@ export const newCustomerFormDef: AutoFormSimpleType = [
 				schema: z.string(),
 			},
 
-			"last_name": {
+			"surname": {
 				inputType: "text",
 				schema: z.string(),
 			},
@@ -19,12 +19,12 @@ export const newCustomerFormDef: AutoFormSimpleType = [
 	{
 		rowType: "full",
 		rowInputs: {
-			"phone": {
+			"mobile": {
 				inputType: "text",
 				schema: z.string(),
 			},
 
-			"landline": {
+			"phone": {
 				inputType: "text",
 				schema: z.string(),
 			},
@@ -48,45 +48,50 @@ export const newCustomerFormDef: AutoFormSimpleType = [
 	{
 		rowType: "checkbox",
 		rowInputs: {
-			"is_default": {
+			"isDefault": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"is_active": {
+			"enabled": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"send_invoice_in_pdf": {
+			"pdfInvoice": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"send_dl_in_pdf": {
+			"pdfDeliveryNote": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"send_invoice_in_csv": {
+			"csvInvoice": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"send_dl_in_csv": {
+			"csvDeliveryNote": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"az_svoz": {
+			"consignmentReturnInfo": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
 
-			"az_expedice": {
+			"consignmentInfo": {
 				inputType: "checkbox",
 				schema: z.boolean(),
 			},
+
+			"carrierInfo": {
+				inputType: "checkbox",
+				schema: z.boolean(),
+			}
 		}
 	},
 ]

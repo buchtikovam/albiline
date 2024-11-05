@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 	import {
-		customerDetailContactsTableData,
 		customerDetailContactsTableDef
 	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import {
 		customerAddressSelectTableData,
 		customerAddressSelectTableDef
 	} from '$lib/data/table-def/zakaznici/customerAddressSelectTableDef';
+	import { _ } from 'svelte-i18n'
 	import { flipItems } from '$lib/utils/flipItems';
-	import { writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
@@ -24,11 +24,23 @@
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import * as Accordion from "$lib/components/ui/accordion";
 	import * as Table from "$lib/components/ui/table";
+	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
+	import AutoFormNew from '$lib/components/form/AutoFormNew.svelte';
 
-	export let data: { response: CustomerData };
+	export let data;
 
 	let hasMultipleAdresses = true;
-	let formValues = writable(data.response);
+
+	let formValues = writable(data.response.item);
+	let contactValues = writable(data.response.contacts)
+
+	formValues.subscribe((data) => {
+		console.log(data);
+	})
+
+	contactValues.subscribe((data) => {
+		console.log(data);
+	})
 
 	let items = [
 		{
@@ -45,6 +57,7 @@
 
 	const flipDurationMs = 300;
 	let openDialog: boolean = false;
+	let translationRoute = "routes.prodej.zakaznici.address_detail";
 </script>
 
 
@@ -54,21 +67,33 @@
 		<Accordion.Item value="item-1" class="w-full mb-3">
 			<div class="w-full rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left gap-1">
-					<DetailPageLabel name="Prodejny zákazníka Fiori s.r.o. -162"/>
+					<DetailPageLabel
+						label={$_(translationRoute + ".header", { values: { customerName: $formValues.customerName, customerNodeCode: $formValues.customerNodeCode}})}
+					/>
 				</Accordion.Trigger>
 
 				<Accordion.Content class="mt-2 mb-2 rounded-lg">
-					<DetailSelectTable tableDef={customerAddressSelectTableDef} tableData={customerAddressSelectTableData} activeRowId={1}/>
+					<DetailSelectTable
+						tableDef={customerAddressSelectTableDef}
+						tableData={customerAddressSelectTableData}
+						activeRowId={1}
+					/>
 				</Accordion.Content>
 			</div>
 		</Accordion.Item>
 	</Accordion.Root>
 
+
 	{#each items as item (item.id)}
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
-					<AutoForm formDef={customerAddressDetailFormDef} bind:formValues allowCrossColumnDND={true}/>
+					<AutoFormNew
+						formDef={customerAddressDetailFormDef}
+						translationRoute={translationRoute + ".autoform."}
+						allowCrossColumnDND={true}
+						bind:formValues
+					/>
 				</div>
 			{/if}
 
@@ -87,8 +112,9 @@
 					</div>
 
 					<DetailTable
+						translationRoute="routes.prodej.zakaznici"
 						tableDef={customerDetailContactsTableDef}
-						tableData={customerDetailContactsTableData}
+						bind:tableData={contactValues}
 					/>
 				</div>
 			{/if}
@@ -96,10 +122,15 @@
 	{/each}
 </div>
 
+
 <NewCustomerContactDialog
+	formDef={newCustomerFormDef}
 	bind:dialogOpen={openDialog}
 	label="Nový kontakt prodejny"
+	translationRoute={"routes.prodej.zakaznici.customer_and_address_contact"}
 />
+
+
 
 <style>
 	::-webkit-scrollbar {

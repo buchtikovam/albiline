@@ -4,6 +4,7 @@
 	import DndColumnNew from '$lib/components/form/DndColumnNew.svelte';
 
 	export let formDef: AutoFormNew;
+	export let formValues
 	export let translationRoute: string;
 	export let allowCrossColumnDND: boolean = true;
 
@@ -25,6 +26,7 @@
 				colName={key}
 				allowCrossColumnDND={allowCrossColumnDND}
 				translationRoute={translationRoute}
+				bind:formValues
 			/>
 		{/each}
 	</div>

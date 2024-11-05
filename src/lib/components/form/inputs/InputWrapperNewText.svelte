@@ -3,7 +3,7 @@
 	import type { AutoFormNewInput } from '$lib/types/components/form/autoform/autoformNew';
 	import { _ } from 'svelte-i18n';
 
-	export let value: string|number = 0;
+	export let value: string = "";
 	export let label;
 	export let inputDef: AutoFormNewInput;
 
@@ -37,14 +37,11 @@
 							errorMessage = $_('zod_errors.string.invalid_string.email');
 							break;
 						default:
-							errorMessage = $_('zod_errors.string.invalid_string.default');
+							errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation }});
 					}
 					break;
 			}
 		}
-
-
-		// console.log(result);
 	}
 </script>
 

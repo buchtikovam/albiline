@@ -4,12 +4,16 @@
 			"too_small" : "Text musí mít alespoň { min } znaky",
 			"too_big" : "Text může mít maximálně { max } znaků",
 			"invalid_string" : {
-				"default" : "Text není ve správném formátu",
+				"default" : "Text je ve špatném formátu. Očekáván formát: { format }",
 				"email" : "Prosím zadejte správný e-mail"
 			}
 		},
 
-		"number" : {}
+		"number" : {
+			"invalid_type" : "",
+			"too_small" : "",
+			"too_big" : ""
+		}
 	},
 
 	"components" : {
@@ -33,36 +37,82 @@
 			}
 		},
 
+
+
 		"prodej" : {
 			"zakaznici" : {
-				"ag_grid_header" : {},
-				"customer_detail" : {
-					"label" : "Detail zákazníka",
-					"new_customer_form": {
-						"label_customer" : "Nový kontakt zákazníka",
-						"label_address" : "Nový kontakt prodejny",
-						"fields" : {
-							"name" : "Jméno",
-							"last_name" : "Příjmení",
-							"phone" : "Mobil",
-							"landline" : "Pevná linka",
-							"email" : "E-mail",
-							"note" : "Poznámka",
-							"is_default" : "Výchozí",
-							"is_active" : "Aktivní",
-							"send_invoice_in_pdf" : "FA e-mailem v PDF",
-							"send_invoice_in_csv" : "FA e-mailem v CSV",
-							"send_dl_in_pdf" : "DL e-mailem v PDF",
-							"send_dl_in_csv" : "DL e-mailem v CSV",
-							"az_svoz" : "AZ o svozu zásilky",
-							"az_expedice" : "AZ o expedici zásilky"
-						}
-					}
+				"layout_tabs" : {
+					"list" : "Seznam",
+					"address" : "Prodejny",
+					"customer" : "Zákazník"
 				},
-				"address_detail" : {},
-				"tabs" : {}
+
+				"ag_grid" : {},
+
+				"customer_detail" : {
+					"header" : "Detail zákazníka { customer_id }",
+					"autoform" : {},
+					"contacts_table_label" : "Kontakty",
+					"new_contact": "Nový kontakt zákazníka"
+				},
+
+				"address_detail" : {
+					"header" : "Prodejny zákazníka { customerName } ({ customerNodeCode })",
+					"autoform" : {
+						"section_addressDetail" : "Detail adresy",
+						"name" : "Jméno",
+						"customerAddressCode" : "Číslo prodejny",
+						"companyName" : "Společnost",
+						"street" : "Ulice",
+						"city" : "Město",
+						"postalCode" : "PSČ",
+						"countryCode" : "Země",
+						"section_oz" : "OZ a oblasti",
+						"dealerCode" : "OZ",
+						"areaCode" : "OM",
+						"areaId" : "Oblast",
+						"section_settings" : "Nastavení",
+						"paymentTypeCode" : "Typ platby",
+						"dueDays" : "Splatnost",
+						"invoiceCopies" : "Počet faktur",
+						"deliveryNoteCopies" : "Počet dodacích listů",
+						"customerRank" : "Bonita",
+						"retailStoreTypeId" : "Typ prodejny",
+						"customerStoreCode" : "Id zákazníka dle zákazníka",
+						"customerStoreEan" : "EAN zákazníka",
+						"packingNote" : "Poznámka pro balení",
+						"consignmentSaleEnabled" : "Komise",
+						"isReturnAllowed" : "Vratka povolena",
+						"isForConsignmentReturn" : "Kontrola u vratek",
+						"useAssortedEanCodes" : "Asortní EANy",
+						"pickingBoxPacking" : "Balit do KLT",
+						"splitOrderByFood" : "Food/Nonfood",
+						"section_other" : "Ostatní",
+						"note" : "Poznámka"
+					},
+					"contacts_table_label" : "Kontakty",
+					"new_contact" : "Nový kontakt prodejny"
+				},
+
+				"customer_and_address_contact" : {
+					"name" : "Jméno",
+					"surname" : "Příjmení",
+					"mobile" : "Mobil",
+					"phone" : "<span class=\"whitespace-nowrap\">Pevná linka</span>",
+					"email" : "E-mail",
+					"note" : "Poznámka",
+					"isDefault" : "Výchozí",
+					"enabled" : "Aktivní",
+					"pdfInvoice" : "FA <span class=\"whitespace-nowrap\">e-mailem</span> v PDF",
+					"csvInvoice" : "FA <span class=\"whitespace-nowrap\">e-mailem</span> v CSV",
+					"pdfDeliveryNote" : "DL <span class=\"whitespace-nowrap\">e-mailem</span> v PDF",
+					"csvDeliveryNote" : "DL <span class=\"whitespace-nowrap\">e-mailem</span> v CSV",
+					"consignmentReturnInfo" : "AZ o svozu zásilky",
+					"consignmentInfo" : "AZ o expedici zásilky",
+					"carrierInfo" : "Kontakt pro přepravce",
+					"delete_contact" : "Smazat kontakt"
+				}
 			}
 		}
-
 	}
 }

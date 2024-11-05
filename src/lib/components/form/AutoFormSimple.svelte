@@ -22,7 +22,7 @@
 						{#if value.inputType === "text" || value.inputType === "number"}
 							<InputWrapper
 								value={""}
-								label={$_(translationRoute + '.new_customer_form.fields.' + key)}
+								label={$_(translationRoute + '.' + key)}
 								type={value.inputType}
 								schema={value.schema}
 							/>
@@ -38,7 +38,7 @@
 						<CheckboxWrapper
 							field={key}
 							value={false}
-							label={$_(translationRoute + '.new_customer_form.fields.' + key)}
+							label={$_(translationRoute + '.' + key)}
 						/>
 					{/each}
 				</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	export let name;
+	export let label;
 </script>
 
 <p class="font-bold w-full text-lg">
-	{name}
+	{ label }
 </p>

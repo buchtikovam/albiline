@@ -3,10 +3,12 @@
 	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { goto } from '$app/navigation';	
+	import { goto } from '$app/navigation';
+	import { _ } from 'svelte-i18n'
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 
 	let disableTabs: boolean = true;
+	let translationRouteTabs = "routes.prodej.zakaznici.layout_tabs"
 
 	editedDataStore.subscribe(data => disableTabs = data.length > 0)
 </script>
@@ -22,7 +24,7 @@
 				value={"/prodej/zakaznici"}
 				on:click={() => goto("/prodej/zakaznici")}
 			>
-				Seznam
+				{$_(translationRouteTabs + ".list")}
 			</Tabs.Trigger>
 			<TabSeparator color="primary"/>
 
@@ -32,7 +34,7 @@
 				value={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`}
 				on:click={() => goto(`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`)}
 			>
-				Prodejny
+				{$_(translationRouteTabs + ".address")}
 			</Tabs.Trigger>
 			<TabSeparator color="primary"/>
 
@@ -42,7 +44,7 @@
 				value={`/prodej/zakaznici/${$selectedRowIdStore}`}
 				on:click={() => goto(`/prodej/zakaznici/${$selectedRowIdStore}`)}
 			>
-				Zákazník
+				{$_(translationRouteTabs + ".customer")}
 			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>

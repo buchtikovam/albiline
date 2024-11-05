@@ -3,26 +3,12 @@
 	import Trash2 from 'lucide-svelte/icons/trash-2';
 	import * as ContextMenu from "$lib/components/ui/context-menu";
 	import * as Table from "$lib/components/ui/table";
+	import { _ } from 'svelte-i18n'
 
 	export let tableDef;
 	export let tableData;
+	export let translationRoute;
 
-	const rowData: {
-		default: boolean;
-		active: boolean;
-		name: string;
-		lastName: string;
-		phoneNumber: string;
-		pevnaLinka: string;
-		email: string;
-		note: string;
-		faPDF: boolean;
-		faCSV: boolean;
-		dlPDF: boolean;
-		dlCSV: boolean;
-		azSvoz: boolean;
-		azExpedice: boolean;
-	}[] = tableData;
 </script>
 
 
@@ -32,21 +18,21 @@
 			<Table.Header class="border-b">
 				{#each tableDef as column}
 					<Table.Head>
-						{@html column.headerName}
+						{@html $_(translationRoute + ".customer_and_address_contact." + column.field)}
 					</Table.Head>
 				{/each}
 			</Table.Header>
 
 			<Table.Body>
-				{#each rowData as row}
+				{#each $tableData as row}
 					<Table.Row class="contactRow">
 						{#each tableDef as column}
 							{#if column.type === 'checkbox'}
-								<Table.Cell>
+								<Table.Cell >
 									<div class="w-full flex">
 										<Checkbox
 											class="bg-slate-50"
-											bind:checked={row[column.variableName]}
+											bind:checked={row[column.field]}
 										/>
 									</div>
 								</Table.Cell>
@@ -54,8 +40,8 @@
 							{/if}
 
 							{#if column.type === 'text'}
-								<Table.Cell>
-									{row[column.variableName]}
+								<Table.Cell class="max-w-60">
+									{row[column.field]}
 								</Table.Cell>
 							{/if}
 						{/each}
