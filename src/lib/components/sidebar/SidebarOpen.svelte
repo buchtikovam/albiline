@@ -8,6 +8,7 @@
 	import ItemOpenThirdNoChild from './sidebar-items/ItemOpenThirdNoChild.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
+	import { _ } from 'svelte-i18n'
 
 	export let searchTerm: string;
 	export let filteredItems: SidebarItem[];
@@ -19,7 +20,7 @@
 <Accordion.Root
 	class="flex-1"
 	multiple
-	value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.value) : []}
+	value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.field) : []}
 >
 	<div class="h-full overflow-auto text-sm">
 		{#each filteredItems as item}
@@ -28,7 +29,7 @@
 				{#if item.children.length > 0 }
 					<ContextMenu.Root>
 
-						<Accordion.Item value={item.value}>
+						<Accordion.Item value={item.field}>
 							<ContextMenu.Trigger>
 								<Accordion.Trigger class="hover:bg-muted/50 rounded-md flex-1">
 									<div
@@ -38,7 +39,7 @@
 											href={item.href}
 											on:click={() => handleTabClick(item, 0)}
 										>
-											{item.name}
+											{$_('components.sidebar.' + item.field)}
 										</a>
 									</div>
 								</Accordion.Trigger>
@@ -48,13 +49,13 @@
 								<!-- accordiony druhé vrstvy -->
 								<Accordion.Root
 									multiple
-									value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.value) : []}
+									value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.field) : []}
 								>
 									{#each item.children.filter((child) => !child.hide) as secondChild}
 										<!-- accordiony druhé vrstvy (child item má children položky) -->
 										{#if secondChild.children.length > 0}
 											<ContextMenu.Root>
-												<Accordion.Item value={secondChild.value}>
+												<Accordion.Item value={secondChild.field}>
 													<ContextMenu.Trigger>
 														<Accordion.Trigger
 															class="hover:bg-muted/50 rounded-md flex-1">
@@ -64,7 +65,7 @@
 																	href={secondChild.href}
 																	on:click={() => handleTabClick(secondChild, 1)}
 																>
-																	{secondChild.name}
+																	{$_('components.sidebar.' + secondChild.field)}
 																</a>
 															</div>
 														</Accordion.Trigger>
@@ -76,10 +77,10 @@
 															<ContextMenu.Root>
 																<Accordion.Root
 																	multiple
-																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
+																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.field) : []}
 																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<ItemOpenThirdNoChild item={thirdChild} />
+																		<ItemOpenThirdNoChild isMobile={false} item={thirdChild} />
 																	{/each}
 																</Accordion.Root>
 															</ContextMenu.Root>
@@ -87,18 +88,18 @@
 													</Accordion.Content>
 												</Accordion.Item>
 
-												<ContextMenuContent itemValue={secondChild.value} />
+												<ContextMenuContent itemValue={secondChild.field} />
 											</ContextMenu.Root>
 										{:else}
 											<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-											<ItemOpenSecondNoChild item={secondChild} />
+											<ItemOpenSecondNoChild isMobile={false} item={secondChild} />
 										{/if}
 									{/each}
 								</Accordion.Root>
 							</Accordion.Content>
 						</Accordion.Item>
 
-						<ContextMenuContent itemValue={item.value} />
+						<ContextMenuContent itemValue={item.field} />
 					</ContextMenu.Root>
 
 				{:else}

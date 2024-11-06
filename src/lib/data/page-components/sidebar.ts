@@ -7,8 +7,7 @@ import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 
 export const allItems: SidebarItem[] = [
 	{
-		name: 'Průvodní list',
-		value: 'pruvodni-list',
+		field: 'pruvodni_list',
 		href: '/pruvodni-list',
 		open: false,
 		hide: false,
@@ -16,16 +15,14 @@ export const allItems: SidebarItem[] = [
 		children: [],
 	},
 	{
-		name: 'Sklad',
-		value: 'sklad',
+		field: 'sklad',
 		href: '/sklad',
 		open: false,
 		hide: false,
 		icon: Warehouse,
 		children: [
 			{
-				name: 'Hodinovka',
-				value: 'hodinovka',
+				field: 'hodinovka',
 				href: '/sklad/hodinovka',
 				open: false,
 				hide: false,
@@ -33,8 +30,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Příjem a výdej',
-				value: 'prijem-a-vydej',
+				field: 'prijem_a_vydej',
 				href: '/sklad/prijem-a-vydej',
 				open: false,
 				hide: false,
@@ -42,8 +38,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Stav skladu',
-				value: 'stav-skladu',
+				field: 'stav_skladu',
 				href: '/sklad/stav-skladu',
 				open: false,
 				hide: false,
@@ -51,8 +46,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Zásilky',
-				value: 'zasilky',
+				field: 'zasilky',
 				href: '/sklad/zasilky',
 				open: false,
 				hide: false,
@@ -62,16 +56,14 @@ export const allItems: SidebarItem[] = [
 		]
 	},
 	{
-		name: 'Výroba',
-		value: 'vyroba',
+		field: 'vyroba',
 		href: '/vyroba',
 		open: false,
 		hide: false,
 		icon: Hammer,
 		children: [
 			{
-				name: 'Motivy',
-				value: 'motivy',
+				field: 'motivy',
 				href: '/vyroba/motivy',
 				open: false,
 				hide: false,
@@ -79,8 +71,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Raznice',
-				value: 'raznice',
+				field: 'raznice',
 				href: '/vyroba/raznice',
 				open: false,
 				hide: false,
@@ -88,8 +79,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Obálky',
-				value: 'obalky',
+				field: 'obalky',
 				href: '/vyroba/obalky',
 				open: false,
 				hide: false,
@@ -97,8 +87,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Texty',
-				value: 'texty',
+				field: 'texty',
 				href: '/vyroba/texty',
 				open: false,
 				hide: false,
@@ -108,16 +97,14 @@ export const allItems: SidebarItem[] = [
 		]
 	},
 	{
-		name: 'Prodej',
-		value: 'prodej',
+		field: 'prodej',
 		href: '/prodej',
 		open: false,
 		hide: false,
 		icon: HandCoins,
 		children: [
 			{
-				name: 'Zákazníci',
-				value: 'zakaznici',
+				field: 'zakaznici',
 				href: '/prodej/zakaznici',
 				open: false,
 				hide: false,
@@ -125,8 +112,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Zákazníci SK',
-				value: 'zakaznici-sk',
+				field: 'zakaznici_sk',
 				href: '/prodej/zakaznici-sk',
 				open: false,
 				hide: false,
@@ -134,8 +120,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Přehledy',
-				value: 'prehledy',
+				field: 'prehledy',
 				href: '/prodej/prehledy',
 				open: false,
 				hide: false,
@@ -143,8 +128,7 @@ export const allItems: SidebarItem[] = [
 				children: [],
 			},
 			{
-				name: 'Analýza prodejů',
-				value: 'analyza-prodeju',
+				field: 'analyza_prodeju',
 				href: '/prodej/analyza-prodeju',
 				open: false,
 				hide: false,
@@ -154,65 +138,3 @@ export const allItems: SidebarItem[] = [
 		]
 	}
 ];
-
-export const recentItems: SidebarItem[] = [
-	{
-		name: 'Průvodní nedávný list',
-		value: 'pruvodni-list',
-		href: '/',
-		open: false,
-		hide: false,
-		icon: TableProperties,
-		children: [],
-	},
-];
-
-export const favoriteItems: SidebarItem[] = [
-	{
-		name: 'Průvodní oblíbený list',
-		value: 'pruvodni-list',
-		href: '/',
-		open: false,
-		hide: false,
-		icon: TableProperties,
-		children: [],
-	},
-	{
-		name: 'Sklad',
-		value: 'sklad',
-		href: '/sklad',
-		open: false,
-		hide: false,
-		icon: Warehouse,
-		children: [
-			{
-				name: 'Hodinovka',
-				value: 'hodinovka',
-				href: '/sklad/hodinovka',
-				open: false,
-				hide: false,
-				icon: null,
-				children: [],
-			},
-			{
-				name: 'Příjem a výdej',
-				value: 'prijem-a-vydej',
-				href: '/sklad/prijem-a-vydej',
-				open: false,
-				hide: false,
-				icon: null,
-				children: [],
-			},
-			{
-				name: 'Stav skladu',
-				value: 'stav-skladu',
-				href: '/sklad/stav-skladu',
-				open: false,
-				hide: false,
-				icon: null,
-				children: [],
-			}
-		]
-	}
-];
-

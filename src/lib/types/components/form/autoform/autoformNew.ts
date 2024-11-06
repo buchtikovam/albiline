@@ -1,6 +1,7 @@
 import type { ComponentType } from 'svelte';
 import type { Icon } from 'lucide-svelte';
 import { z } from 'zod';
+import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 
 
 export type AutoFormNew = {
@@ -11,7 +12,7 @@ export type AutoFormNewSection = {
 	id: string,
 	field: string,
 	hasDialog?: boolean,
-	dialogId?: string,
+	dialogId?: GlobalDialogOptions,
 	dialogTitle?: string,
 	dialogIcon?: ComponentType<Icon>,
 	isOpen: boolean,

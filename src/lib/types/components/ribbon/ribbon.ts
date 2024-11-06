@@ -4,17 +4,20 @@ import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
 
+export type RibbonSeparator = {
+	type: "separator"
+}
+
 export type RibbonItem = {
 	type: RibbonTypeEnum,
-	name?: string,
+	field: string,
 	icon?: ComponentType<Icon>,
-	action?: RibbonActionEnum,
+	action: RibbonActionEnum,
+	hide: boolean,
 	children?: RibbonSubItem[],
-	done?: boolean,
 }
 
 export type RibbonSubItem = {
-	name: string,
+	field: string,
 	action: RibbonActionEnum,
-	done?: boolean,
 }

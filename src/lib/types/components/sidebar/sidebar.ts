@@ -3,17 +3,16 @@ import type { Icon } from 'lucide-svelte';
 
 
 export type SidebarItem = {
-	name: string;
-	value: string
+	field: string;
 	href: string;
 	open: boolean;
 	hide: boolean;
 	icon: null|ComponentType<Icon>;
-	children: SidebarItem[],
+	children: SidebarItem[];
 }
 
 export type HeaderTab = {
-	name: string;
+	field: string;
 	url: string;
 	closingState: string;
 	treeDepth: number;

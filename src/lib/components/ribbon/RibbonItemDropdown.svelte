@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n'
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -34,7 +35,7 @@
 						/>
 						<ChevronDown class="size-2 " />
 					</span>
-					{ribbonItem.name}
+					{$_('components.ribbon.' + ribbonItem.field)}
 				</button>
 			</DropdownMenu.Trigger>
 		</div>
@@ -43,7 +44,7 @@
 			{#each children as ribbonChild}
 				<DropdownMenu.Item class="w-full">
 					<button on:click={() => setRibbonAction(ribbonChild.action)}>
-						{ribbonChild.name}
+						{$_('components.ribbon.' + ribbonChild.field)}
 					</button>
 				</DropdownMenu.Item>
 			{/each}
@@ -64,7 +65,7 @@
 				</Tooltip.Trigger>
 
 				<Tooltip.Content>
-					{ribbonItem.name}
+					{$_('components.ribbon.' + ribbonItem.field)}
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</DropdownMenu.Trigger>
@@ -73,7 +74,7 @@
 			{#each children as ribbonChild}
 				<DropdownMenu.Item class="w-full">
 					<button on:click={() => setRibbonAction(ribbonChild.action)}>
-						{ribbonChild.name}
+						{$_('components.ribbon.' + ribbonChild.field)}
 					</button>
 				</DropdownMenu.Item>
 			{/each}

@@ -4,6 +4,7 @@
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import SidebarToggleButton from './SidebarToggleButton.svelte';
 	import Search from 'lucide-svelte/icons/search';
+	import { _ } from 'svelte-i18n'
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 
@@ -26,7 +27,7 @@
 			</button>
 
 			<Tooltip.Content class="ml-12 mt-12">
-				Vyhledat
+				{$_('components.sidebar.search_tooltip')}
 			</Tooltip.Content>
 		</Tooltip.Root>
 
@@ -39,7 +40,6 @@
 			{#if item.children.length > 0}
 				<Tooltip.Root openDelay={800}>
 					<Tooltip.Trigger>
-
 						<Popover.Root>
 							<Popover.Trigger>
 								<div
@@ -55,7 +55,7 @@
 										class="hover:bg-muted/50 rounded px-2 py-1.5"
 										on:click={() => handleTabClick(child, 1)}
 									>
-										{child.name}
+										{$_('components.sidebar.' + child.field)}
 									</a>
 
 									{#if child.children.length > 0}
@@ -65,7 +65,7 @@
 												class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
 												on:click={() => handleTabClick(scndChild, 2)}
 											>
-												{scndChild.name}
+												{$_('components.sidebar.' + scndChild.field)}
 											</a>
 										{/each}
 									{/if}
@@ -75,7 +75,7 @@
 					</Tooltip.Trigger>
 
 					<Tooltip.Content class="ml-12 mt-12">
-						{item.name}
+						{$_('components.sidebar.' + item.field)}
 					</Tooltip.Content>
 				</Tooltip.Root>
 
@@ -93,7 +93,7 @@
 					</Tooltip.Trigger>
 
 					<Tooltip.Content class="ml-12 mt-12">
-						{item.name}
+						{$_('components.sidebar.' + item.field)}
 					</Tooltip.Content>
 				</Tooltip.Root>
 			{/if}

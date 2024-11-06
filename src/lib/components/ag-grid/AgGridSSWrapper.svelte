@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { filtersStore, defaultColDef, editedDataStore, fulltextFilterValueStore, presetStore, selectedFilterStore, selectedPresetStore, selectedRowIdStore, setColDefToDefault } from "$lib/stores/tableStore";
+	import {
+		filtersStore,
+		defaultColDef,
+		editedDataStore,
+		fulltextFilterValueStore,
+		presetStore,
+		selectedFilterStore,
+		selectedPresetStore,
+		setColDefToDefault,
+		selectedRowStore
+	} from '$lib/stores/tableStore';
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
@@ -64,48 +74,57 @@
 		},
 
 		onRowSelected: (event) => {
-			selectedRowIdStore.set(event.data.customerNodeCode)
+			selectedRowStore.set({
+				customerAddressCode: event.data.customerAddressCode,
+				customerNodeCode: event.data.customerNodeCode
+			})
 		},
 
 		onCellDoubleClicked(event) {
 			console.log(event.column.colId);
 			console.log(event.data.customerNodeCode);
-			selectedRowIdStore.set(event.data.customerNodeCode)
-			
-			if (get(editedDataStore).length === 0) {
+
+			selectedRowStore.set({
+				customerAddressCode: event.data.customerAddressCode,
+				customerNodeCode: event.data.customerNodeCode
+			})
+
+			if (event.column.colId === "customerAddressCode") {
+				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`)
+			}
+
+			if (event.column.colId === "customerNodeCode") {
 				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`)
-			} else {
-				customToast("Warning", "Error")
 			}
 		},
 
-		onBodyScroll(event) {
-			if (event.top > 0) {
-				updateLastRow.set(true)
-			}
-		},
-
-		onBodyScrollEnd() {
-			updateLastRow.set(false)
-		},
+		// onBodyScroll(event) {
+		// 	if (event.top > 0) {
+		// 		updateLastRow.set(true)
+		// 	}
+		// },
+		//
+		// onBodyScrollEnd() {
+		// 	updateLastRow.set(false)
+		// },
 
 		columnDefs: columnDefinitions,
 		suppressExcelExport: true,
 		suppressCsvExport: true,
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
-		ensureDomOrder: true,
 		suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
-		rowBuffer: 1,
 		cacheBlockSize: 100,
 	}
 
 	editedDataStore.subscribe((data) => {
 		console.log(data)
-		
 	})
+
+	selectedRowStore.subscribe((data) => console.log(data))
+
 
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
@@ -113,8 +132,6 @@
 	const rowBatchSize = 100;
 	let lastRow: number|null = null;
 	let runCount = 0;
-	
-	updateLastRow.subscribe(bool => console.log(bool))
 
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
@@ -148,7 +165,7 @@
 			updatedParamsRequest.fulltext = get(fulltextFilterValueStore)
 			updatedParamsRequest.lastRow = lastRow;
 			updatedParamsRequest.rowBatchSize = rowBatchSize;
-			console.log(JSON.stringify(updatedParamsRequest, null, 1));
+			console.log(JSON.stringify(updatedParamsRequest, null, 2));
 
 			// AG-Grid SSRM
 			fetch(url
@@ -160,11 +177,11 @@
 			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
-				params.success({ rowData: response.items });
 				console.log(response.items);
-				if (get(updateLastRow) === true) {
+				params.success({ rowData: response.items });
+				// if (get(updateLastRow) === true) {
 					lastRow = response.items.slice(-1)[0].rowNumber || null;
-				}
+				// }
 			})
 			.catch(error => {
 				console.log(error);
@@ -230,7 +247,7 @@
 
 		let timer;
 		fulltextFilterValueStore.subscribe((data) => {
-			if (data !== undefined) {
+			if (data) {
 				clearTimeout(timer)
 				timer = setTimeout(() => {
 					lastRow = null;

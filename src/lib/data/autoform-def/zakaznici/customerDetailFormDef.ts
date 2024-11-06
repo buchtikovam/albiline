@@ -1,481 +1,314 @@
-import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
 import Pencil from "lucide-svelte/icons/pencil";
 import { z } from "zod";
+import { v4 as uuidv4 } from 'uuid';
+import type { AutoFormNew } from '$lib/types/components/form/autoform/autoformNew';
 
 
 
-// "customers": [
-// 	"details": [
-// 		"form": [
-// 			"section_1": [
-// 				"label": "sekce první",
-// 				"fields": [
-// 					"first_name": "Jméno",
-// 				],
-// 			]
-// 		]
-// 	]
-// ]
-
-
-//
-// const form = [
-// 	"section_1": [
-// 		"first_name": [
-// 			size: 3,
-// 			schema: z.string().max(250),
-// 		],
-// 		"last_name": [
-// 			size: 3,
-// 			schema: z.enum(["Salmon", "Tuna", "Trout"]),
-// 		],
-// 		"stores": [
-// 			size: 3,
-// 			schema: z.string().required(),
-// 		],
-// 	},
-// 	"section_2": [
-// 		"order_count": [
-// 			size: 3,
-// 			schema: z.number().max(250),
-// 		],
-// 		"last_name": [
-// 			size: 3,
-// 			schema: z.string().max(250),
-// 		],
-// 	},
-// };
-//
-//
-// const form = z.object({
-// 	z.discriminatedUnion("section_1", [
-// 		first_name: z.string().max(250).
-// 	})
-// })
-//
-// //
-// // //forms[0].["first_name"]
-// //
-// // foreach(sections as seciton => key)  {
-// // 	foreach(setions.fields as field => $key) {
-// // 		// key je "first_name"
-// // 		// field je [size:3,schema:Z]
-// //
-//
-// stores = wawait fetch('api/stores').json();
-//
-// field.schema.enum(stores)
-//
-// field.schema.optins
-
-
-// 		<Input on:change="field.schema.parse($this.value)"
-// 	}
-//
-// }
-
-// {
-// 	first_name: "pepík"
-// }
-
-// export const zakazniciDetailFormDef: AutoForm = [
-// 	"Sekce 1" : {
-// 		id: 1,
-
-
-// 	},
-
-// ]
-
-
-export const customerDetailFormDef: AutoForm = {
+export const customerDetailFormDef: AutoFormNew = {
 	col1 : [
-		{ // ?section 5
-			id: 5,
-			label: "Fakturační adresa",
+		{
+			field: "section_fakturacni_adresa",
+			id: uuidv4(),
 			hasDialog: true,
 			dialogId: "customer-detail-invoice-addresses",
 			dialogIcon: Pencil,
 			isOpen: true,
-			sectionDef: [
-				{ // ?row 4
-					id: 5,
+			rows: [
+				{ // row 1
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "Název",
+					inputs: {
+						"name": {
 							type: "text",
-							variableName: "i_name",
+							schema: z.string(),
 						},
-						{ // ?input 1
-							label: "Společnost",
+						"companyName": {
 							type: "text",
-							variableName: "i_dic",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-
-				{ // ?row 1
-					id: 1,
+				{ // row 2
 					rowType: "full",
-					rowInputs: [
-
-						{ // ?input 2
-							label: "Ulice",
+					inputs: {
+						"street": {
 							type: "text",
-							variableName: "i_street",
+							schema: z.string(),
 						},
-						{ // ?input 1
-							label: "Město",
+						"city": {
 							type: "text",
-							variableName: "i_city",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-				{ // ?row 2
-					id: 2,
+				{ // row 3
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 2
-							label: "PSČ",
+					inputs: {
+						"postalCode": {
 							type: "text",
-							variableName: "i_postalCode",
+							schema: z.string(),
 						},
-						{ // ?input 1
-							label: "Země",
+						"countryCode": {
 							type: "text",
-							variableName: "i_country",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-				{ // ?row 3
-					id: 3,
+				{ // row 4
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 2
-							label: "IČO",
+					inputs: {
+						"ico": {
 							type: "text",
-							variableName: "i_ico",
+							schema: z.string(),
 						},
-						{ // ?input 1
-							label: "DIČ",
+						"dic": {
 							type: "text",
-							variableName: "i_dic",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-				{ // ?row 4
-					id: 4,
+				{ // row 5
 					rowType: "full",
-					rowInputs: [
-
-						{ // ?input 2
-							label: "IčDPH",
+					inputs: {
+						"icDph": {
 							type: "text",
-							variableName: "i_icDph",
+							schema: z.string(),
 						},
-						{
-							type: "empty"
-						}
-					]
-				},
-
-			]
-		},
-
-		{ // ?section 5
-			id: 3,
-			label: "Nastavení fakturace",
-			isOpen: true,
-			sectionDef: [
-				{ // ?row 1
-					id: 1,
-					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "Typ platby",
-							type: "text",
-							variableName: "payment_code",
-							schema: z.string().min(3).max(9),
-						},
-						{ // ?input 2
-							label: "Splatnost",
-							type: "text",
-							variableName: "due_days",
-							schema: z.string().min(3).max(9),
-						},
-					]
-				},
-				{ // ?row 2
-					id: 2,
-					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "Počet faktur",
-							type: "number",
-							variableName: "invoice_no",
-							schema: z.string().min(3).max(9),
-						},
-						{ // ?input 2
-							label: "Počet dodacích listů",
-							type: "number",
-							variableName: "dl_no",
-							schema: z.string().min(3).max(9),
-						},
-					]
-				},
-				{ // ?row 4
-					id: 4,
-					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "ID zákazníka dle zákazníka",
-							type: "text",
-							variableName: "customerStoreCode",
-							schema: z.string().min(3).max(9),
-						},
-						{
+						"_icDph": {
 							type: "empty",
-						}
-					]
-				},
-
-
-				{ // ?row 4
-					id: 5,
-					rowType: "checkbox",
-					rowInputs: [
-						{
-							label: "Komise",
-							type: "checkbox",
-							variableName: "consignmentSaleEnabled",
-							schema: z.boolean(),
 						},
-						{
-							label: "Vratka povolena",
-							type: "checkbox",
-							variableName: "Vratka povolena",
-							schema: z.boolean(),
-						},
-
-						{
-							label: "Požívat as. EANy",
-							type: "checkbox",
-							variableName: "Požívat as. EANy",
-							schema: z.boolean(),
-						},
-
-					]
-				},
+					}
+				}
 			]
 		},
+
+		{
+			field: "section_nastaveni_fakturace",
+			id: uuidv4(),
+			isOpen: true,
+			rows: [
+				{ // row 1
+					rowType: "full",
+					inputs: {
+						"paymentTypeCode": {
+							type: "text",
+							schema: z.string(),
+						},
+						"dueDays": {
+							type: "number",
+							schema: z.number(),
+						},
+					}
+				},
+				{ // row 2
+					rowType: "full",
+					inputs: {
+						"invoiceCopies": {
+							type: "number",
+							schema: z.number(),
+						},
+						"deliveryNoteCopies": {
+							type: "number",
+							schema: z.number(),
+						},
+					}
+				},
+				{ // row 3
+					rowType: "full",
+					inputs: {
+						"customerStoreCode": {
+							type: "text",
+							schema: z.string(),
+						},
+						"_customerStoreCode": {
+							type: "empty",
+						},
+					}
+				},
+				{ // row 4
+					rowType: "checkbox",
+					inputs: {
+						"consignmentSaleEnabled": {
+							type: "checkbox",
+							schema: z.boolean(),
+						},
+						"isReturnAllowed": {
+							type: "checkbox",
+							schema: z.boolean(),
+						},
+						"useAssortedEanCodes": {
+							type: "checkbox",
+							schema: z.boolean(),
+						},
+					}
+				},
+			]
+		}
 	],
 
 	col2 : [
-		{ // ?section 2
-			id: 2,
-			label: "Další údaje",
+		{
+			field: "section_dalsi_udaje",
+			id: uuidv4(),
 			isOpen: true,
-			sectionDef: [
-				{ // ?row 1
-					id: 1,
+			rows: [
+				{ // row 1
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "ID ALBI dodavatel",
+					inputs: {
+						"customerAlbiCode": {
 							type: "text",
-							variableName: "id_albi_dodavatel",
 							schema: z.string(),
 						},
-						{ // ?input 2
-							label: "Typ KZ",
+						"keyCustomerTypeId": {
 							type: "text",
-							variableName: "typ_kz",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-				{ // ?row 2
-					id: 2,
+				{ // row 2
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "Úvěrový rámec",
+					inputs: {
+						"creditLimit": {
 							type: "text",
-							variableName: "uverovy_ramec",
+							schema: z.string(),
 						},
-						{ // ?input 2
-							label: "Nesplaceno",
+						"unpaidAmount": {
 							type: "text",
-							variableName: "nesplaceno",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-				{ // ?row 3
-					id: 3,
+				{ // row 3
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 1
-							label: "Poslední platba",
+					inputs: {
+						"lastPaymentDate": {
 							type: "text",
-							variableName: "posledni_platba",
+							schema: z.string(),
 						},
-						{
-							label: "Reg. email do eshopu",
+						"email": {
 							type: "text",
-							variableName: "reg_email",
+							schema: z.string(),
 						},
-					]
+					}
 				},
 			]
 		},
-
-		{ // ?section 6
-			id: 6,
-			label: "EDI",
+		{
+			field: "section_edi",
+			id: uuidv4(),
 			isOpen: true,
-			sectionDef: [
-				{ // ?row 1
-					id: 1,
+			rows: [
+				{ // row 1
 					rowType: "full",
-					rowInputs: [
-						{
-							label: "EAN schránky",
+					inputs: {
+						"ediInboxEanCode": {
 							type: "text",
-							variableName: "edi_ean_schranky",
+							schema: z.string(),
 						},
-						{
-							label: "EAN centrály",
+						"ediInboxEanCodeForInvoice": {
 							type: "text",
-							variableName: "edi_ean_centraly",
+							schema: z.string(),
 						},
-					]
+					}
 				},
-				{ // ?row 1
-					id: 9,
+				{ // row 2
 					rowType: "full",
-					rowInputs: [
-						{ // ?input 2
-							label: "EAN zákazníka",
+					inputs: {
+						"customerStoreEan": {
 							type: "text",
-							variableName: "customerStoreEan",
-							schema: z.string().min(3).max(9),
+							schema: z.string(),
 						},
-						{
+						"_customerStoreEan": {
 							type: "empty",
-						}
-					]
+						},
+					}
 				},
-				{ // ?row 2
-					id: 2,
+				{ // row 3
 					rowType: "checkbox",
-					rowInputs: [
-						{
-							label: "Dodací list",
+					inputs: {
+						"sendDeliveryNodeViaEdi": {
 							type: "checkbox",
-							variableName: "edi_dl",
+							schema: z.boolean(),
 						},
-						{
-							label: "Dobropis",
+						"sendCreditNoteViaEdi": {
 							type: "checkbox",
-							variableName: "edi_dobropis",
+							schema: z.boolean(),
 						},
-						{
-							label: "Použít diakritiku",
+						"useDiacriticalMarksInEdiDocuments": {
 							type: "checkbox",
-							variableName: "edi_dia",
+							schema: z.boolean(),
 						},
-						{
-							label: "Faktury",
+						"sendInvoiceViaEdi": {
 							type: "checkbox",
-							variableName: "edi_faktury",
+							schema: z.boolean(),
 						},
-					]
+					}
 				},
 			]
 		},
-
-
-		{ // ?section 4
-			id: 4,
-			label: "Nastavení",
+		{
+			field: "section_nastaveni",
+			id: uuidv4(),
 			isOpen: true,
-			sectionDef: [
-				{ // ?row 1
-					id: 1,
+			rows: [
+				{ // row 3
 					rowType: "checkbox",
-					rowInputs: [
-						{
-							label: "Výstupní kontrola",
+					inputs: {
+						"consignmentOuputCheck": {
 							type: "checkbox",
-							variableName: "1",
+							schema: z.boolean(),
 						},
-						{
-							label: "DL tisk cena",
+						"printPricesOnDeliveryNote": {
 							type: "checkbox",
-							variableName: "2",
+							schema: z.boolean(),
 						},
-						{
-							label: "Faktury dodatečně",
+						"sendInvoiceAfterApproval": {
 							type: "checkbox",
-							variableName: "3",
+							schema: z.boolean(),
 						},
-
-						{
-							label: "Účtovat bez DPH",
+						"isChargedWithoutVat": {
 							type: "checkbox",
-							variableName: "5",
+							schema: z.boolean(),
 						},
-
-						{
-							label: "Neblokovat",
+						"alwaysAllowOrdering": {
 							type: "checkbox",
-							variableName: "7",
+							schema: z.boolean(),
 						},
-						{
-							label: "Nevyžadovat potvrzení faktury",
+						"invoiceConfirmationNotRequired": {
 							type: "checkbox",
-							variableName: "8",
+							schema: z.boolean(),
 						},
-						{
-							label: "Neupomínat",
+						"claimNotificationDisabled": {
 							type: "checkbox",
-							variableName: "9",
+							schema: z.boolean(),
 						},
-						{
-							label: "B2B aktivní",
+						"b2BeshopEnabled": {
 							type: "checkbox",
-							variableName: "11",
+							schema: z.boolean(),
 						},
-						{
-							label: "Blokovaný zákazník",
+						"isBlocked": {
 							type: "checkbox",
-							variableName: "3",
+							schema: z.boolean(),
 						},
-						{
-							label: "Neplatič",
+						"isBadPlayer": {
 							type: "checkbox",
-							variableName: "4",
+							schema: z.boolean(),
 						},
-						{
-							label: "Schváleno",
+						"isApproved": {
 							type: "checkbox",
-							variableName: "5",
+							schema: z.boolean(),
 						},
-						{
-							label: "Smlouva",
+						"contractRecieved": {
 							type: "checkbox",
-							variableName: "4",
+							schema: z.boolean(),
 						},
-						{
-							label: "Živnostenský list",
+						"tradeLicenceRecieved": {
 							type: "checkbox",
-							variableName: "6",
+							schema: z.boolean(),
 						},
-					]
+					}
 				},
 			]
-		},
+		}
 	],
-
-	// col3 : []
 }

@@ -21,7 +21,6 @@
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import * as Accordion from "$lib/components/ui/accordion";
 	import * as Table from "$lib/components/ui/table";
 	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
@@ -31,7 +30,11 @@
 
 	let hasMultipleAdresses = true;
 
-	let formValues = writable(data.response.item);
+	console.log(data);
+
+	let addressItem = data.response.item;
+
+	let formValues = writable(addressItem);
 	let contactValues = writable(data.response.contacts)
 
 	formValues.subscribe((data) => {

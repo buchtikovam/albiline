@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n'
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import User from 'lucide-svelte/icons/user';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	/*
 		Avatar komponent s dropdownem a uživatelskými nastaveními
@@ -19,7 +20,7 @@
 
 	<DropdownMenu.Content class="w-60">
 		<DropdownMenu.Label class="font-bold text-base">
-			Vítejte,
+			{$_('components.avatar.welcome')}
 			<span class="text-albi-500">
 				{userName}
 			</span>
@@ -30,13 +31,14 @@
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
 					<User class="w-4 h-4 mr-2" />
-					Profil
+					{$_('components.avatar.profile')}
+
 				</a>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
 					<Settings class="w-4 h-4 mr-2" />
-					Nastavení
+					{$_('components.avatar.settings')}
 				</a>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
@@ -47,7 +49,7 @@
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
 					<LogOut class="w-4 h-4 mr-2" />
-					Odhlásit se
+					{$_('components.avatar.logout')}
 				</a>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>

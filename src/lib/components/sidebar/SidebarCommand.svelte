@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n'
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
@@ -16,11 +17,11 @@
 
 
 <Command.Dialog bind:open={isSidebarCommandOpen}>
-	<Command.Input placeholder="Vyhledat..." />
+	<Command.Input placeholder={$_('components.sidebar.search_placeholder')} />
 
 	<Command.List class="mt-2">
 		<Command.Empty class="-mt-2">
-			Nic nebylo nalezeno.
+			{$_('components.sidebar.command_empty')}
 		</Command.Empty>
 
 		{#each items as item}
@@ -28,11 +29,11 @@
 				<Command.Separator class="my-2" />
 
 				<!-- items s children položkami -->
-				<Command.Group heading="{item.name}" class="my-2">
+				<Command.Group heading={$_('components.sidebar.' + item.field).toUpperCase()} class="my-2">
 					{#each item.children as child}
 						<Command.Item class="decoration-0">
 							<a href={child.href} on:click={() => handleClick(child, 1)}>
-								{child.name}
+								{$_('components.sidebar.' + child.field)}
 							</a>
 						</Command.Item>
 
@@ -41,7 +42,7 @@
 								<Command.Item>
 									<a href={secondChild.href} class="text-sm pl-4"
 									   on:click={() => handleClick(secondChild, 2)}>
-										{secondChild.name}
+										{$_('components.sidebar.' + secondChild.field)}
 									</a>
 								</Command.Item>
 							{/each}
@@ -53,7 +54,7 @@
 				<Command.Group>
 					<Command.Item class="decoration-0">
 						<a href={item.href} on:click={() => handleClick(item, 0)}>
-							{item.name}
+							{$_('components.sidebar.' + item.field)}
 						</a>
 					</Command.Item>
 				</Command.Group>

@@ -2,7 +2,6 @@
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
 	import {
-		customerDetailContactsTableData,
 		customerDetailContactsTableDef
 	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import { _ } from 'svelte-i18n'
@@ -11,19 +10,22 @@
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import type { CustomerData } from "$lib/types/tables/zakaznici";
 	import NewCustomerContactDialog
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import AutoFormNew from '$lib/components/form/AutoFormNew.svelte';
 
-	export let data: { response: CustomerData };
+	export let data;
 
 	let translationRoute = "routes.prodej.zakaznici.customer_detail";
 
-	let formValues = writable(data.response);
+	console.log(data);
+
+	let customerItems = data.response.item;
+	let formValues = writable(customerItems);
+
 	let items = [
 		{
 			id: 0,
@@ -46,7 +48,7 @@
 <div class="h-full max-w-[1850px] overflow-auto p-3 md:p-4">
 	<div class="mb-3">
 		<DetailPageLabel
-			name={`${ $_(translationRoute + '.label') } 123`}
+			label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode }})}`}
 		/>
 	</div>
 
@@ -54,7 +56,8 @@
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
-					<AutoForm
+					<AutoFormNew
+						translationRoute={translationRoute + ".autoform."}
 						allowCrossColumnDND={false}
 						formDef={customerDetailFormDef}
 						bind:formValues
@@ -77,14 +80,15 @@
 					</div>
 
 					<DetailTable
+						translationRoute="routes.prodej.zakaznici"
 						tableDef={customerDetailContactsTableDef}
-						tableData={customerDetailContactsTableData}
 					/>
 				</div>
 			{/if}
 		</div>
 	{/each}
 </div>
+
 
 <NewCustomerContactDialog
 	formDef={newCustomerFormDef}

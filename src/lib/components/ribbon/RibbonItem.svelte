@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { _ } from 'svelte-i18n'
 	import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
@@ -22,7 +23,8 @@
 		on:click={setRibbonAction}
 	>
 		<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
-		{ribbonItem.name}
+		{$_('components.ribbon.' + ribbonItem.field)}
+
 	</button>
 {:else}
 	<Tooltip.Root openDelay={800}>
@@ -36,7 +38,7 @@
 		</Tooltip.Trigger>
 
 		<Tooltip.Content>
-			{ribbonItem.name}
+			{$_('components.ribbon.' + ribbonItem.field)}
 		</Tooltip.Content>
 	</Tooltip.Root>
 {/if}

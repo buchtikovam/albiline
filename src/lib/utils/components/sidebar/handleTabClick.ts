@@ -10,14 +10,14 @@ export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 		
 		if (get(allowTabAdding)) {
 			const tab: HeaderTab = {
-				name: item.name,
+				field: item.field,
 				url: item.href,
 				closingState: 'hidden',
 				treeDepth: treeDepth
 			};
 
 			const containsObject: boolean = get(openedTabsStore)
-				.some(obj => obj.name === tab.name);
+				.some(obj => obj.field === tab.field);
 
 			if (!containsObject) {
 				openedTabsStore.update((data: HeaderTab[]) => data.concat(tab));
@@ -25,8 +25,8 @@ export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 
 			currentActiveTabStore.set(tab.url);
 
-			if (!get(recentItemsStore).includes(item.value)) {
-				recentItemsStore.update((data: string[]) => data.concat(item.value));
+			if (!get(recentItemsStore).includes(item.field)) {
+				recentItemsStore.update((data: string[]) => data.concat(item.field));
 			}
 		}	
 	}

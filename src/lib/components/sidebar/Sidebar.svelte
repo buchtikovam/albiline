@@ -122,11 +122,13 @@
 
 
 
-<div class="
-	{isSidebarOpen ? "w-[280px] p-4" : "w-fit p-2"}
-	flex flex-col h-full overflow-auto bg-white rounded-lg "
+<div class={
+	(isSidebarOpen === true
+		? 'w-[280px] p-4 '
+		: 'w-fit p-2 ')
+		+ 'flex flex-col h-full overflow-auto bg-white rounded-lg'
+	}
 >
-	<!-- otevřený sidebar (buttons na překlikávání kategorií, input pole a stromová struktura sidebaru) -->
 	{#if isSidebarOpen === true}
 		<div class="flex justify-center text-sm mb-4">
 			<CategoryButton color="secondary" />
@@ -147,8 +149,7 @@
 			/>
 		</div>
 	{:else}
-		<!-- zavřený sidebar (ikony s tooltipem a popoverem) -->
-		<SidebarClosed 
+		<SidebarClosed
 			bind:filteredItems
 			bind:isSidebarCommandOpen
 			bind:isSidebarOpen
@@ -156,5 +157,4 @@
 	{/if}
 </div>
 
-<!-- hledání v sidebaru pomocí dialogu -->
 <SidebarCommand items={allItems} bind:isSidebarCommandOpen />

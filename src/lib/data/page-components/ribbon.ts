@@ -1,6 +1,6 @@
 import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
+import type { RibbonItem, RibbonSeparator } from '$lib/types/components/ribbon/ribbon';
 import FilePlus from 'lucide-svelte/icons/file-plus';
 import FileX2 from 'lucide-svelte/icons/file-x-2';
 import Pencil from 'lucide-svelte/icons/pencil';
@@ -15,29 +15,31 @@ import Scan from 'lucide-svelte/icons/scan';
 import Undo2 from 'lucide-svelte/icons/undo-2';
 import ListPlus from 'lucide-svelte/icons/list-plus';
 import Columns3 from 'lucide-svelte/icons/columns-3';
-import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
 import Save from 'lucide-svelte/icons/save';
 import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 
-type RibbonItems = RibbonItem[] | RibbonItem;
+type RibbonItems = RibbonItem[] | RibbonItem | RibbonSeparator;
 
 export const ribbonItems: RibbonItems[] = [
 	{
-		name: "Nový",
+		field: "new",
 		type: RibbonTypeEnum.ITEM,
 		icon: FilePlus,
 		action: RibbonActionEnum.NEW,
+		hide: false,
 	},
 	{
-		name: "Editovat",
+		field: "edit",
 		type: RibbonTypeEnum.ITEM,
 		icon: Pencil,
+		hide: false,
 		action: RibbonActionEnum.EDIT,
 	},
 	{
-		name: "Smazat",
+		field: "delete",
 		type: RibbonTypeEnum.ITEM,
 		icon: FileX2,
+		hide: false,
 		action: RibbonActionEnum.DELETE,
 	},
 
@@ -46,9 +48,10 @@ export const ribbonItems: RibbonItems[] = [
 	},
 
 	{
-		name: "Vyplň dolů",
+		field: "fill_down",
 		type: RibbonTypeEnum.ITEM,
 		icon: ArrowDownWideNarrow,
+		hide: false,
 		action: RibbonActionEnum.FILL_DOWN,
 	},
 	{
@@ -56,15 +59,17 @@ export const ribbonItems: RibbonItems[] = [
 	},
 
 	{
-		name: "Uložit",
+		field: "save",
 		type: RibbonTypeEnum.ITEM,
 		icon: Save,
+		hide: false,
 		action: RibbonActionEnum.SAVE,
 	},
 	{
-		name: "Načíst",
+		field: "reload",
 		type: RibbonTypeEnum.ITEM,
 		icon: RefreshCcw,
+		hide: false,
 		action: RibbonActionEnum.LOAD,
 	},
 	{
@@ -72,27 +77,25 @@ export const ribbonItems: RibbonItems[] = [
 	},
 
 	{
-		name: "Tisk",
+		field: "print",
 		type: RibbonTypeEnum.ITEM,
 		icon: Printer,
+		hide: false,
 		action: RibbonActionEnum.PRINT,
 	},
 	{
-		name: "Export jako",
+		field: "export_choice",
 		type: RibbonTypeEnum.DROPDOWN,
 		icon: FileUp,
+		hide: false,
 		action: RibbonActionEnum.EXPORT_CHOICE,
 		children: [
 			{
-				name: "Excel",
+				field: "export_excel",
 				action: RibbonActionEnum.EXPORT_EXCEL
 			},
 			{
-				name: "PDF",
-				action: RibbonActionEnum.EXPORT_PDF
-			},
-			{
-				name: "CSV",
+				field: "export_csv",
 				action: RibbonActionEnum.EXPORT_CSV
 			},
 		]
@@ -100,9 +103,10 @@ export const ribbonItems: RibbonItems[] = [
 
 
 	{
-		name: "Import",
+		field: "import",
 		type: RibbonTypeEnum.ITEM,
 		icon: FileDown,
+		hide: false,
 		action: RibbonActionEnum.IMPORT,
 	},
 
@@ -111,58 +115,54 @@ export const ribbonItems: RibbonItems[] = [
 	},
 
 	{
-		name: "Statistika",
-		type: RibbonTypeEnum.ITEM,
-		icon: BarChart3,
-		action: RibbonActionEnum.STATISTICS,
-	},
-	{
-		type: RibbonTypeEnum.SEPARATOR,
-	},
-
-	{
-		name: "Rychlý filtr",
+		field: "filter_quick",
 		type: RibbonTypeEnum.ITEM,
 		icon: ListFilter,
+		hide: false,
 		action: RibbonActionEnum.FILTER_QUICK,
 	},
 	
 	{
-		name: "Filtr ve výběru",
+		field: "filter_in_range",
 		type: RibbonTypeEnum.ITEM,
 		icon: Scan,
+		hide: false,
 		action: RibbonActionEnum.FILTER_IN_RANGE,
 	},
 	{
-		name: "Mimo výběr",
+		field: "filter_out_of_range",
 		type: RibbonTypeEnum.ITEM,
 		icon: Filter,
+		hide: false,
 		action: RibbonActionEnum.FILTER_OUT_OF_RANGE,
 	},
 	{
-		name: "Filtr krok zpět",
+		field: "filter_undo",
 		type: RibbonTypeEnum.ITEM,
 		icon: Undo2,
+		hide: false,
 		action: RibbonActionEnum.FILTER_UNDO,
 	},
 	{
-		name: "Zrušit filtry",
+		field: "filter_remove",
 		type: RibbonTypeEnum.ITEM,
 		icon: FilterX,
+		hide: false,
 		action: RibbonActionEnum.FILTER_REMOVE,
 	},
 	{
-		name: "Moje filtry",
+		field: "filters",
 		type: RibbonTypeEnum.DROPDOWN,
 		icon: ListPlus,
+		hide: false,
 		action: RibbonActionEnum.UNKNOWN,
 		children: [
 			{
-				name: "Uložit aktuální filtry",
+				field: "save_filters",
 				action: RibbonActionEnum.SAVE_FILTERS
 			},
 			{
-				name: "Vybrat z uložených filtrů",
+				field: "my_filters",
 				action: RibbonActionEnum.MY_FILTERS
 			},
 		]
@@ -172,17 +172,18 @@ export const ribbonItems: RibbonItems[] = [
 	},
 
 	{
-		name: "Moje šablony",
+		field: "presets",
 		type: RibbonTypeEnum.DROPDOWN,
 		icon: Columns3,
+		hide: false,
 		action: RibbonActionEnum.UNKNOWN,
 		children: [
 			{
-				name: "Vytvořit novou šablonu",
+				field: "save_preset",
 				action: RibbonActionEnum.SAVE_PRESET
 			},
 			{
-				name: "Vybrat šablonu",
+				field: "my_presets",
 				action: RibbonActionEnum.MY_PRESETS
 			},
 		]

@@ -1,16 +1,26 @@
 <script lang="ts">
-	import { editedDataStore, fulltextFilterValueStore, selectedRowIdStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { editedDataStore, fulltextFilterValueStore, selectedRowStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { goto } from '$app/navigation';
 	import { _ } from 'svelte-i18n'
+	import { goto } from '$app/navigation';
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
+	import * as Tabs from '$lib/components/ui/tabs';
 
 	let disableTabs: boolean = true;
 	let translationRouteTabs = "routes.prodej.zakaznici.layout_tabs"
 
+
 	editedDataStore.subscribe(data => disableTabs = data.length > 0)
+
+	let customerAddressCode: string;
+	let customerNodeCode: string;
+
+	selectedRowStore.subscribe((data) => {
+		customerNodeCode = data.customerNodeCode;
+		customerAddressCode = data.customerAddressCode;
+	})
+
 </script>
 
 
@@ -30,9 +40,9 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`}
-				on:click={() => goto(`/prodej/zakaznici/prodejny/${$selectedRowIdStore}`)}
+				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`}
+				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`)}
 			>
 				{$_(translationRouteTabs + ".address")}
 			</Tabs.Trigger>
@@ -40,9 +50,9 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${$selectedRowIdStore}` !== $page.url.pathname && disableTabs}
-				value={`/prodej/zakaznici/${$selectedRowIdStore}`}
-				on:click={() => goto(`/prodej/zakaznici/${$selectedRowIdStore}`)}
+				disabled={`/prodej/zakaznici/${customerNodeCode}` !== $page.url.pathname && disableTabs}
+				value={`/prodej/zakaznici/${customerNodeCode}`}
+				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}`)}
 			>
 				{$_(translationRouteTabs + ".customer")}
 			</Tabs.Trigger>
@@ -54,7 +64,7 @@
 		<div class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible">
 			<Input
 				class="xl:w-80 lg:w-60 w-40 h-[30px] rounded-md border-white focus-visible:ring-0 focus-visible:border-albi-500"
-				placeholder="Hledat..."
+				placeholder={$_('routes.prodej.zakaznici.fulltext_placeholder')}
 				type="search"
 				bind:value={$fulltextFilterValueStore}
 			/>

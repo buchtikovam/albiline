@@ -18,8 +18,6 @@
 	import { editedDataStore } from '$lib/stores/tableStore';
 	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 
-
-
 	let innerWidth: number;
 
     $: if (innerWidth < 768) {
@@ -67,6 +65,8 @@
 	})
 </script>
 
+
+
 <svelte:head>
 	{#if pwaAssetsHead.themeColor}
 		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />
@@ -83,6 +83,7 @@
 {#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}
 	<ReloadPrompt />
 {/await}
+
 
 
 <Toaster

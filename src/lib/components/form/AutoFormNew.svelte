@@ -4,7 +4,7 @@
 	import DndColumnNew from '$lib/components/form/DndColumnNew.svelte';
 
 	export let formDef: AutoFormNew;
-	export let formValues
+	export let formValues;
 	export let translationRoute: string;
 	export let allowCrossColumnDND: boolean = true;
 

@@ -72,7 +72,7 @@
 								   <SectionLabel name={$_(translationRoute + item.field)} />
 							   </Accordion.Trigger>
 
-							   <button type="button" on:click={() => openedDialogStore.set("customer-detail-invoice-addresses")}>
+							   <button type="button" on:click={() => openedDialogStore.set(item.dialogId)}>
 								   <svelte:component this={item.dialogIcon} class="size-4 text-albi-500"/>
 								   {item.dialogTitle || ""}
 							   </button>
@@ -109,26 +109,42 @@
 												/>
 											{/if}
 
-											<!--{#if value.type === "number"}-->
-<!--												<InputWrapperNewNumber-->
-<!--													label={$_(translationRoute + key)}-->
-<!--													inputDef={value}-->
-<!--												/>-->
-<!--											{/if}-->
-										<!---->
-										<!--	{#if value.type === "checkbox"}-->
-										<!--		<div class="mt-5 w-full">-->
-										<!--			<CheckboxWrapper field={key} label={$_(translationRoute + key)} />-->
-										<!--		</div>-->
-										<!--	{/if}-->
+											{#if value.type === "number"}
+												<InputWrapperNewNumber
+													label={$_(translationRoute + key)}
+													inputDef={value}
+													bind:value={$formValues[key]}
+												/>
+											{/if}
 
-										<!--	{#if value.type === "dropdown"}-->
-										<!--		<DropdownWrapper options={value.dropdownOptions} label={$_(translationRoute + key)} />-->
-										<!--	{/if}-->
+											{#if value.type === "checkbox"}
+												<div class="mt-5 w-full">
+													<CheckboxWrapper
+														field={key}
+														label={$_(translationRoute + key)}
+														bind:value={$formValues[key]}
+													/>
+												</div>
+											{/if}
 
-										<!--	{#if value.type === "date"}-->
-										<!--		<DateWrapper label={$_(translationRoute + key)} />-->
-										<!--	{/if}-->
+											{#if value.type === "empty"}
+												<EmptyField/>
+											{/if}
+
+											{#if value.type === "dropdown"}
+												<DropdownWrapper
+													bind:value={$formValues[key]}
+													options={value.dropdownOptions}
+													label={$_(translationRoute + key)}
+												/>
+											{/if}
+
+											{#if value.type === "date"}
+												<DateWrapper
+													bind:value={$formValues[key]}
+													label={$_(translationRoute + key)}
+												/>
+											{/if}
 										{/each}
 									</FormInputSection>
 								{/if}
@@ -136,7 +152,11 @@
 								{#if row.rowType === "checkbox"}
 									<FormCheckboxSection>
 										{#each Object.entries(row.inputs) as [key]}
-											<CheckboxWrapper field={key} bind:value={$formValues[key]} label={$_(translationRoute + key)} />
+											<CheckboxWrapper
+												field={key}
+												bind:value={$formValues[key]}
+												label={$_(translationRoute + key)}
+											/>
 										{/each}
 									</FormCheckboxSection>
 								{/if}

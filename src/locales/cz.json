@@ -16,11 +16,67 @@
 		}
 	},
 
+
 	"components" : {
-		"sidebar" : {},
-		"ribbon" : {},
-		"header_menu" : {}
+		"sidebar" : {
+			"all" : "Všechny",
+			"recent" : "Nedávné",
+			"favorite" : "Oblíbené",
+			"search_placeholder" : "Filtrovat...",
+			"search_tooltip" : "Vyhledat",
+			"command_empty" : "Nic nebylo nalezeno.",
+			"pruvodni_list" : "Průvodní list",
+			"sklad" : "Sklad",
+			"hodinovka" : "Hodinovka",
+			"prijem_a_vydej" : "Příjem a výdej",
+			"stav_skladu" : "Stav skladu",
+			"zasilky" : "Zásilky",
+			"vyroba" : "Výroba",
+			"motivy" : "Motivy",
+			"raznice" : "Raznice",
+			"obalky" : "Obálky",
+			"texty" : "Texty",
+			"prodej" : "Prodej",
+			"zakaznici" : "Zákazníci",
+			"zakaznici_sk" : "Zákazníci SK",
+			"prehledy" : "Přehledy",
+			"analyza_prodeju": "Analýza prodejů"
+		},
+
+		"ribbon" : {
+			"new" : "Nový",
+			"edit" : "Editovat",
+			"delete" : "Smazat",
+			"fill_down" : "Vyplň dolů",
+			"save" : "Uložit",
+			"reload" : "Načíst",
+			"print" : "Tisk",
+			"export_choice" : "Export jako",
+			"export_excel" : "Excel",
+			"export_csv" : "CSV",
+			"import" : "Import",
+			"filter_quick" : "Rychlý filtr",
+			"filter_in_range" : "Filtr ve výběru",
+			"filter_out_of_range" : "Mimo výběr",
+			"filter_undo" : "Filtr krok zpět",
+			"filter_remove" : "Zrušit filtry",
+			"filters" : "Moje filtry",
+			"save_filters" : "Uložit aktuální filtry",
+			"my_filters" : "Vybrat z uložených filtrů",
+			"presets" : "Moje šablony",
+			"save_preset" : "Uložit novou šablonu",
+			"my_presets" : "Vybrat z uložených šablon"
+		},
+
+		"avatar" : {
+			"welcome" : "Vítejte,",
+			"profile" : "Profil",
+			"settings" : "Nastavení",
+			"logout" : "Odhlásit se"
+		}
 	},
+
+
 
 	"routes" : {
 		"test" : {
@@ -38,9 +94,10 @@
 		},
 
 
-
 		"prodej" : {
 			"zakaznici" : {
+				"fulltext_placeholder" : "Vyhledat...",
+
 				"layout_tabs" : {
 					"list" : "Seznam",
 					"address" : "Prodejny",
@@ -50,8 +107,57 @@
 				"ag_grid" : {},
 
 				"customer_detail" : {
-					"header" : "Detail zákazníka { customer_id }",
-					"autoform" : {},
+					"header" : "Detail zákazníka { customerNodeCode }",
+					"autoform" : {
+						"section_fakturacni_adresa" : "Fakturační adresa",
+						"name" : "Jméno",
+						"companyName" : "Společnost",
+						"street" : "Ulice",
+						"city" : "Město",
+						"postalCode" : "PSČ",
+						"countryCode" : "Země",
+						"ico" : "IČO",
+						"dic" : "DIČ",
+						"icDph" : "IčDPH",
+						"section_nastaveni_fakturace" : "Nastavení fakturace",
+						"paymentTypeCode" : "Typ platby",
+						"dueDays" : "Splatnost",
+						"invoiceCopies" : "Počet faktur",
+						"deliveryNoteCopies" : "Počet dodacích listů",
+						"customerStoreCode" : "ID zákazníka dle zákazníka",
+						"consignmentSaleEnabled" : "Komise",
+						"isReturnAllowed" : "Vratka povolena",
+						"useAssortedEanCodes" : "Asortní EANy",
+						"section_dalsi_udaje" : "Další údaje",
+						"customerAlbiCode" : "ID Albi dodavatel",
+						"keyCustomerTypeId" : "Typ KZ",
+						"creditLimit" : "Úvěrový rámec",
+						"unpaidAmount" : "Nesplaceno",
+						"lastPaymentDate" : "Poslední platba",
+						"email" : "Reg. email do eshopu",
+						"section_edi" : "EDI",
+						"ediInboxEanCode" : "EAN schránky",
+						"ediInboxEanCodeForInvoice" : "EAN centrály",
+						"customerStoreEan" : "EAN zákazníka",
+						"sendDeliveryNodeViaEdi" : "Dodací list",
+						"sendCreditNoteViaEdi" : "Dobropis",
+						"useDiacriticalMarksInEdiDocuments" : "Použít diakritiku",
+						"sendInvoiceViaEdi" : "Faktury",
+						"section_nastaveni" : "Nastavení",
+						"consignmentOuputCheck" : "Výstupní kontrola",
+						"printPricesOnDeliveryNote" : "DL tisk cena",
+						"sendInvoiceAfterApproval" : "Faktury dodatečně",
+						"isChargedWithoutVat" : "Účtovat bez DPH",
+						"alwaysAllowOrdering" : "Neblokovat",
+						"invoiceConfirmationNotRequired" : "Nevyžadovat potvrzení faktury",
+						"claimNotificationDisabled" : "Neupomínat",
+						"b2BeshopEnabled" : "B2B aktivní",
+						"isBlocked" : "Blokovaný zákazník",
+						"isBadPlayer" : "Neplatič",
+						"isApproved" : "Schváleno",
+						"contractRecieved" : "Smlouva",
+						"tradeLicenceRecieved" : "Živnostenský list"
+					},
 					"contacts_table_label" : "Kontakty",
 					"new_contact": "Nový kontakt zákazníka"
 				},

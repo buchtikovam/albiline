@@ -4,6 +4,7 @@
 	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 	import { goto, preloadData } from '$app/navigation';
 	import { get } from 'svelte/store';
+	import { _ } from 'svelte-i18n'
 	import X from 'lucide-svelte/icons/x';
 	import Home from 'lucide-svelte/icons/home';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
@@ -58,7 +59,7 @@
 
 	function removeTab(tabName: string) {
 		storedTabs.forEach((tab) => {
-			if (tab.name === tabName) {
+			if (tab.field === tabName) {
 				storedTabs.splice(storedTabs.indexOf(tab), 1);
 				openedTabsStore.set(storedTabs);
 			}
@@ -83,11 +84,13 @@
 
 
 
-<div class="
-	flex justify-between px-4 pt-4 pb-2 
-	md:pt-2 "
+<div
+	class="flex justify-between px-4 pt-4 pb-2 md:pt-2 "
 >
-    <Tabs.Root class="hidden w-fit h-fit md:block rounded-md " value={pathname}>
+    <Tabs.Root
+		class="hidden w-fit h-fit md:block rounded-md "
+		value={pathname}
+	>
         <Tabs.List>
             <!-- Výchozí taby -->
             <Tabs.Trigger
@@ -113,13 +116,13 @@
 					>
 						<button
 							class="flex items-center font-bold"
-							on:auxclick={() => removeTab(tab.name)}
+							on:auxclick={() => removeTab(tab.field)}
 							on:mouseenter={() => showTabClosingButton(tab)}
 							on:mouseleave={() => hideTabClosingButton(tab)}
 						>
-						{tab.name}
+							{$_('components.sidebar.' + tab.field)}
 							<button
-								on:click={() => removeTab(tab.name)}
+								on:click={() => removeTab(tab.field)}
 								class={`${tab.closingState}`}
 								>
 								<X class="ml-1 text-red-600 size-3.5"/>
@@ -131,8 +134,14 @@
 		</Tabs.List>
 	</Tabs.Root>
 
-	<div class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0">
-		<button on:click={() => openMobileSidebar = true} class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden">
+
+	<div
+		class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0"
+	>
+		<button
+			on:click={() => openMobileSidebar = true}
+			class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden"
+		>
 			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
 		</button>
 
@@ -140,7 +149,7 @@
 			<div class="md:hidden w-full px-2">
 				<Input
 					class="h-[32px] rounded-md border-none focus-visible:ring-0"
-					placeholder="Hledat..."
+					placeholder={$_('routes.prodej.zakaznici.fulltext_placeholder')}
 					type="text"
 					bind:value={$fulltextFilterValueStore}
 				/>

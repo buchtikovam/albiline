@@ -3,7 +3,7 @@
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import type { AutoFormNewInput } from '$lib/types/components/form/autoform/autoformNew';
  
-	export let value: string|number = "abc";
+	export let value: number;
 	export let label;
 	export let inputDef: AutoFormNewInput;
 
