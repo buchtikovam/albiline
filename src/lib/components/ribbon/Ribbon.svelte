@@ -33,7 +33,7 @@
 	mx-4 mb-2 p-1.5 rounded-lg bg-white flex justify-between
 	md:mx-2 md:my-0 md:p-2 md:mr-4 
 ">
-	<div class="flex items-center overflow-auto ">
+	<div class="flex gap-0.5 items-center w-full overflow-auto ">
 		{#each ribbonItems as ribbonItem}
 			{#if Array.isArray(ribbonItem)}
 				<RibbonItemsNarrow
@@ -57,8 +57,8 @@
 
 				{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
 					<Separator orientation="vertical" class={
-						(isRibbonOpen 
-							? "h-[20px]" 
+						(isRibbonOpen
+							? "h-[20px]"
 							: "h-[14px]")
 							+ " mx-1.5 md:mx-2.5 bg-albi-200 w-[2px]"
 						}

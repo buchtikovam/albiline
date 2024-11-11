@@ -26,7 +26,7 @@ export const customerAddressDetailFormDef: AutoFormNew = {
 							type: "text",
 							schema: z.string(),
 						},
-						"companyNameeeee": {
+						"companyName": {
 							type: "text",
 							schema: z.string(),
 						},

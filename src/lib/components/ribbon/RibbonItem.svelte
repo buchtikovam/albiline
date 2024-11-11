@@ -24,17 +24,11 @@
 	>
 		<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
 		{$_('components.ribbon.' + ribbonItem.field)}
-
 	</button>
 {:else}
 	<Tooltip.Root openDelay={800}>
-		<Tooltip.Trigger class="mt-auto min-w-5 w-5 mx-0.5 md:p-0">
-			<button
-				class="w-5 h-5 flex items-center rounded hover:bg-muted/80 text-albi-950 hover:text-black"
-				on:click={setRibbonAction}
-			>
-				<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
-			</button>
+		<Tooltip.Trigger class="w-5 min-w-5">
+			<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
 		</Tooltip.Trigger>
 
 		<Tooltip.Content>

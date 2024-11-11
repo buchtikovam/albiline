@@ -51,33 +51,31 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {:else}
-	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="min-w-7 h-5 pl-1 ">
-			<Tooltip.Root openDelay={800}>
-				<Tooltip.Trigger class="min-w-6 h-5 flex items-center">
-					<button class="size-6 rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
-						<svelte:component
-							this={ribbonItem.icon}
-							class="size-5 mx-auto"
-						/>
-						<ChevronDown class="size-2 mr-0.5" />
-					</button>
-				</Tooltip.Trigger>
+	<Tooltip.Root openDelay={800}>
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger class="ml-0.5 min-w-6 rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
+<!--					<Tooltip.Trigger class="flex items-center">-->
+					<svelte:component
+						this={ribbonItem.icon}
+						class="size-4 "
+					/>
+					<ChevronDown class="size-2 mr-0.5" />
+<!--					</Tooltip.Trigger>-->
+			</DropdownMenu.Trigger>
 
-				<Tooltip.Content>
-					{$_('components.ribbon.' + ribbonItem.field)}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</DropdownMenu.Trigger>
+			<DropdownMenu.Content class="w-fit ">
+				{#each children as ribbonChild}
+					<DropdownMenu.Item class="w-full">
+						<button on:click={() => setRibbonAction(ribbonChild.action)}>
+							{$_('components.ribbon.' + ribbonChild.field)}
+						</button>
+					</DropdownMenu.Item>
+				{/each}
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
 
-		<DropdownMenu.Content class="w-fit ">
-			{#each children as ribbonChild}
-				<DropdownMenu.Item class="w-full">
-					<button on:click={() => setRibbonAction(ribbonChild.action)}>
-						{$_('components.ribbon.' + ribbonChild.field)}
-					</button>
-				</DropdownMenu.Item>
-			{/each}
-		</DropdownMenu.Content>
-	</DropdownMenu.Root>
+		<Tooltip.Content>
+			{$_('components.ribbon.' + ribbonItem.field)}
+		</Tooltip.Content>
+	</Tooltip.Root>
 {/if}
