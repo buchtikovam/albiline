@@ -41,6 +41,10 @@
 
 	const flipDurationMs = 200;
 	let openDialog: boolean = false;
+
+	formValues.subscribe((data) => {
+		console.log("sub", data);
+	})
 </script>
 
 
@@ -94,7 +98,7 @@
 	formDef={newCustomerFormDef}
 	bind:dialogOpen={openDialog}
 	label="Nový kontakt zákazníka"
-	translationRoute={translationRoute}
+	translationRoute="routes.prodej.zakaznici.customer_and_address_contact"
 />
 
 <style>

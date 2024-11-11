@@ -1,10 +1,10 @@
 {
 	"zod_errors" : {
 		"string" : {
-			"too_small" : "Text musí mít alespoň { min } znaky",
-			"too_big" : "Text může mít maximálně { max } znaků",
+			"too_small" : "{ field } musí obsahovat alespoň { min } znaky",
+			"too_big" : "{ field } může mít maximálně { max } znaků",
 			"invalid_string" : {
-				"default" : "Text je ve špatném formátu. Očekáván formát: { format }",
+				"default" : "{ field } je ve špatném formátu. Očekáván formát: { format }",
 				"email" : "Prosím zadejte správný e-mail"
 			}
 		},
@@ -104,7 +104,9 @@
 					"customer" : "Zákazník"
 				},
 
-				"ag_grid" : {},
+				"ag_grid" : {
+					"customerAddressCode" : "ID prodejny i18n"
+				},
 
 				"customer_detail" : {
 					"header" : "Detail zákazníka { customerNodeCode }",
@@ -205,7 +207,7 @@
 					"surname" : "Příjmení",
 					"mobile" : "Mobil",
 					"phone" : "<span class=\"whitespace-nowrap\">Pevná linka</span>",
-					"email" : "E-mail",
+					"email" : "<span class=\"whitespace-nowrap\">E-mail</span>",
 					"note" : "Poznámka",
 					"isDefault" : "Výchozí",
 					"enabled" : "Aktivní",

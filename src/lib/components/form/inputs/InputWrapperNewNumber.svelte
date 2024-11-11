@@ -11,18 +11,27 @@
 	let hasError: boolean = false;
 
 
+
 	function validateNumberSchema(ev: Event) {
 		const inputValue = ev.target?.value;
-		console.log(inputValue);
 
-		try {
-			inputDef.schema.parse(Number(inputValue));
-			hasError = false;
-		} catch (e) {
-			console.log(e.message);
-			// e.message
-			hasError = true;
-		}
+		// try {
+		// 	inputDef.schema.parse(inputValue);
+		// 	errorMessage = "";
+		// 	hasError = false;
+		// } catch (e) {
+		// 	console.log(e);
+		// 	hasError = true;
+		//
+		// 	switch (e.issues[0].code) {
+		// 		case "too_small":
+		// 			errorMessage = $_('zod_errors.number.too_small', {values: { min: e.issues[0].minimum }});
+		// 			break;
+		// 		case "too_big":
+		// 			errorMessage = $_('zod_errors.number.too_big', {values: { max: e.issues[0].maximum }});
+		// 			break;
+		// 	}
+		// }
 	}
 </script>
 

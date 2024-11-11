@@ -3,15 +3,16 @@
 	import type { AutoFormNewInput } from '$lib/types/components/form/autoform/autoformNew';
 	import { _ } from 'svelte-i18n';
 
-	export let value: string = "";
-	export let label;
+	export let value: string|null;
+	export let label: string;
 	export let inputDef: AutoFormNewInput;
 
 	let errorMessage = "";
 	let hasError: boolean = false;
 
-
-
+	if (value !== null) {
+		value = String(value).trim();
+	}
 
 	function validateTextSchema(ev: Event) {
 		const inputValue = ev.target?.value;
@@ -26,10 +27,10 @@
 
 			switch (e.issues[0].code) {
 				case "too_small":
-					errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum }});
+					errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum, field: label }});
 					break;
 				case "too_big":
-					errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum }});
+					errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum, field: label }});
 					break;
 				case "invalid_string":
 					switch (e.issues[0].validation) {
@@ -37,7 +38,7 @@
 							errorMessage = $_('zod_errors.string.invalid_string.email');
 							break;
 						default:
-							errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation }});
+							errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
 					}
 					break;
 			}

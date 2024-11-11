@@ -14,6 +14,7 @@
 	autoformWritable.subscribe((data) => {
 		colDef = data;
 	})
+
 </script>
 
 

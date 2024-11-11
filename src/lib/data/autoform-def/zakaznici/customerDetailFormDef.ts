@@ -2,8 +2,7 @@ import Pencil from "lucide-svelte/icons/pencil";
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
 import type { AutoFormNew } from '$lib/types/components/form/autoform/autoformNew';
-
-
+import { message } from 'sveltekit-superforms';
 
 export const customerDetailFormDef: AutoFormNew = {
 	col1 : [
@@ -20,11 +19,7 @@ export const customerDetailFormDef: AutoFormNew = {
 					inputs: {
 						"name": {
 							type: "text",
-							schema: z.string(),
-						},
-						"companyName": {
-							type: "text",
-							schema: z.string(),
+							schema: z.string().min(1).max(255),
 						},
 					}
 				},
@@ -33,11 +28,11 @@ export const customerDetailFormDef: AutoFormNew = {
 					inputs: {
 						"street": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 						"city": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},
@@ -46,11 +41,11 @@ export const customerDetailFormDef: AutoFormNew = {
 					inputs: {
 						"postalCode": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string(), // regex for postal code
 						},
 						"countryCode": {
 							type: "text",
-							schema: z.string(),
+							schema: z.enum(["CZ", "SK", "PL"]),
 						},
 					}
 				},
@@ -59,7 +54,7 @@ export const customerDetailFormDef: AutoFormNew = {
 					inputs: {
 						"ico": {
 							type: "text",
-							schema: z.string(),
+							schema: z.number().min(8).max(8),
 						},
 						"dic": {
 							type: "text",
@@ -74,8 +69,9 @@ export const customerDetailFormDef: AutoFormNew = {
 							type: "text",
 							schema: z.string(),
 						},
-						"_icDph": {
-							type: "empty",
+						"companyName": {
+							type: "text",
+							schema: z.string(),
 						},
 					}
 				}

@@ -5,7 +5,7 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
-	import { isMobileStore, isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
+	import { isMobileStore, isMobileLayoutExpandedStore, sessionKeyStore } from '$lib/stores/pageStore';
 	import { onMount } from 'svelte';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
@@ -52,6 +52,10 @@
 		}
 
 		document.addEventListener('keydown', handleKeydown);
+
+		if (!get(sessionKeyStore)) {
+			sessionKeyStore.set("504a58f3-58b2-48f9-8eed-40646bb9c122")
+		}
 	})
 
 	beforeNavigate(({cancel}) => {
