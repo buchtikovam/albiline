@@ -15,7 +15,7 @@
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
-	import AutoFormNew from '$lib/components/form/AutoFormNew.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
 
 	export let data;
 
@@ -24,7 +24,12 @@
 	console.log(data);
 
 	let customerItems = data.response.item;
+	let customerContacts = data.response.contacts;
+
 	let formValues = writable(customerItems);
+	let contactValues = writable(customerContacts)
+
+	console.log(customerContacts, "CustomerContacts");
 
 	let items = [
 		{
@@ -42,9 +47,6 @@
 	const flipDurationMs = 200;
 	let openDialog: boolean = false;
 
-	formValues.subscribe((data) => {
-		console.log("sub", data);
-	})
 </script>
 
 
@@ -52,7 +54,7 @@
 <div class="h-full max-w-[1850px] overflow-auto p-3 md:p-4">
 	<div class="mb-3">
 		<DetailPageLabel
-			label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode }})}`}
+			label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode || "customerNodeCode"}})}`}
 		/>
 	</div>
 
@@ -60,7 +62,7 @@
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
-					<AutoFormNew
+					<AutoForm
 						translationRoute={translationRoute + ".autoform."}
 						allowCrossColumnDND={false}
 						formDef={customerDetailFormDef}
@@ -86,6 +88,7 @@
 					<DetailTable
 						translationRoute="routes.prodej.zakaznici"
 						tableDef={customerDetailContactsTableDef}
+						tableData={contactValues}
 					/>
 				</div>
 			{/if}

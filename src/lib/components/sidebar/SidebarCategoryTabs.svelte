@@ -13,7 +13,7 @@
 
 
 <Tabs.Root bind:value={value}>
-    <Tabs.List class={ color === "primary" ? "bg-albi-500" : "bg-[#ccd1d9]"}>
+    <Tabs.List class={ color === "primary" ? "bg-albi-500" : "bg-gray-300"}>
 		<Tabs.Trigger value="all" class="font-bold">
 			{$_('components.sidebar.all')}
 		</Tabs.Trigger>

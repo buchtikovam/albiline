@@ -1,10 +1,10 @@
 import Pencil from "lucide-svelte/icons/pencil";
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
-import type { AutoFormNew } from '$lib/types/components/form/autoform/autoformNew';
+import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 import { message } from 'sveltekit-superforms';
 
-export const customerDetailFormDef: AutoFormNew = {
+export const customerDetailFormDef: AutoFormType = {
 	col1 : [
 		{
 			field: "section_fakturacni_adresa",

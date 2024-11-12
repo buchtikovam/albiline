@@ -1,10 +1,10 @@
-import type { AutoFormNew } from '$lib/types/components/form/autoform/autoformNew';
+import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 import { v4 as uuidv4 } from 'uuid';
 
 import { z } from 'zod';
 
 
-export const testFormDef: AutoFormNew = {
+export const testFormDef: AutoFormType = {
 	"col1": [
 		{
 			field: "section1",

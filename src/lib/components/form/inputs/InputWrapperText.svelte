@@ -1,11 +1,13 @@
 <script lang="ts">
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import type { AutoFormNewInput } from '$lib/types/components/form/autoform/autoformNew';
+	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { _ } from 'svelte-i18n';
+	import { getContext } from 'svelte';
 
 	export let value: string|null;
 	export let label: string;
-	export let inputDef: AutoFormNewInput;
+	export let inputDef: AutoFormInput;
+	export const disable: boolean = false;
 
 	let errorMessage = "";
 	let hasError: boolean = false;
@@ -13,6 +15,9 @@
 	if (value !== null) {
 		value = String(value).trim();
 	}
+
+	const loadStatus = getContext("loadStatus")
+
 
 	function validateTextSchema(ev: Event) {
 		const inputValue = ev.target?.value;
@@ -56,7 +61,11 @@
 			type="text"
 			on:input={(e) => validateTextSchema(e)}
 			bind:value
-			class={`${hasError ? "focus-visible:border-red-600" : ""} h-[36px] w-full border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
+			disabled={disable}
+			class={`
+				${hasError ? "focus-visible:border-red-600 " : ""}
+				h-[36px] disabled:bg-slate-50 disabled:cursor-not-allowed w-full border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`
+			}
 		>
 
 		<p class="text-xs text-red-700 w-full">

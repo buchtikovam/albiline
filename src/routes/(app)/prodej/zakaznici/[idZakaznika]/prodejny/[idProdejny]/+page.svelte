@@ -13,32 +13,59 @@
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import type { CustomerData } from "$lib/types/tables/zakaznici";
 	import NewCustomerContactDialog
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailSelectTable from '$lib/components/table/DetailSelectTable.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
 	import * as Table from "$lib/components/ui/table";
 	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
-	import AutoFormNew from '$lib/components/form/AutoFormNew.svelte';
+	import { goto } from '$app/navigation';
+	import { customToast } from '$lib/utils/customToast';
+	import { redirect } from '@sveltejs/kit';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import { getContext, setContext } from 'svelte';
 
-	export let data;
+	export let data: {
+		response: {
+			item: any;
+			contacts: any;
+		};
+		state: {
+			status: "success" | "fail";
+			message: string;
+		};
+	};
 
 	let hasMultipleAdresses = true;
 
 	console.log(data);
 
 	let addressItem = data.response.item;
-
 	let formValues = writable(addressItem);
-	let contactValues = writable(data.response.contacts)
+	let addressContacts = data.response.contacts
+	let contactValues = writable(addressContacts)
+
+	setContext("loadStatus", data.state.status);
+
+	if (data.state.message === "not-found") {
+		customToast(
+			"InfoToast",
+			"Vyberte prodejnu ze seznamu"
+		);
+	}
+
+	if (data.state.message === "no-address") {
+		customToast(
+			"Warning",
+			"Tahle prodejna neexistuje. Vyberte prosím jinou"
+		);
+	}
 
 	formValues.subscribe((data) => {
-		console.log(data);
+		console.log("fv",data);
 	})
 
 	contactValues.subscribe((data) => {
@@ -70,9 +97,15 @@
 		<Accordion.Item value="item-1" class="w-full mb-3">
 			<div class="w-full rounded-lg">
 				<Accordion.Trigger class="hover:underline-none text-left gap-1">
-					<DetailPageLabel
-						label={$_(translationRoute + ".header", { values: { customerName: $formValues.customerName, customerNodeCode: $formValues.customerNodeCode}})}
-					/>
+					{#if getContext("loadStatus") === "success"}
+						<DetailPageLabel
+							label={$_(translationRoute + ".header", { values: { customerName: $formValues.customerName, customerNodeCode: $formValues.customerNodeCode} })}
+						/>
+					{:else}
+						<DetailPageLabel
+							label={$_(translationRoute + ".header_err")}
+						/>
+					{/if}
 				</Accordion.Trigger>
 
 				<Accordion.Content class="mt-2 mb-2 rounded-lg">
@@ -91,7 +124,7 @@
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
-					<AutoFormNew
+					<AutoForm
 						formDef={customerAddressDetailFormDef}
 						translationRoute={translationRoute + ".autoform."}
 						allowCrossColumnDND={true}

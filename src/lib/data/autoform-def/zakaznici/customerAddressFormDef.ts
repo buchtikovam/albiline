@@ -1,9 +1,9 @@
 import { z } from "zod";
-import type { AutoFormNew } from '$lib/types/components/form/autoform/autoformNew';
+import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 import { v4 as uuidv4 } from 'uuid';
 
 
-export const customerAddressDetailFormDef: AutoFormNew = {
+export const customerAddressDetailFormDef: AutoFormType = {
 	col1 : [
 		{
 			field: "section_addressDetail",

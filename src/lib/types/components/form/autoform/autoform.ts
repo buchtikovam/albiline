@@ -1,74 +1,43 @@
+import type { ComponentType } from 'svelte';
+import type { Icon } from 'lucide-svelte';
 import { z } from 'zod';
+import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 
-export type AutoForm = {
-	[key: string]: AutoFormSection[];
-};
+
+export type AutoFormType = {
+	[key: string]: AutoFormSection[],
+}
 
 export type AutoFormSection = {
-	id: number,
-	label: string,
+	id: string,
+	field: string,
 	hasDialog?: boolean,
-
+	dialogId?: GlobalDialogOptions,
+	dialogTitle?: string,
+	dialogIcon?: ComponentType<Icon>,
 	isOpen: boolean,
-	sectionDef: AutoFormRow[]
+	rows: AutoFormRow[],
 }
 
-type AutoFormRow = {
-	id: number,
+export type AutoFormRow = {
 	rowType: "full" | "checkbox",
-	rowInputs: AutoFormInput[]
-}
-
-type AutoFormInput = {
-	label?: string,
-	type: "text" | "number" | "checkbox" | "empty",
-	variableName?: string,
-	schema?: z.ZodType
-}
-
-
-
-
-export type AutoFormSimpleType = AutoFormRowSimple[];
-
-type AutoFormRowSimple = {
-	rowType: "full" | "checkbox",
-	rowInputs: {
-		[key: string]: AutoFormInputSimple
+	inputs: {
+		[key: string]: AutoFormInput
 	}
 }
 
-type AutoFormInputSimple = {
-	inputType: "text" | "number" | "checkbox" | "empty",
-	schema: z.ZodType
+export type AutoFormInput = {
+	type: "text" | "number" | "checkbox" | "date" | "dropdown" | "empty",
+	dropdownOptions?: string[],
+	schema?: z.ZodType
 }
 
-
-
-
-
-
-
-
-
-
-// const addressSchema = z.object({
-//   street: z.string(),
-//   city: z.string(),
-//   state: z.string(),
-//   zip: z.string(),
-// });
-//
-// const addressDetailFormDef: AutoForm = {
-//   col1: [
-//     {
-//       label: 'Street',
-//       type: 'text',
-//       variableName: 'street',
-//       schema: addressSchema.shape.street,
-//     },
-//     // ...
-//   ],
-//   // ...
-// };
-// * */
+export type AutoFormSimple = {
+	rowType: "full" | "checkbox",
+	rowInputs: {
+		[key: string]: {
+			inputType: "text" | "number" | "checkbox" | "empty",
+			schema: z.ZodType
+		}
+	}
+}[]

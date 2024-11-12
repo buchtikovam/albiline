@@ -8,13 +8,14 @@ export function filterItemsCategory(items: SidebarItem[], itemsValues: string[])
 	return items
 		.filter((item: SidebarItem): boolean => {
 			item.open = false;
-			item.hide = itemsValues.includes(item.value) !== true;
+			item.hide = !itemsValues.includes(item.field);
 			item.children = filterItemsCategory(item.children, itemsValues);
-			if (item.children.some((child) => child.hide === false)) {
+
+			if (item.children.some((child) => !child.hide)) {
 				item.hide = false;
 			}
 
-			return item.hide === false;
+			return !item.hide;
 		}
 	);
 }

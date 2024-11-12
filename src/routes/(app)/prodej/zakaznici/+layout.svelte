@@ -13,14 +13,16 @@
 
 	editedDataStore.subscribe(data => disableTabs = data.length > 0)
 
-	let customerAddressCode: string;
-	let customerNodeCode: string;
+	let customerAddressCode: string|undefined;
+	let customerNodeCode: string|undefined;
 
 	selectedRowStore.subscribe((data) => {
-		customerNodeCode = data.customerNodeCode;
-		customerAddressCode = data.customerAddressCode;
-	})
+		if (data.length > 0) {
+			customerNodeCode = data[0].customerNodeCode;
+			customerAddressCode = data[0].customerAddressCode;
+		}
 
+	})
 </script>
 
 

@@ -54,12 +54,17 @@
 	let filteredItems: SidebarItem[] = deepcopy(allItems);
 	let searchTerm = '';
 
+
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
 	function search(searchTerm: string): void {
 		const activeCategoryStoreData = get(activeCategoryStore);
 
+		console.log("search", searchTerm);
+
 		if (activeCategoryStoreData === '' || activeCategoryStoreData === 'all') {
 			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
+
+			console.log(filteredItems);
 		}
 
 		if (activeCategoryStoreData === 'recent') {

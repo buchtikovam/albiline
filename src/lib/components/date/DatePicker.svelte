@@ -5,6 +5,7 @@
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
 	import { DatePicker } from 'bits-ui';
+	import { getContext } from 'svelte';
 
 	/*
 		Kalendář s inputem a popoverem pro výběr datumu
@@ -26,10 +27,11 @@
 	weekdayFormat="short"
 	fixedWeeks={true}
 	weekStartsOn={1}
+	disabled={true}
 	bind:value={value}
 	locale="cz"
 >
-	<div class="flex w-full flex-col gap-0.5">
+	<div class="flex w-full flex-col gap-0.5 ">
 		<DatePicker.Label class="block select-none text-sm font-medium">
 			{ label }
 		</DatePicker.Label>
@@ -37,7 +39,7 @@
 
 		<DatePicker.Input
 			let:segments
-			class="flex h-input w-full h-10 select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground"
+			class="flex h-input w-full h-10  select-none items-center rounded-md border border-border-input bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground"
 		>
 			{#each segments as { part, value }}
 				<div class="inline-block select-none">
@@ -57,7 +59,7 @@
 			{/each}
 
 			<DatePicker.Trigger
-				class="ml-auto inline-flex size-8 items-center justify-center rounded-[5px] text-foreground/60 transition-all hover:bg-muted active:bg-dark-10">
+				class="ml-auto inline-flex  size-8 items-center justify-center rounded-[5px] text-foreground/60 transition-all hover:bg-muted active:bg-dark-10">
 				<CalendarRange />
 			</DatePicker.Trigger>
 		</DatePicker.Input>

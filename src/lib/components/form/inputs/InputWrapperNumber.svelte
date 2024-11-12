@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { z } from "zod";
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import type { AutoFormNewInput } from '$lib/types/components/form/autoform/autoformNew';
+	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
+	import { getContext } from 'svelte';
  
 	export let value: number;
 	export let label;
-	export let inputDef: AutoFormNewInput;
+	export let inputDef: AutoFormInput;
+	export const disable: boolean = false;
+
 
 	let errorMessage = "";
 	let hasError: boolean = false;
-
-
 
 	function validateNumberSchema(ev: Event) {
 		const inputValue = ev.target?.value;
@@ -45,7 +46,8 @@
 			type="number"
 			on:input={(e) => validateNumberSchema(e)}
 			bind:value
-			class={`${hasError ? "focus-visible:border-red-500" : ""} h-[36px] w-full border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
+			disabled={disable}
+			class={`${hasError ? "focus-visible:border-red-500" : ""} h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
 		>
 
 		<p class="text-xs text-red-700 w-full">{errorMessage}</p>

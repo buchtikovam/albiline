@@ -48,12 +48,14 @@
 			sortable: true,
 			resizable: true,
 			editable: true,
-			minWidth: 80,
+			minWidth: 60,
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
 			wrapHeaderText: true, // Wrap Header Text
-			autoHeaderHeight: true
+			autoHeaderHeight: true,
+			suppressHeaderMenuButton: true
+
 		},	
 
 		onCellValueChanged: (event) => {
@@ -77,16 +79,22 @@
 		},
 
 		onRowSelected: (event) => {
-			selectedRowStore.set({
-				customerAddressCode: event.data.customerAddressCode,
-				customerNodeCode: event.data.customerNodeCode
+			const selectedRows = gridApi.getSelectedRows()
+			let rowArr = []
+
+			console.log(selectedRows);
+
+			selectedRows.forEach((row) => {
+				rowArr.push({
+					customerAddressCode: row.customerAddressCode,
+					customerNodeCode: row.customerNodeCode
+				})
 			})
+
+			selectedRowStore.set(rowArr)
 		},
 
 		onCellDoubleClicked(event) {
-			console.log(event.column.colId);
-			console.log(event.data.customerNodeCode);
-
 			selectedRowStore.set({
 				customerAddressCode: event.data.customerAddressCode,
 				customerNodeCode: event.data.customerNodeCode
@@ -100,6 +108,7 @@
 				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`)
 			}
 		},
+
 
 		// onBodyScroll(event) {
 		// 	if (event.top > 0) {
@@ -128,8 +137,6 @@
 	editedDataStore.subscribe((data) => {
 		console.log(data)
 	})
-
-	selectedRowStore.subscribe((data) => console.log(data))
 
 
 	let recentFilters: FilterModel[] = [];

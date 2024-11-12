@@ -3,7 +3,7 @@
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform/autoform";
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
-	import InputWrapper from '$lib/components/form/inputs/InputWrapper.svelte';
+	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
 	import FormCheckboxSection from '$lib/components/form/containers/FormCheckboxSection.svelte';
 
 	export let autoform: AutoFormSimpleType;
@@ -20,11 +20,10 @@
 				<FormInputSection>
 					{#each Object.entries(row.rowInputs) as [key, value]}
 						{#if value.inputType === "text" || value.inputType === "number"}
-							<InputWrapper
+							<InputWrapperText
 								value={""}
 								label={$_(translationRoute + '.' + key)}
-								type={value.inputType}
-								schema={value.schema}
+								inputDef={value}
 							/>
 						{/if}
 

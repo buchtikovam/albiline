@@ -2,25 +2,29 @@
 	import { openedDialogStore } from '$lib/stores/ribbonStore';
 	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
-	import Grip from 'lucide-svelte/icons/grip';
-	import type { AutoFormSection } from "$lib/types/components/form/autoform/autoform";
 	import type { CustomerData } from '$lib/types/tables/zakaznici';
-	import type { Writable } from 'svelte/store';
-	import SectionLabel from './labels/SectionLabel.svelte';
-	import InputWrapper from './inputs/InputWrapper.svelte';
-	import FormContainer from './containers/FormContainer.svelte';
+	import { writable, type Writable } from 'svelte/store';
 	import FormInputSection from './containers/FormInputSection.svelte';
 	import FormCheckboxSection from './containers/FormCheckboxSection.svelte';
 	import CheckboxWrapper from './inputs/CheckboxWrapper.svelte';
 	import EmptyField from './inputs/EmptyField.svelte';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
+	import { _ } from 'svelte-i18n'
+	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform/autoform';
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
+	import Grip from 'lucide-svelte/icons/grip';
+	import FormContainer from '$lib/components/form/containers/FormContainer.svelte';
+	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
+	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
+	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
+	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 
 	export let items: AutoFormSection[];
 	export let colName: string;
-	export let formValues:  Writable<CustomerData[]>;
-	export let autoformWritable: Writable<AutoForm>;
+	export let translationRoute: string;
+	export let autoformWritable: Writable<AutoFormType>;
 	export let allowCrossColumnDND: boolean = true
+	export let formValues = writable({});
 
 	const flipDurationMs = 300;
 
@@ -33,9 +37,7 @@
 
 		autoformWritable.update((autoform) => {
 			const columnKey = Object.keys(autoform).find(key => key === colName);
-			if (columnKey) {
-				autoform[columnKey] = items;
-			}
+			if (columnKey) autoform[columnKey] = items;
 			return autoform;
 		});
 	}
@@ -45,63 +47,92 @@
 
 <section
 	use:dragHandleZone="{{ items, flipDurationMs, type: allowCrossColumnDND ? undefined : colName }}"
+	class="w-full pb-2 flex flex-col gap-2 min-h-4"
 	on:consider={handleDndConsider}
 	on:finalize={handleDndFinalize}
-	class="w-full pb-2 flex flex-col gap-2 min-h-4"
 >
 	{#each items as item (item.id)}
 		<div animate:flip={{ duration: flipDurationMs }} >
 			<Accordion.Root value={["item-1"]} >
 				<Accordion.Item value="item-1">
 					{#if item.hasDialog}
-					   <div class="flex justify-between pb-2">
+						<div class="flex justify-between pb-2">
 						   <div class="flex">
 							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
-								   <SectionLabel name={item.label} />
+								   <SectionLabel name={$_(translationRoute + item.field)} />
 							   </Accordion.Trigger>
 
-							   <button type="button" on:click={() => openedDialogStore.set("customer-detail-invoice-addresses")}>
+							   <button type="button" on:click={() => openedDialogStore.set(item.dialogId)}>
 								   <svelte:component this={item.dialogIcon} class="size-4 text-albi-500"/>
 								   {item.dialogTitle || ""}
 							   </button>
 						   </div>
 
-
 						   <div use:dragHandle aria-label="drag-handle" class="handle">
 							   <Grip class="size-4 text-slate-300"/>
 						   </div>
-
 					   </div>
 					{:else}
 						<div class="flex justify-between items-center pb-2">
-							<Accordion.Trigger hideChevron={true} class="text-albi-500 w-fit justify-start items-center gap-2">
-								<SectionLabel name={item.label} />
+							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
+								<SectionLabel name={$_(translationRoute + item.field)} />
 							</Accordion.Trigger>
 
 							<div use:dragHandle aria-label="drag-handle" class="handle">
 								<Grip class="size-4 text-slate-300"/>
 							</div>
 						</div>
-
 					{/if}
-					
-					
+
+
 					<Accordion.Content>
 						<FormContainer>
-							{#each item.sectionDef as row (row.id)}
+							{#each item.rows as row}
 								{#if row.rowType === "full"}
 									<FormInputSection>
-										{#each row.rowInputs as input}
-											{#if input.type === "text" || input.type === "number"}
-												<InputWrapper bind:value={$formValues[input.variableName]} label={input.label} type={input.type} schema={input.schema}/>
+										{#each Object.entries(row.inputs) as [key, value]}
+											{#if value.type === "text"}
+												<InputWrapperText
+													label={$_(translationRoute + key) || ""}
+													inputDef={value}
+													bind:value={$formValues[key]}
+												/>
+											{/if}
+											{#if value.type === "number"}
+												<InputWrapperNumber
+													label={$_(translationRoute + key)}
+													inputDef={value}
+													bind:value={$formValues[key]}
+												/>
 											{/if}
 
-											{#if input.type === "checkbox"}
-												<CheckboxWrapper field={input.variableName} bind:value={$formValues[input.variableName]} label={input.label} />
+											{#if value.type === "checkbox"}
+												<div class="mt-5 w-full">
+													<CheckboxWrapper
+														field={key}
+														label={$_(translationRoute + key)}
+														bind:value={$formValues[key]}
+													/>
+												</div>
 											{/if}
 
-											{#if input.type === "empty"}
-											<EmptyField/>
+											{#if value.type === "empty"}
+												<EmptyField/>
+											{/if}
+
+											{#if value.type === "dropdown"}
+												<DropdownWrapper
+													bind:value={$formValues[key]}
+													options={value.dropdownOptions}
+													label={$_(translationRoute + key)}
+												/>
+											{/if}
+
+											{#if value.type === "date"}
+												<DateWrapper
+													bind:value={$formValues[key]}
+													label={$_(translationRoute + key)}
+												/>
 											{/if}
 										{/each}
 									</FormInputSection>
@@ -109,8 +140,12 @@
 
 								{#if row.rowType === "checkbox"}
 									<FormCheckboxSection>
-										{#each row.rowInputs as input}
-											<CheckboxWrapper field={input.variableName} bind:value={$formValues[input.variableName]} label={input.label} />
+										{#each Object.entries(row.inputs) as [key]}
+											<CheckboxWrapper
+												field={key}
+												bind:value={$formValues[key]}
+												label={$_(translationRoute + key)}
+											/>
 										{/each}
 									</FormCheckboxSection>
 								{/if}

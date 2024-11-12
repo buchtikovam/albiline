@@ -42,7 +42,7 @@
 
 							{#if column.type === 'text'}
 								<Table.Cell class="max-w-60">
-									{row[column.field]}
+									{row[column.field] === null ? "" : row[column.field]}
 								</Table.Cell>
 							{/if}
 						{/each}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { testFormDef } from '$lib/data/autoform-def/zakaznici/testFormDef';
 	import { _, locale } from 'svelte-i18n';
-	import AutoFormNew from '$lib/components/form/AutoFormNew.svelte';
+	import AutoFormNew from '$lib/components/form/AutoForm.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 
 	console.log(testFormDef);

@@ -1,31 +1,33 @@
 <script lang="ts">
-	import type { AutoForm } from "$lib/types/components/form/autoform/autoform";
-	import DndColumn from "../form/DndColumn.svelte";
-	import type { CustomerData } from "$lib/types/tables/zakaznici";
-	import { get, writable, type Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
+	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
+	import DndColumnNew from '$lib/components/form/DndColumn.svelte';
 
-	export let formDef: AutoForm;
-	export let formValues: Writable<CustomerData>;
+	export let formDef: AutoFormType;
+	export let formValues = writable({});
+	export let translationRoute: string;
 	export let allowCrossColumnDND: boolean = true;
 
 	let autoformWritable = writable(formDef);
-	let colDef: AutoForm;
+	let colDef: AutoFormType;
 
 	autoformWritable.subscribe((data) => {
 		colDef = data;
 	})
+
 </script>
 
 
 <form method="POST" autocomplete="off">
 	<div class="w-full gap-4 xl:flex ">
 		{#each Object.entries(colDef) as [key, value]}
-			<DndColumn
-				bind:items={value}
-				bind:formValues={formValues}
+			<DndColumnNew
+				items={value}
 				autoformWritable={autoformWritable}
-				allowCrossColumnDND={allowCrossColumnDND}
 				colName={key}
+				allowCrossColumnDND={allowCrossColumnDND}
+				translationRoute={translationRoute}
+				bind:formValues
 			/>
 		{/each}
 	</div>
