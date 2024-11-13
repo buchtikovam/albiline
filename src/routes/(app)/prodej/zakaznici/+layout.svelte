@@ -6,10 +6,10 @@
 	import { goto } from '$app/navigation';
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import { get } from 'svelte/store';
 
 	let disableTabs: boolean = true;
 	let translationRouteTabs = "routes.prodej.zakaznici.layout_tabs"
-
 
 	editedDataStore.subscribe(data => disableTabs = data.length > 0)
 
@@ -21,18 +21,32 @@
 			customerNodeCode = data[0].customerNodeCode;
 			customerAddressCode = data[0].customerAddressCode;
 		}
+	})
 
+	let route: string;
+
+	page.subscribe((data) => {
+		if (get(selectedRowStore).length === 0) {
+			selectedRowStore.set([
+				{
+					customerNodeCode: $page.params.idZakaznika,
+					customerAddressCode: $page.params.idProdejny,
+				}
+			])
+		}
+
+		route = data.url.pathname;
 	})
 </script>
 
 
 
 <div class="w-full flex items-center justify-between">
-	<Tabs.Root value={$page.url.pathname} class="w-full h-8 overflow-auto rounded-md md:w-fit mb-2">
+	<Tabs.Root value={route} class="w-full h-8 overflow-auto rounded-md md:w-fit mb-2">
 		<Tabs.List class="h-8">
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici` !== $page.url.pathname && disableTabs}
+				disabled={`/prodej/zakaznici` !== route && disableTabs}
 				value={"/prodej/zakaznici"}
 				on:click={() => goto("/prodej/zakaznici")}
 			>
@@ -42,7 +56,7 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== $page.url.pathname && disableTabs}
+				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== route && disableTabs}
 				value={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`}
 				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`)}
 			>
@@ -52,7 +66,7 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${customerNodeCode}` !== $page.url.pathname && disableTabs}
+				disabled={`/prodej/zakaznici/${customerNodeCode}` !== route && disableTabs}
 				value={`/prodej/zakaznici/${customerNodeCode}`}
 				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}`)}
 			>

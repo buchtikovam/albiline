@@ -16,18 +16,37 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import { customToast } from '$lib/utils/customToast';
+	import { disableInputs } from '$lib/stores/pageStore';
 
-	export let data;
+	export let data: {
+		response: {
+			item: any;
+			contacts: any;
+		};
+		state: {
+			status: "success" | "fail";
+			message: string;
+		};
+	};
+	disableInputs.set(data.state.status === "fail")
 
 	let translationRoute = "routes.prodej.zakaznici.customer_detail";
-
-	console.log(data);
 
 	let customerItems = data.response.item;
 	let customerContacts = data.response.contacts;
 
 	let formValues = writable(customerItems);
 	let contactValues = writable(customerContacts)
+
+	if (data.state.message === "not-found") {
+		setTimeout(() => {
+			customToast(
+				"InfoToast",
+				"Vyberte zákazníka ze seznamu"
+			);
+		}, 500);
+	}
 
 	console.log(customerContacts, "CustomerContacts");
 
@@ -46,7 +65,6 @@
 
 	const flipDurationMs = 200;
 	let openDialog: boolean = false;
-
 </script>
 
 

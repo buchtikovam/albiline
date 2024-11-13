@@ -168,6 +168,15 @@
 				"address_detail" : {
 					"header" : "Prodejny zákazníka { customerName } ({ customerNodeCode })",
 					"header_err" : "Prodejny zákazníka",
+					"address_select_table" : {
+						"name" : "Název",
+						"customerAddressCode" : "ID prodejny",
+						"street" : "Ulice",
+						"city" : "Město",
+						"postalCode" : "PSČ",
+						"countryCode" : "Země",
+						"customerRank" : "Bonita"
+					},
 					"autoform" : {
 						"section_addressDetail" : "Detail adresy",
 						"name" : "Jméno",

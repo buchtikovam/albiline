@@ -12,7 +12,7 @@
 
 	export let searchTerm: string;
 	export let filteredItems: SidebarItem[];
-	export let isSidebarOpen: boolean = true;
+	export let isSidebarOpen: boolean;
 </script>
 
 

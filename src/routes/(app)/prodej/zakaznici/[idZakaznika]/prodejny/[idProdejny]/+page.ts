@@ -5,8 +5,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.idZakaznika}/addresses/${params.idProdejny}/`)
 
 	if (res.ok) {
-		console.log("ok");
-
 		const response = await res.json();
 		const contacts = response.contacts;
 		const item = response.item;

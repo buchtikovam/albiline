@@ -1,32 +1,30 @@
 export const customerAddressSelectTableDef = [
 	{
-		headerName: 'Id prodejny',
-		variableName: 'idProdejna',
+		field: 'customerAddressCode',
 		type: 'text'
 	},
 	{
-		headerName: 'Název',
-		variableName: 'nazev',
+		field: 'name',
 		type: 'text'
 	},
 	{
-		headerName: 'Ulice',
-		variableName: 'ulice',
+		field: 'street',
 		type: 'text'
 	},
 	{
-		headerName: 'Město',
-		variableName: 'mesto',
+		field: 'city',
 		type: 'text'
 	},
 	{
-		headerName: 'PSČ',
-		variableName: 'psc',
+		field: 'postalCode',
 		type: 'text'
 	},
 	{
-		headerName: 'Země',
-		variableName: 'country',
+		field: 'countryCode',
+		type: 'text'
+	},
+	{
+		field: 'customerRank',
 		type: 'text'
 	},
 ]

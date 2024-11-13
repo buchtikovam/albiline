@@ -7,7 +7,7 @@
 	export let value: string|null;
 	export let label: string;
 	export let inputDef: AutoFormInput;
-	export const disable: boolean = false;
+	export let disable: boolean = false;
 
 	let errorMessage = "";
 	let hasError: boolean = false;

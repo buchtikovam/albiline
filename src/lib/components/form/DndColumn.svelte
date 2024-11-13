@@ -18,6 +18,8 @@
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
 	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
+	import { getContext } from 'svelte';
+	import { disableInputs } from '$lib/stores/pageStore';
 
 	export let items: AutoFormSection[];
 	export let colName: string;
@@ -25,6 +27,13 @@
 	export let autoformWritable: Writable<AutoFormType>;
 	export let allowCrossColumnDND: boolean = true
 	export let formValues = writable({});
+
+	let disable = false;
+
+	disableInputs.subscribe((data) => {
+		disable = data
+	})
+
 
 	const flipDurationMs = 300;
 
@@ -96,6 +105,7 @@
 													label={$_(translationRoute + key) || ""}
 													inputDef={value}
 													bind:value={$formValues[key]}
+													disable={disable}
 												/>
 											{/if}
 											{#if value.type === "number"}
@@ -103,6 +113,7 @@
 													label={$_(translationRoute + key)}
 													inputDef={value}
 													bind:value={$formValues[key]}
+													disable={disable}
 												/>
 											{/if}
 
@@ -112,6 +123,7 @@
 														field={key}
 														label={$_(translationRoute + key)}
 														bind:value={$formValues[key]}
+														disable={disable}
 													/>
 												</div>
 											{/if}
@@ -125,6 +137,7 @@
 													bind:value={$formValues[key]}
 													options={value.dropdownOptions}
 													label={$_(translationRoute + key)}
+													disable={disable}
 												/>
 											{/if}
 
@@ -132,6 +145,7 @@
 												<DateWrapper
 													bind:value={$formValues[key]}
 													label={$_(translationRoute + key)}
+													disable={disable}
 												/>
 											{/if}
 										{/each}
@@ -145,6 +159,7 @@
 												field={key}
 												bind:value={$formValues[key]}
 												label={$_(translationRoute + key)}
+												disable={disable}
 											/>
 										{/each}
 									</FormCheckboxSection>

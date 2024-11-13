@@ -4,6 +4,7 @@
 	import CircleCheck from 'lucide-svelte/icons/circle-check';
 	import CircleX from 'lucide-svelte/icons/circle-x';
 	import Info from 'lucide-svelte/icons/info';
+	import { beforeNavigate } from '$app/navigation';
 
 	/*
 		Toast komponent, který pomocí svelte sonneru zobrazuje
@@ -12,37 +13,72 @@
 
 	export let type: ToastVariant;
 	export let content: string;
+
+	let hidden = false;
+
+	beforeNavigate(() => {
+		hidden = true;
+	})
 </script>
 
 
 
-<div
-	id="toast"
-	class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-2 text-primary bg-background rounded-lg border-2 dark:text-albi-50 dark:bg-albi-800 pr-3"
->
-	{#if type === 'InfoToast'}
+{#if type === 'InfoToast'}
+	<div
+		id="toast"
+		class={`${hidden ? 'hidden' : ''} mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-3 text-violet-950 bg-white rounded-lg border border-violet-500 dark:text-violet-50 dark:bg-violet-800 pr-3`}
+	>
 		<div
-			class="inline-flex items-center justify-center flex-shrink-0 size-8 text-blue-600 bg-blue-200 rounded-lg dark:bg-blue-900 dark:text-blue-300">
+			class="inline-flex items-center justify-center flex-shrink-0 size-8 text-violet-600 bg-violet-200 rounded-lg dark:bg-violet-900 dark:text-violet-300">
 			<Info class="size-5" />
 		</div>
-	{:else if type === 'Warning'}
+
+		<div class="ms-3 text-sm font-semibold">
+			{content}
+		</div>
+	</div>
+{:else if type === 'Warning'}
+	<div
+		id="toast"
+		class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-3 text-amber-950 bg-white rounded-lg border border-amber-500 dark:text-amber-50 dark:bg-amber-800 pr-3"
+	>
 		<div
 			class="inline-flex items-center justify-center flex-shrink-0 size-8 text-amber-600 bg-amber-200 rounded-lg dark:bg-amber-900 dark:text-amber-300">
 			<CircleAlert class="size-5" />
 		</div>
-	{:else if type === 'Success'}
+
+		<div class="ms-3 text-sm font-semibold">
+			{content}
+		</div>
+	</div>
+{:else if type === 'Success'}
+	<div
+		id="toast"
+		class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-3 text-green-950 bg-white rounded-lg shadow border border-green-500 dark:text-green-50 dark:bg-green-800 pr-3"
+	>
 		<div
 			class="inline-flex items-center justify-center flex-shrink-0 size-8 text-green-600 bg-green-200 rounded-lg dark:bg-green-900 dark:text-green-300">
 			<CircleCheck class="size-5" />
 		</div>
-	{:else}
+
+		<div class="ms-3 text-sm font-semibold">
+			{content}
+		</div>
+	</div>
+{:else}
+	<div
+		id="toast"
+		class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-3 text-red-950 bg-white rounded-lg shadow border border-red-500 dark:text-red-50 dark:bg-red-800 pr-3"
+	>
 		<div
 			class="inline-flex items-center justify-center flex-shrink-0 size-8 text-red-600 bg-red-200 rounded-lg dark:bg-red-900 dark:text-red-300">
 			<CircleX class="size-5" />
 		</div>
-	{/if}
 
-	<div class="ms-3 text-sm font-semibold">
-		{content}
+		<div class="ms-3 text-sm font-semibold">
+			{content}
+		</div>
 	</div>
-</div>
+{/if}
+
+

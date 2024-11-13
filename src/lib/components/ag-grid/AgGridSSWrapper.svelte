@@ -30,7 +30,6 @@
 	import { addToEditedData } from "$lib/utils/addToEditedData";
 	import { goto } from "$app/navigation";
 	import { get, writable } from 'svelte/store';
-	import { boolean } from "zod";
 	import { sessionKeyStore } from '$lib/stores/pageStore';
 	
 	export let columnDefinitions: any[];
@@ -95,10 +94,10 @@
 		},
 
 		onCellDoubleClicked(event) {
-			selectedRowStore.set({
+			selectedRowStore.set([{
 				customerAddressCode: event.data.customerAddressCode,
 				customerNodeCode: event.data.customerNodeCode
-			})
+			}])
 
 			if (event.column.colId === "customerAddressCode") {
 				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`)
@@ -109,13 +108,12 @@
 			}
 		},
 
-
 		// onBodyScroll(event) {
 		// 	if (event.top > 0) {
 		// 		updateLastRow.set(true)
 		// 	}
 		// },
-		//
+
 		// onBodyScrollEnd() {
 		// 	console.log("scroll end");
 		// 	// updateLastRow.set(false)
@@ -126,18 +124,16 @@
 		suppressCsvExport: true,
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
-		suppressRowClickSelection: true,
+		// suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
 		cacheBlockSize: 100,
-
-
 	}
+
 
 	editedDataStore.subscribe((data) => {
 		console.log(data)
 	})
-
 
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
@@ -213,63 +209,62 @@
 		}
 	};
 
+
 	onMount(() => {
 		// updateLastRow.set(false);
 		defaultColDef.set(columnDefinitions)
 
-
-
 		gridApi = createGrid(gridContainer, gridOptions);
 		gridApi.setGridOption('serverSideDatasource', datasource);
 
-		// selectedFilterStore.subscribe((filters) => {
-		// 	if (filters) {
-		// 		gridApi.setFilterModel(filters)
-		// 		gridApi.onFilterChanged()
-		// 	}
-		// })
+		selectedFilterStore.subscribe((filters) => {
+			if (filters) {
+				gridApi.setFilterModel(filters)
+				gridApi.onFilterChanged()
+			}
+		})
 
-		// selectedPresetStore.subscribe((preset) => {
-		// 	if (preset) {
-		// 		let columnOrder: ColumnOrder = []
-		//
-		// 		preset.forEach(obj => {
-		// 			columnOrder.push({ colId: obj.colId})
-		// 		})
-		//
-		// 		console.log(columnOrder);
-		//
-		// 		gridApi.setGridOption("columnDefs", preset)
-		//
-		// 		gridApi.applyColumnState({
-		// 			state: columnOrder,
-		// 			applyOrder: true
-		// 		});
-		// 	}
-		// })
+		selectedPresetStore.subscribe((preset) => {
+			if (preset) {
+				let columnOrder: ColumnOrder = []
 
-		// setColDefToDefault.subscribe((data) => {
-		// 	if (data === true) {
-		// 		let columnOrder: ColumnOrder = [];
-		// 		let defaultColumnDef = get(defaultColDef);
-		//
-		// 		defaultColumnDef.forEach(obj => {
-		// 			columnOrder.push({ colId: obj.field});
-		// 		});
-		//
-		// 		console.log(defaultColumnDef);
-		// 		console.log(columnOrder);
-		//
-		// 		gridApi.setGridOption("columnDefs", defaultColumnDef);
-		//
-		// 		gridApi.applyColumnState({
-		// 			state: columnOrder,
-		// 			applyOrder: true
-		// 		});
-		//
-		// 		setColDefToDefault.set(false);
-		// 	}
-		// })
+				preset.forEach(obj => {
+					columnOrder.push({ colId: obj.colId})
+				})
+
+				console.log(columnOrder);
+
+				gridApi.setGridOption("columnDefs", preset)
+
+				gridApi.applyColumnState({
+					state: columnOrder,
+					applyOrder: true
+				});
+			}
+		})
+
+		setColDefToDefault.subscribe((data) => {
+			if (data === true) {
+				let columnOrder: ColumnOrder = [];
+				let defaultColumnDef = get(defaultColDef);
+
+				defaultColumnDef.forEach(obj => {
+					columnOrder.push({ colId: obj.field});
+				});
+
+				console.log(defaultColumnDef);
+				console.log(columnOrder);
+
+				gridApi.setGridOption("columnDefs", defaultColumnDef);
+
+				gridApi.applyColumnState({
+					state: columnOrder,
+					applyOrder: true
+				});
+
+				setColDefToDefault.set(false);
+			}
+		})
 
 		// let timer;
 		// fulltextFilterValueStore.subscribe((data) => {
@@ -298,9 +293,11 @@
 		// }
 	})
 
+
 	onDestroy(() => {
 		fulltextFilterValueStore.set(undefined)
 	})
+
 
 	ribbonActionStore.subscribe((action) => {
 		if (action === RibbonActionEnum.LOAD) {

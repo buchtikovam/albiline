@@ -6,7 +6,7 @@
 	export let field: string;
 	export let value: boolean = false;
 	export let label: string;
-	export const disable: boolean = false;
+	export let disable: boolean = false;
 
 	const loadStatus = getContext("loadStatus")
 </script>

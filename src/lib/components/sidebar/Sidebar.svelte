@@ -25,9 +25,9 @@
 	*/
 
 	let isSidebarCommandOpen: boolean = false;
-	let isSidebarOpen: boolean = true;
+	let isSidebarOpen: boolean;
 	sidebarOpenStore.subscribe(data => {
-		isSidebarOpen = data; 
+		isSidebarOpen = data;
 	});
 
 
@@ -58,8 +58,6 @@
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
 	function search(searchTerm: string): void {
 		const activeCategoryStoreData = get(activeCategoryStore);
-
-		console.log("search", searchTerm);
 
 		if (activeCategoryStoreData === '' || activeCategoryStoreData === 'all') {
 			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
