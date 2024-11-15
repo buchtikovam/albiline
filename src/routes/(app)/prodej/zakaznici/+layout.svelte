@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { editedDataStore, fulltextFilterValueStore, selectedRowStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import {
+		activeSelectedRowIndexStore,
+		editedDataStore,
+		fulltextFilterValueStore,
+		selectedRowStore,
+		showFulltextSearchStore
+	} from '$lib/stores/tableStore';
 	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
 	import { _ } from 'svelte-i18n'
@@ -15,11 +21,23 @@
 
 	let customerAddressCode: string|undefined;
 	let customerNodeCode: string|undefined;
+	let activeIndex: number;
+
+	activeSelectedRowIndexStore.subscribe((index) => {
+		activeIndex = index
+		let selectedRows = get(selectedRowStore)
+
+		if (selectedRows.length > 0) {
+			customerNodeCode = selectedRows[activeIndex].customerNodeCode;
+			customerAddressCode = selectedRows[activeIndex].customerAddressCode;
+		}
+
+	})
 
 	selectedRowStore.subscribe((data) => {
 		if (data.length > 0) {
-			customerNodeCode = data[0].customerNodeCode;
-			customerAddressCode = data[0].customerAddressCode;
+			customerNodeCode = data[activeIndex].customerNodeCode;
+			customerAddressCode = data[activeIndex].customerAddressCode;
 		}
 	})
 

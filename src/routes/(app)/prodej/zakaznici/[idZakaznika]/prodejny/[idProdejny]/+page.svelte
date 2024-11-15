@@ -3,10 +3,6 @@
 	import {
 		customerDetailContactsTableDef
 	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
-	import {
-		customerAddressSelectTableData,
-		customerAddressSelectTableDef
-	} from '$lib/data/table-def/zakaznici/customerAddressSelectTableDef';
 	import { _ } from 'svelte-i18n'
 	import { flipItems } from '$lib/utils/flipItems';
 	import { get, type Writable, writable } from 'svelte/store';
@@ -16,11 +12,9 @@
 	import { page } from '$app/stores';
 	import NewCustomerContactDialog
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
-	import DetailSelectTable from '$lib/components/table/DetailSelectTable.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
-	import * as Accordion from "$lib/components/ui/accordion";
 	import * as Table from "$lib/components/ui/table";
 	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
 	import { customToast } from '$lib/utils/customToast';
@@ -28,12 +22,14 @@
 	import { disableInputs } from '$lib/stores/pageStore';
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
-	import { selectedRowStore } from '$lib/stores/tableStore';
-	import { goto } from '$app/navigation';
-	// import { useLoader } from '$app/navigation';
+	import { activeSelectedRowIndexStore, selectedRowStore } from '$lib/stores/tableStore';
+	import { beforeNavigate, goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import CSAgGridDialog from '$lib/components/dialog/ag-grid/CSAgGridDialog.svelte';
+	import Repeat from 'lucide-svelte/icons/repeat';
+	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
+	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
 
-
-	// const loader = useLoader();
 
 	export let data: {
 		response: {
@@ -50,30 +46,12 @@
 
 	let hasMultipleAddresses = true;
 
-	let addressItem = data.response.item;
-	let formValues = writable(addressItem);
+	$: addressItem = data.response.item;
+	$: formValues = writable(addressItem);
 
-	let addressContacts = data.response.contacts
-	let contactValues = writable(addressContacts)
+	$: addressContacts = data.response.contacts
+	$: contactValues = writable(addressContacts)
 
-	if (data.state.message === "not-found") {
-
-		setTimeout(() => {
-			customToast(
-				"InfoToast",
-				"Vyberte prodejnu ze seznamu"
-			);
-		}, 500);
-	}
-	if (data.state.message === "no-address") {
-
-		setTimeout(() => {
-			customToast(
-				"Warning",
-				"Zákazník nemá žádnou prodejnu"
-			);
-		}, 500);
-	}
 	let items = [
 		{
 			id: 0,
@@ -87,19 +65,10 @@
 		},
 	];
 
-	let openDialog: boolean = false;
-
+	let openNewContactDialog: boolean = false;
+	let openAgGridDialog: boolean = false;
 	let translationRoute = "routes.prodej.zakaznici.address_detail";
-
 	const selectedRows = get(selectedRowStore)
-
-	let activeId = {
-		customerNodeCode: Number($page.params.idZakaznika),
-		customerAddressCode: Number($page.params.idProdejny)
-	}
-
-	let disableLeft = false;
-	let disableRight = false;
 
 	type Row = {
 		name: string,
@@ -111,116 +80,139 @@
 		customerRank : string
 	}
 
-
-	let addresses: Writable<Row[]> = writable()
+	$: addresses = writable()
 
 	async function getAddresses() {
-		// if (!get(addresses)) {
+		// if (get(addresses).length > 0) {
 			const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${$page.params.idZakaznika}/addresses`)
 
+			console.log("fetch");
+
 			if (res.ok) {
+				console.log("fetch ok");
 				const responseData = await res.json()
-
-				console.log(responseData.items);
-
+				// console.log(await responseData.items);
 				addresses.set(await responseData.items)
-				console.log(get(addresses))
+				console.log(get(addresses));
 			}
 		// }
 	}
 
-	// function changeActiveId(ids: { customerNodeCode: number, customerAddressCode: number}[], direction: "left" | "right", activeId: { customerNodeCode: number, customerAddressCode: number}) {
-	// 	console.log("activeIdOld", activeId);
-	//
-	// 	const currentIndex = ids.findIndex((id) =>
-	// 		id.customerNodeCode === activeId.customerNodeCode &&
-	// 		id.customerAddressCode === activeId.customerAddressCode
-	// 	);
-	//
-	// 	console.log("currentIndex", currentIndex);
-	//
-	// 	if (direction === "right") {
-	// 		console.log("right");
-	// 		const nextIndex = currentIndex + 1;
-	// 		console.log("activeIdNew", ids[nextIndex]);
-	// 		loader.load(`/prodej/zakaznici/${ids[nextIndex].customerNodeCode}/prodejny/${ids[nextIndex].customerAddressCode}`)
-	// 		return ids[nextIndex] || ids[0];
-	// 	}
-	//
-	// 	if (direction === "left") {
-	// 		console.log("left");
-	// 		const prevIndex = currentIndex - 1;
-	// 		console.log("activeIdNew", ids[prevIndex]);
-	// 		goto(`/prodej/zakaznici/${ids[prevIndex].customerNodeCode}/prodejny/${ids[prevIndex].customerAddressCode}`)
-	//
-	// 		return ids[prevIndex] || ids[ids.length - 1];
-	// 	}
-	// }
+	$: activeId = {
+		customerNodeCode: Number($page.params.idZakaznika),
+		customerAddressCode: Number($page.params.idProdejny)
+	}
+
+	$: disableLeft = false;
+	$: disableRight = false;
+
+	function changeActiveId(
+		ids: { customerNodeCode: number, customerAddressCode: number}[],
+		direction: "left" | "right",
+		activeId: { customerNodeCode: number, customerAddressCode: number}
+	) {
+		const currentIndex = ids.findIndex((id) =>
+			id.customerNodeCode === activeId.customerNodeCode &&
+			id.customerAddressCode === activeId.customerAddressCode
+		);
+
+		disableLeft = false;
+		disableRight = false;
+
+		if (direction === "right") {
+			const nextIndex = currentIndex + 1;
+			activeSelectedRowIndexStore.set(nextIndex)
+			goto(`/prodej/zakaznici/${ids[nextIndex].customerNodeCode}/prodejny/${ids[nextIndex].customerAddressCode}`)
+			activeId = ids[nextIndex];
+
+			if (!ids[currentIndex + 2]) {
+				disableRight = true
+			}
+		}
+
+		if (direction === "left") {
+			const prevIndex = currentIndex - 1;
+			activeSelectedRowIndexStore.set(prevIndex)
+			goto(`/prodej/zakaznici/${ids[prevIndex].customerNodeCode}/prodejny/${ids[prevIndex].customerAddressCode}`)
+			activeId = ids[prevIndex];
+
+			if (!ids[currentIndex - 2]) {
+				disableLeft = true
+			}
+		}
+	}
+
+	onMount(() => {
+		const currentIndex = selectedRows.findIndex((id) =>
+			id.customerNodeCode === activeId.customerNodeCode &&
+			id.customerAddressCode === activeId.customerAddressCode
+		);
+
+		if (!selectedRows[currentIndex + 1]) {
+			disableRight = true
+		}
+
+		if (!selectedRows[currentIndex - 1]) {
+			disableLeft = true
+		}
+	})
+
+	beforeNavigate(() => {
+		addresses.set([])
+	})
 </script>
 
 
 
+
 <div class="h-full max-w-[1850px] p-3 md:p-4 overflow-auto">
-	{#if hasMultipleAddresses}
-		<Accordion.Root multiple value={["item-"]} class="flex flex-col w-full">
-			<Accordion.Item value="item-1" class="w-full flex flex-col mb-3">
-				<div class="flex justify-between">
-					<Accordion.Trigger
-						class="hover:underline-none text-left gap-1"
-						on:click={() => getAddresses()}
-					>
-						{#if data.state.status === "success"}
-							<DetailPageLabel
-								label={$_(translationRoute + ".header", { values: { customerName: $formValues.customerName, customerNodeCode: $formValues.customerNodeCode} })}
-							/>
-						{:else}
-							<DetailPageLabel
-								label={$_(translationRoute + ".header_err")}
-							/>
-						{/if}
-					</Accordion.Trigger>
-
-					<div class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
-						<button
-							class={disableLeft ? "size-5 text-slate-300" : "size-5 text-albi-500" }
-							disabled={disableLeft}
-						>
-							<ArrowLeft class="size-5"/>
-						</button>
-
-						<button
-							class={disableRight ? "size-5 text-slate-300" : "size-5 text-albi-500" }
-							disabled={disableRight}
-						>
-							<ArrowRight class="size-5 text-albi-500"/>
-						</button>
-					</div>
-				</div>
-
-
-				<Accordion.Content class="mt-2 mb-2 rounded-lg">
-					<DetailSelectTable
-						tableDef={customerAddressSelectTableDef}
-						tableData={addresses}
-						translationRoute={translationRoute}
+	<div class="w-full flex flex-col mb-3">
+		<div class="flex justify-between">
+			<div class="flex gap-2">
+				{#if data.state.status === "success"}
+					<DetailPageLabel
+						label={
+							$_(translationRoute + ".header", {
+								values: {
+									customerName: $formValues.customerName,
+									customerNodeCode: $formValues.customerNodeCode}
+								}
+							)
+						}
 					/>
-				</Accordion.Content>
-			</Accordion.Item>
-		</Accordion.Root>
-	{:else}
-		<div class="w-full mb-3">
-			{#if data.state.status === "success"}
-				<DetailPageLabel
-					label={$_(translationRoute + ".header", { values: { customerName: $formValues.customerName, customerNodeCode: $formValues.customerNodeCode} })}
-				/>
-			{:else}
-				<DetailPageLabel
-					label={$_(translationRoute + ".header_err")}
-				/>
-			{/if}
-		</div>
+				{:else}
+					<DetailPageLabel
+						label={$_(translationRoute + ".header_err")}
+					/>
+				{/if}
 
-	{/if}
+				<button
+					class={hasMultipleAddresses ? "block" : "hidden"}
+					on:click={() => {
+						openAgGridDialog = true
+						getAddresses()
+					}}
+				>
+					<Repeat class="size-5 text-albi-500"/>
+				</button>
+			</div>
+
+			<div class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
+				<DetailNavButton
+					direction="left"
+					disable={disableLeft}
+					navigateDetailFn={() => changeActiveId(selectedRows, "left", activeId)}
+				/>
+
+				<DetailNavButton
+					direction="right"
+					disable={disableRight}
+					navigateDetailFn={() => changeActiveId(selectedRows, "right", activeId)}
+				/>
+			</div>
+		</div>
+	</div>
+
 
 
 	{#each items as item (item.id)}
@@ -245,7 +237,7 @@
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
-						<button on:click={() => openDialog = true}>
+						<button on:click={() => openNewContactDialog = true}>
 							<Plus strokeWidth={2.5} class="text-albi-500 size-4"/>
 						</button>
 					</div>
@@ -262,13 +254,20 @@
 </div>
 
 
+<CSAgGridDialog
+	colDef={customerAddressesAgGridDef}
+	bind:rowData={addresses}
+	bind:open={openAgGridDialog}
+	translationRoute={translationRoute}
+/>
+
+
 <NewCustomerContactDialog
 	formDef={newCustomerFormDef}
-	bind:dialogOpen={openDialog}
+	bind:dialogOpen={openNewContactDialog}
 	label="Nový kontakt prodejny"
 	translationRoute={"routes.prodej.zakaznici.customer_and_address_contact"}
 />
-
 
 
 <style>

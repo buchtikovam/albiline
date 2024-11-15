@@ -13,8 +13,6 @@
 		duration: 200,
 	};
 	export { className as class };
-	export let dialogType: "ribbon" = "ribbon";
-
 </script>
 
 <Dialog.Portal>
@@ -23,7 +21,7 @@
 		{transition}
 		{transitionConfig}
 		class={cn(
-			"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%]  border bg-background p-6 shadow-lg sm:rounded-lg md:w-full",
+			"fixed left-[50%] top-[50%] z-50 grid  max-w-lg translate-x-[-50%] translate-y-[-50%]  border bg-background p-6 rounded-lg shadow-lg w-[90%]",
 			className
 		)}
 		{...$$restProps}

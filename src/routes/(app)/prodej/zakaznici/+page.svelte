@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import { customerAgGridDef } from '$lib/data/ag-grid/column-def/customerAgGridDef';
+	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { isMobileLayoutExpandedStore } from '$lib/stores/pageStore';
 	import { showFulltextSearchStore } from '$lib/stores/tableStore';
 
