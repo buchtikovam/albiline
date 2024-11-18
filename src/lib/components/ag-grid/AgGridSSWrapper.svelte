@@ -8,7 +8,7 @@
 		selectedFilterStore,
 		selectedPresetStore,
 		setColDefToDefault,
-		selectedRowStore
+		selectedRowsStore
 	} from '$lib/stores/tableStore';
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
@@ -38,6 +38,7 @@
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
 	let updateLastRow = writable(false);
+	$: shiftPressed = false;
 
 	
 	const gridOptions: GridOptions = { // return from grid options
@@ -77,7 +78,13 @@
 			return String(params.data.rowNumber); 
 		},
 
-		onRowSelected: (event) => {
+		onRowSelected: () => {
+			// (fix) ag grid selected unwanted text on multiple row select
+			if (shiftPressed === true) {
+				const selection = document.getSelection();
+				selection?.removeAllRanges();
+			}
+
 			const selectedRows = gridApi.getSelectedRows()
 			let rowArr = []
 
@@ -90,11 +97,11 @@
 				})
 			})
 
-			selectedRowStore.set(rowArr)
+			selectedRowsStore.set(rowArr)
 		},
 
 		onCellDoubleClicked(event) {
-			selectedRowStore.set([{
+			selectedRowsStore.set([{
 				customerAddressCode: event.data.customerAddressCode,
 				customerNodeCode: event.data.customerNodeCode
 			}])
@@ -107,17 +114,6 @@
 				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`)
 			}
 		},
-
-		// onBodyScroll(event) {
-		// 	if (event.top > 0) {
-		// 		updateLastRow.set(true)
-		// 	}
-		// },
-
-		// onBodyScrollEnd() {
-		// 	console.log("scroll end");
-		// 	// updateLastRow.set(false)
-		// },
 
 		columnDefs: columnDefinitions,
 		suppressExcelExport: true,
@@ -217,6 +213,20 @@
 		gridApi = createGrid(gridContainer, gridOptions);
 		gridApi.setGridOption('serverSideDatasource', datasource);
 
+		window.addEventListener("keydown", (e) => {
+			if (e.shiftKey) {
+				shiftPressed = true;
+				console.log(shiftPressed);
+			}
+		})
+
+		window.addEventListener("keyup", (e) => {
+			if (e.shiftKey) {
+				shiftPressed = false;
+			}
+		})
+
+
 		selectedFilterStore.subscribe((filters) => {
 			if (filters) {
 				gridApi.setFilterModel(filters)
@@ -300,117 +310,108 @@
 
 
 	ribbonActionStore.subscribe((action) => {
-		if (action === RibbonActionEnum.LOAD) {
-			console.log("REFRESH");
-			lastRow = prevLastRow;
-			// updateLastRow.set(false);
-			gridApi.refreshServerSide();
-		}
-
+		// if (action === RibbonActionEnum.LOAD) {
+		// 	console.log("REFRESH");
+		// 	lastRow = prevLastRow;
+		// 	// updateLastRow.set(false);
+		// 	gridApi.refreshServerSide();
+		// }
+		//
 		// if (action === RibbonActionEnum.NEW) {
 		//
 		// }
 		//
 		// if (action === RibbonActionEnum.EDIT) {
-		// 	isEditAllowedStore.update((data) => !data)
+		// 	// isEditAllowedStore.update((data) => !data)
+		// 	//
+		// 	// let isEditable = get(isEditAllowedStore)
+		// 	//
+		// 	// const currentColDef = gridApi.getColumnDefs()
+		// 	//
+		// 	// if (currentColDef) {
+		// 	// 	currentColDef.map((column) => {
+		// 	// 		column.editable = isEditable
+		// 	// 	})
+		// 	//
+		// 	// 	gridApi.setGridOption("columnDefs", currentColDef);
+		// 	// }
 		//
-		// 	let isEditable = get(isEditAllowedStore)
-		//
-		// 	const currentColDef = gridApi.getColumnDefs()
-		//
-		// 	if (currentColDef) {
-		// 		currentColDef.map((column) => {
-		// 			column.editable = isEditable
-		// 		})
-		//
-		// 		gridApi.setGridOption("columnDefs", currentColDef);
-		// 	}
-		//
-		// 	isEditable === true
-		// 		? customToast("InfoToast", "Editace byla povolena")
-		// 		: customToast("InfoToast", "Editace byla zakázána")
+		// 	// isEditable === true
+		// 	// 	? customToast("InfoToast", "Editace byla povolena")
+		// 	// 	: customToast("InfoToast", "Editace byla zakázána")
 		// }
 		//
 		// if (action === RibbonActionEnum.DELETE) { // add post rq
 		// 	const selectedRows = gridApi!.getServerSideSelectionState();
 		// }
 		//
+		//
 		// if (action === RibbonActionEnum.SAVE) { // todo
 		// 	console.log(get(editedDataStore));
 		// 	editedDataStore.set([])
 		// }
-		//
-		// if (action === RibbonActionEnum.EXPORT_EXCEL) {
-		// 	console.log("excel");
-		//
-		// }
-		//
-		// if (action === RibbonActionEnum.EXPORT_CSV) {
-		// 	console.log("csv");
-		//
-		// }
-		//
-		// if (action === RibbonActionEnum.FILTER_QUICK) {
-		// 	const columnName = gridApi.getFocusedCell()?.column.getColId();
-		// 	const selection = window.getSelection()?.toString().trim();
-		// 	console.log(selection);
-		//
-		//
-		// 	if (columnName) {
-		// 		const cellType = "text";
-		// 		let currentFilters = gridApi.getFilterModel();
-		//
-		// 		currentFilters[columnName] = {
-		// 			filterType: "multi",
-		// 			filterModels: [{
-		// 				filterType: cellType,
-		// 				type: "contains",
-		// 				filter: selection
-		// 			}, null]
-		// 		}
-		//
-		// 		gridApi.setFilterModel(currentFilters)
-		// 		gridApi.onFilterChanged()
-		// 	}
-		// }
-		//
-		// if (action === RibbonActionEnum.FILTER_UNDO) {
-		// 	recentFilters.pop()
-		// 	if (recentFilters.length > 0) {
-		// 		gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
-		// 	} else {
-		// 		gridApi.setFilterModel(null);
-		// 	}
-		// }
-		//
-		// if (action === RibbonActionEnum.FILTER_REMOVE) {
-		// 	gridApi.setFilterModel(null)
-		// }
-		//
-		// if (action === RibbonActionEnum.SAVE_FILTERS) {
-		// 	if (Object.keys(gridApi.getFilterModel()).length > 0) {
-		// 		openedDialogStore.set("ribbon-save-filters")
-		// 		filtersStore.set(gridApi.getFilterModel())
-		// 	} else {
-		// 		customToast("InfoToast", "Nemáte žádné filtry k uložení.")
-		// 	}
-		// }
-		//
-		// if (action === RibbonActionEnum.MY_FILTERS) {
-		// 	openedDialogStore.set("ribbon-my-filters")
-		// }
-		//
-		// if(action === RibbonActionEnum.SAVE_PRESET) {
-		// 	openedDialogStore.set("ribbon-save-preset");
-		//
-		// 	console.log(gridApi.getColumnDefs());
-		// 	presetStore.set(gridApi.getColumnDefs() || [])
-		// }
-		//
-		// if(action === RibbonActionEnum.MY_PRESETS) {
-		// 	openedDialogStore.set("ribbon-my-presets");
-		// }
 
+		/*if (action === RibbonActionEnum.FILTER_QUICK) {
+			const columnName = gridApi.getFocusedCell()?.column.getColId();
+			const selection = window.getSelection()?.toString().trim();
+			console.log(selection);
+
+
+			if (columnName) {
+				const cellType = "text";
+				let currentFilters = gridApi.getFilterModel();
+
+				currentFilters[columnName] = {
+					filterType: "multi",
+					filterModels: [{
+						filterType: cellType,
+						type: "contains",
+						filter: selection
+					}, null]
+				}
+
+				gridApi.setFilterModel(currentFilters)
+				gridApi.onFilterChanged()
+			}
+		}*/
+		//
+	// 	if (action === RibbonActionEnum.FILTER_UNDO) {
+	// 		recentFilters.pop()
+	// 		if (recentFilters.length > 0) {
+	// 			gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
+	// 		} else {
+	// 			gridApi.setFilterModel(null);
+	// 		}
+	// 	}
+	//
+	// 	if (action === RibbonActionEnum.FILTER_REMOVE) {
+	// 		gridApi.setFilterModel(null)
+	// 	}
+	//
+	// 	if (action === RibbonActionEnum.SAVE_FILTERS) {
+	// 		if (Object.keys(gridApi.getFilterModel()).length > 0) {
+	// 			openedDialogStore.set("ribbon-save-filters")
+	// 			filtersStore.set(gridApi.getFilterModel())
+	// 		} else {
+	// 			customToast("InfoToast", "Nemáte žádné filtry k uložení.")
+	// 		}
+	// 	}
+	//
+	// 	if (action === RibbonActionEnum.MY_FILTERS) {
+	// 		openedDialogStore.set("ribbon-my-filters")
+	// 	}
+	//
+	// 	if(action === RibbonActionEnum.SAVE_PRESET) {
+	// 		openedDialogStore.set("ribbon-save-preset");
+	//
+	// 		console.log(gridApi.getColumnDefs());
+	// 		presetStore.set(gridApi.getColumnDefs() || [])
+	// 	}
+	//
+	// 	if(action === RibbonActionEnum.MY_PRESETS) {
+	// 		openedDialogStore.set("ribbon-my-presets");
+	// 	}
+	//
 		ribbonActionStore.set(undefined)
 	})
 </script>

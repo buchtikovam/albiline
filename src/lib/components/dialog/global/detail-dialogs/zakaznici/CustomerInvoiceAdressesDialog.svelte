@@ -1,12 +1,29 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
+	import { get, writable } from 'svelte/store';
+	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
+	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';
 
 	let dialogOpen: boolean = false;
+	const activeRow = get(selectedRowsStore)[get(activeSelectedRowIndexStore)]
+	let invoiceAddresses = writable([])
+
+	async function getInvoiceAddresses() {
+		const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${activeRow.customerNodeCode}/invoice-addresses`)
+
+		if (res.ok) {
+			console.log("fetch");
+			const data = await res.json();
+			invoiceAddresses.set(data.items);
+		}
+	}
+
 
 	onMount(() => {
-		console.log("open");
-		
+		getInvoiceAddresses()
+
 		dialogOpen = true;
 	});
 </script>
@@ -17,11 +34,16 @@
 	bind:open={dialogOpen}
 	closeOnOutsideClick={false}
 >
-	<Dialog.Content class="!w-[400px]">
+	<Dialog.Content class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col">
 		<Dialog.Header>
 			<Dialog.Title class="h-6 mb-2">
 				Výběr fakturačních adres
 			</Dialog.Title>
 		</Dialog.Header>
+
+		<AgGridCSDialogWrapper
+			bind:rowData={invoiceAddresses}
+			colDef={customerInvoiceAddressesAgGridDef}
+		/>
 	</Dialog.Content>
 </Dialog.Root>

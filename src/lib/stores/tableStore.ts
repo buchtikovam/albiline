@@ -31,6 +31,6 @@ export const showFulltextSearchStore: Writable<boolean> = writable(false);
 export const fulltextFilterValueStore: Writable<string> = writable();
 
 // id vybraného řádku v tabulce
-export const selectedRowStore: Writable<Record<string, any>[]> = writable([]);
+export const selectedRowsStore: Writable<Record<string, any>[]> = writable([]);
 
 export const activeSelectedRowIndexStore: Writable<number> = writable(0);

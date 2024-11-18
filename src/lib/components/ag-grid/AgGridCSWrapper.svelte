@@ -27,7 +27,7 @@
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter' 
-		},	
+		},
 
 		rowData: data,
 		columnDefs: columnDefinitions,

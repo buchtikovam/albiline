@@ -1,8 +1,7 @@
-import Pencil from "lucide-svelte/icons/pencil";
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
 import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
-import { message } from 'sveltekit-superforms';
+import Repeat from 'lucide-svelte/icons/repeat';
 
 export const customerDetailFormDef: AutoFormType = {
 	col1 : [
@@ -11,7 +10,7 @@ export const customerDetailFormDef: AutoFormType = {
 			id: uuidv4(),
 			hasDialog: true,
 			dialogId: "customer-detail-invoice-addresses",
-			dialogIcon: Pencil,
+			dialogIcon: Repeat,
 			isOpen: true,
 			rows: [
 				{ // row 1

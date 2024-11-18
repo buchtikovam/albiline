@@ -6,10 +6,11 @@
 	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import { _ } from 'svelte-i18n'
 	import { flipItems } from '$lib/utils/flipItems';
-	import { writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
+	import { page } from '$app/stores';
 	import NewCustomerContactDialog
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
@@ -18,65 +19,106 @@
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import { customToast } from '$lib/utils/customToast';
 	import { disableInputs } from '$lib/stores/pageStore';
+	import { onMount } from 'svelte';
+	import { selectedRowsStore } from '$lib/stores/tableStore';
+	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
+	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
+	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
+	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
 
-	export let data: {
-		response: {
-			item: any;
-			contacts: any;
-		};
-		state: {
-			status: "success" | "fail";
-			message: string;
-		};
-	};
+	export let data;
+
+	// if no data, disable inputs to avoid unwanted user interactions
 	disableInputs.set(data.state.status === "fail")
 
+	$: addressItem = data.response.item;
+	$: formValues = writable(addressItem);
+
+	$: addressContacts = data.response.contacts
+	$: contactValues = writable(addressContacts)
+
 	let translationRoute = "routes.prodej.zakaznici.customer_detail";
+	let pageLayout = customerPageLayout;
+	let openDialog: boolean = false;
+	const flipDurationMs = 200;
 
-	let customerItems = data.response.item;
-	let customerContacts = data.response.contacts;
+	const selectedRows = get(selectedRowsStore)
+	const uniqueSelectedRows = selectedRows.reduce((acc, item) => {
+		const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
+		if (existingIndex === -1) {
+			acc.push(item);
+		}
+		return acc;
+	}, []);
 
-	let formValues = writable(customerItems);
-	let contactValues = writable(customerContacts)
+	console.log(uniqueSelectedRows);
 
-	if (data.state.message === "not-found") {
-		setTimeout(() => {
-			customToast(
-				"InfoToast",
-				"Vyberte zákazníka ze seznamu"
-			);
-		}, 500);
+	const uniqueNodeCodes = selectedRows.reduce((acc, item) => {
+		if (acc.includes(item.customerNodeCode)) return acc
+
+		acc.push(item.customerNodeCode)
+		return acc;
+	}, []);
+
+	console.log(uniqueNodeCodes.length);
+
+	$: disableLeft = false;
+	$: disableRight = false;
+	$: activeId = {
+		customerNodeCode: Number($page.params.idZakaznika),
 	}
 
-	console.log(customerContacts, "CustomerContacts");
+	console.log(activeId);
 
-	let items = [
-		{
-			id: 0,
-			type: "form",
-			isLast: false,
-		},
-		{
-			id: 1,
-			type: "contacts",
-			isLast: true,
-		},
-	]
+	function changeRouteParameterAndDisable(direction: "left" | "right") {
+		let returnedDisable = changeCustomerRoute(selectedRows, direction, activeId, $page.route.id);
 
-	const flipDurationMs = 200;
-	let openDialog: boolean = false;
+		disableLeft = returnedDisable.left;
+		disableRight = returnedDisable.right;
+	}
+
+	onMount(() => {
+		const currentIndex = selectedRows.findIndex((id) =>
+			id.customerNodeCode === activeId.customerNodeCode
+		);
+
+		if (!selectedRows[currentIndex + 1]) {
+			disableRight = true
+		}
+
+		if (!selectedRows[currentIndex - 1]) {
+			disableLeft = true
+		}
+	})
 </script>
 
 
 
 <div class="h-full max-w-[1850px] overflow-auto p-3 md:p-4">
 	<div class="mb-3">
-		<DetailPageLabel
-			label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode || "customerNodeCode"}})}`}
-		/>
+		<div class="flex justify-between">
+			<DetailPageLabel
+				label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode || "customerNodeCode"}})}`}
+			/>
+
+			<div class={uniqueNodeCodes.length > 1 ? "flex gap-3" : "hidden"}>
+				<DetailNavButton
+					direction="left"
+					bind:disable={disableLeft}
+					navigateDetailFn={() => changeRouteParameterAndDisable("left")}
+				/>
+
+				<DetailNavButton
+					direction="right"
+					bind:disable={disableRight}
+					navigateDetailFn={() => changeRouteParameterAndDisable("right")}
+				/>
+			</div>
+		</div>
+
 	</div>
 
-	{#each items as item (item.id)}
+	{#each pageLayout as item (item.id)}
 		<div animate:flip="{{duration: flipDurationMs}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
@@ -94,7 +136,7 @@
 					<div class="flex gap-2" >
 						<SectionLabel name="Kontakty"/>
 
-						<button id="contacts" on:click={() => items = flipItems(items)}>
+						<button id="contacts" on:click={() => pageLayout = flipItems(pageLayout)}>
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 

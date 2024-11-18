@@ -120,7 +120,6 @@
 											{#if value.type === "checkbox"}
 												<div class="mt-5 w-full">
 													<CheckboxWrapper
-														field={key}
 														label={$_(translationRoute + key)}
 														bind:value={$formValues[key]}
 														disable={disable}
@@ -156,7 +155,6 @@
 									<FormCheckboxSection>
 										{#each Object.entries(row.inputs) as [key]}
 											<CheckboxWrapper
-												field={key}
 												bind:value={$formValues[key]}
 												label={$_(translationRoute + key)}
 												disable={disable}

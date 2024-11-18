@@ -14,13 +14,12 @@
 </script>
 
 <Dialog.Root bind:open closeOnOutsideClick={false}>
-	<Dialog.Content class="h-[70%] lg:h-[60%] lg:!w-[70%] max-w-[1400px] flex flex-col">
+	<Dialog.Content class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col">
 		<Dialog.Header class="">
 			<Dialog.Title class="h-6 mb-2">
 				Výběr prodejny
 			</Dialog.Title>
 		</Dialog.Header>
-
 
 		<AgGridCSDialogWrapper
 			bind:rowData={rowData}

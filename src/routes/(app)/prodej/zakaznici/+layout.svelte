@@ -3,7 +3,7 @@
 		activeSelectedRowIndexStore,
 		editedDataStore,
 		fulltextFilterValueStore,
-		selectedRowStore,
+		selectedRowsStore,
 		showFulltextSearchStore
 	} from '$lib/stores/tableStore';
 	import { page } from '$app/stores';
@@ -25,7 +25,7 @@
 
 	activeSelectedRowIndexStore.subscribe((index) => {
 		activeIndex = index
-		let selectedRows = get(selectedRowStore)
+		let selectedRows = get(selectedRowsStore)
 
 		if (selectedRows.length > 0) {
 			customerNodeCode = selectedRows[activeIndex].customerNodeCode;
@@ -34,7 +34,7 @@
 
 	})
 
-	selectedRowStore.subscribe((data) => {
+	selectedRowsStore.subscribe((data) => {
 		if (data.length > 0) {
 			customerNodeCode = data[activeIndex].customerNodeCode;
 			customerAddressCode = data[activeIndex].customerAddressCode;
@@ -44,8 +44,8 @@
 	let route: string;
 
 	page.subscribe((data) => {
-		if (get(selectedRowStore).length === 0) {
-			selectedRowStore.set([
+		if (get(selectedRowsStore).length === 0) {
+			selectedRowsStore.set([
 				{
 					customerNodeCode: $page.params.idZakaznika,
 					customerAddressCode: $page.params.idProdejny,

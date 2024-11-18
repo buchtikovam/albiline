@@ -2,13 +2,13 @@
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
-	import { onMount } from "svelte";
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import {
 		createGrid,
 		type GridApi,
 		type GridOptions,
 	} from "ag-grid-enterprise";
-	import { writable } from 'svelte/store';
 
 	export let colDef: any[];
 	export let rowData = writable([]);
@@ -16,21 +16,13 @@
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
 
-	rowData.subscribe((data) => {
-		if (data) {
-			if (data.length > 0) {
-				gridApi.setGridOption("rowData", data);
-			}
-		}
-	})
-
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
 
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
-			editable: true,
+			editable: false,
 			minWidth: 60,
 			maxWidth: 400,
 			hide: false,
@@ -44,11 +36,21 @@
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
-		rowSelection: "multiple",
+		rowSelection: "single",
 	}
 
 	onMount(() => {
+		console.log("mount");
+
 		gridApi = createGrid(gridContainer, gridOptions);
+
+		rowData.subscribe((data) => {
+			if (data) {
+				if (data.length > 0 && gridApi) {
+					gridApi.setGridOption("rowData", data);
+				}
+			}
+		})
 	})
 </script>
 

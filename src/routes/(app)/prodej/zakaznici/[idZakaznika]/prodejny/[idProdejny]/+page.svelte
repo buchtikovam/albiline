@@ -22,29 +22,20 @@
 	import { disableInputs } from '$lib/stores/pageStore';
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
-	import { activeSelectedRowIndexStore, selectedRowStore } from '$lib/stores/tableStore';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import CSAgGridDialog from '$lib/components/dialog/ag-grid/CSAgGridDialog.svelte';
 	import Repeat from 'lucide-svelte/icons/repeat';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
+	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
+	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
 
+	export let data;
 
-	export let data: {
-		response: {
-			item: any;
-			contacts: any;
-		};
-		state: {
-			status: "success" | "fail";
-			message: string;
-		};
-	};
-
-	disableInputs.set(data.state.status === "fail")
-
-	let hasMultipleAddresses = true;
+	// if no data, disable inputs to avoid unwanted user interactions
+	disableInputs.set(data.state.status === "fail");
 
 	$: addressItem = data.response.item;
 	$: formValues = writable(addressItem);
@@ -52,52 +43,14 @@
 	$: addressContacts = data.response.contacts
 	$: contactValues = writable(addressContacts)
 
-	let items = [
-		{
-			id: 0,
-			type: "form",
-			isLast: false,
-		},
-		{
-			id: 1,
-			type: "contacts",
-			isLast: true,
-		},
-	];
-
+	let pageLayout = customerAddressPageLayout;
 	let openNewContactDialog: boolean = false;
 	let openAgGridDialog: boolean = false;
 	let translationRoute = "routes.prodej.zakaznici.address_detail";
-	const selectedRows = get(selectedRowStore)
+	const selectedRows = get(selectedRowsStore)
 
-	type Row = {
-		name: string,
-		customerAddressCode : number,
-		street : string,
-		city : string,
-		postalCode : string,
-		countryCode : string,
-		customerRank : string
-	}
 
-	$: addresses = writable()
-
-	async function getAddresses() {
-		// if (get(addresses).length > 0) {
-			const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${$page.params.idZakaznika}/addresses`)
-
-			console.log("fetch");
-
-			if (res.ok) {
-				console.log("fetch ok");
-				const responseData = await res.json()
-				// console.log(await responseData.items);
-				addresses.set(await responseData.items)
-				console.log(get(addresses));
-			}
-		// }
-	}
-
+	// route parameters swapping logic
 	$: activeId = {
 		customerNodeCode: Number($page.params.idZakaznika),
 		customerAddressCode: Number($page.params.idProdejny)
@@ -106,43 +59,19 @@
 	$: disableLeft = false;
 	$: disableRight = false;
 
-	function changeActiveId(
-		ids: { customerNodeCode: number, customerAddressCode: number}[],
-		direction: "left" | "right",
-		activeId: { customerNodeCode: number, customerAddressCode: number}
-	) {
-		const currentIndex = ids.findIndex((id) =>
-			id.customerNodeCode === activeId.customerNodeCode &&
-			id.customerAddressCode === activeId.customerAddressCode
+	function changeRouteParameterAndDisable(direction: "left" | "right") {
+		let returnedDisable = changeCustomerAddressRoute(
+			selectedRows,
+			direction,
+			activeId,
+			$page.route.id || "/"
 		);
 
-		disableLeft = false;
-		disableRight = false;
-
-		if (direction === "right") {
-			const nextIndex = currentIndex + 1;
-			activeSelectedRowIndexStore.set(nextIndex)
-			goto(`/prodej/zakaznici/${ids[nextIndex].customerNodeCode}/prodejny/${ids[nextIndex].customerAddressCode}`)
-			activeId = ids[nextIndex];
-
-			if (!ids[currentIndex + 2]) {
-				disableRight = true
-			}
-		}
-
-		if (direction === "left") {
-			const prevIndex = currentIndex - 1;
-			activeSelectedRowIndexStore.set(prevIndex)
-			goto(`/prodej/zakaznici/${ids[prevIndex].customerNodeCode}/prodejny/${ids[prevIndex].customerAddressCode}`)
-			activeId = ids[prevIndex];
-
-			if (!ids[currentIndex - 2]) {
-				disableLeft = true
-			}
-		}
+		disableLeft = returnedDisable.left;
+		disableRight = returnedDisable.right;
 	}
 
-	onMount(() => {
+	onMount(() => { // disable navigation buttons if user is located on the first/last address
 		const currentIndex = selectedRows.findIndex((id) =>
 			id.customerNodeCode === activeId.customerNodeCode &&
 			id.customerAddressCode === activeId.customerAddressCode
@@ -156,6 +85,21 @@
 			disableLeft = true
 		}
 	})
+
+
+	// fetching for customer addresses ag-grid dialog
+	let addresses = writable([])
+
+	async function getAddresses() {
+		if (get(addresses).length === 0) {
+			const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${$page.params.idZakaznika}/addresses`)
+
+			if (res.ok) {
+				const responseData = await res.json()
+				addresses.set(await responseData.items)
+			}
+		}
+	}
 
 	beforeNavigate(() => {
 		addresses.set([])
@@ -187,7 +131,6 @@
 				{/if}
 
 				<button
-					class={hasMultipleAddresses ? "block" : "hidden"}
 					on:click={() => {
 						openAgGridDialog = true
 						getAddresses()
@@ -200,14 +143,14 @@
 			<div class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
 				<DetailNavButton
 					direction="left"
-					disable={disableLeft}
-					navigateDetailFn={() => changeActiveId(selectedRows, "left", activeId)}
+					bind:disable={disableLeft}
+					navigateDetailFn={() => changeRouteParameterAndDisable("left")}
 				/>
 
 				<DetailNavButton
 					direction="right"
-					disable={disableRight}
-					navigateDetailFn={() => changeActiveId(selectedRows, "right", activeId)}
+					bind:disable={disableRight}
+					navigateDetailFn={() => changeRouteParameterAndDisable("right")}
 				/>
 			</div>
 		</div>
@@ -215,7 +158,7 @@
 
 
 
-	{#each items as item (item.id)}
+	{#each pageLayout as item (item.id)}
 		<div animate:flip="{{duration: 300}}">
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
@@ -233,7 +176,7 @@
 					<div class="flex gap-2" >
 						<SectionLabel name="Kontakty"/>
 
-						<button id="contacts" on:click={() => items = flipItems(items)}>
+						<button id="contacts" on:click={() => pageLayout = flipItems(pageLayout)}>
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
@@ -268,6 +211,8 @@
 	label="Nový kontakt prodejny"
 	translationRoute={"routes.prodej.zakaznici.customer_and_address_contact"}
 />
+
+
 
 
 <style>
