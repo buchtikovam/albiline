@@ -1,38 +1,23 @@
 import { activeSelectedRowIndexStore } from '$lib/stores/tableStore';
 import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
+import { get } from 'svelte/store';
 
 
 export function changeCustomerRoute(
 	selectedRows: Record<string, any>[],
+	uniqueSelectedRows: Record<string, any>[],
 	direction: "left" | "right",
 	activeId: { customerNodeCode: number },
 	routeId: string = "",
 ) {
-
-	// get objects with unique customerNodeCode
-	const uniqueSelectedRows = selectedRows.reduce((acc, item) => {
-		const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
-		if (existingIndex === -1) {
-			acc.push(item);
-		}
-		return acc;
-	}, []);
-
-	console.log(uniqueSelectedRows);
-
 	// get active index in unique selected rows
 	const activeRowIndex = uniqueSelectedRows.findIndex((id) =>
 		id.customerNodeCode === activeId.customerNodeCode
 	);
 
-	console.log(activeRowIndex);
-
-
 	if (direction === "right") {
 		const nextIndex = activeRowIndex + 1;
-
-		console.log(nextIndex);
 
 		// locate item in non-unique selected rows and set its id, to allow navigation to customer addresses
 		activeSelectedRowIndexStore.set(
@@ -43,10 +28,8 @@ export function changeCustomerRoute(
 
 		const newRoute = processRoute(
 			routeId,
-			{ idZakaznika: selectedRows[nextIndex].customerNodeCode, }
+			{ idZakaznika: uniqueSelectedRows[nextIndex].customerNodeCode, }
 		)
-
-		console.log(newRoute);
 
 		goto(newRoute)
 
@@ -63,9 +46,9 @@ export function changeCustomerRoute(
 		}
 	}
 
+
 	if (direction === "left") {
 		const prevIndex = activeRowIndex - 1;
-
 
 		activeSelectedRowIndexStore.set(
 			selectedRows.findIndex((item) => {
@@ -87,6 +70,7 @@ export function changeCustomerRoute(
 			}
 		}
 	}
+
 
 	return {
 		right: false,

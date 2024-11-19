@@ -42,7 +42,7 @@
 	let openDialog: boolean = false;
 	const flipDurationMs = 200;
 
-	const selectedRows = get(selectedRowsStore)
+	const selectedRows = get(selectedRowsStore);
 	const uniqueSelectedRows = selectedRows.reduce((acc, item) => {
 		const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
 		if (existingIndex === -1) {
@@ -51,43 +51,29 @@
 		return acc;
 	}, []);
 
-	console.log(uniqueSelectedRows);
-
-	const uniqueNodeCodes = selectedRows.reduce((acc, item) => {
-		if (acc.includes(item.customerNodeCode)) return acc
-
-		acc.push(item.customerNodeCode)
-		return acc;
-	}, []);
-
-	console.log(uniqueNodeCodes.length);
-
 	$: disableLeft = false;
 	$: disableRight = false;
 	$: activeId = {
 		customerNodeCode: Number($page.params.idZakaznika),
 	}
 
-	console.log(activeId);
-
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
-		let returnedDisable = changeCustomerRoute(selectedRows, direction, activeId, $page.route.id);
-
+		let returnedDisable = changeCustomerRoute(selectedRows, uniqueSelectedRows, direction, activeId, $page.route.id);
 		disableLeft = returnedDisable.left;
 		disableRight = returnedDisable.right;
 	}
 
 	onMount(() => {
-		const currentIndex = selectedRows.findIndex((id) =>
+		const currentIndex = uniqueSelectedRows.findIndex((id) =>
 			id.customerNodeCode === activeId.customerNodeCode
 		);
 
-		if (!selectedRows[currentIndex + 1]) {
-			disableRight = true
+		if (!uniqueSelectedRows[currentIndex + 1]) {
+			disableRight = true;
 		}
 
-		if (!selectedRows[currentIndex - 1]) {
-			disableLeft = true
+		if (!uniqueSelectedRows[currentIndex - 1]) {
+			disableLeft = true;
 		}
 	})
 </script>
@@ -101,7 +87,7 @@
 				label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode || "customerNodeCode"}})}`}
 			/>
 
-			<div class={uniqueNodeCodes.length > 1 ? "flex gap-3" : "hidden"}>
+			<div class={uniqueSelectedRows.length > 1 ? "flex gap-3" : "hidden"}>
 				<DetailNavButton
 					direction="left"
 					bind:disable={disableLeft}

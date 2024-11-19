@@ -34,10 +34,14 @@
 	bind:open={dialogOpen}
 	closeOnOutsideClick={false}
 >
-	<Dialog.Content class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col">
+	<Dialog.Content
+		class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col"
+	>
 		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2">
-				Výběr fakturačních adres
+			<Dialog.Title
+				class="h-6 mb-2"
+			>
+				Výběr fakturační adresy
 			</Dialog.Title>
 		</Dialog.Header>
 

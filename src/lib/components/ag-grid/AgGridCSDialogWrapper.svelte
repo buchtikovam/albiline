@@ -23,7 +23,7 @@
 			sortable: true,
 			resizable: true,
 			editable: false,
-			minWidth: 60,
+			minWidth: 50,
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
@@ -35,6 +35,7 @@
 
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
+		suppressRowClickSelection: true,
 		ensureDomOrder: true,
 		rowSelection: "single",
 	}

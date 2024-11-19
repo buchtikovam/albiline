@@ -47,7 +47,11 @@
 	let openNewContactDialog: boolean = false;
 	let openAgGridDialog: boolean = false;
 	let translationRoute = "routes.prodej.zakaznici.address_detail";
-	const selectedRows = get(selectedRowsStore)
+	let selectedRows = get(selectedRowsStore)
+
+	selectedRowsStore.subscribe((data) => {
+		selectedRows = data;
+	});
 
 
 	// route parameters swapping logic
@@ -70,6 +74,19 @@
 		disableLeft = returnedDisable.left;
 		disableRight = returnedDisable.right;
 	}
+
+	activeSelectedRowIndexStore.subscribe((data) => {
+		disableRight = false;
+		disableLeft = false;
+
+		if (!selectedRows[data + 1]) {
+			disableRight = true
+		}
+
+		if (!selectedRows[data - 1]) {
+			disableLeft = true
+		}
+	})
 
 	onMount(() => { // disable navigation buttons if user is located on the first/last address
 		const currentIndex = selectedRows.findIndex((id) =>
@@ -102,7 +119,8 @@
 	}
 
 	beforeNavigate(() => {
-		addresses.set([])
+		addresses.set([]);
+		openAgGridDialog = false;
 	})
 </script>
 
@@ -140,7 +158,9 @@
 				</button>
 			</div>
 
-			<div class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
+			<div
+				class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}
+			>
 				<DetailNavButton
 					direction="left"
 					bind:disable={disableLeft}

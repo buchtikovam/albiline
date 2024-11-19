@@ -31,7 +31,6 @@
 			customerNodeCode = selectedRows[activeIndex].customerNodeCode;
 			customerAddressCode = selectedRows[activeIndex].customerAddressCode;
 		}
-
 	})
 
 	selectedRowsStore.subscribe((data) => {
@@ -44,7 +43,7 @@
 	let route: string;
 
 	page.subscribe((data) => {
-		if (get(selectedRowsStore).length === 0) {
+		if (get(selectedRowsStore).length === 0) { // for page refresh on a detail page (no selected row from table)
 			selectedRowsStore.set([
 				{
 					customerNodeCode: $page.params.idZakaznika,

@@ -8,7 +8,7 @@
 		selectedFilterStore,
 		selectedPresetStore,
 		setColDefToDefault,
-		selectedRowsStore
+		selectedRowsStore, activeSelectedRowIndexStore
 	} from '$lib/stores/tableStore';
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
@@ -88,7 +88,7 @@
 			const selectedRows = gridApi.getSelectedRows()
 			let rowArr = []
 
-			console.log(selectedRows);
+			activeSelectedRowIndexStore.set(0)
 
 			selectedRows.forEach((row) => {
 				rowArr.push({
@@ -126,11 +126,6 @@
 		cacheBlockSize: 100,
 	}
 
-
-	editedDataStore.subscribe((data) => {
-		console.log(data)
-	})
-
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
 	let previousSort: ("asc" | "desc" | null | undefined)[] = []
@@ -142,7 +137,7 @@
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
 			runCount++;
-			console.log("RUN", runCount);
+			// console.log("RUN", runCount);
 
 			// // store latest filters in variable
 			const currentFilter = gridApi.getFilterModel();
@@ -157,14 +152,14 @@
 
 			// if filter or sort has changed, set lastRow to null
 			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-				console.log("filter changed");
+				// console.log("filter changed");
 				lastRow = null;
 			}
 
 			currentSort = gridApi.getColumnState().map((state) => { return state.sort })
 			// console.log(currentSort);
 			if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
-				console.log("sort changed");
+				// console.log("sort changed");
 				lastRow = null;
 			}
 
@@ -175,7 +170,7 @@
 			updatedParamsRequest.fulltext = get(fulltextFilterValueStore)
 			updatedParamsRequest.lastRow = lastRow;
 			updatedParamsRequest.rowBatchSize = rowBatchSize;
-			console.log(JSON.stringify(updatedParamsRequest, null, 2));
+			// console.log(JSON.stringify(updatedParamsRequest, null, 2));
 
 			// AG-Grid SSRM
 			fetch(url
@@ -190,7 +185,7 @@
 			)
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
-				console.log(response.items);
+				// console.log(response.items);
 				params.success({ rowData: response.items });
 				// if (get(updateLastRow) === true) {
 				// 	console.log("setting last row");
@@ -199,7 +194,7 @@
 				// }
 			})
 			.catch(error => {
-				console.log(error);
+				// console.log(error);
 				params.fail();
 			});
 		}
@@ -216,7 +211,6 @@
 		window.addEventListener("keydown", (e) => {
 			if (e.shiftKey) {
 				shiftPressed = true;
-				console.log(shiftPressed);
 			}
 		})
 
@@ -242,7 +236,7 @@
 					columnOrder.push({ colId: obj.colId})
 				})
 
-				console.log(columnOrder);
+				// console.log(columnOrder);
 
 				gridApi.setGridOption("columnDefs", preset)
 
@@ -262,8 +256,8 @@
 					columnOrder.push({ colId: obj.field});
 				});
 
-				console.log(defaultColumnDef);
-				console.log(columnOrder);
+				// console.log(defaultColumnDef);
+				// console.log(columnOrder);
 
 				gridApi.setGridOption("columnDefs", defaultColumnDef);
 
