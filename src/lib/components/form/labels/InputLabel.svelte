@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let label;
+	export let label: string;
 </script>
 
 <label

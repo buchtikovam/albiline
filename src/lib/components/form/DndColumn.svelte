@@ -18,7 +18,6 @@
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
 	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
-	import { getContext } from 'svelte';
 	import { disableInputs } from '$lib/stores/pageStore';
 
 	export let items: AutoFormSection[];

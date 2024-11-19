@@ -1,12 +1,22 @@
+import type { ValueFormatterParams } from 'ag-grid-community';
+
 export const customerInvoiceAddressesAgGridDef = [
 	{
 		field: "validFrom",
 		headerName: "Platnost od",
+		cellDataType: "date",
+		valueFormatter: (params: ValueFormatterParams) => {
+			return new Date(params.value).toLocaleDateString(); // Format as desired
+		},
 		width: 120,
 	},
 	{
 		field: "validTo",
 		headerName: "Platnost do",
+		cellDataType: "date",
+		valueFormatter: (params: ValueFormatterParams) => {
+			return new Date(params.value).toLocaleDateString(); // Format as desired
+		},
 		width: 120,
 	},
 	{
@@ -40,6 +50,4 @@ export const customerInvoiceAddressesAgGridDef = [
 		headerName: "Země",
 		width: 90,
 	},
-
-
 ]

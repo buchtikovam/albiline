@@ -14,5 +14,7 @@
 		disabled={disable}
 		bind:checked={value}
 	/>
-	<InputLabel label={label} />
+	<InputLabel
+		label={label}
+	/>
 </div>

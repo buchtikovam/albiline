@@ -1,13 +1,17 @@
+import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 
-export const customerAgGridDef = [
+type CustomColDef = ColDef & {
+	changeEditable: boolean,
+}
+
+export const customerAgGridDef: CustomColDef[] = [
 	{ 
 		field: "rowNumber",
 		headerName: "Číslo řádku",
 		headerClass: 'ag-header-checkbox',
 		cellClass: 'ag-cell-class',
-		headerCheckboxSelection: true,
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: false,
 		resizable: false, 
 		pinned: true,
@@ -21,8 +25,9 @@ export const customerAgGridDef = [
 		field: "customerAddressCode",
 		headerName: "ID prodejny",
 		cellDataType: "number",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
+		hide: false,
 		width: 68,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -38,8 +43,8 @@ export const customerAgGridDef = [
 		headerName: "Prodejna",
 		width: 240,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -54,8 +59,8 @@ export const customerAgGridDef = [
 		headerName: "ID zákazníka",
 		width: 68,
 		cellDataType: "number",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -86,8 +91,8 @@ export const customerAgGridDef = [
 		headerName: "Ulice",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -102,8 +107,8 @@ export const customerAgGridDef = [
 		headerName: "Město",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -118,8 +123,8 @@ export const customerAgGridDef = [
 		headerName: "PSČ",
 		width: 66,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -134,8 +139,8 @@ export const customerAgGridDef = [
 		headerName: "Země",
 		width: 68,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -150,8 +155,8 @@ export const customerAgGridDef = [
 		headerName: "Bonita",
 		width: 70,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -166,8 +171,8 @@ export const customerAgGridDef = [
 		headerName: "Neplatič",
 		width: 68,
 		cellDataType: "boolean",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -181,8 +186,8 @@ export const customerAgGridDef = [
 		field: "dealerCode",
 		headerName: "OZ",
 		width: 60,
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		cellDataType: "number",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -197,9 +202,9 @@ export const customerAgGridDef = [
 		field: "areaCode",
 		headerName: "OM",
 		width: 60,
-		changeEditable: true,
-		editable: true,
-		cellDataType: "string",
+		changeEditable: false,
+		editable: false,
+		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -213,9 +218,9 @@ export const customerAgGridDef = [
 		field: "responsiblePerson",
 		headerName: "Zodpovědná osoba",
 		width: 78,
-		changeEditable: true,
-		editable: true,
-		cellDataType: "string",
+		changeEditable: false,
+		editable: false,
+		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -229,9 +234,9 @@ export const customerAgGridDef = [
 		field: "i_ICO",
 		headerName: "IČO",
 		width: 85,
-		changeEditable: true,
-		editable: true,
-		cellDataType: "string",
+		changeEditable: false,
+		editable: false,
+		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -245,9 +250,9 @@ export const customerAgGridDef = [
 		field: "i_DIC",
 		headerName: "DIČ",
 		width: 105,
-		changeEditable: true,
-		editable: true,
-		cellDataType: "string",
+		changeEditable: false,
+		editable: false,
+		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -262,9 +267,9 @@ export const customerAgGridDef = [
 		field: "i_IcDph",
 		headerName: "IčDPH",
 		width: 120,
-		changeEditable: true,
-		editable: true,
-		cellDataType: "string",
+		changeEditable: false,
+		editable: false,
+		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -279,8 +284,8 @@ export const customerAgGridDef = [
 		headerName: "Typ platby",
 		width: 68,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -296,7 +301,7 @@ export const customerAgGridDef = [
 		headerName: "Splatnost",
 		width: 68,
 		cellDataType: "number",
-		changeEditable: true,
+		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -312,8 +317,8 @@ export const customerAgGridDef = [
 		headerName: "Komise",
 		width: 70,
 		cellDataType: "boolean",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -328,9 +333,9 @@ export const customerAgGridDef = [
 		field: "retailStoreTypeName", // select
 		headerName: "Typ prodejny",
 		width: 180,
-		changeEditable: true,
-		editable: true,
-		cellDataType: "string",
+		changeEditable: false,
+		editable: false,
+		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -345,8 +350,8 @@ export const customerAgGridDef = [
 		headerName: "Oblast",
 		width: 76,
 		cellDataType: "number",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -362,8 +367,8 @@ export const customerAgGridDef = [
 		headerName: "Asortní EANy",
 		width: 70,
 		cellDataType: "boolean",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -378,8 +383,8 @@ export const customerAgGridDef = [
 		headerName: "B2B",
 		width: 70,
 		cellDataType: "boolean",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -394,8 +399,8 @@ export const customerAgGridDef = [
 		headerName: "Ulice FA",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -410,8 +415,8 @@ export const customerAgGridDef = [
 		headerName: "Město FA",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -426,8 +431,8 @@ export const customerAgGridDef = [
 		headerName: "PSČ FA",
 		width: 70,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -442,8 +447,8 @@ export const customerAgGridDef = [
 		headerName: "Země FA",
 		width: 70,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -458,8 +463,8 @@ export const customerAgGridDef = [
 		headerName: "Poznámka",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -475,11 +480,11 @@ export const customerAgGridDef = [
 		headerName: "Datum vytvoření",
 		width: 100,
 		cellDataType: "date",
-		valueFormatter: (params) => {
-			return params.value === null ? undefined : new Date(params.value).toLocaleDateString(); // Format as desired
+		valueFormatter: (params: ValueFormatterParams) => {
+			return new Date(params.value).toLocaleDateString(); // Format as desired
 		},
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -494,11 +499,11 @@ export const customerAgGridDef = [
 		headerName: "První objednávka",
 		width: 100,
 		cellDataType: "date",
-		valueFormatter: (params) => {
+		valueFormatter: (params: ValueFormatterParams) => {
 			return new Date(params.value).toLocaleDateString(); // Format as desired
 		},
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -513,11 +518,11 @@ export const customerAgGridDef = [
 		headerName: "Poslední objednávka",
 		width: 100,
 		cellDataType: "date",
-		valueFormatter: (params) => {
+		valueFormatter: (params: ValueFormatterParams) => {
 			return new Date(params.value).toLocaleDateString(); // Format as desired
 		},
-		changeEditable: true,
-		editable: true,
+		changeEditable: false,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -532,39 +537,51 @@ export const customerAgGridDef = [
 
 
 
-	// {
-	// 	field: "companyName",
-	// 	headerName: "Název společnosti",
-	// 	width: 200,
-	// 	cellDataType: "text",
-	// 	blockEditable: false,
-	// 	editable: true,
-	// 	filter: 'agMultiColumnFilter',
-	// 	filterParams: {
-	// 		filters: [
-	// 			{
-	// 				filter: 'agTextColumnFilter',
-	// 			},
-	// 		]
-	// 	}
-	// },
-	//
-	// { // bool
-	// 	field: "isReturnAllowed",
-	// 	headerName: "Vratka povolena",
-	// },
-	//
-	// {
-	// 	field: "customerStoreCode",
-	// 	headerName: "ID zákazníka dle zákazníka",
-	// },
-	// {
-	// 	field: "customerStoreEan",
-	// 	headerName: "EAN zákazníka",
-	// },
-	// {
-	// 	field: "splitOrderByFood",
-	// 	headerName: "Food / NonFood",
-	// },
+	{
+		field: "companyName",
+		headerName: "Název společnosti",
+		width: 200,
+		cellDataType: "text",
+		changeEditable: false,
+		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agTextColumnFilter',
+				},
+			]
+		}
+	},
 
+	{ // bool
+		field: "isReturnAllowed",
+		headerName: "Vratka povolena",
+		cellDataType: "boolean",
+		hide: true,
+		changeEditable: false,
+		editable: false,
+	},
+
+	{
+		field: "customerStoreCode",
+		hide: true,
+		headerName: "ID zákazníka dle zákazníka",
+		changeEditable: false,
+		editable: false,
+	},
+	{
+		field: "customerStoreEan",
+		headerName: "EAN zákazníka",
+		hide: true,
+		changeEditable: false,
+		editable: false,
+	},
+	{
+		field: "splitOrderByFood",
+		headerName: "Food / NonFood",
+		hide: true,
+		changeEditable: false,
+		editable: false,
+	},
 ]

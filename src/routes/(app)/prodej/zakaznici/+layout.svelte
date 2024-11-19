@@ -46,8 +46,8 @@
 		if (get(selectedRowsStore).length === 0) { // for page refresh on a detail page (no selected row from table)
 			selectedRowsStore.set([
 				{
-					customerNodeCode: $page.params.idZakaznika,
-					customerAddressCode: $page.params.idProdejny,
+					customerNodeCode: Number($page.params.idZakaznika) || 0,
+					customerAddressCode: Number($page.params.idProdejny) || 0,
 				}
 			])
 		}

@@ -51,6 +51,7 @@
 
 	selectedRowsStore.subscribe((data) => {
 		selectedRows = data;
+		console.log("selRows", data);
 	});
 
 
@@ -76,6 +77,8 @@
 	}
 
 	activeSelectedRowIndexStore.subscribe((data) => {
+		console.log("activeIndex", data);
+
 		disableRight = false;
 		disableLeft = false;
 

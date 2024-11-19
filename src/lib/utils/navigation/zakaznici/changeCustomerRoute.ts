@@ -1,7 +1,6 @@
 import { activeSelectedRowIndexStore } from '$lib/stores/tableStore';
 import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
-import { get } from 'svelte/store';
 
 
 export function changeCustomerRoute(
