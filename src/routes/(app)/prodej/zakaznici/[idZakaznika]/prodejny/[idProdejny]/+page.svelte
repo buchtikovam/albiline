@@ -22,7 +22,7 @@
 	import { disableInputs } from '$lib/stores/pageStore';
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
+	import { activeSelectedRowIndexStore, editedDataStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import CSAgGridDialog from '$lib/components/dialog/ag-grid/CSAgGridDialog.svelte';
@@ -31,6 +31,7 @@
 	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
 	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
 	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
+	import { addToEditedData } from '$lib/utils/addToEditedData';
 
 	export let data;
 

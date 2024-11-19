@@ -92,7 +92,7 @@
 
 			selectedRows.forEach((row) => {
 				rowArr.push({
-					customerAddressCode: row.customerAddressCode,
+					customerAddressCode: row.customerAddressCode, // todo: make generic
 					customerNodeCode: row.customerNodeCode
 				})
 			})
@@ -107,11 +107,11 @@
 			}])
 
 			if (event.column.colId === "customerAddressCode") {
-				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`)
+				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`) // todo: make generic
 			}
 
 			if (event.column.colId === "customerNodeCode") {
-				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`)
+				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`) // todo: make generic
 			}
 		},
 

@@ -5,6 +5,8 @@ import type { Preset } from '$lib/types/components/table/presets';
 // k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
 export const editedDataStore: Writable<any[]> = writable([]);
 
+export const disableNavigationStore: Writable<boolean> = writable(false)
+
 // defaultní definice sloupečků, která se vytvoří z /lib/data/ag-grid/col-def,
 // důležité pro nastavení defaultní šablony přes ribbon
 export const defaultColDef = writable([])
