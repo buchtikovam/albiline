@@ -5,10 +5,12 @@ export const isMobileLayoutExpandedStore: Writable<boolean> = writable(false);
 
 export const isMobileStore: Writable<boolean> = writable(false);
 
-export const sessionKeyStore: Writable<string> = persisted(
+export const sessionKeyStore: Writable<string|undefined> = persisted(
 	'sessionKey',
 	undefined,
 	{ storage: 'session' }
 );
 
 export const disableInputs: Writable<boolean> = writable(false);
+
+export const disableNavigationStore: Writable<boolean> = writable(false)

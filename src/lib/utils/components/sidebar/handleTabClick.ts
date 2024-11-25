@@ -2,11 +2,11 @@ import { currentActiveTabStore, openedTabsStore, allowTabAdding } from '$lib/sto
 import { recentItemsStore } from '$lib/stores/sidebarStore';
 import type { SidebarItem, HeaderTab } from '$lib/types/components/sidebar/sidebar';
 import { get } from 'svelte/store';
-import { editedDataStore } from '$lib/stores/tableStore';
+import { editedTableDataStore } from '$lib/stores/tableStore';
 
 
 export function handleTabClick(item: SidebarItem, treeDepth: number): void {	
-	if (get(editedDataStore).length === 0) {
+	if (get(editedTableDataStore).length === 0) {
 		
 		if (get(allowTabAdding)) {
 			const tab: HeaderTab = {

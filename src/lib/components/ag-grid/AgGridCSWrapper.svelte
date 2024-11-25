@@ -2,20 +2,21 @@
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
-	import { onMount } from "svelte";
-	import { 
-		createGrid, 
-		type GridApi, 
-		type GridOptions, 
-	} from "ag-grid-enterprise";
-	
-	export let columnDefinitions: any[];
-	export let data;
+	import { onMount } from 'svelte';
+	import { get, writable } from 'svelte/store';
+	import {
+		type CellValueChangedEvent,
+		createGrid,
+		type GridApi,
+		type GridOptions
+	} from 'ag-grid-enterprise';
+
+	export let colDef: any[];
+	export let rowData = writable([]);
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
 
-	
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
 
@@ -23,44 +24,53 @@
 			sortable: true,
 			resizable: true,
 			editable: true,
-			minWidth: 100,
+			minWidth: 50,
 			maxWidth: 400,
 			hide: false,
-			filter: 'agMultiColumnFilter' 
+			filter: false,
+			suppressHeaderMenuButton: true
 		},
 
-		rowData: data,
-		columnDefs: columnDefinitions,
+		rowData: [],
+		columnDefs: colDef,
 
-		defaultExcelExportParams: {
-			exportAsExcelTable: true, 
+		onCellValueChanged(event: CellValueChangedEvent<any>) {
+			console.log(get(rowData));
+			console.log(event.column.getColId());
+			console.log(event.rowIndex);
+			console.log(event.data);
 		},
 
-		maintainColumnOrder: true, 
+		domLayout: "autoHeight",
+		maintainColumnOrder: true,
 		enableCellTextSelection: true,
-		ensureDomOrder: true,
 		suppressRowClickSelection: true,
-		rowSelection: "multiple",
+		ensureDomOrder: true,
+		rowSelection: "single",
 	}
 
-
 	onMount(() => {
+		console.log("mount");
+
 		gridApi = createGrid(gridContainer, gridOptions);
+
+		rowData.subscribe((data) => {
+			console.log("rowData", data);
+			if (data) {
+				gridApi.setGridOption("rowData", data);
+			}
+		})
 	})
 </script>
 
 
 
-<!-- <input 
-	type="text"
-	id="fulltext-filter"
-	placeholder="Hledat..."
-/> -->
-
-<div class="flex flex-column h-full">
+<div
+	class="flex flex-column h-full"
+>
 	<div
 		id="datagrid"
-		class="ag-theme-custom"
+		class="ag-theme-custom "
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>

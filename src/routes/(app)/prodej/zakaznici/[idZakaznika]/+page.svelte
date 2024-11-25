@@ -17,27 +17,37 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { customToast } from '$lib/utils/customToast';
-	import { disableInputs } from '$lib/stores/pageStore';
+	// import { disableInputs } from '$lib/stores/pageStore';
 	import { onMount } from 'svelte';
 	import { selectedRowsStore } from '$lib/stores/tableStore';
-	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
+	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
+	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
+	import {
+		customerAndAddressContactsAgGridDef
+	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 
 	export let data;
 
-	// if no data, disable inputs to avoid unwanted user interactions
-	disableInputs.set(data.state.status === "fail")
+	// // if no data, disable inputs to avoid unwanted user interactions
+	// disableInputs.set(data.state.status === "fail")
 
-	$: addressItem = data.response.item;
-	$: formValues = writable(addressItem);
+	let formValues = writable({});
+	$: formValues.set(data.response.item);
 
-	$: addressContacts = data.response.contacts
-	$: contactValues = writable(addressContacts)
+	let contactValues = writable([])
+	$: contactValues.set(data.response.contacts);
 
-	let translationRoute = "routes.prodej.zakaznici.customer_detail";
+	contactValues.subscribe((data) => {
+		if (data) {
+			console.log("contactValues", data);
+		}
+	})
+
+	const translationRoute = "routes.prodej.zakaznici.customer_detail";
 	let pageLayout = customerPageLayout;
 	let openDialog: boolean = false;
 	const flipDurationMs = 200;
@@ -58,7 +68,13 @@
 	}
 
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
-		let returnedDisable = changeCustomerRoute(selectedRows, uniqueSelectedRows, direction, activeId, $page.route.id);
+		let returnedDisable = changeCustomerRoute(
+			selectedRows,
+			uniqueSelectedRows,
+			direction,
+			activeId,
+			$page.route.id
+		);
 		disableLeft = returnedDisable.left;
 		disableRight = returnedDisable.right;
 	}
@@ -75,12 +91,24 @@
 		if (!uniqueSelectedRows[currentIndex - 1]) {
 			disableLeft = true;
 		}
+
+		formValues.subscribe((fv) => {
+			const editedData = get(editedFormValuesStore);
+			const targetInput = get(selectedInputStore)
+
+			if (targetInput) {
+				console.log("yey");
+				editedData[targetInput] = fv[targetInput]
+				editedFormValuesStore.set(editedData)
+				console.log(get(editedFormValuesStore))
+			}
+		})
 	})
 </script>
 
 
 
-<div class="h-full max-w-[1850px] overflow-auto p-3 md:p-4">
+<MaxWidthScrollableDetailContainer>
 	<div class="mb-3">
 		<div class="flex justify-between">
 			<DetailPageLabel
@@ -120,7 +148,7 @@
 			{#if item.type === "contacts"}
 				<div class={item.isLast ? "" : "mb-4"}>
 					<div class="flex gap-2" >
-						<SectionLabel name="Kontakty"/>
+						<SectionLabel label="Kontakty"/>
 
 						<button id="contacts" on:click={() => pageLayout = flipItems(pageLayout)}>
 							<ArrowUpDown class="size-4 text-albi-500"/>
@@ -131,16 +159,15 @@
 						</button>
 					</div>
 
-					<DetailTable
-						translationRoute="routes.prodej.zakaznici"
-						tableDef={customerDetailContactsTableDef}
-						tableData={contactValues}
+					<AgGridCSWrapper
+						colDef={customerAndAddressContactsAgGridDef}
+						bind:rowData={contactValues}
 					/>
 				</div>
 			{/if}
 		</div>
 	{/each}
-</div>
+</MaxWidthScrollableDetailContainer>
 
 
 <NewCustomerContactDialog
@@ -149,10 +176,3 @@
 	label="Nový kontakt zákazníka"
 	translationRoute="routes.prodej.zakaznici.customer_and_address_contact"
 />
-
-<style>
-	::-webkit-scrollbar {
-		width: 0;
-		height: 0;
-	}
-</style>

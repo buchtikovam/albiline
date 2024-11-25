@@ -15,7 +15,11 @@
 
 
 	"components" : {
-		"sidebar" : {},
+		"sidebar" : {
+			"all" : "All",
+			"recent" : "Recent",
+			"favorite" : "Favorite"
+		},
 		"ribbon" : {},
 		"header_menu" : {}
 	},

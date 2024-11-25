@@ -22,7 +22,7 @@
 	import { disableInputs } from '$lib/stores/pageStore';
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
-	import { activeSelectedRowIndexStore, editedDataStore, selectedRowsStore } from '$lib/stores/tableStore';
+	import { activeSelectedRowIndexStore, editedTableDataStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import CSAgGridDialog from '$lib/components/dialog/ag-grid/CSAgGridDialog.svelte';
@@ -32,17 +32,31 @@
 	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
 	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
 	import { addToEditedData } from '$lib/utils/addToEditedData';
+	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
+	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
+	import {
+		customerAndAddressContactsAgGridDef
+	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
+	import type { GridApi, GridOptions } from 'ag-grid-enterprise';
+	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
 
 	export let data;
 
 	// if no data, disable inputs to avoid unwanted user interactions
-	disableInputs.set(data.state.status === "fail");
+	// disableInputs.set(data.state.status === "fail");
 
-	$: addressItem = data.response.item;
-	$: formValues = writable(addressItem);
+	let formValues = writable({});
+	$: formValues.set(data.response.item);
 
-	$: addressContacts = data.response.contacts
-	$: contactValues = writable(addressContacts)
+	let contactValues = writable([])
+	$: contactValues.set(data.response.contacts);
+
+	contactValues.subscribe((data) => {
+		if (data) {
+			console.log("contactValues", data);
+		}
+	})
 
 	let pageLayout = customerAddressPageLayout;
 	let openNewContactDialog: boolean = false;
@@ -52,9 +66,7 @@
 
 	selectedRowsStore.subscribe((data) => {
 		selectedRows = data;
-		console.log("selRows", data);
 	});
-
 
 	// route parameters swapping logic
 	$: activeId = {
@@ -105,6 +117,19 @@
 		if (!selectedRows[currentIndex - 1]) {
 			disableLeft = true
 		}
+
+
+		formValues.subscribe((fv) => {
+			console.log("form values");
+			const editedData = get(editedFormValuesStore);
+			const targetInput = get(selectedInputStore)
+
+			if (targetInput) {
+				editedData[targetInput] = fv[targetInput]
+				editedFormValuesStore.set(editedData)
+				console.log(get(editedFormValuesStore))
+			}
+		})
 	})
 
 
@@ -131,10 +156,10 @@
 
 
 
-<div class="h-full max-w-[1850px] p-3 md:p-4 overflow-auto">
-	<div class="w-full flex flex-col mb-3">
+<MaxWidthScrollableDetailContainer>
+	<div class="w-full h-fdull flex flex-col mb-3">
 		<div class="flex justify-between">
-			<div class="flex gap-2">
+			<div class="flex gap-1.5">
 				{#if data.state.status === "success"}
 					<DetailPageLabel
 						label={
@@ -153,13 +178,15 @@
 				{/if}
 
 				<button
+					class="w-6"
 					on:click={() => {
 						openAgGridDialog = true
 						getAddresses()
 					}}
 				>
-					<Repeat class="size-5 text-albi-500"/>
+					<Repeat class="size-5 text-albi-500 "/>
 				</button>
+
 			</div>
 
 			<div
@@ -183,9 +210,9 @@
 
 
 	{#each pageLayout as item (item.id)}
-		<div animate:flip="{{duration: 300}}">
+		<div animate:flip="{{duration: 300}}" class="">
 			{#if item.type === "form"}
-				<div class={item.isLast ? "-mb-2" : ""}>
+				<div class={(item.isLast ? "-mb-2" : "")}>
 					<AutoForm
 						formDef={customerAddressDetailFormDef}
 						translationRoute={translationRoute + ".autoform."}
@@ -196,11 +223,14 @@
 			{/if}
 
 			{#if item.type === "contacts"}
-				<div class={item.isLast ? "" : "mb-4"}>
+				<div class={(item.isLast ? "" : "mb-4")}>
 					<div class="flex gap-2" >
-						<SectionLabel name="Kontakty"/>
+						<SectionLabel label="Kontakty"/>
 
-						<button id="contacts" on:click={() => pageLayout = flipItems(pageLayout)}>
+						<button
+							id="contacts"
+							on:click={() => pageLayout = flipItems(pageLayout)}
+						>
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
@@ -209,16 +239,16 @@
 						</button>
 					</div>
 
-					<DetailTable
-						translationRoute="routes.prodej.zakaznici"
-						tableDef={customerDetailContactsTableDef}
-						bind:tableData={contactValues}
+					<!--contacts table-->
+					<AgGridCSWrapper
+						colDef={customerAndAddressContactsAgGridDef}
+						bind:rowData={contactValues}
 					/>
 				</div>
 			{/if}
 		</div>
 	{/each}
-</div>
+</MaxWidthScrollableDetailContainer>
 
 
 <CSAgGridDialog

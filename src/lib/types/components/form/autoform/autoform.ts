@@ -8,6 +8,8 @@ export type AutoFormType = {
 	[key: string]: AutoFormSection[],
 }
 
+export type AutoFormSimpleType = AutoFormRow[]
+
 export type AutoFormSection = {
 	id: string,
 	field: string,
@@ -31,13 +33,3 @@ export type AutoFormInput = {
 	dropdownOptions?: string[],
 	schema?: z.ZodType
 }
-
-export type AutoFormSimple = {
-	rowType: "full" | "checkbox",
-	rowInputs: {
-		[key: string]: {
-			inputType: "text" | "number" | "checkbox" | "empty",
-			schema: z.ZodType
-		}
-	}
-}[]

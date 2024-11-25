@@ -5,7 +5,12 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
-	import { isMobileStore, isMobileLayoutExpandedStore, sessionKeyStore } from '$lib/stores/pageStore';
+	import {
+		isMobileStore,
+		isMobileLayoutExpandedStore,
+		sessionKeyStore,
+		disableNavigationStore
+	} from '$lib/stores/pageStore';
 	import { onMount } from 'svelte';
 	import { ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
@@ -15,7 +20,8 @@
 	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
 	import { beforeNavigate } from '$app/navigation';
 	import { get } from 'svelte/store';
-	import { editedDataStore } from '$lib/stores/tableStore';
+	import { editedTableDataStore } from '$lib/stores/tableStore';
+	import { editedFormValuesStore } from '$lib/stores/autoformStore';
 	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 
 	let innerWidth: number;
@@ -31,6 +37,22 @@
 
 	let isMobileLayoutExpanded: boolean;
 	isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
+
+	editedTableDataStore.subscribe((editedData) => {
+		if (editedData.length > 0) {
+			disableNavigationStore.set(true)
+		} else {
+			disableNavigationStore.set(false)
+		}
+	})
+
+	editedFormValuesStore.subscribe((editedData) => {
+		if (Object.keys(editedData).length > 0) {
+			disableNavigationStore.set(true)
+		} else {
+			disableNavigationStore.set(false)
+		}
+	})
 
 	onMount(() => {
 		// klávesové zkratky pro ribbon
@@ -59,11 +81,21 @@
 	})
 
 	beforeNavigate(({cancel}) => {
-		if (get(editedDataStore).length > 0) {
+		if (get(editedTableDataStore).length > 0) {
 			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
 				cancel();
 			} else {
-				editedDataStore.set([]);
+				editedTableDataStore.set([]);
+				disableNavigationStore.set(false);
+			}
+		}
+
+		if (Object.keys(get(editedFormValuesStore)).length > 0) {
+			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
+				cancel();
+			} else {
+				editedFormValuesStore.set({});
+				disableNavigationStore.set(false);
 			}
 		}
 	})

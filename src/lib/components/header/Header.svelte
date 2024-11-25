@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { editedDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
+	import { editedTableDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
 	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 	import { goto, preloadData } from '$app/navigation';
@@ -14,6 +14,7 @@
 	import Input from '../ui/input/input.svelte';
 	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
+	import { disableNavigationStore } from '$lib/stores/pageStore';
 	
 	/*
 	Header komponenent s hlavními taby a avatarem
@@ -22,15 +23,15 @@
 	let storedTabs: HeaderTab[];
 	openedTabsStore.subscribe(data => storedTabs = data);
 
-	let hasEditedData: boolean;
-	editedDataStore.subscribe(data => data.length > 0 ? hasEditedData = true : hasEditedData = false);
+	let disableNav: boolean;
+	disableNavigationStore.subscribe((bool) => disableNav = bool)
 
 	$: pathname = getTabValue($page.url.pathname)
 
-	function getTabValue(url :string) {
-		let urlLength = url.split('/').length
-		
-		for (let tab of storedTabs) { 
+	function getTabValue(url: string) {
+		let urlLength = url.split('/').length;
+
+		for (let tab of storedTabs) { // found match, no need to continue
 			if (url === tab.url) {
 				return url
 			}
@@ -41,17 +42,22 @@
 
 			// nalezena částečná shoda
 			if (url.includes(tab.url)) {
-				if (tab.treeDepth === 0 && urlLength > 2 && tabUrlLength === urlLength - 1) {
+				if (tab.treeDepth === 0 && urlLength > 2 && tabUrlLength === urlLength - 1) { // ... /param/[var]
 					return `/${url.split('/').slice(1, -1)[0]}`;
 				}
 
-				if (tab.treeDepth === 1 && urlLength > 3 && tabUrlLength === urlLength - 1) {
+				if (tab.treeDepth === 1 && urlLength > 3 && tabUrlLength === urlLength - 1) { // ... /param/param/[var]
 					return `/${url.split('/').slice(1, -1).join('/')}`;
 				}
 
-				if (tab.treeDepth === 2 && urlLength > 4 && tabUrlLength === urlLength - 1) {
+				if (tab.treeDepth === 1 && urlLength > 5 && tabUrlLength === urlLength - 3) { // ... /param/param/[var]/param/[var]
+					return `/${url.split('/').slice(1, 3).join('/')}`;
+				}
+
+				if (tab.treeDepth === 2 && urlLength > 4 && tabUrlLength === urlLength - 1) { // ... /param/param/param/[var]
 					return `/${url.split('/').slice(1, -1).join('/')}`;
 				}
+
 			}
 		}
 	}
@@ -89,14 +95,14 @@
 >
     <Tabs.Root
 		class="hidden w-fit h-fit md:block rounded-md "
-		value={pathname}
+		bind:value={pathname}
 	>
         <Tabs.List>
             <!-- Výchozí taby -->
             <Tabs.Trigger
                 value="/"
                 on:click={() => goto("/")}
-				disabled={hasEditedData}
+				disabled={disableNav}
                 >
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
@@ -112,7 +118,7 @@
 					<Tabs.Trigger
 						value={tab.url}
 						on:click={() => goto(tab.url)}
-						disabled={hasEditedData && tab.url !== pathname}
+						disabled={disableNav && tab.url !== pathname}
 					>
 						<button
 							class="flex items-center font-bold"

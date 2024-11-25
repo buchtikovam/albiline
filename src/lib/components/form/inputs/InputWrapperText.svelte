@@ -3,11 +3,13 @@
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { _ } from 'svelte-i18n';
 	import { getContext } from 'svelte';
+	import { selectedInputStore } from '$lib/stores/autoformStore';
 
 	export let value: string|null;
 	export let label: string;
 	export let inputDef: AutoFormInput;
 	export let disable: boolean = false;
+	export let field: string = "";
 
 	let errorMessage = "";
 	let hasError: boolean = false;
@@ -21,6 +23,8 @@
 
 	function validateTextSchema(ev: Event) {
 		const inputValue = ev.target?.value;
+
+		selectedInputStore.set(field);
 
 		try {
 			inputDef.schema.parse(inputValue);

@@ -2,7 +2,7 @@
 	import {
 		filtersStore,
 		defaultColDef,
-		editedDataStore,
+		editedTableDataStore,
 		fulltextFilterValueStore,
 		presetStore,
 		selectedFilterStore,
@@ -30,7 +30,7 @@
 	import { addToEditedData } from "$lib/utils/addToEditedData";
 	import { goto } from "$app/navigation";
 	import { get, writable } from 'svelte/store';
-	import { sessionKeyStore } from '$lib/stores/pageStore';
+	import { disableNavigationStore, sessionKeyStore } from '$lib/stores/pageStore';
 	
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -92,7 +92,7 @@
 
 			selectedRows.forEach((row) => {
 				rowArr.push({
-					customerAddressCode: row.customerAddressCode, // todo: make generic
+					customerAddressCode: row.customerAddressCode, // todo: make generic...  obj.entries -key,value => rowarr.push key: row.key
 					customerNodeCode: row.customerNodeCode
 				})
 			})
@@ -200,7 +200,6 @@
 		}
 	};
 
-
 	onMount(() => {
 		// updateLastRow.set(false);
 		defaultColDef.set(columnDefinitions)
@@ -219,7 +218,6 @@
 				shiftPressed = false;
 			}
 		})
-
 
 		selectedFilterStore.subscribe((filters) => {
 			if (filters) {

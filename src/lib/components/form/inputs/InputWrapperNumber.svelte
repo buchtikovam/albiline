@@ -47,7 +47,7 @@
 			on:input={(e) => validateNumberSchema(e)}
 			bind:value
 			disabled={disable}
-			class={`${hasError ? "focus-visible:border-red-500" : ""} h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
+			class={`${hasError ? "focus-visible:border-red-500" : ""} disabled:bg-slate-50 h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
 		>
 
 		<p class="text-xs text-red-700 w-full">{errorMessage}</p>

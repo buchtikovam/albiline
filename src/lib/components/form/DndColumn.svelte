@@ -64,10 +64,10 @@
 			<Accordion.Root value={["item-1"]} >
 				<Accordion.Item value="item-1">
 					{#if item.hasDialog}
-						<div class="flex justify-between pb-2">
+						<div class="flex justify-between items-center pb-2">
 						   <div class="flex">
 							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
-								   <SectionLabel name={$_(translationRoute + item.field)} />
+								   <SectionLabel label={$_(translationRoute + item.field)} />
 							   </Accordion.Trigger>
 
 							   <button type="button" on:click={() => openedDialogStore.set(item.dialogId)}>
@@ -83,7 +83,7 @@
 					{:else}
 						<div class="flex justify-between items-center pb-2">
 							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
-								<SectionLabel name={$_(translationRoute + item.field)} />
+								<SectionLabel label={$_(translationRoute + item.field)} />
 							</Accordion.Trigger>
 
 							<div use:dragHandle aria-label="drag-handle" class="handle">
@@ -103,6 +103,7 @@
 												<InputWrapperText
 													label={$_(translationRoute + key) || ""}
 													inputDef={value}
+													field={key}
 													bind:value={$formValues[key]}
 													disable={disable}
 												/>

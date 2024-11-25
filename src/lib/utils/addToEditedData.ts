@@ -1,22 +1,22 @@
-import { editedDataStore } from "$lib/stores/tableStore";
+import { editedTableDataStore } from "$lib/stores/tableStore";
 import { get } from "svelte/store";
 
-export function addToEditedData(params: Record<string, any>, key: string, newValue: any) {
-	const editedData = get(editedDataStore);
+export function addToEditedData(params: Record<string, never>, key: string, newValue: never) {
+	const editedData = get(editedTableDataStore);
 	let foundMatch = false;
-	const newRecord: Record<string, any> = {};
+	const newRecord: Record<string, never> = {};
 
 	editedData.forEach((record) => {
 		if (record.id === params["customerAddressCode"]) {
 			foundMatch = true;
 			record[key] = newValue;
-			editedDataStore.set(editedData);
+			editedTableDataStore.set(editedData);
 		}
 	})
 
 	if (!foundMatch) {
 		newRecord["id"] = params["customerAddressCode"];
 		newRecord[key] = newValue;
-		editedDataStore.update((records) => records.concat(newRecord));
+		editedTableDataStore.update((records) => records.concat(newRecord));
 	}
 }

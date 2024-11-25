@@ -4,42 +4,42 @@ import type { AutoFormSimpleType } from '$lib/types/components/form/autoform/aut
 export const newCustomerFormDef: AutoFormSimpleType = [
 	{
 		rowType: "full",
-		rowInputs: {
+		inputs: {
 			"name": {
-				inputType: "text",
+				type: "text",
 				schema: z.string(),
 			},
 
 			"surname": {
-				inputType: "text",
+				type: "text",
 				schema: z.string(),
 			},
 		}
 	},
 	{
 		rowType: "full",
-		rowInputs: {
+		inputs: {
 			"mobile": {
-				inputType: "text",
+				type: "text",
 				schema: z.string(),
 			},
 
 			"phone": {
-				inputType: "text",
+				type: "text",
 				schema: z.string(),
 			},
 		}
 	},
 	{
 		rowType: "full",
-		rowInputs: {
+		inputs: {
 			"email": {
-				inputType: "text",
+				type: "text",
 				schema: z.string(),
 			},
 
 			"note": {
-				inputType: "text",
+				type: "text",
 				schema: z.string(),
 			},
 
@@ -47,49 +47,49 @@ export const newCustomerFormDef: AutoFormSimpleType = [
 	},
 	{
 		rowType: "checkbox",
-		rowInputs: {
+		inputs: {
 			"isDefault": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"enabled": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"pdfInvoice": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"pdfDeliveryNote": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"csvInvoice": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"csvDeliveryNote": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"consignmentReturnInfo": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"consignmentInfo": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			},
 
 			"carrierInfo": {
-				inputType: "checkbox",
+				type: "checkbox",
 				schema: z.boolean(),
 			}
 		}

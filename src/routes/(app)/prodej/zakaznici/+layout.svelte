@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
 		activeSelectedRowIndexStore,
-		editedDataStore,
+		editedTableDataStore,
 		fulltextFilterValueStore,
 		selectedRowsStore,
 		showFulltextSearchStore
@@ -13,12 +13,13 @@
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { get } from 'svelte/store';
+	import { disableNavigationStore } from '$lib/stores/pageStore';
 
-	let disableTabs: boolean = true;
+
+	let disableNav: boolean;
+	disableNavigationStore.subscribe((bool) => disableNav = bool)
+
 	let translationRouteTabs = "routes.prodej.zakaznici.layout_tabs"
-
-	editedDataStore.subscribe(data => disableTabs = data.length > 0)
-
 	let customerAddressCode: string|undefined;
 	let customerNodeCode: string|undefined;
 	let activeIndex: number;
@@ -63,7 +64,7 @@
 		<Tabs.List class="h-8">
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici` !== route && disableTabs}
+				disabled={`/prodej/zakaznici` !== route && disableNav}
 				value={"/prodej/zakaznici"}
 				on:click={() => goto("/prodej/zakaznici")}
 			>
@@ -73,7 +74,7 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== route && disableTabs}
+				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== route && disableNav}
 				value={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`}
 				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`)}
 			>
@@ -83,7 +84,7 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${customerNodeCode}` !== route && disableTabs}
+				disabled={`/prodej/zakaznici/${customerNodeCode}` !== route && disableNav}
 				value={`/prodej/zakaznici/${customerNodeCode}`}
 				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}`)}
 			>

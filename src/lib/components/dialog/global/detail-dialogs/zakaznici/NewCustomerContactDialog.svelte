@@ -23,8 +23,11 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<div class="mb-4">
-			<AutoFormSimple translationRoute={translationRoute} autoform={formDef}/>
+		<div class="mb-4 h-full">
+			<AutoFormSimple
+				translationRoute={translationRoute}
+				autoform={formDef}
+			/>
 		</div>
 
 		<Dialog.Footer>

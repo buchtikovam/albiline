@@ -15,6 +15,10 @@
 	outline: none;
 }
 
+.ag.ag-theme-custom .ag-layout-auto-height .ag-center-cols-container, .ag-layout-auto-height .ag-center-cols-viewport, .ag-layout-print .ag-center-cols-container, .ag-layout-print .ag-center-cols-viewport {
+	min-height: 0 !important;
+}
+
 .ag-theme-custom .ag-checkbox-input-wrapper.ag-checked::after,
 .ag-theme-custom .ag-checkbox-input-wrapper.ag-indeterminate::after {
 	content: '';
@@ -23,9 +27,14 @@
 .ag-theme-custom .ag-header-cell-label .ag-header-cell-text {
 	white-space: normal; /* Essential for word-wrapping */
 	word-break: keep-all;
-	line-height: 12px;
+	line-height: 11px;
 	font-size: 12px;
 	padding-top: 2px;
+	padding-bottom: 4px;
+}
+
+.ag-theme-custom .ag-header-cell-label-container {
+	height: 80px !important;
 }
 
 .ag-theme-custom,
