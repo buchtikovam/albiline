@@ -1,16 +1,12 @@
 <script lang="ts">
 	import * as Dialog from "$lib/components/ui/dialog";
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
-	import { get, writable, type Writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 
 	export let colDef;
 	export let rowData: Writable<any[]> = writable([]);
 	export let open: boolean = false;
-	export let translationRoute: string;
-
-	rowData.subscribe((data) => {
-		console.log(data);
-	})
+	// export let translationRoute: string;
 </script>
 
 <Dialog.Root bind:open closeOnOutsideClick={false}>

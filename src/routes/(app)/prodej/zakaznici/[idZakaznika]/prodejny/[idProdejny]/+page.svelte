@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
-	import {
-		customerDetailContactsTableDef
-	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import { _ } from 'svelte-i18n'
 	import { flipItems } from '$lib/utils/flipItems';
-	import { get, type Writable, writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
@@ -14,15 +11,14 @@
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
-	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import * as Table from "$lib/components/ui/table";
 	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
 	import { customToast } from '$lib/utils/customToast';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { disableInputs } from '$lib/stores/pageStore';
+	import { disableInputs, disableNavigationStore } from '$lib/stores/pageStore';
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
-	import { activeSelectedRowIndexStore, editedTableDataStore, selectedRowsStore } from '$lib/stores/tableStore';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import CSAgGridDialog from '$lib/components/dialog/ag-grid/CSAgGridDialog.svelte';
@@ -31,52 +27,48 @@
 	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
 	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
 	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
-	import { addToEditedData } from '$lib/utils/addToEditedData';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
+	import { editedFormValuesStore } from '$lib/stores/autoformStore';
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
-	import type { GridApi, GridOptions } from 'ag-grid-enterprise';
-	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
+	import { apiServiceGET } from '$lib/api/apiService.js';
+
 
 	export let data;
 
-	// if no data, disable inputs to avoid unwanted user interactions
-	// disableInputs.set(data.state.status === "fail");
-
-	let formValues = writable({});
+	let formValues = writable({}); // autoform
 	$: formValues.set(data.response.item);
 
-	let contactValues = writable([])
+	let contactValues = writable([]) // contacts table
 	$: contactValues.set(data.response.contacts);
+	let editedContactValues = []
 
-	contactValues.subscribe((data) => {
-		if (data) {
-			console.log("contactValues", data);
-		}
-	})
 
+	const translationRoute = "routes.prodej.zakaznici.address_detail";
 	let pageLayout = customerAddressPageLayout;
 	let openNewContactDialog: boolean = false;
 	let openAgGridDialog: boolean = false;
-	let translationRoute = "routes.prodej.zakaznici.address_detail";
-	let selectedRows = get(selectedRowsStore)
 
+
+	let selectedRows = get(selectedRowsStore)
 	selectedRowsStore.subscribe((data) => {
 		selectedRows = data;
 	});
 
+
+	// --- PAGE NAVIGATION BETWEEN SELECTED CUSTOMERS ----
 	// route parameters swapping logic
+	$: disableLeft = false;
+	$: disableRight = false;
+
 	$: activeId = {
 		customerNodeCode: Number($page.params.idZakaznika),
 		customerAddressCode: Number($page.params.idProdejny)
 	}
 
-	$: disableLeft = false;
-	$: disableRight = false;
-
+	// called when user swappes to the next/previous address
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
 		let returnedDisable = changeCustomerAddressRoute(
 			selectedRows,
@@ -90,8 +82,6 @@
 	}
 
 	activeSelectedRowIndexStore.subscribe((data) => {
-		console.log("activeIndex", data);
-
 		disableRight = false;
 		disableLeft = false;
 
@@ -110,26 +100,8 @@
 			id.customerAddressCode === activeId.customerAddressCode
 		);
 
-		if (!selectedRows[currentIndex + 1]) {
-			disableRight = true
-		}
-
-		if (!selectedRows[currentIndex - 1]) {
-			disableLeft = true
-		}
-
-
-		formValues.subscribe((fv) => {
-			console.log("form values");
-			const editedData = get(editedFormValuesStore);
-			const targetInput = get(selectedInputStore)
-
-			if (targetInput) {
-				editedData[targetInput] = fv[targetInput]
-				editedFormValuesStore.set(editedData)
-				console.log(get(editedFormValuesStore))
-			}
-		})
+		if (!selectedRows[currentIndex + 1]) disableRight = true;
+		if (!selectedRows[currentIndex - 1]) disableLeft = true;
 	})
 
 
@@ -138,18 +110,44 @@
 
 	async function getAddresses() {
 		if (get(addresses).length === 0) {
-			const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${$page.params.idZakaznika}/addresses`)
+			const res = await apiServiceGET(`customers/${$page.params.idZakaznika}/addresses`)
 
 			if (res.ok) {
 				const responseData = await res.json()
 				addresses.set(await responseData.items)
+			} else {
+				customToast("Critical", "Nepodařilo se získat prodejny")
 			}
 		}
 	}
 
+
+	// disable editing if there are unsaved changes
+	editedFormValuesStore.subscribe((data) => {
+		disableNavigationStore.set(false);
+
+		if (Object.keys(data).length > 0) {
+			disableNavigationStore.set(true);
+		}
+	})
+
+
 	beforeNavigate(() => {
 		addresses.set([]);
+		editedContactValues = [];
 		openAgGridDialog = false;
+	})
+
+
+	onMount(() => {
+		// disable navigation buttons if user is located on the first/last address
+		const currentIndex = selectedRows.findIndex((id) =>
+			id.customerNodeCode === activeId.customerNodeCode &&
+			id.customerAddressCode === activeId.customerAddressCode
+		);
+
+		if (!selectedRows[currentIndex + 1]) disableRight = true;
+		if (!selectedRows[currentIndex - 1]) disableLeft = true;
 	})
 </script>
 
@@ -158,17 +156,17 @@
 
 <MaxWidthScrollableDetailContainer>
 	<div class="w-full h-fdull flex flex-col mb-3">
+		<!-- header -->
 		<div class="flex justify-between">
+			<!-- page label + get addresses button -->
 			<div class="flex gap-1.5">
 				{#if data.state.status === "success"}
 					<DetailPageLabel
-						label={
-							$_(translationRoute + ".header", {
-								values: {
-									customerName: $formValues.customerName,
-									customerNodeCode: $formValues.customerNodeCode}
-								}
-							)
+						label={$_(translationRoute + ".header", {
+							values: {
+								customerName: $formValues.customerName,
+								customerNodeCode: $formValues.customerNodeCode}
+							})
 						}
 					/>
 				{:else}
@@ -180,18 +178,16 @@
 				<button
 					class="w-6"
 					on:click={() => {
-						openAgGridDialog = true
-						getAddresses()
+						openAgGridDialog = true;
+						getAddresses();
 					}}
 				>
 					<Repeat class="size-5 text-albi-500 "/>
 				</button>
-
 			</div>
 
-			<div
-				class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}
-			>
+			<!-- page navigation buttons -->
+			<div class={selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
 				<DetailNavButton
 					direction="left"
 					bind:disable={disableLeft}
@@ -208,9 +204,10 @@
 	</div>
 
 
-
+	<!-- page content -->
 	{#each pageLayout as item (item.id)}
 		<div animate:flip="{{duration: 300}}" class="">
+			<!-- address detail form -->
 			{#if item.type === "form"}
 				<div class={(item.isLast ? "-mb-2" : "")}>
 					<AutoForm
@@ -222,9 +219,10 @@
 				</div>
 			{/if}
 
+			<!-- address contacts table: display all, add new, move table up/down -->
 			{#if item.type === "contacts"}
 				<div class={(item.isLast ? "" : "mb-4")}>
-					<div class="flex gap-2" >
+					<div class="flex gap-2">
 						<SectionLabel label="Kontakty"/>
 
 						<button
@@ -237,12 +235,14 @@
 						<button on:click={() => openNewContactDialog = true}>
 							<Plus strokeWidth={2.5} class="text-albi-500 size-4"/>
 						</button>
+
+<!--						<button on:click={save}>-&#45;&#45;</button>-->
 					</div>
 
-					<!--contacts table-->
 					<AgGridCSWrapper
 						colDef={customerAndAddressContactsAgGridDef}
 						bind:rowData={contactValues}
+						bind:editedRowData={editedContactValues}
 					/>
 				</div>
 			{/if}
@@ -251,6 +251,7 @@
 </MaxWidthScrollableDetailContainer>
 
 
+<!-- display all customer addresses, select new active -->
 <CSAgGridDialog
 	colDef={customerAddressesAgGridDef}
 	bind:rowData={addresses}
@@ -259,18 +260,10 @@
 />
 
 
+<!-- new customer form -->
 <NewCustomerContactDialog
 	formDef={newCustomerFormDef}
 	bind:dialogOpen={openNewContactDialog}
 	label="Nový kontakt prodejny"
 	translationRoute={"routes.prodej.zakaznici.customer_and_address_contact"}
 />
-
-
-
-
-<style>
-	::-webkit-scrollbar {
-		width: 0px;
-	}
-</style>

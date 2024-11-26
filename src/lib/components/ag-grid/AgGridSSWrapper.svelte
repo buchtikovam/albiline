@@ -11,7 +11,7 @@
 		selectedRowsStore, activeSelectedRowIndexStore
 	} from '$lib/stores/tableStore';
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
-	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from "$lib/stores/ribbonStore";
+	import { ribbonActionStore } from "$lib/stores/ribbonStore";
 	import {
 		createGrid,
 		type FilterModel,
@@ -19,18 +19,16 @@
 		type GridApi,
 		type GridOptions,
 		type IServerSideDatasource,
-		type IServerSideGetRowsParams, type ValueFormatterLiteParams, type ValueParserLiteParams
+		type IServerSideGetRowsParams
 	} from 'ag-grid-enterprise';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
 	import { onDestroy, onMount } from "svelte";
-	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
-	import { customToast } from "$lib/utils/customToast";
-	import { addToEditedData } from "$lib/utils/addToEditedData";
+	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
 	import { goto } from "$app/navigation";
 	import { get, writable } from 'svelte/store';
-	import { disableNavigationStore, sessionKeyStore } from '$lib/stores/pageStore';
+	import { sessionKeyStore } from '$lib/stores/pageStore';
 	
 	export let columnDefinitions: any[];
 	export let url: string;
@@ -59,7 +57,7 @@
 		},	
 
 		onCellValueChanged: (event) => {
-			addToEditedData(event.data, event.column.getColId(), event.newValue)
+			addToEditedTableData(event.data, event.column.getColId(), event.newValue)
 		},
 
 		onColumnResized: () => {
@@ -120,7 +118,6 @@
 		suppressCsvExport: true,
 		maintainColumnOrder: true, 
 		enableCellTextSelection: true,
-		// suppressRowClickSelection: true,
 		rowModelType: "serverSide",
 		rowSelection: "multiple",
 		cacheBlockSize: 100,

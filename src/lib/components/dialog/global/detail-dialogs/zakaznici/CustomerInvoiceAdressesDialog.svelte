@@ -5,13 +5,14 @@
 	import { get, writable } from 'svelte/store';
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';
+	import { apiServiceGET } from '$lib/api/apiService';
 
-	let dialogOpen: boolean = false;
 	const activeRow = get(selectedRowsStore)[get(activeSelectedRowIndexStore)]
+	let dialogOpen: boolean = false;
 	let invoiceAddresses = writable([])
 
 	async function getInvoiceAddresses() {
-		const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${activeRow.customerNodeCode}/invoice-addresses`)
+		const res = await apiServiceGET(`customers/${activeRow.customerNodeCode}/invoice-addresses`)
 
 		if (res.ok) {
 			console.log("fetch");
@@ -22,8 +23,7 @@
 
 
 	onMount(() => {
-		getInvoiceAddresses()
-
+		getInvoiceAddresses();
 		dialogOpen = true;
 	});
 </script>

@@ -5,7 +5,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
-	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
+	// import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/customToast';
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
@@ -79,28 +79,30 @@
 	async function deleteFilter(filterId: number | undefined) {
 		if (!filterId) return;
 
-		try {
-			const response = await apiServiceDELETE('filters', filterId);
-
-			if (!response.ok) {
-				customToast(
-					'Critical',
-					'Nastala chyba při mazání filtru.'
-				);
-			}
-			// frontendové smazání filtru, aby se nemuselo znovu fetchovat
-			filters = filters?.filter(filter => filter.id !== filterId);
-			customToast(
-				'Success',
-				'Filtr byl úspěšně smazán'
-			);
-		} catch (error) {
-			console.error('Error deleting filter:', error);
-			customToast(
-				'Critical',
-				'Nastala chyba při mazání filtru.'
-			);
-		}
+		console.log("delete filter");
+		//
+		// try {
+		// 	const response = await apiServiceDELETE('filters', filterId);
+		//
+		// 	if (!response.ok) {
+		// 		customToast(
+		// 			'Critical',
+		// 			'Nastala chyba při mazání filtru.'
+		// 		);
+		// 	}
+		// 	// frontendové smazání filtru, aby se nemuselo znovu fetchovat
+		// 	filters = filters?.filter(filter => filter.id !== filterId);
+		// 	customToast(
+		// 		'Success',
+		// 		'Filtr byl úspěšně smazán'
+		// 	);
+		// } catch (error) {
+		// 	console.error('Error deleting filter:', error);
+		// 	customToast(
+		// 		'Critical',
+		// 		'Nastala chyba při mazání filtru.'
+		// 	);
+		// }
 	}
 
 
@@ -115,25 +117,27 @@
 
 
 	async function updateFilter(filter: FetchedFilter) {
-		try {
-			const response = await apiServicePUT(
-				"filters",
-				filter.id,
-				filter
-			)
+		console.log("update filter");
 
-			if (response.ok) {
-				customToast('Success','Filtr byl úspěšně upraven.');
-				isEditing = false;
-			} else {
-				customToast('Critical','Nastala chyba při editaci filtru.');
-				isEditing = false;
-			}
-
-		} catch (error) {
-			customToast('Critical','Nastala chyba při editaci filtru.');
-			console.error('Error deleting filter:', error);
-		}
+		// try {
+		// 	const response = await apiServicePUT(
+		// 		"filters",
+		// 		filter.id,
+		// 		filter
+		// 	)
+		//
+		// 	if (response.ok) {
+		// 		customToast('Success','Filtr byl úspěšně upraven.');
+		// 		isEditing = false;
+		// 	} else {
+		// 		customToast('Critical','Nastala chyba při editaci filtru.');
+		// 		isEditing = false;
+		// 	}
+		//
+		// } catch (error) {
+		// 	customToast('Critical','Nastala chyba při editaci filtru.');
+		// 	console.error('Error deleting filter:', error);
+		// }
 	}
 
 

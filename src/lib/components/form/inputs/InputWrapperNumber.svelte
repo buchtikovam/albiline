@@ -3,18 +3,24 @@
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { getContext } from 'svelte';
+	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
  
 	export let value: number;
 	export let label;
 	export let inputDef: AutoFormInput;
 	export let disable: boolean = false;
+	export let field: string;
 
+	const initialValue = value;
 
 	let errorMessage = "";
 	let hasError: boolean = false;
 
 	function validateNumberSchema(ev: Event) {
 		const inputValue = ev.target?.value;
+
+		addToEditedFormData(initialValue, field, inputValue);
+
 
 		// try {
 		// 	inputDef.schema.parse(inputValue);

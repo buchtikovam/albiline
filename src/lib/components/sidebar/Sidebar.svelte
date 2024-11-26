@@ -141,6 +141,7 @@
 			<Input
 				class="mb-4 focus-visible:ring-0"
 				placeholder="Filtrovat..."
+				type="search"
 				bind:value={searchTerm}
 				on:input={() => search(searchTerm)}
 			/>

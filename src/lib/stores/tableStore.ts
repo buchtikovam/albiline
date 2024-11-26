@@ -3,7 +3,7 @@ import { writable, type Writable } from 'svelte/store';
 import type { Preset } from '$lib/types/components/table/presets';
 
 // k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
-export const editedTableDataStore: Writable<never[]> = writable([]);
+export const editedTableDataStore: Writable<any[]> = writable([]);
 
 // defaultní definice sloupečků, která se vytvoří z /lib/data/ag-grid/col-def,
 // důležité pro nastavení defaultní šablony přes ribbon
@@ -31,6 +31,6 @@ export const showFulltextSearchStore: Writable<boolean> = writable(false);
 export const fulltextFilterValueStore: Writable<string> = writable();
 
 // id vybraného řádku v tabulce
-export const selectedRowsStore: Writable<Record<string, never>[]> = writable([]);
+export const selectedRowsStore: Writable<Record<string, string|number|boolean|Date>[]> = writable([]);
 
 export const activeSelectedRowIndexStore: Writable<number> = writable(0);

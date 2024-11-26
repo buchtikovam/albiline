@@ -5,7 +5,7 @@ export const isMobileLayoutExpandedStore: Writable<boolean> = writable(false);
 
 export const isMobileStore: Writable<boolean> = writable(false);
 
-export const sessionKeyStore: Writable<string|undefined> = persisted(
+export const sessionKeyStore: Writable<string> = persisted(
 	'sessionKey',
 	undefined,
 	{ storage: 'session' }

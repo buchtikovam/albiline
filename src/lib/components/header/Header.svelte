@@ -29,6 +29,8 @@
 	$: pathname = getTabValue($page.url.pathname)
 
 	function getTabValue(url: string) {
+		if (url === "/") return url;
+
 		let urlLength = url.split('/').length;
 
 		for (let tab of storedTabs) { // found match, no need to continue
@@ -40,36 +42,71 @@
  		for (let tab of storedTabs) {
 			let tabUrlLength = tab.url.split('/').length;
 
-			// nalezena částečná shoda
 			if (url.includes(tab.url)) {
-				if (tab.treeDepth === 0 && urlLength > 2 && tabUrlLength === urlLength - 1) { // ... /param/[var]
+				if ( // => /param/[var]
+					tab.treeDepth === 0 &&
+					urlLength > 2 &&
+					tabUrlLength === urlLength - 1
+				) {
 					return `/${url.split('/').slice(1, -1)[0]}`;
 				}
 
-				if (tab.treeDepth === 1 && urlLength > 3 && tabUrlLength === urlLength - 1) { // ... /param/param/[var]
+				if ( // => /param/param/[var]
+					tab.treeDepth === 1 &&
+					urlLength > 3 &&
+					tabUrlLength === urlLength - 1
+				) {
 					return `/${url.split('/').slice(1, -1).join('/')}`;
 				}
 
-				if (tab.treeDepth === 1 && urlLength > 5 && tabUrlLength === urlLength - 3) { // ... /param/param/[var]/param/[var]
+				if ( // => /param/param/[var]/.../[var]
+					tab.treeDepth === 1 &&
+					urlLength > 5 &&
+					tabUrlLength === urlLength - 3
+				) {
 					return `/${url.split('/').slice(1, 3).join('/')}`;
 				}
 
-				if (tab.treeDepth === 2 && urlLength > 4 && tabUrlLength === urlLength - 1) { // ... /param/param/param/[var]
+				if ( // => /param/param/param/[var]
+					tab.treeDepth === 2 &&
+					urlLength > 4 &&
+					tabUrlLength === urlLength - 1
+				) {
 					return `/${url.split('/').slice(1, -1).join('/')}`;
 				}
-
 			}
 		}
 	}
 	
 
-	function removeTab(tabName: string) {
-		storedTabs.forEach((tab) => {
-			if (tab.field === tabName) {
-				storedTabs.splice(storedTabs.indexOf(tab), 1);
-				openedTabsStore.set(storedTabs);
-			}
-		});
+	function removeTab(tab: HeaderTab, ev: MouseEvent) {
+		if (ev.button === 1) { // remove tab on wheel mouse button click
+			storedTabs.forEach((storedTab) => {
+				if (storedTab.field === tab.field) {
+					const index = storedTabs.indexOf(tab);
+					storedTabs.splice(storedTabs.indexOf(tab), 1);
+					openedTabsStore.set(storedTabs);
+
+					// after tab was removed, redirect on available tab
+					if ($page.url.pathname === tab.url) {
+						if (storedTabs.length === 0) {
+							goto("/");
+							return;
+						}
+
+						if (storedTabs[index]) { // was spliced, so no need to increment index
+							goto(storedTabs[index].url);
+							return;
+						}
+
+						if (storedTabs[index - 1]) {
+							goto(storedTabs[index - 1].url)
+							return;
+						}
+					}
+				}
+			});
+		}
 	}
 
 	function showTabClosingButton(tab: HeaderTab) {
@@ -84,7 +121,6 @@
 		openedTabsStore.update(() => storedTabs);
 	}
 
-
 	let openMobileSidebar : boolean = false;
 </script>
 
@@ -98,7 +134,7 @@
 		bind:value={pathname}
 	>
         <Tabs.List>
-            <!-- Výchozí taby -->
+            <!-- default tabs -->
             <Tabs.Trigger
                 value="/"
                 on:click={() => goto("/")}
@@ -107,7 +143,7 @@
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
 
-            <!-- Taby otevřené uživatelem -->
+            <!-- tabs opened by user -->
             {#each storedTabs as tab}
 				<TabSeparator/>
 
@@ -122,13 +158,13 @@
 					>
 						<button
 							class="flex items-center font-bold"
-							on:auxclick={() => removeTab(tab.field)}
+							on:auxclick={(ev) => removeTab(tab, ev)}
 							on:mouseenter={() => showTabClosingButton(tab)}
 							on:mouseleave={() => hideTabClosingButton(tab)}
 						>
 							{$_('components.sidebar.' + tab.field)}
 							<button
-								on:click={() => removeTab(tab.field)}
+								on:click={(ev) => removeTab(tab, ev)}
 								class={`${tab.closingState}`}
 								>
 								<X class="ml-1 text-red-600 size-3.5"/>
@@ -144,6 +180,7 @@
 	<div
 		class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0"
 	>
+		<!-- mobile menu sidebar button -->
 		<button
 			on:click={() => openMobileSidebar = true}
 			class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden"
@@ -151,6 +188,7 @@
 			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
 		</button>
 
+		<!-- mobile fulltext search -->
 		{#if $showFulltextSearchStore === true}
 			<div class="md:hidden w-full px-2">
 				<Input

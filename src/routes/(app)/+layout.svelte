@@ -38,22 +38,6 @@
 	let isMobileLayoutExpanded: boolean;
 	isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
 
-	editedTableDataStore.subscribe((editedData) => {
-		if (editedData.length > 0) {
-			disableNavigationStore.set(true)
-		} else {
-			disableNavigationStore.set(false)
-		}
-	})
-
-	editedFormValuesStore.subscribe((editedData) => {
-		if (Object.keys(editedData).length > 0) {
-			disableNavigationStore.set(true)
-		} else {
-			disableNavigationStore.set(false)
-		}
-	})
-
 	onMount(() => {
 		// klávesové zkratky pro ribbon
 		function handleKeydown(e: KeyboardEvent) {

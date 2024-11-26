@@ -112,6 +112,7 @@
 												<InputWrapperNumber
 													label={$_(translationRoute + key)}
 													inputDef={value}
+													field={key}
 													bind:value={$formValues[key]}
 													disable={disable}
 												/>
@@ -120,6 +121,7 @@
 											{#if value.type === "checkbox"}
 												<div class="mt-5 w-full">
 													<CheckboxWrapper
+														field={key}
 														label={$_(translationRoute + key)}
 														bind:value={$formValues[key]}
 														disable={disable}
@@ -133,6 +135,7 @@
 
 											{#if value.type === "dropdown"}
 												<DropdownWrapper
+													field={key}
 													bind:value={$formValues[key]}
 													options={value.dropdownOptions}
 													label={$_(translationRoute + key)}
@@ -142,6 +145,7 @@
 
 											{#if value.type === "date"}
 												<DateWrapper
+													field={key}
 													bind:value={$formValues[key]}
 													label={$_(translationRoute + key)}
 													disable={disable}
@@ -155,6 +159,7 @@
 									<FormCheckboxSection>
 										{#each Object.entries(row.inputs) as [key]}
 											<CheckboxWrapper
+												field={key}
 												bind:value={$formValues[key]}
 												label={$_(translationRoute + key)}
 												disable={disable}

@@ -1,16 +1,12 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 
-type CustomColDef = ColDef & {
-	changeEditable: boolean,
-}
 
-export const customerAgGridDef: CustomColDef[] = [
+export const customerAgGridDef: ColDef[] = [
 	{ 
 		field: "rowNumber",
 		headerName: "Číslo řádku",
 		headerClass: 'ag-header-checkbox',
 		cellClass: 'ag-cell-class',
-		changeEditable: false,
 		editable: false,
 		filter: false,
 		resizable: false, 
@@ -25,7 +21,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "customerAddressCode",
 		headerName: "ID prodejny",
 		cellDataType: "number",
-		changeEditable: false,
 		editable: false,
 		hide: false,
 		width: 68,
@@ -43,7 +38,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Prodejna",
 		width: 240,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -59,7 +53,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "ID zákazníka",
 		width: 68,
 		cellDataType: "number",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -75,7 +68,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Zákazník",
 		width: 240,
 		cellDataType: "text",
-		changeEditable: true,
 		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -91,7 +83,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Ulice",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -107,7 +98,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Město",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -123,7 +113,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "PSČ",
 		width: 66,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -139,7 +128,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Země",
 		width: 68,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -155,7 +143,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Bonita",
 		width: 70,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -171,7 +158,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Neplatič",
 		width: 68,
 		cellDataType: "boolean",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -186,7 +172,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "dealerCode",
 		headerName: "OZ",
 		width: 60,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "number",
 		filter: 'agMultiColumnFilter',
@@ -202,7 +187,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "areaCode",
 		headerName: "OM",
 		width: 60,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -218,7 +202,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "responsiblePerson",
 		headerName: "Zodpovědná osoba",
 		width: 78,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -234,7 +217,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "i_ICO",
 		headerName: "IČO",
 		width: 85,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -250,7 +232,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "i_DIC",
 		headerName: "DIČ",
 		width: 105,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -267,7 +248,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "i_IcDph",
 		headerName: "IčDPH",
 		width: 120,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -284,7 +264,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Typ platby",
 		width: 68,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -301,7 +280,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Splatnost",
 		width: 68,
 		cellDataType: "number",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -317,7 +295,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Komise",
 		width: 70,
 		cellDataType: "boolean",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -333,7 +310,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "retailStoreTypeName", // select
 		headerName: "Typ prodejny",
 		width: 180,
-		changeEditable: false,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -350,7 +326,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Oblast",
 		width: 76,
 		cellDataType: "number",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -367,7 +342,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Asortní EANy",
 		width: 70,
 		cellDataType: "boolean",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -383,7 +357,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "B2B",
 		width: 70,
 		cellDataType: "boolean",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -399,7 +372,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Ulice FA",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -415,7 +387,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Město FA",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -431,7 +402,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "PSČ FA",
 		width: 70,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -447,7 +417,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Země FA",
 		width: 70,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -463,7 +432,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Poznámka",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -483,7 +451,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		valueFormatter: (params: ValueFormatterParams) => {
 			return new Date(params.value).toLocaleDateString(); // Format as desired
 		},
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -502,7 +469,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		valueFormatter: (params: ValueFormatterParams) => {
 			return new Date(params.value).toLocaleDateString(); // Format as desired
 		},
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -521,7 +487,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		valueFormatter: (params: ValueFormatterParams) => {
 			return new Date(params.value).toLocaleDateString(); // Format as desired
 		},
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -542,7 +507,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Název společnosti",
 		width: 200,
 		cellDataType: "text",
-		changeEditable: false,
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -559,7 +523,6 @@ export const customerAgGridDef: CustomColDef[] = [
 		headerName: "Vratka povolena",
 		cellDataType: "boolean",
 		hide: true,
-		changeEditable: false,
 		editable: false,
 	},
 
@@ -567,21 +530,18 @@ export const customerAgGridDef: CustomColDef[] = [
 		field: "customerStoreCode",
 		hide: true,
 		headerName: "ID zákazníka dle zákazníka",
-		changeEditable: false,
 		editable: false,
 	},
 	{
 		field: "customerStoreEan",
 		headerName: "EAN zákazníka",
 		hide: true,
-		changeEditable: false,
 		editable: false,
 	},
 	{
 		field: "splitOrderByFood",
 		headerName: "Food / NonFood",
 		hide: true,
-		changeEditable: false,
 		editable: false,
 	},
 ]

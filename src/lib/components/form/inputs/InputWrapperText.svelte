@@ -3,7 +3,9 @@
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { _ } from 'svelte-i18n';
 	import { getContext } from 'svelte';
-	import { selectedInputStore } from '$lib/stores/autoformStore';
+	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
+	import { get } from 'svelte/store';
+	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
 	export let value: string|null;
 	export let label: string;
@@ -14,17 +16,18 @@
 	let errorMessage = "";
 	let hasError: boolean = false;
 
+	const initialValue = value;
+
 	if (value !== null) {
 		value = String(value).trim();
 	}
 
-	const loadStatus = getContext("loadStatus")
-
 
 	function validateTextSchema(ev: Event) {
 		const inputValue = ev.target?.value;
+		console.log(initialValue);
 
-		selectedInputStore.set(field);
+		addToEditedFormData(initialValue, field, inputValue);
 
 		try {
 			inputDef.schema.parse(inputValue);

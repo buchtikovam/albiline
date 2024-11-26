@@ -2,12 +2,15 @@
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import * as Select from "$lib/components/ui/select/index.js";
 	import { getContext } from 'svelte';
+	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
 	export let value: string = "A";
 	export let options: string[] = [];
 	export let label;
 	export const disable: boolean = false;
+	export let field: string;
 
+	const initialValue = value; // check if this works
 	value = value.toUpperCase();
 </script>
 
@@ -20,10 +23,11 @@
 		selected={{value: value, label: value}}
 		onSelectedChange={(v) => {
 			v && (value = v.value);
+			addToEditedFormData(initialValue, field, value);
 		}}
 	>
 		<Select.Trigger>
-			<Select.Value  />
+			<Select.Value />
 		</Select.Trigger>
 
 		<Select.Content>

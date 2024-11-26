@@ -13,6 +13,7 @@
 
 	export let colDef: any[];
 	export let rowData = writable([]);
+	export let editedRowData = []
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
@@ -35,10 +36,9 @@
 		columnDefs: colDef,
 
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
-			console.log(get(rowData));
-			console.log(event.column.getColId());
-			console.log(event.rowIndex);
-			console.log(event.data);
+			if (event.oldValue !== event.newValue) {
+				editedRowData.push(event.newValue)
+			}
 		},
 
 		domLayout: "autoHeight",
@@ -50,12 +50,9 @@
 	}
 
 	onMount(() => {
-		console.log("mount");
-
 		gridApi = createGrid(gridContainer, gridOptions);
 
 		rowData.subscribe((data) => {
-			console.log("rowData", data);
 			if (data) {
 				gridApi.setGridOption("rowData", data);
 			}

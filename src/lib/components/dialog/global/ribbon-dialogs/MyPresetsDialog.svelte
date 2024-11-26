@@ -5,7 +5,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';
-	import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
+	// import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/customToast';
 	import { get, writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
@@ -79,28 +79,30 @@
 	async function deletePreset(filterId: number | undefined) {
 		if (!filterId) return;
 
-		try {
-			const response = await apiServiceDELETE('presets', filterId);
+		console.log("delete preset");
 
-			if (!response.ok) {
-				customToast(
-					'Critical',
-					'Nastala chyba při mazání šablony.'
-				);
-			}
-			// frontendové smazání filtru, aby se nemuselo znovu fetchovat
-			presets = presets?.filter(filter => filter.id !== filterId);
-			customToast(
-				'Success',
-				'Šablona byla úspěšně smazána'
-			);
-		} catch (error) {
-			console.error('Error deleting filter:', error);
-			customToast(
-				'Critical',
-				'Nastala chyba při mazání šablony.'
-			);
-		}
+		// try {
+		// 	const response = await apiServiceDELETE('presets', filterId);
+		//
+		// 	if (!response.ok) {
+		// 		customToast(
+		// 			'Critical',
+		// 			'Nastala chyba při mazání šablony.'
+		// 		);
+		// 	}
+		// 	// frontendové smazání filtru, aby se nemuselo znovu fetchovat
+		// 	presets = presets?.filter(filter => filter.id !== filterId);
+		// 	customToast(
+		// 		'Success',
+		// 		'Šablona byla úspěšně smazána'
+		// 	);
+		// } catch (error) {
+		// 	console.error('Error deleting filter:', error);
+		// 	customToast(
+		// 		'Critical',
+		// 		'Nastala chyba při mazání šablony.'
+		// 	);
+		// }
 	}
 
 
@@ -116,25 +118,26 @@
 
 
 	async function updatePreset(preset: FetchedPreset) {
-		try {
-			const response = await apiServicePUT(
-				"presets",
-				preset.id,
-				preset
-			)
-
-			if (response.ok) {
-				customToast('Success','Šablona byla úspěšně upravena.');
-				isEditing = false;
-			} else {
-				customToast('Critical','Nastala chyba při editaci šablony.');
-				isEditing = false;
-			}
-
-		} catch (error) {
-			customToast('Critical','Nastala chyba při editaci šablony.');
-			console.error('Error deleting preset:', error);
-		}
+		console.log("update preset");
+		// try {
+		// 	const response = await apiServicePUT(
+		// 		"presets",
+		// 		preset.id,
+		// 		preset
+		// 	)
+		//
+		// 	if (response.ok) {
+		// 		customToast('Success','Šablona byla úspěšně upravena.');
+		// 		isEditing = false;
+		// 	} else {
+		// 		customToast('Critical','Nastala chyba při editaci šablony.');
+		// 		isEditing = false;
+		// 	}
+		//
+		// } catch (error) {
+		// 	customToast('Critical','Nastala chyba při editaci šablony.');
+		// 	console.error('Error deleting preset:', error);
+		// }
 	}
 
 

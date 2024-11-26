@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import { newCustomerFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerFormDef';
-	import {
-		customerDetailContactsTableDef
-	} from '$lib/data/table-def/zakaznici/customerDetailContactsTableDef';
 	import { _ } from 'svelte-i18n'
 	import { flipItems } from '$lib/utils/flipItems';
 	import { get, writable } from 'svelte/store';
@@ -15,42 +12,37 @@
 		from '$lib/components/dialog/global/detail-dialogs/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	import DetailTable from '$lib/components/table/DetailTable.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	// import { disableInputs } from '$lib/stores/pageStore';
 	import { onMount } from 'svelte';
 	import { selectedRowsStore } from '$lib/stores/tableStore';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
+	import { editedFormValuesStore } from '$lib/stores/autoformStore';
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
+	import { disableNavigationStore } from '$lib/stores/pageStore';
+	import { onNavigate } from '$app/navigation';
+
 
 	export let data;
-
-	// // if no data, disable inputs to avoid unwanted user interactions
-	// disableInputs.set(data.state.status === "fail")
 
 	let formValues = writable({});
 	$: formValues.set(data.response.item);
 
 	let contactValues = writable([])
 	$: contactValues.set(data.response.contacts);
+	let editedContactValues = []
 
-	contactValues.subscribe((data) => {
-		if (data) {
-			console.log("contactValues", data);
-		}
-	})
 
 	const translationRoute = "routes.prodej.zakaznici.customer_detail";
 	let pageLayout = customerPageLayout;
 	let openDialog: boolean = false;
 	const flipDurationMs = 200;
+
 
 	const selectedRows = get(selectedRowsStore);
 	const uniqueSelectedRows = selectedRows.reduce((acc, item) => {
@@ -61,48 +53,53 @@
 		return acc;
 	}, []);
 
+
+	// --- PAGE NAVIGATION BETWEEN SELECTED ADDRESSES ----
+	// route parameters swapping logic
 	$: disableLeft = false;
 	$: disableRight = false;
+
 	$: activeId = {
 		customerNodeCode: Number($page.params.idZakaznika),
 	}
 
+	// called when user swappes to the next/previous customer
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
 		let returnedDisable = changeCustomerRoute(
 			selectedRows,
 			uniqueSelectedRows,
 			direction,
 			activeId,
-			$page.route.id
+			$page.route.id || "/"
 		);
+
 		disableLeft = returnedDisable.left;
 		disableRight = returnedDisable.right;
 	}
+
+
+	// disable editing if there are unsaved changes
+	editedFormValuesStore.subscribe((data) => {
+		disableNavigationStore.set(false);
+
+		if (Object.keys(data).length > 0) {
+			disableNavigationStore.set(true);
+		}
+	})
+
+
+	onNavigate(() => {
+		editedContactValues = [];
+	})
+
 
 	onMount(() => {
 		const currentIndex = uniqueSelectedRows.findIndex((id) =>
 			id.customerNodeCode === activeId.customerNodeCode
 		);
 
-		if (!uniqueSelectedRows[currentIndex + 1]) {
-			disableRight = true;
-		}
-
-		if (!uniqueSelectedRows[currentIndex - 1]) {
-			disableLeft = true;
-		}
-
-		formValues.subscribe((fv) => {
-			const editedData = get(editedFormValuesStore);
-			const targetInput = get(selectedInputStore)
-
-			if (targetInput) {
-				console.log("yey");
-				editedData[targetInput] = fv[targetInput]
-				editedFormValuesStore.set(editedData)
-				console.log(get(editedFormValuesStore))
-			}
-		})
+		if (!selectedRows[currentIndex + 1]) disableRight = true;
+		if (!selectedRows[currentIndex - 1]) disableLeft = true;
 	})
 </script>
 
@@ -162,6 +159,7 @@
 					<AgGridCSWrapper
 						colDef={customerAndAddressContactsAgGridDef}
 						bind:rowData={contactValues}
+						bind:editedRowData={editedContactValues}
 					/>
 				</div>
 			{/if}

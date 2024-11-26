@@ -1,10 +1,13 @@
 import { editedTableDataStore } from "$lib/stores/tableStore";
 import { get } from "svelte/store";
+import { disableNavigationStore } from '$lib/stores/pageStore';
 
-export function addToEditedData(params: Record<string, never>, key: string, newValue: never) {
+export function addToEditedTableData(params: Record<string, string|number|Date|boolean>, key: string, newValue: string|number|Date|boolean) {
 	const editedData = get(editedTableDataStore);
+	const newRecord: Record<string, string|number|Date|boolean> = {};
 	let foundMatch = false;
-	const newRecord: Record<string, never> = {};
+
+	disableNavigationStore.set(true);
 
 	editedData.forEach((record) => {
 		if (record.id === params["customerAddressCode"]) {
