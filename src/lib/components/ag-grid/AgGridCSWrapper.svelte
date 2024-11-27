@@ -3,20 +3,25 @@
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
 	import { onMount } from 'svelte';
-	import { get, writable } from 'svelte/store';
+	import { get, type Writable, writable } from 'svelte/store';
 	import {
 		type CellValueChangedEvent,
 		createGrid,
 		type GridApi,
-		type GridOptions
+		type GridOptions, type IRowNode
 	} from 'ag-grid-enterprise';
+	import { onNavigate } from '$app/navigation';
+	import { addToEditedTableDataBetter } from '$lib/utils/addToEditedTableDataBetter';
 
 	export let colDef: any[];
-	export let rowData = writable([]);
-	export let editedRowData = []
+	export let rowData: Writable<any[]>;
+	export let editedRowData: Writable<any[]> = writable([]);
+	export let createdRowData;
+	export let requiredFields: string[]
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
+	let initialRowIds: string[] = []
 
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
@@ -37,7 +42,11 @@
 
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
 			if (event.oldValue !== event.newValue) {
-				editedRowData.push(event.newValue)
+				addToEditedTableDataBetter(
+					event,
+					requiredFields,
+					editedRowData,
+				)
 			}
 		},
 
@@ -49,14 +58,49 @@
 		rowSelection: "single",
 	}
 
+
+
+
 	onMount(() => {
 		gridApi = createGrid(gridContainer, gridOptions);
 
 		rowData.subscribe((data) => {
 			if (data) {
 				gridApi.setGridOption("rowData", data);
+
+				gridApi.forEachNode((node: IRowNode) => {
+					if (node.id) {
+						if (!initialRowIds.includes(node.id)) {
+							initialRowIds.push(node.id)
+						}
+					}
+				})
 			}
 		})
+
+		gridApi.forEachNode((node: IRowNode) => {
+			if (node.id) {
+				if (!initialRowIds.includes(node.id)) {
+					initialRowIds.push(node.id)
+				}
+				// initialRowIds.push(node.id)
+			}
+		})
+
+		// console.log("initialRows", initialRowIds);
+
+		createdRowData.subscribe((data) => {
+			if (data.length > 0) {
+				gridApi.applyTransaction({
+					add: [data[data.length - 1]],
+					addIndex: 0,
+				})
+			}
+		})
+	})
+
+	onNavigate(() => {
+		initialRowIds = [];
 	})
 </script>
 

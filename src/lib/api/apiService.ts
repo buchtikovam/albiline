@@ -3,7 +3,7 @@ import { sessionKeyStore } from '$lib/stores/pageStore';
 
 const apiRoute = "http://10.2.2.10/albiline.test/api/v1/"
 
-export async function apiServiceGET(endpoint: string) {
+export async function apiServiceGET(endpoint: string): Promise<Response> {
 	const url = apiRoute + endpoint;
 
 	return await fetch(url, {
@@ -16,7 +16,7 @@ export async function apiServiceGET(endpoint: string) {
 }
 
 
-export async function apiServicePOST(endpoint: string, body = {}) {
+export async function apiServicePOST(endpoint: string, body = {}): Promise<Response> {
 	const url = apiRoute + endpoint;
 
 	return await fetch(url, {
@@ -30,7 +30,7 @@ export async function apiServicePOST(endpoint: string, body = {}) {
 }
 
 
-export async function apiServicePUT(endpoint: string, id: number, body = {}) {
+export async function apiServicePUT(endpoint: string, id: number, body = {}): Promise<Response> {
 	const url = apiRoute + endpoint;
 
 	return await fetch(url, {
@@ -44,7 +44,7 @@ export async function apiServicePUT(endpoint: string, id: number, body = {}) {
 }
 
 
-export async function apiServicePATCH(endpoint: string, id: number, body = {}) {
+export async function apiServicePATCH(endpoint: string, id: number, body = {}): Promise<Response> {
 	const url = apiRoute + endpoint;
 
 	return await fetch(url, {
@@ -58,7 +58,7 @@ export async function apiServicePATCH(endpoint: string, id: number, body = {}) {
 }
 
 
-export async function apiServiceDELETE(endpoint: string, id: number) {
+export async function apiServiceDELETE(endpoint: string, id: number): Promise<Response> {
 	const url = apiRoute + endpoint;
 
 	return await fetch(url, {

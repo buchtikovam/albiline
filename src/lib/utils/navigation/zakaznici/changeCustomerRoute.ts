@@ -15,6 +15,8 @@ export function changeCustomerRoute(
 		id.customerNodeCode === activeId.customerNodeCode
 	);
 
+	if (activeRowIndex === -1) return;
+
 	if (direction === "right") {
 		const nextIndex = activeRowIndex + 1;
 

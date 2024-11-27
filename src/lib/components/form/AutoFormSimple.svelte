@@ -6,11 +6,13 @@
 	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
 	import FormCheckboxSection from '$lib/components/form/containers/FormCheckboxSection.svelte';
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
+	import type { CustomerContactType } from '$lib/types/page/customers';
+	import type { Writable } from 'svelte/store';
 
+	export let addToEdited: boolean = true;
 	export let autoform: AutoFormSimpleType;
+	export let formValues: CustomerContactType;
 	export let translationRoute: string;
-
-	console.log(translationRoute);
 </script>
 
 
@@ -22,17 +24,21 @@
 					{#each Object.entries(row.inputs) as [key, value]}
 						{#if value.type === "text"}
 							<InputWrapperText
-								value={""}
+								bind:value={formValues[key]}
 								disable={false}
+								addToEdited={addToEdited}
 								label={$_(translationRoute + '.' + key)}
 								inputDef={value}
+								field={key}
 							/>
 						{/if}
 
 						{#if value.type === "number"}
 							<InputWrapperNumber
-								value={0}
+								bind:value={formValues[key]}
 								disable={false}
+								addToEdited={addToEdited}
+								field={key}
 								label={$_(translationRoute + '.' + key)}
 								inputDef={value}
 							/>
@@ -45,8 +51,10 @@
 				<div class="grid md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-2 mt-2">
 					{#each Object.entries(row.inputs) as [key]}
 						<CheckboxWrapper
-							value={false}
+							addToEdited={addToEdited}
+							bind:value={formValues[key]}
 							label={$_(translationRoute + '.' + key)}
+							field={key}
 						/>
 					{/each}
 				</div>

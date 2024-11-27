@@ -3,11 +3,56 @@
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
+	import { writable, type Writable } from 'svelte/store';
+	import type { CustomerContactType } from '$lib/types/page/customers';
 
 	export let dialogOpen: boolean = false;
 	export let label: string = "Nový kontakt";
 	export let formDef: AutoFormSimpleType;
 	export let translationRoute: string;
+	export let createdContacts: Writable<CustomerContactType[]> = writable([]);
+
+	let contact: CustomerContactType = {
+		isDefault: false,
+		enabled: false,
+		name: null,
+		surname: null,
+		mobile: null,
+		phone: null,
+		email: null,
+		note: null,
+		pdfInvoice: false,
+		pdfDeliveryNote: false,
+		csvInvoice: false,
+		csvDeliveryNote: false,
+		consignmentReturnInfo: false,
+		consignmentInfo: false,
+		carrierInfo: false
+	}
+
+	function addContact() {
+		createdContacts.update((data) => [...data, contact]);
+
+		contact = {
+			isDefault: false,
+			enabled: false,
+			name: null,
+			surname: null,
+			mobile: null,
+			phone: null,
+			email: null,
+			note: null,
+			pdfInvoice: false,
+			pdfDeliveryNote: false,
+			csvInvoice: false,
+			csvDeliveryNote: false,
+			consignmentReturnInfo: false,
+			consignmentInfo: false,
+			carrierInfo: false
+		}
+
+		dialogOpen = false;
+	}
 </script>
 
 
@@ -25,6 +70,8 @@
 
 		<div class="mb-4 h-full">
 			<AutoFormSimple
+				addToEdited={false}
+				bind:formValues={contact}
 				translationRoute={translationRoute}
 				autoform={formDef}
 			/>
@@ -33,7 +80,7 @@
 		<Dialog.Footer>
 			<Button
 				class="w-full bg-albi-500 text-background font-bolder"
-				on:click={() => dialogOpen = false}
+				on:click={addContact}
 			>
 				Uložit
 			</Button>

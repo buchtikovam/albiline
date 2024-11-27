@@ -20,7 +20,11 @@
 	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
 	import { beforeNavigate } from '$app/navigation';
 	import { get } from 'svelte/store';
-	import { editedTableDataStore } from '$lib/stores/tableStore';
+	import {
+		activeSelectedRowIndexStore,
+		editedTableDataStore,
+		nextSelectedRowIndexStore
+	} from '$lib/stores/tableStore';
 	import { editedFormValuesStore } from '$lib/stores/autoformStore';
 	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 
@@ -80,6 +84,7 @@
 			} else {
 				editedFormValuesStore.set({});
 				disableNavigationStore.set(false);
+				// activeSelectedRowIndexStore.set(get(nextSelectedRowIndexStore));
 			}
 		}
 	})

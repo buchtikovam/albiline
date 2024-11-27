@@ -8,6 +8,7 @@
 	export let label: string;
 	export let disable: boolean = false;
 	export let field: string = "";
+	export let addToEdited: boolean = true;
 
 	const initialValue = value;
 </script>
@@ -16,7 +17,9 @@
 <div class="w-full flex items-center gap-1.5">
 	<Checkbox
 		on:click={() => {
-			addToEditedFormData(initialValue, field, !value);
+			if (addToEdited) {
+				addToEditedFormData(initialValue, field, !value);
+			}
 		}}
 		disabled={disable}
 		bind:checked={value}

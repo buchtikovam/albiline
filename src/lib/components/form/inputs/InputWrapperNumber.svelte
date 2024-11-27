@@ -10,6 +10,7 @@
 	export let inputDef: AutoFormInput;
 	export let disable: boolean = false;
 	export let field: string;
+	export let addToEdited: boolean = true;
 
 	const initialValue = value;
 
@@ -19,7 +20,9 @@
 	function validateNumberSchema(ev: Event) {
 		const inputValue = ev.target?.value;
 
-		addToEditedFormData(initialValue, field, inputValue);
+		if (addToEdited) {
+			addToEditedFormData(initialValue, field, inputValue);
+		}
 
 
 		// try {

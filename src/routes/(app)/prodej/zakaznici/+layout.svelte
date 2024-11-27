@@ -26,6 +26,7 @@
 
 	activeSelectedRowIndexStore.subscribe((index) => {
 		activeIndex = index
+		console.log("active index", activeIndex);
 		let selectedRows = get(selectedRowsStore)
 
 		if (selectedRows.length > 0) {

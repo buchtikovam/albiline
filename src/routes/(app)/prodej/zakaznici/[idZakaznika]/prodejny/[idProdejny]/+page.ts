@@ -15,10 +15,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					item: item,
 					contacts: contacts
 				},
-				state: {
-					status: "success",
-					message: ""
-				}
+				status: "success",
 			};
 		}
 
@@ -27,10 +24,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				item: getObject(),
 				contacts: [],
 			},
-			state: {
-				status: "fail",
-				message: "no-address"
-			}
+			status: "fail",
+
 		};
 	}
 
@@ -39,10 +34,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			item: getObject(),
 			contacts: [],
 		},
-		state: {
-			status: "fail",
-			message: "not-found"
-		}
+		status: "fail",
 	};
 };
 

@@ -98,8 +98,8 @@
 			id.customerNodeCode === activeId.customerNodeCode
 		);
 
-		if (!selectedRows[currentIndex + 1]) disableRight = true;
-		if (!selectedRows[currentIndex - 1]) disableLeft = true;
+		if (!uniqueSelectedRows[currentIndex + 1]) disableRight = true;
+		if (!uniqueSelectedRows[currentIndex - 1]) disableLeft = true;
 	})
 </script>
 

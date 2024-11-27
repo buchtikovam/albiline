@@ -12,6 +12,7 @@
 	export let inputDef: AutoFormInput;
 	export let disable: boolean = false;
 	export let field: string = "";
+	export let addToEdited: boolean = true;
 
 	let errorMessage = "";
 	let hasError: boolean = false;
@@ -22,12 +23,12 @@
 		value = String(value).trim();
 	}
 
-
 	function validateTextSchema(ev: Event) {
 		const inputValue = ev.target?.value;
-		console.log(initialValue);
 
-		addToEditedFormData(initialValue, field, inputValue);
+		if (addToEdited) {
+			addToEditedFormData(initialValue, field, inputValue);
+		}
 
 		try {
 			inputDef.schema.parse(inputValue);

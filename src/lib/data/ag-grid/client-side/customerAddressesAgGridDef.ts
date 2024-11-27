@@ -1,7 +1,9 @@
-import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
+import { activeSelectedRowIndexStore, nextSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
+import { onNavigate } from '$app/navigation';
+import { onMount } from 'svelte';
 
 const bgHEX = "#fef3c7";
 
@@ -163,6 +165,8 @@ function selectBtn(params: ICellRendererParams) {
 
 	link.addEventListener("click", () => {
 		let match = false;
+
+
 		selectedRowsStore.update((data) => {
 			data.forEach((item) => {
 				if (

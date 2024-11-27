@@ -2,7 +2,7 @@
 	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 	import { _ } from 'svelte-i18n'
 	import { flipItems } from '$lib/utils/flipItems';
-	import { get, writable } from 'svelte/store';
+	import { get, type Writable, writable } from 'svelte/store';
 	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
@@ -19,7 +19,7 @@
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
 	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
-	import { beforeNavigate, goto } from '$app/navigation';
+	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import CSAgGridDialog from '$lib/components/dialog/ag-grid/CSAgGridDialog.svelte';
 	import Repeat from 'lucide-svelte/icons/repeat';
@@ -33,18 +33,30 @@
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
-	import { apiServiceGET } from '$lib/api/apiService.js';
+	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService.js';
+	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
+	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
+	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
 
 
-	export let data;
+	export let data: {
+		response: {
+			item: CustomerAddressType,
+			contacts: CustomerContactType[]
+		},
+		status: "success" | "fail",
+	};
 
-	let formValues = writable({}); // autoform
+
+	let formValues: Writable<CustomerAddressType> = writable({}); // autoform
 	$: formValues.set(data.response.item);
 
-	let contactValues = writable([]) // contacts table
+	let contactValues: Writable<CustomerContactType[]> = writable([]) ; // contacts table
 	$: contactValues.set(data.response.contacts);
-	let editedContactValues = []
 
+	let editedContactValues: Writable<any[]> = writable([]);
+	let createdContacts: Writable<CustomerContactType[]> = writable([]);
 
 	const translationRoute = "routes.prodej.zakaznici.address_detail";
 	let pageLayout = customerAddressPageLayout;
@@ -94,16 +106,13 @@
 		}
 	})
 
-	onMount(() => { // disable navigation buttons if user is located on the first/last address
-		const currentIndex = selectedRows.findIndex((id) =>
-			id.customerNodeCode === activeId.customerNodeCode &&
-			id.customerAddressCode === activeId.customerAddressCode
-		);
+	let pageSettings: PageMetaDataType;
+	let routeId = $page.route.id || "/"
 
-		if (!selectedRows[currentIndex + 1]) disableRight = true;
-		if (!selectedRows[currentIndex - 1]) disableLeft = true;
-	})
-
+	async function getPageMetaData(): Promise<PageMetaDataType> {
+		const res = await apiServiceGET(`page-metadata?pageCode=${btoa(routeId)}`)
+		return await res.json()
+	}
 
 	// fetching for customer addresses ag-grid dialog
 	let addresses = writable([])
@@ -124,23 +133,28 @@
 
 	// disable editing if there are unsaved changes
 	editedFormValuesStore.subscribe((data) => {
-		disableNavigationStore.set(false);
-
 		if (Object.keys(data).length > 0) {
 			disableNavigationStore.set(true);
+			disableLeft = true;
+			disableRight = true;
+		} else {
+			disableNavigationStore.set(false);
+			if (selectedRows[get(activeSelectedRowIndexStore) + 1]) disableRight = false;
+			if (selectedRows[get(activeSelectedRowIndexStore) - 1]) disableLeft = false;
 		}
 	})
 
+	editedContactValues.subscribe((data) => {
+		console.log(data);
+	})
 
 	beforeNavigate(() => {
 		addresses.set([]);
-		editedContactValues = [];
 		openAgGridDialog = false;
 	})
 
 
-	onMount(() => {
-		// disable navigation buttons if user is located on the first/last address
+	onMount(async () => { // disable navigation buttons if user is located on the first/last address
 		const currentIndex = selectedRows.findIndex((id) =>
 			id.customerNodeCode === activeId.customerNodeCode &&
 			id.customerAddressCode === activeId.customerAddressCode
@@ -148,7 +162,64 @@
 
 		if (!selectedRows[currentIndex + 1]) disableRight = true;
 		if (!selectedRows[currentIndex - 1]) disableLeft = true;
+
+		createdContacts.subscribe((data) => {
+			if (data.length > 0) {
+				console.log(data);
+			}
+		})
+
+		if (!pageSettings) {
+			pageSettings = await getPageMetaData();
+			console.log("pageSettings", pageSettings);
+		}
+
+		console.log(get(contactValues));
 	})
+
+
+	async function update(saveObj) {
+		const res = await apiServicePOST(`customers/${$page.params.idZakaznika}/addresses/${$page.params.idProdejny}`, saveObj)
+
+		if (res.ok) {
+			console.log("ok");
+			console.log(await res.json());
+			// await invalidateAll();
+		}
+	}
+
+	ribbonActionStore.subscribe((action) => {
+		if (action === RibbonActionEnum.SAVE) {
+			console.log("save");
+
+			disableNavigationStore.set(false);
+			if (selectedRows[get(activeSelectedRowIndexStore) + 1]) disableRight = false;
+			if (selectedRows[get(activeSelectedRowIndexStore) - 1]) disableLeft = false;
+
+			const saveObj = {
+				item: get(editedFormValuesStore),
+
+				contacts: {
+					insert: [], // get(editedFormValuesStore)
+					update: get(editedContactValues),
+					delete: []
+				},
+			}
+
+			if (Object.keys(saveObj.item).length > 0) {
+				saveObj.item.customerAddressCode = Number($page.params.idProdejny)
+				saveObj.item.customerNodeCode = Number($page.params.idZakaznika)
+			}
+
+			update(saveObj)
+			console.log(JSON.stringify(saveObj, null, 1));
+		}
+
+		ribbonActionStore.set(undefined);
+	})
+
+	let disable = false;
+	disableNavigationStore.subscribe(data => disable = data)
 </script>
 
 
@@ -160,7 +231,7 @@
 		<div class="flex justify-between">
 			<!-- page label + get addresses button -->
 			<div class="flex gap-1.5">
-				{#if data.state.status === "success"}
+				{#if data.status === "success"}
 					<DetailPageLabel
 						label={$_(translationRoute + ".header", {
 							values: {
@@ -176,13 +247,14 @@
 				{/if}
 
 				<button
-					class="w-6"
+					class={(disable ? "text-slate-300 " : "text-albi-500") + " w-6"}
+					disabled={disable}
 					on:click={() => {
 						openAgGridDialog = true;
 						getAddresses();
 					}}
 				>
-					<Repeat class="size-5 text-albi-500 "/>
+					<Repeat class="size-5"/>
 				</button>
 			</div>
 
@@ -235,14 +307,14 @@
 						<button on:click={() => openNewContactDialog = true}>
 							<Plus strokeWidth={2.5} class="text-albi-500 size-4"/>
 						</button>
-
-<!--						<button on:click={save}>-&#45;&#45;</button>-->
 					</div>
 
 					<AgGridCSWrapper
+						requiredFields={["customerPersonCode"]}
 						colDef={customerAndAddressContactsAgGridDef}
 						bind:rowData={contactValues}
 						bind:editedRowData={editedContactValues}
+						bind:createdRowData={createdContacts}
 					/>
 				</div>
 			{/if}
@@ -251,18 +323,19 @@
 </MaxWidthScrollableDetailContainer>
 
 
+
 <!-- display all customer addresses, select new active -->
 <CSAgGridDialog
 	colDef={customerAddressesAgGridDef}
 	bind:rowData={addresses}
 	bind:open={openAgGridDialog}
-	translationRoute={translationRoute}
 />
 
 
 <!-- new customer form -->
 <NewCustomerContactDialog
 	formDef={newCustomerFormDef}
+	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
 	label="Nový kontakt prodejny"
 	translationRoute={"routes.prodej.zakaznici.customer_and_address_contact"}

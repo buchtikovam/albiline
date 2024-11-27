@@ -34,3 +34,5 @@ export const fulltextFilterValueStore: Writable<string> = writable();
 export const selectedRowsStore: Writable<Record<string, string|number|boolean|Date>[]> = writable([]);
 
 export const activeSelectedRowIndexStore: Writable<number> = writable(0);
+
+export const nextSelectedRowIndexStore: Writable<number> = writable();
