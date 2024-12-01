@@ -3,11 +3,14 @@ import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 
 export function changeCustomerAddressRoute(
-	selectedRows: Record<string, number>[],
+	selectedRows: Record<string, string|number|Date|boolean>[],
 	direction: "left" | "right",
 	activeId: Record<string, number>,
 	routeId: string = "",
-) {
+): {
+	right: boolean;
+	left: boolean;
+} {
 	const currentIndex = selectedRows.findIndex((id) =>
 		id.customerNodeCode === activeId.customerNodeCode &&
 		id.customerAddressCode === activeId.customerAddressCode

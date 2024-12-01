@@ -15,7 +15,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					inputs: {
 						"name": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},
@@ -23,12 +23,12 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"customerAddressCode": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"companyName": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},
@@ -37,11 +37,11 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					inputs: {
 						"street": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 						"city": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},
@@ -50,11 +50,12 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					inputs: {
 						"postalCode": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(10),
 						},
 						"countryCode": {
-							type: "text",
-							schema: z.string(),
+							type: "dropdown",
+							dropdownOptions: ["CZ", "SK", "PL"],
+							schema: z.enum(["CZ", "SK", "PL"]),
 						},
 					}
 				}
@@ -70,12 +71,12 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"dealerCode": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"areaCode": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 					}
 				},
@@ -83,8 +84,8 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"areaId": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"_areaId": {
 							type: "empty",
@@ -105,12 +106,13 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"paymentTypeCode": {
-							type: "text",
-							schema: z.string(),
+							type: "dropdown",
+							dropdownOptions: ["V", "A", "B", "C"],
+							schema: z.enum(["V", "A", "B", "C"]),
 						},
 						"dueDays": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 					}
 				},
@@ -118,12 +120,12 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"invoiceCopies": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"deliveryNoteCopies": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 					}
 				},
@@ -131,12 +133,14 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"customerRank": {
-							type: "text",
-							schema: z.string(),
+							type: "dropdown",
+							dropdownOptions: ["A", "B", "C", "D", "E", "F"],
+							schema: z.enum(["A", "B", "C", "D", "E", "F"]),
 						},
 						"retailStoreTypeId": {
-							type: "text",
-							schema: z.string(),
+							type: "dropdown",
+							dropdownOptions: ["1", "2", "3", "4", "5"],
+							schema: z.enum(["1", "2", "3", "4", "5"]),
 						},
 					}
 				},
@@ -144,12 +148,12 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"customerStoreCode": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"customerStoreEan": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},
@@ -158,7 +162,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					inputs: {
 						"packingNote": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},
@@ -203,7 +207,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 					inputs: {
 						"note": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				},

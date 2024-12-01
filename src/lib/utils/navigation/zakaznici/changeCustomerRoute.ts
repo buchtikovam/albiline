@@ -9,7 +9,10 @@ export function changeCustomerRoute(
 	direction: "left" | "right",
 	activeId: { customerNodeCode: number },
 	routeId: string = "",
-) {
+): {
+	right: boolean;
+	left: boolean;
+} {
 	// get active index in unique selected rows
 	const activeRowIndex = uniqueSelectedRows.findIndex((id) =>
 		id.customerNodeCode === activeId.customerNodeCode

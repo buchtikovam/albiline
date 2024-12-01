@@ -11,7 +11,7 @@
 	export let field: string;
 
 	const initialValue = value; // check if this works
-	value = value.toUpperCase();
+	// value = value.toUpperCase();
 </script>
 
 

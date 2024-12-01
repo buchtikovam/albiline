@@ -40,10 +40,11 @@ export const customerDetailFormDef: AutoFormType = {
 					inputs: {
 						"postalCode": {
 							type: "text",
-							schema: z.string(), // regex for postal code
+							schema: z.string().max(10), // regex for postal code
 						},
 						"countryCode": {
-							type: "text",
+							type: "dropdown",
+							dropdownOptions: ["CZ", "SK", "PL"],
 							schema: z.enum(["CZ", "SK", "PL"]),
 						},
 					}
@@ -52,12 +53,12 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"ico": {
-							type: "text",
+							type: "number",
 							schema: z.number().min(8).max(8),
 						},
 						"dic": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().min(8).max(10),
 						},
 					}
 				},
@@ -66,11 +67,11 @@ export const customerDetailFormDef: AutoFormType = {
 					inputs: {
 						"icDph": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().min(8).max(10),
 						},
 						"companyName": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().max(255),
 						},
 					}
 				}
@@ -86,8 +87,9 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"paymentTypeCode": {
-							type: "text",
-							schema: z.string(),
+							type: "dropdown",
+							dropdownOptions: ["V", "A", "B", "C"],
+							schema: z.enum(["V", "A", "B", "C"]),
 						},
 						"dueDays": {
 							type: "number",
@@ -112,8 +114,8 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"customerStoreCode": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"_customerStoreCode": {
 							type: "empty",
@@ -155,8 +157,8 @@ export const customerDetailFormDef: AutoFormType = {
 							schema: z.string(),
 						},
 						"keyCustomerTypeId": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 					}
 				},
@@ -164,12 +166,12 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"creditLimit": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"unpaidAmount": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 					}
 				},
@@ -177,12 +179,12 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"lastPaymentDate": {
-							type: "text",
-							schema: z.string(),
+							type: "date",
+							schema: z.date(),
 						},
 						"email": {
 							type: "text",
-							schema: z.string(),
+							schema: z.string().email(),
 						},
 					}
 				},
@@ -197,12 +199,12 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"ediInboxEanCode": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"ediInboxEanCodeForInvoice": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 					}
 				},
@@ -210,8 +212,8 @@ export const customerDetailFormDef: AutoFormType = {
 					rowType: "full",
 					inputs: {
 						"customerStoreEan": {
-							type: "text",
-							schema: z.string(),
+							type: "number",
+							schema: z.number(),
 						},
 						"_customerStoreEan": {
 							type: "empty",
