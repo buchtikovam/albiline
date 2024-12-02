@@ -14,3 +14,5 @@ export const sessionKeyStore: Writable<string> = persisted(
 export const disableInputs: Writable<boolean> = writable(false);
 
 export const disableNavigationStore: Writable<boolean> = writable(false)
+
+export const disablePageTabsStore: Writable<boolean> = writable(false)

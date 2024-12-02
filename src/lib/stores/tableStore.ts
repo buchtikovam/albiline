@@ -1,13 +1,14 @@
 import type { ColumnFilters } from '$lib/types/components/table/columnFilter';
 import { writable, type Writable } from 'svelte/store';
 import type { Preset } from '$lib/types/components/table/presets';
+import type { ColDef, ColGroupDef } from 'ag-grid-community';
 
 // k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
 export const editedTableDataStore: Writable<any[]> = writable([]);
 
 // defaultní definice sloupečků, která se vytvoří z /lib/data/ag-grid/col-def,
 // důležité pro nastavení defaultní šablony přes ribbon
-export const defaultColDef = writable([])
+export const defaultColDef: Writable<(ColDef<unknown, any> | ColGroupDef<unknown>)[]> = writable([])
 
 // boolean pro nastavení defaultní šablony
 export const setColDefToDefault: Writable<boolean> = writable(false)

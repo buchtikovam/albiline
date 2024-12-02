@@ -21,8 +21,8 @@ export function changeCustomerAddressRoute(
 		activeSelectedRowIndexStore.set(nextIndex)
 
 		const newRoute = processRoute(routeId, {
-			idZakaznika: selectedRows[nextIndex].customerNodeCode || "",
-			idProdejny: selectedRows[nextIndex].customerAddressCode || ""
+			customerNodeCode: selectedRows[nextIndex].customerNodeCode || "",
+			customerAddressCode: selectedRows[nextIndex].customerAddressCode || ""
 		})
 
 		goto(newRoute)
@@ -45,8 +45,8 @@ export function changeCustomerAddressRoute(
 		activeSelectedRowIndexStore.set(prevIndex)
 
 		const newRoute = processRoute(routeId, {
-			idZakaznika: selectedRows[prevIndex].customerNodeCode,
-			idProdejny: selectedRows[prevIndex].customerAddressCode
+			customerNodeCode: selectedRows[prevIndex].customerNodeCode,
+			customerAddressCode: selectedRows[prevIndex].customerAddressCode
 		})
 
 		goto(newRoute)

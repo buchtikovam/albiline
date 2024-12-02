@@ -1,6 +1,5 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 
-
 export const customerAgGridDef: ColDef[] = [
 	{ 
 		field: "rowNumber",
@@ -31,14 +30,14 @@ export const customerAgGridDef: ColDef[] = [
 					filter: 'agNumberColumnFilter',
 				},
 			],
-		}
+		},
 	},
 	{
 		field: "name",
 		headerName: "Prodejna",
 		width: 240,
 		cellDataType: "text",
-		editable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -46,7 +45,7 @@ export const customerAgGridDef: ColDef[] = [
 					filter: 'agTextColumnFilter',
 				},
 			]
-		}
+		},
 	},
 	{
 		field: "customerNodeCode",
@@ -68,7 +67,7 @@ export const customerAgGridDef: ColDef[] = [
 		headerName: "Zákazník",
 		width: 240,
 		cellDataType: "text",
-		editable: true,
+		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [

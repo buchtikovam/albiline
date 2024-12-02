@@ -11,7 +11,7 @@
 		type GridOptions, type IRowNode
 	} from 'ag-grid-enterprise';
 	import { onNavigate } from '$app/navigation';
-	import { addToEditedTableDataBetter } from '$lib/utils/addToEditedTableDataBetter';
+	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 
 	export let colDef: any[];
 	export let rowData: Writable<any[]>;
@@ -42,7 +42,7 @@
 
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
 			if (event.oldValue !== event.newValue) {
-				addToEditedTableDataBetter(
+				addToEditedTableData(
 					event,
 					requiredFields,
 					editedRowData,

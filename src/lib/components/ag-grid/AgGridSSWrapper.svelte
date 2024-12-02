@@ -1,18 +1,27 @@
 <script lang="ts">
 	import {
-		filtersStore,
-		defaultColDef,
-		editedTableDataStore,
+		activeSelectedRowIndexStore,
 		fulltextFilterValueStore,
-		presetStore,
+		editedTableDataStore,
 		selectedFilterStore,
 		selectedPresetStore,
 		setColDefToDefault,
-		selectedRowsStore, activeSelectedRowIndexStore
+		selectedRowsStore,
+		defaultColDef,
+		presetStore
 	} from '$lib/stores/tableStore';
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
-	import { ribbonActionStore } from "$lib/stores/ribbonStore";
+	import { isEditAllowedStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { disablePageTabsStore, sessionKeyStore } from '$lib/stores/pageStore';
+	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
+	import { onDestroy, onMount } from "svelte";
+	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
+	import { get, writable } from 'svelte/store';
+	import { customToast } from '$lib/utils/customToast';
+	import { goto } from "$app/navigation";
 	import {
+		type CellDoubleClickedEvent,
+		type CellValueChangedEvent,
 		createGrid,
 		type FilterModel,
 		type GetRowIdParams,
@@ -22,23 +31,20 @@
 		type IServerSideGetRowsParams
 	} from 'ag-grid-enterprise';
 	import type { ColumnOrder, TableRowRequest } from "$lib/types/components/table/table";
+	import type { ColDef } from 'ag-grid-community';
+	import type { Preset } from '$lib/types/components/table/presets';
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
-	import { onDestroy, onMount } from "svelte";
-	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
-	import { goto } from "$app/navigation";
-	import { get, writable } from 'svelte/store';
-	import { sessionKeyStore } from '$lib/stores/pageStore';
-	
-	export let columnDefinitions: any[];
+
 	export let url: string;
+	export let requiredFields: string[];
+	export let gridOptionsCustom: GridOptions;
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
 	let updateLastRow = writable(false);
-	$: shiftPressed = false;
 
-	
+
 	const gridOptions: GridOptions = { // return from grid options
 		localeText: AG_GRID_LOCALE_CZ,
 
@@ -50,14 +56,18 @@
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
-			wrapHeaderText: true, // Wrap Header Text
 			autoHeaderHeight: true,
 			suppressHeaderMenuButton: true
-
 		},	
 
-		onCellValueChanged: (event) => {
-			addToEditedTableData(event.data, event.column.getColId(), event.newValue)
+		onCellValueChanged: (event: CellValueChangedEvent<any>) => {
+			if (event.oldValue !== event.newValue) {
+				addToEditedTableData(
+					event,
+					["customerNodeCode", "customerAddressCode"],
+					editedTableDataStore
+				)
+			}
 		},
 
 		onColumnResized: () => {
@@ -73,55 +83,29 @@
 		},
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data.rowNumber); 
+			return String(params.data.rowNumber);
 		},
 
 		onRowSelected: () => {
-			// (fix) ag grid selected unwanted text on multiple row select
-			if (shiftPressed === true) {
-				const selection = document.getSelection();
-				selection?.removeAllRanges();
-			}
+			const selectedRows = gridApi.getSelectedRows();
+			let rowArr: {[key: string]: any}[] = []
 
-			const selectedRows = gridApi.getSelectedRows()
-			let rowArr = []
-
+			disablePageTabsStore.set(selectedRows.length === 0)
 			activeSelectedRowIndexStore.set(0)
 
 			selectedRows.forEach((row) => {
-				rowArr.push({
-					customerAddressCode: row.customerAddressCode, // todo: make generic...  obj.entries -key,value => rowarr.push key: row.key
-					customerNodeCode: row.customerNodeCode
+				let rowObj: {[key: string]: any} = {}
+				requiredFields.forEach((field) => {
+					rowObj[field] = row[field]
 				})
+
+				rowArr.push(rowObj);
 			})
 
 			selectedRowsStore.set(rowArr)
 		},
-
-		onCellDoubleClicked(event) {
-			selectedRowsStore.set([{
-				customerAddressCode: event.data.customerAddressCode,
-				customerNodeCode: event.data.customerNodeCode
-			}])
-
-			if (event.column.colId === "customerAddressCode") {
-				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`) // todo: make generic
-			}
-
-			if (event.column.colId === "customerNodeCode") {
-				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`) // todo: make generic
-			}
-		},
-
-		columnDefs: columnDefinitions,
-		suppressExcelExport: true,
-		suppressCsvExport: true,
-		maintainColumnOrder: true, 
-		enableCellTextSelection: true,
-		rowModelType: "serverSide",
-		rowSelection: "multiple",
-		cacheBlockSize: 100,
 	}
+
 
 	let recentFilters: FilterModel[] = [];
 	let currentSort = []
@@ -130,6 +114,7 @@
 	let prevLastRow: number|null = null;
 	let lastRow: number|null = null;
 	let runCount = 0;
+
 
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
@@ -167,7 +152,7 @@
 			updatedParamsRequest.fulltext = get(fulltextFilterValueStore)
 			updatedParamsRequest.lastRow = lastRow;
 			updatedParamsRequest.rowBatchSize = rowBatchSize;
-			// console.log(JSON.stringify(updatedParamsRequest, null, 2));
+			console.log(JSON.stringify(updatedParamsRequest, null, 2));
 
 			// AG-Grid SSRM
 			fetch(url
@@ -197,22 +182,18 @@
 		}
 	};
 
-	onMount(() => {
-		// updateLastRow.set(false);
-		defaultColDef.set(columnDefinitions)
 
-		gridApi = createGrid(gridContainer, gridOptions);
+	const columnDefaultEditable = new Map()
+	let timer;
+
+	onMount(() => {
+		gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		gridApi.setGridOption('serverSideDatasource', datasource);
+		defaultColDef.set(gridApi.getColumnDefs() || [])
 
 		window.addEventListener("keydown", (e) => {
 			if (e.shiftKey) {
-				shiftPressed = true;
-			}
-		})
-
-		window.addEventListener("keyup", (e) => {
-			if (e.shiftKey) {
-				shiftPressed = false;
+				document.getSelection()?.removeAllRanges();
 			}
 		})
 
@@ -265,31 +246,58 @@
 			}
 		})
 
+
+		// set background color of editable columns on page load,
+		// map initial column editable state
+		const initialColDef = gridApi.getColumnDefs()
+
+		initialColDef?.map((column: ColDef) => {
+			columnDefaultEditable.set(column.field, column.editable)
+
+			column.cellStyle = {
+				backgroundColor: column.editable ?
+					"rgba(245,198,11,0.05)" :
+					"rgba(0, 0, 0, 0)"
+			};
+		})
+
+		gridApi.setGridOption("columnDefs", initialColDef);
+
+
+		disablePageTabsStore.update(data => {
+			if (get(selectedRowsStore).length > 0) {
+				return false;
+			}
+
+			return gridApi.getSelectedRows().length === 0;
+		})
+
+
 		// let timer;
-		// fulltextFilterValueStore.subscribe((data) => {
-		// 	if (data) {
-		// 		clearTimeout(timer)
-		// 		timer = setTimeout(() => {
-		// 			lastRow = null;
-		// 			gridApi.onFilterChanged()
-		// 		}, 1000);
-		// 	}
-		// })
-		//
-		// if (get(presetStore)?.length > 0) {
-		// 	let columnOrder: ColumnOrder = []
-		//
-		// 	get(presetStore).forEach(obj => {
-		// 		columnOrder.push({ colId: obj.colId})
-		// 	})
-		//
-		// 	gridApi.setGridOption("columnDefs", get(presetStore))
-		//
-		// 	gridApi.applyColumnState({
-		// 		state: columnOrder,
-		// 		applyOrder: true
-		// 	});
-		// }
+		fulltextFilterValueStore.subscribe((data) => {
+			if (data) {
+				clearTimeout(timer)
+				timer = setTimeout(() => {
+					lastRow = null;
+					gridApi.onFilterChanged()
+				}, 1000);
+			}
+		})
+
+		if (get(presetStore)?.length > 0) {
+			let columnOrder: ColumnOrder = []
+
+			get(presetStore).forEach((obj: Preset) => {
+				columnOrder.push({ colId: obj.colId})
+			})
+
+			gridApi.setGridOption("columnDefs", get(presetStore))
+
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+		}
 	})
 
 
@@ -299,108 +307,33 @@
 
 
 	ribbonActionStore.subscribe((action) => {
-		// if (action === RibbonActionEnum.LOAD) {
-		// 	console.log("REFRESH");
-		// 	lastRow = prevLastRow;
-		// 	// updateLastRow.set(false);
-		// 	gridApi.refreshServerSide();
-		// }
-		//
-		// if (action === RibbonActionEnum.NEW) {
-		//
-		// }
-		//
-		// if (action === RibbonActionEnum.EDIT) {
-		// 	// isEditAllowedStore.update((data) => !data)
-		// 	//
-		// 	// let isEditable = get(isEditAllowedStore)
-		// 	//
-		// 	// const currentColDef = gridApi.getColumnDefs()
-		// 	//
-		// 	// if (currentColDef) {
-		// 	// 	currentColDef.map((column) => {
-		// 	// 		column.editable = isEditable
-		// 	// 	})
-		// 	//
-		// 	// 	gridApi.setGridOption("columnDefs", currentColDef);
-		// 	// }
-		//
-		// 	// isEditable === true
-		// 	// 	? customToast("InfoToast", "Editace byla povolena")
-		// 	// 	: customToast("InfoToast", "Editace byla zakázána")
-		// }
-		//
-		// if (action === RibbonActionEnum.DELETE) { // add post rq
-		// 	const selectedRows = gridApi!.getServerSideSelectionState();
-		// }
-		//
-		//
-		// if (action === RibbonActionEnum.SAVE) { // todo
-		// 	console.log(get(editedDataStore));
-		// 	editedDataStore.set([])
-		// }
 
-		/*if (action === RibbonActionEnum.FILTER_QUICK) {
-			const columnName = gridApi.getFocusedCell()?.column.getColId();
-			const selection = window.getSelection()?.toString().trim();
-			console.log(selection);
+		if (action === RibbonActionEnum.EDIT) {
+			isEditAllowedStore.update((data) => !data)
 
+			const currentColDef = gridApi.getColumnDefs()
+			let isEditable = get(isEditAllowedStore)
 
-			if (columnName) {
-				const cellType = "text";
-				let currentFilters = gridApi.getFilterModel();
+			if (currentColDef) {
+				currentColDef.map((column: ColDef) => {
+					if (columnDefaultEditable.get(column.field)) {
+						column.editable = isEditable;
+						column.cellStyle = {
+							backgroundColor: isEditable ?
+								"rgba(245,198,11,0.05)" :
+								"rgba(0, 0, 0, 0)"
+						};
+					}
+				})
 
-				currentFilters[columnName] = {
-					filterType: "multi",
-					filterModels: [{
-						filterType: cellType,
-						type: "contains",
-						filter: selection
-					}, null]
-				}
-
-				gridApi.setFilterModel(currentFilters)
-				gridApi.onFilterChanged()
+				gridApi.setGridOption("columnDefs", currentColDef);
 			}
-		}*/
-		//
-	// 	if (action === RibbonActionEnum.FILTER_UNDO) {
-	// 		recentFilters.pop()
-	// 		if (recentFilters.length > 0) {
-	// 			gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
-	// 		} else {
-	// 			gridApi.setFilterModel(null);
-	// 		}
-	// 	}
-	//
-	// 	if (action === RibbonActionEnum.FILTER_REMOVE) {
-	// 		gridApi.setFilterModel(null)
-	// 	}
-	//
-	// 	if (action === RibbonActionEnum.SAVE_FILTERS) {
-	// 		if (Object.keys(gridApi.getFilterModel()).length > 0) {
-	// 			openedDialogStore.set("ribbon-save-filters")
-	// 			filtersStore.set(gridApi.getFilterModel())
-	// 		} else {
-	// 			customToast("InfoToast", "Nemáte žádné filtry k uložení.")
-	// 		}
-	// 	}
-	//
-	// 	if (action === RibbonActionEnum.MY_FILTERS) {
-	// 		openedDialogStore.set("ribbon-my-filters")
-	// 	}
-	//
-	// 	if(action === RibbonActionEnum.SAVE_PRESET) {
-	// 		openedDialogStore.set("ribbon-save-preset");
-	//
-	// 		console.log(gridApi.getColumnDefs());
-	// 		presetStore.set(gridApi.getColumnDefs() || [])
-	// 	}
-	//
-	// 	if(action === RibbonActionEnum.MY_PRESETS) {
-	// 		openedDialogStore.set("ribbon-my-presets");
-	// 	}
-	//
+
+			isEditable === true
+				? customToast("InfoToast", "Editace byla povolena")
+				: customToast("InfoToast", "Editace byla zakázána")
+		}
+
 		ribbonActionStore.set(undefined)
 	})
 </script>

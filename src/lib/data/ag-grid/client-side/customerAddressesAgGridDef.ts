@@ -12,8 +12,8 @@ export const customerAddressesAgGridDef = [
 		width: 115,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -28,8 +28,8 @@ export const customerAddressesAgGridDef = [
 		width: 280,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -44,8 +44,8 @@ export const customerAddressesAgGridDef = [
 		width: 200,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -60,8 +60,8 @@ export const customerAddressesAgGridDef = [
 		width: 200,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -76,8 +76,8 @@ export const customerAddressesAgGridDef = [
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -92,8 +92,8 @@ export const customerAddressesAgGridDef = [
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -108,8 +108,8 @@ export const customerAddressesAgGridDef = [
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -132,8 +132,8 @@ export const customerAddressesAgGridDef = [
 		cellRenderer: (params: ICellRendererParams) => selectBtn(params),
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.idZakaznika) &&
-				params.data.customerAddressCode === Number(get(page).params.idProdejny)
+				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX

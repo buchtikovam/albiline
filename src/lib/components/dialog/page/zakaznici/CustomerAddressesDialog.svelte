@@ -47,7 +47,7 @@
 
 <NewCustomerAddressDialog
 	bind:dialogOpen={openNewContactDialog}
-	label="Nová adresa"
+	label="Nová prodejna"
 	translationRoute=""
 	formDef={newCustomerAddressFormDef}
 />

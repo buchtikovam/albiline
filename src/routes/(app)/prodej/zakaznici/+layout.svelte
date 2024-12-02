@@ -13,8 +13,7 @@
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { get } from 'svelte/store';
-	import { disableNavigationStore } from '$lib/stores/pageStore';
-
+	import { disableNavigationStore, disablePageTabsStore } from '$lib/stores/pageStore';
 
 	let disableNav: boolean;
 	disableNavigationStore.subscribe((bool) => disableNav = bool)
@@ -35,6 +34,8 @@
 		}
 	})
 
+	let disablePageTabs = false;
+
 	selectedRowsStore.subscribe((data) => {
 		if (data.length > 0) {
 			customerNodeCode = data[activeIndex].customerNodeCode;
@@ -42,20 +43,25 @@
 		}
 	})
 
+
+	disablePageTabsStore.subscribe(data => {
+		console.log(data);
+		disablePageTabs = data;
+	})
+
+
+
 	let route: string;
 
 	page.subscribe((data) => {
 		if (get(selectedRowsStore).length === 0) { // for page refresh on a detail page (no selected row from table)
-			selectedRowsStore.set([
-				{
-					customerNodeCode: Number($page.params.idZakaznika) || 0,
-					customerAddressCode: Number($page.params.idProdejny) || 0,
-				}
-			])
+			customerNodeCode = $page.params.customerNodeCode;
+			customerAddressCode = $page.params.customerAddressCode;
 		}
 
 		route = data.url.pathname;
 	})
+
 </script>
 
 
@@ -65,7 +71,7 @@
 		<Tabs.List class="h-8">
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici` !== route && disableNav}
+				disabled={`/prodej/zakaznici` !== route && (disableNav || disablePageTabs)}
 				value={"/prodej/zakaznici"}
 				on:click={() => goto("/prodej/zakaznici")}
 			>
@@ -75,7 +81,7 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== route && disableNav}
+				disabled={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}` !== route && (disableNav || disablePageTabs)}
 				value={`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`}
 				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`)}
 			>
@@ -85,7 +91,7 @@
 
 			<Tabs.Trigger
 				class="font-bold"
-				disabled={`/prodej/zakaznici/${customerNodeCode}` !== route && disableNav}
+				disabled={`/prodej/zakaznici/${customerNodeCode}` !== route && (disableNav || disablePageTabs)}
 				value={`/prodej/zakaznici/${customerNodeCode}`}
 				on:click={() => goto(`/prodej/zakaznici/${customerNodeCode}`)}
 			>

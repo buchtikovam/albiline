@@ -112,7 +112,7 @@
 
 
 <Toaster
-	position={isMobile ? "top-center" : "top-center"}
+	position={isMobile ? "top-center" : "bottom-right"}
 	class="h-52 overflow-visible md:flex md:justify-end"
 />
 

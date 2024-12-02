@@ -2,9 +2,7 @@ import type { PageLoad } from "./$types";
 
 
 export const load: PageLoad = async ({ fetch, params }) => {
-	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.idZakaznika}`)
-
-	console.log("load customer");
+	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}`)
 
 	if (res.ok) {
 		const response = await res.json();

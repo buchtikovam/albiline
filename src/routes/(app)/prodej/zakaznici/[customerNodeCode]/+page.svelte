@@ -78,7 +78,7 @@
 	$: disableRight = false;
 
 	$: activeId = {
-		customerNodeCode: Number($page.params.idZakaznika),
+		customerNodeCode: Number($page.params.customerNodeCode),
 	}
 
 	// disable editing if there are unsaved changes
@@ -157,7 +157,9 @@
 	})
 </script>
 
-
+<svelte:head>
+	<title>Zákazník {$formValues.customerNodeCode} | Albiline</title>
+</svelte:head>
 
 <MaxWidthScrollableDetailContainer>
 	<div class="mb-3">

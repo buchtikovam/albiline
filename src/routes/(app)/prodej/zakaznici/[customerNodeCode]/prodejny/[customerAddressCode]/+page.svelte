@@ -36,6 +36,7 @@
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
 	import CSAgGridDialog from '$lib/components/dialog/page/zakaznici/CustomerAddressesDialog.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import { processRoute } from '$lib/utils/navigation/processRoute';
 
 	export let data: {
 		response: {
@@ -77,8 +78,8 @@
 	$: disableRight = false;
 
 	$: activeId = {
-		customerNodeCode: Number($page.params.idZakaznika),
-		customerAddressCode: Number($page.params.idProdejny)
+		customerNodeCode: Number($page.params.customerNodeCode),
+		customerAddressCode: Number($page.params.customerAddressCode)
 	}
 
 	// disable navigation if there are unsaved changes in form
@@ -136,7 +137,7 @@
 
 	async function getAddresses() {
 		if (get(addresses).length === 0) {
-			const res = await apiServiceGET(`customers/${$page.params.idZakaznika}/addresses`)
+			const res = await apiServiceGET(`customers/${$page.params.customerNodeCode}/addresses`)
 
 			if (res.ok) {
 				const responseData = await res.json()
@@ -147,11 +148,10 @@
 		}
 	}
 
-
 	// save data on the api
 	async function updateAndReload(saveObj) {
 		const res = await apiServicePOST(
-			`customers/${$page.params.idZakaznika}/addresses/${$page.params.idProdejny}`,
+			`customers/${$page.params.customerNodeCode}/addresses/${$page.params.customerAddressCode}`,
 			saveObj
 		)
 
@@ -200,8 +200,8 @@
 			}
 
 			if (Object.keys(saveObj.item).length > 0) {
-				saveObj.item.customerAddressCode = Number($page.params.idProdejny)
-				saveObj.item.customerNodeCode = Number($page.params.idZakaznika)
+				saveObj.item.customerAddressCode = Number($page.params.customerAddressCode)
+				saveObj.item.customerNodeCode = Number($page.params.customerNodeCode)
 			}
 
 			updateAndReload(saveObj);
@@ -212,7 +212,9 @@
 	})
 </script>
 
-
+<svelte:head>
+	<title>Prodejna {$formValues.customerAddressCode} | Albiline</title>
+</svelte:head>
 
 
 <MaxWidthScrollableDetailContainer>

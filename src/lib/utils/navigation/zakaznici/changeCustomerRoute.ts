@@ -32,7 +32,7 @@ export function changeCustomerRoute(
 
 		const newRoute = processRoute(
 			routeId,
-			{ idZakaznika: uniqueSelectedRows[nextIndex].customerNodeCode, }
+			{ customerNodeCode: uniqueSelectedRows[nextIndex].customerNodeCode, }
 		)
 
 		goto(newRoute)
@@ -62,7 +62,7 @@ export function changeCustomerRoute(
 
 		const newRoute = processRoute(
 			routeId,
-			{ idZakaznika: selectedRows[prevIndex].customerNodeCode, }
+			{ customerNodeCode: selectedRows[prevIndex].customerNodeCode, }
 		)
 
 		goto(newRoute)
