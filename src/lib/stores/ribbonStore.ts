@@ -12,4 +12,4 @@ export const ribbonActionStore: Writable<RibbonActionEnum | undefined> = writabl
 
 export const openedDialogStore: Writable<GlobalDialogOptions | undefined> = writable()
 
-export const isEditAllowedStore: Writable<boolean> = writable(true)
+export const isEditAllowedStore: Writable<boolean> = writable(false)

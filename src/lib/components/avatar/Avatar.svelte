@@ -4,6 +4,9 @@
 	import LogOut from 'lucide-svelte/icons/log-out';
 	import User from 'lucide-svelte/icons/user';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import FoldVertical from 'lucide-svelte/icons/fold-vertical';
+	import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
+	import { pageCompactStore } from '$lib/stores/pageStore';
 
 	/*
 		Avatar komponent s dropdownem a uživatelskými nastaveními
@@ -18,8 +21,8 @@
 		<User class="size-5 m-1 mx-auto text-slate-50"/>
 	</DropdownMenu.Trigger>
 
-	<DropdownMenu.Content class="w-60">
-		<DropdownMenu.Label class="font-bold text-base">
+	<DropdownMenu.Content class="min-w-60">
+		<DropdownMenu.Label class="font-bold text-albi-950 text-base">
 			{$_('components.avatar.welcome')}
 			<span class="text-albi-500">
 				{userName}
@@ -30,16 +33,48 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
-					<User class="w-4 h-4 mr-2" />
+					<User class="size-5 mr-2" />
 					{$_('components.avatar.profile')}
 
 				</a>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
-					<Settings class="w-4 h-4 mr-2" />
+					<Settings class="size-5 mr-2" />
 					{$_('components.avatar.settings')}
 				</a>
+			</DropdownMenu.Item>
+		</DropdownMenu.Group>
+		<DropdownMenu.Separator />
+
+		<DropdownMenu.Group>
+			<DropdownMenu.Label>
+				Zobrazení
+			</DropdownMenu.Label>
+
+			<DropdownMenu.Item>
+				<button
+					on:click={() => {
+						pageCompactStore.set(false);
+						window.location.reload();
+					}}
+					class="flex items-center"
+				>
+					<UnfoldVertical class="size-5 mr-2" />
+					Výchozí
+				</button>
+			</DropdownMenu.Item>
+			<DropdownMenu.Item>
+				<button
+					on:click={() => {
+						pageCompactStore.set(true);
+						window.location.reload();
+					}}
+					class="flex items-center"
+				>
+					<FoldVertical class="size-5 mr-2" />
+					Kompaktní
+				</button>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
@@ -48,7 +83,7 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
-					<LogOut class="w-4 h-4 mr-2" />
+					<LogOut class="size-5 mr-2" />
 					{$_('components.avatar.logout')}
 				</a>
 			</DropdownMenu.Item>
