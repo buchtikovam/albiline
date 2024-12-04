@@ -13,15 +13,16 @@
 	import { onNavigate } from '$app/navigation';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 
-	export let colDef: any[];
 	export let rowData: Writable<any[]>;
-	export let editedRowData: Writable<any[]> = writable([]);
-	export let createdRowData;
+	export let editedRowData: Writable<any[]>;
+	export let createdRowData: Writable<any[]>;
 	export let requiredFields: string[]
+	export let gridOptionsCustom: GridOptions;
+
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
-	let initialRowIds: string[] = []
+
 
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
@@ -38,15 +39,27 @@
 		},
 
 		rowData: [],
-		columnDefs: colDef,
 
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
+			console.log(event.data);
+			let isInitialColumn = requiredFields.every((field) => {
+				return event.data[field] !== undefined;
+			})
+
 			if (event.oldValue !== event.newValue) {
-				addToEditedTableData(
-					event,
-					requiredFields,
-					editedRowData,
-				)
+				if (isInitialColumn) {
+					addToEditedTableData(
+						event,
+						requiredFields,
+						editedRowData,
+					)
+				} else {
+					addToEditedTableData(
+						event,
+						requiredFields,
+						createdRowData,
+					)
+				}
 			}
 		},
 
@@ -59,55 +72,31 @@
 	}
 
 
+	createdRowData.subscribe((data) => {
+		if (data.length > 0) {
+			gridApi.applyTransaction({
+				add: [data[data.length - 1]],
+				addIndex: 0,
+			})
+		}
+	})
 
 
 	onMount(() => {
-		gridApi = createGrid(gridContainer, gridOptions);
+		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
 
 		rowData.subscribe((data) => {
 			if (data) {
 				gridApi.setGridOption("rowData", data);
-
-				gridApi.forEachNode((node: IRowNode) => {
-					if (node.id) {
-						if (!initialRowIds.includes(node.id)) {
-							initialRowIds.push(node.id)
-						}
-					}
-				})
 			}
 		})
-
-		gridApi.forEachNode((node: IRowNode) => {
-			if (node.id) {
-				if (!initialRowIds.includes(node.id)) {
-					initialRowIds.push(node.id)
-				}
-				// initialRowIds.push(node.id)
-			}
-		})
-
-		// console.log("initialRows", initialRowIds);
-
-		createdRowData.subscribe((data) => {
-			if (data.length > 0) {
-				gridApi.applyTransaction({
-					add: [data[data.length - 1]],
-					addIndex: 0,
-				})
-			}
-		})
-	})
-
-	onNavigate(() => {
-		initialRowIds = [];
 	})
 </script>
 
 
 
 <div
-	class="flex flex-column h-full"
+	class="flex flex-column"
 >
 	<div
 		id="datagrid"

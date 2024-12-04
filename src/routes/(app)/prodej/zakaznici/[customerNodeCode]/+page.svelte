@@ -31,6 +31,9 @@
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
+	import type { GridOptions } from 'ag-grid-enterprise';
+	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
+	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 
 	export let data: {
 		response: {
@@ -54,6 +57,7 @@
 	// page variables
 	const translationRoute = "routes.prodej.zakaznici.customer_detail";
 	let pageLayout = customerPageLayout;
+	let autoformDef = writable(customerDetailFormDef);
 	let openNewContactDialog: boolean = false;
 	let pageSettings: PageMetaDataType;
 
@@ -155,11 +159,47 @@
 
 		ribbonActionStore.set(undefined);
 	})
+
+
+	const contactsGridOptions: GridOptions = {
+		columnDefs: customerAndAddressContactsAgGridDef,
+	}
+
+
+	// function savePageLayout() {
+	// 	const pageStripped = pageLayout.map((item) => {
+	// 		return item.type;
+	// 	})
+	//
+	// 	const formDefStripped = []
+	//
+	// 	Object.entries(get(autoformDef)).map(([key, value]) => {
+	// 		let temp = {};
+	//
+	// 		temp[key] = value.map((item) => {
+	// 			return {
+	// 				field: item.field,
+	// 				isOpen: item.isOpen,
+	// 			}
+	// 		});
+	// 		formDefStripped.push(temp)
+	// 	})
+	//
+	//
+	// 	const pageLayoutObj = {
+	// 		pageLayout: pageStripped,
+	// 		formDef: formDefStripped,
+	// 	}
+	// }
 </script>
 
+
+
 <svelte:head>
-	<title>Zákazník {$formValues.customerNodeCode} | Albiline</title>
+	<title>Zákazník {$formValues.customerNodeCode || ""} | Albiline</title>
 </svelte:head>
+
+
 
 <MaxWidthScrollableDetailContainer>
 	<div class="mb-3">
@@ -195,7 +235,7 @@
 					<AutoForm
 						translationRoute={translationRoute + ".autoform."}
 						allowCrossColumnDND={false}
-						formDef={customerDetailFormDef}
+						bind:formDef={autoformDef}
 						bind:formValues
 					/>
 				</div>
@@ -223,8 +263,8 @@
 
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}
-						colDef={customerAndAddressContactsAgGridDef}
 						bind:rowData={contactValues}
+						gridOptionsCustom={contactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
 					/>

@@ -9,7 +9,11 @@ export const newCustomerAddressFormDef: AutoFormSimpleType = [
 				type: "text",
 				schema: z.string().max(255),
 			},
-
+		}
+	},
+	{
+		rowType: "full",
+		inputs: {
 			"companyName": {
 				type: "text",
 				schema: z.string().max(255),

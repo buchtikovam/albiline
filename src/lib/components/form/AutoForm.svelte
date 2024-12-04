@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 	import DndColumnNew from '$lib/components/form/DndColumn.svelte';
 
-	export let formDef: AutoFormType;
+	export let formDef: Writable<AutoFormType>;
 	export let formValues = writable({});
 	export let translationRoute: string;
 	export let allowCrossColumnDND: boolean = true;
 
-	let autoformWritable = writable(formDef);
 	let colDef: AutoFormType;
 
-	autoformWritable.subscribe((data) => {
+	formDef.subscribe((data) => {
+		console.log(data);
 		colDef = data;
 	})
-
 </script>
 
 
@@ -22,8 +21,8 @@
 	<div class="w-full gap-4 xl:flex ">
 		{#each Object.entries(colDef) as [key, value]}
 			<DndColumnNew
-				items={value}
-				autoformWritable={autoformWritable}
+				section={value}
+				autoformWritable={formDef}
 				colName={key}
 				allowCrossColumnDND={allowCrossColumnDND}
 				translationRoute={translationRoute}

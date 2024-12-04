@@ -230,7 +230,7 @@ export const customerAgGridDef: ColDef[] = [
 	{
 		field: "i_DIC",
 		headerName: "DIČ",
-		width: 105,
+		width: 135,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',
@@ -246,7 +246,7 @@ export const customerAgGridDef: ColDef[] = [
 	{
 		field: "i_IcDph",
 		headerName: "IčDPH",
-		width: 120,
+		width: 135,
 		editable: false,
 		cellDataType: "text",
 		filter: 'agMultiColumnFilter',

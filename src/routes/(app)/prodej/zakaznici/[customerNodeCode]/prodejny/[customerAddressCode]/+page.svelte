@@ -37,6 +37,7 @@
 	import CSAgGridDialog from '$lib/components/dialog/page/zakaznici/CustomerAddressesDialog.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import { processRoute } from '$lib/utils/navigation/processRoute';
+	import type { GridOptions } from 'ag-grid-enterprise';
 
 	export let data: {
 		response: {
@@ -60,6 +61,7 @@
 	// page variables
 	const translationRoute = "routes.prodej.zakaznici.address_detail";
 	let pageLayout = customerAddressPageLayout;
+	let autoformDef = writable(customerAddressDetailFormDef);
 	let openNewContactDialog: boolean = false;
 	let openAgGridDialog: boolean = false;
 	let pageSettings: PageMetaDataType;
@@ -193,7 +195,7 @@
 				item: get(editedFormValuesStore),
 
 				contacts: {
-					insert: [], // get(createdContacts),
+					insert: get(createdContacts),
 					update: get(editedContactValues),
 					delete: []
 				},
@@ -210,15 +212,52 @@
 
 		ribbonActionStore.set(undefined);
 	})
+
+
+	const contactsGridOptions: GridOptions = {
+		columnDefs: customerAndAddressContactsAgGridDef,
+	}
+
+
+	// function savePageLayout() {
+	// 	const pageStripped = pageLayout.map((item) => {
+	// 		return item.type;
+	// 	})
+	//
+	// 	const formDefStripped = []
+	//
+	// 	Object.entries(get(autoformDef)).map(([key, value]) => {
+	// 		let temp = {};
+	//
+	// 		temp[key] = value.map((item) => {
+	// 			return {
+	// 				field: item.field,
+	// 				isOpen: item.isOpen,
+	// 			}
+	// 		});
+	// 		formDefStripped.push(temp)
+	// 	})
+	//
+	//
+	// 	const pageLayoutObj = {
+	// 		pageLayout: pageStripped,
+	// 		formDef: formDefStripped,
+	// 	}
+	//
+	// 	console.log(JSON.stringify(pageLayoutObj, null, 1));
+	// }
 </script>
 
+
+
 <svelte:head>
-	<title>Prodejna {$formValues.customerAddressCode} | Albiline</title>
+	<title>Prodejna {$formValues.customerAddressCode || ""} | Albiline</title>
 </svelte:head>
 
 
+
 <MaxWidthScrollableDetailContainer>
-	<div class="w-full h-fdull flex flex-col mb-3">
+	<div class="flex flex-col mb-3">
 		<!-- header -->
 		<div class="flex justify-between">
 			<!-- page label + get addresses button -->
@@ -275,7 +314,7 @@
 			{#if item.type === "form"}
 				<div class={(item.isLast ? "-mb-2" : "")}>
 					<AutoForm
-						formDef={customerAddressDetailFormDef}
+						bind:formDef={autoformDef}
 						translationRoute={translationRoute + ".autoform."}
 						allowCrossColumnDND={true}
 						bind:formValues
@@ -303,9 +342,10 @@
 						</button>
 					</div>
 
+					<!-- contacts table -->
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}
-						colDef={customerAndAddressContactsAgGridDef}
+						gridOptionsCustom={contactsGridOptions}
 						bind:rowData={contactValues}
 						bind:editedRowData={editedContactValues}
 						bind:createdRowData={createdContacts}

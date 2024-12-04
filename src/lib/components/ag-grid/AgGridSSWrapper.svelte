@@ -10,7 +10,7 @@
 		selectedRowsStore,
 		setColDefToDefault
 	} from '$lib/stores/tableStore';
-	import { isEditAllowedStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
 	import { disablePageTabsStore, pageCompactStore, sessionKeyStore } from '$lib/stores/pageStore';
 	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
 	import { filtersStore } from '$lib/stores/tableStore.js';
@@ -293,7 +293,7 @@
 
 
 		// disable page tabs if no row is selected
-		disablePageTabsStore.update(data => {
+		disablePageTabsStore.update(() => {
 			if (get(selectedRowsStore).length > 0) {
 				return false;
 			}
@@ -369,17 +369,75 @@
 				: customToast("InfoToast", "Editace byla zakázána")
 		}
 
+		if (action === RibbonActionEnum.SAVE) {
+			console.log(get(editedTableDataStore));
+		}
 
 		if (action === RibbonActionEnum.LOAD) {
-			gridApi.refreshServerSide()
+			gridApi.refreshServerSide();
 		}
 
+		if (action === RibbonActionEnum.FILTER_QUICK) {
+			const columnName = gridApi.getFocusedCell()?.column.getColId();
+			const selection = window.getSelection()?.toString().trim();
+
+			if (columnName && selection) {
+				const cellType = "text";
+				let currentFilters = gridApi.getFilterModel();
+
+				currentFilters[columnName] = {
+					filterType: "multi",
+					filterModels: [{
+						filterType: cellType,
+						type: "contains",
+						filter: selection
+					}, null]
+				}
+
+				gridApi.setFilterModel(currentFilters);
+				gridApi.onFilterChanged();
+			}
+		}
+
+		if (action === RibbonActionEnum.FILTER_UNDO) {
+			recentFilters.pop()
+			if (recentFilters.length > 0) {
+				gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
+			} else {
+				gridApi.setFilterModel(null);
+			}
+		}
 
 		if (action === RibbonActionEnum.FILTER_REMOVE) {
-
+			gridApi.setFilterModel(null);
 		}
 
-		ribbonActionStore.set(undefined)
+		if (action === RibbonActionEnum.SAVE_FILTERS) {
+			if (Object.keys(gridApi.getFilterModel()).length > 0) {
+				// openedDialogStore.set("ribbon-save-filters")
+				// filtersStore.set(gridApi.getFilterModel())
+				console.log(gridApi.getFilterModel());
+			} else {
+				customToast("InfoToast", "Nemáte žádné filtry k uložení.")
+			}
+		}
+
+		if (action === RibbonActionEnum.MY_FILTERS) {
+			openedDialogStore.set("ribbon-my-filters")
+		}
+
+		if(action === RibbonActionEnum.SAVE_PRESET) {
+			openedDialogStore.set("ribbon-save-preset");
+
+			console.log(gridApi.getColumnDefs());
+			// presetStore.set(gridApi.getColumnDefs() || [])
+		}
+
+		if(action === RibbonActionEnum.MY_PRESETS) {
+			openedDialogStore.set("ribbon-my-presets");
+		}
+
+		ribbonActionStore.set(undefined);
 	})
 </script>
 

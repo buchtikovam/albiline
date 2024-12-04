@@ -20,7 +20,7 @@
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 	import { disableInputs } from '$lib/stores/pageStore';
 
-	export let items: AutoFormSection[];
+	export let section: AutoFormSection[];
 	export let colName: string;
 	export let translationRoute: string;
 	export let autoformWritable: Writable<AutoFormType>;
@@ -37,15 +37,15 @@
 	const flipDurationMs = 300;
 
 	function handleDndConsider(ev: CustomEvent<{ items: AutoFormSection[] }>) {
-		items = ev.detail.items
+		section = ev.detail.items
 	}
 
 	function handleDndFinalize(ev: CustomEvent<{ items: AutoFormSection[] }>) {
-		items = ev.detail.items;
+		section = ev.detail.items;
 
 		autoformWritable.update((autoform) => {
 			const columnKey = Object.keys(autoform).find(key => key === colName);
-			if (columnKey) autoform[columnKey] = items;
+			if (columnKey) autoform[columnKey] = section;
 			return autoform;
 		});
 	}
@@ -54,19 +54,19 @@
 
 
 <section
-	use:dragHandleZone="{{ items, flipDurationMs, type: allowCrossColumnDND ? undefined : colName }}"
+	use:dragHandleZone="{{ items: section, flipDurationMs, type: allowCrossColumnDND ? undefined : colName }}"
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
 	on:consider={handleDndConsider}
 	on:finalize={handleDndFinalize}
 >
-	{#each items as item (item.id)}
+	{#each section as item (item.id)}
 		<div animate:flip={{ duration: flipDurationMs }} >
-			<Accordion.Root value={["item-1"]} >
-				<Accordion.Item value="item-1">
+			<Accordion.Root value={item.isOpen ? item.field : ""}>
+				<Accordion.Item value={item.field}>
 					{#if item.hasDialog}
 						<div class="flex justify-between items-center pb-2">
 						   <div class="flex">
-							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
+							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" on:click={() => item.isOpen = !item.isOpen}>
 								   <SectionLabel label={$_(translationRoute + item.field)} />
 							   </Accordion.Trigger>
 
@@ -82,7 +82,7 @@
 					   </div>
 					{:else}
 						<div class="flex justify-between items-center pb-2">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2">
+							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" on:click={() => item.isOpen = !item.isOpen}>
 								<SectionLabel label={$_(translationRoute + item.field)} />
 							</Accordion.Trigger>
 

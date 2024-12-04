@@ -1,20 +1,21 @@
 <script lang="ts">
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
-	import 'ag-grid-community/styles/ag-grid.css'
-	import '$lib/ag-grid-theme-builder.pcss'
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import {
-		createGrid,
-		type GridApi,
-		type GridOptions,
+			createGrid,
+			type GridApi,
+			type GridOptions,
 	} from "ag-grid-enterprise";
+	import 'ag-grid-community/styles/ag-grid.css'
+	import '$lib/ag-grid-theme-builder.pcss'
 
 	export let colDef: any[];
 	export let rowData = writable([]);
 
 	let gridContainer: HTMLElement;
 	let gridApi: GridApi<unknown>;
+
 
 	const gridOptions: GridOptions = {
 		localeText: AG_GRID_LOCALE_CZ,
@@ -32,7 +33,7 @@
 
 		rowData: [],
 		columnDefs: colDef,
-
+		// domLayout: "autoHeight",
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		suppressRowClickSelection: true,
@@ -40,9 +41,8 @@
 		rowSelection: "single",
 	}
 
-	onMount(() => {
-		console.log("mount");
 
+	onMount(() => {
 		gridApi = createGrid(gridContainer, gridOptions);
 
 		rowData.subscribe((data) => {
@@ -56,14 +56,14 @@
 </script>
 
 
-
-<div class="h-full">
+<!--<div class="h-full">-->
 	<div class="flex flex-column h-full">
 		<div
 			id="datagrid"
-			class="ag-theme-custom"
+			class="ag-theme-custom "
 			style="flex: 1 1 auto"
 			bind:this={gridContainer}
 		></div>
 	</div>
-</div>
+<!--</div>-->
+

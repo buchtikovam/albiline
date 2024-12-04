@@ -1,11 +1,13 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export const customerAddressPageLayout = [
 	{
-		id: 0,
+		id: uuidv4(),
 		type: "form",
 		isLast: false,
 	},
 	{
-		id: 1,
+		id: uuidv4(),
 		type: "contacts",
 		isLast: true,
 	},
