@@ -45,6 +45,7 @@
 	function addAddress() {
 		console.log(address);
 	}
+
 </script>
 
 
