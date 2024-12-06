@@ -4,11 +4,20 @@
 	import { getContext } from 'svelte';
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
-	export let value: string = "A";
-	export let options: string[] = [];
-	export let label;
 	export const disable: boolean = false;
-	export let field: string;
+	interface Props {
+		value?: string;
+		options?: string[];
+		label: any;
+		field: string;
+	}
+
+	let {
+		value = $bindable("A"),
+		options = [],
+		label,
+		field
+	}: Props = $props();
 
 	const initialValue = value; // check if this works
 	// value = value.toUpperCase();

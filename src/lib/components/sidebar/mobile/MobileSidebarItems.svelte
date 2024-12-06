@@ -8,9 +8,13 @@
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 
-	export let searchTerm: string;
-	export let filteredItems: SidebarItem[];
-	export let isOpen: boolean;
+	interface Props {
+		searchTerm: string;
+		filteredItems: SidebarItem[];
+		isOpen: boolean;
+	}
+
+	let { searchTerm, filteredItems, isOpen = $bindable() }: Props = $props();
 
 	let isMobile = true;
 </script>
@@ -33,10 +37,10 @@
 								<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
 									<div
 										class="flex text-sm font-bold w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black">
-										<svelte:component this={item.icon} />
+										<item.icon />
 										<a
 											href={item.href}
-											on:click={() => {
+											onclick={() => {
 												handleTabClick(item, 0);
 												isOpen = false;
 											}}
@@ -65,7 +69,7 @@
 																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black">
 																<a
 																	href={secondChild.href}
-																	on:click={() => {
+																	onclick={() => {
 																		handleTabClick(secondChild, 1);
 																		isOpen = false;
 																	}}

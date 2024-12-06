@@ -8,9 +8,13 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 
-	export let filteredItems: SidebarItem[];
-	export let isSidebarCommandOpen: boolean;
-	export let isSidebarOpen: boolean;
+	interface Props {
+		filteredItems: SidebarItem[];
+		isSidebarCommandOpen: boolean;
+		isSidebarOpen: boolean;
+	}
+
+	let { filteredItems, isSidebarCommandOpen = $bindable(), isSidebarOpen = $bindable() }: Props = $props();
 </script>
 
 
@@ -18,7 +22,7 @@
 <div class="flex-1">
 	<nav class="flex flex-col gap-2 justify-center">
 		<Tooltip.Root openDelay={800}>
-			<button on:click={() => isSidebarCommandOpen = !isSidebarCommandOpen}>
+			<button onclick={() => isSidebarCommandOpen = !isSidebarCommandOpen}>
 				<Tooltip.Trigger>
 					<span class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
 					<Search />
@@ -44,7 +48,7 @@
 							<Popover.Trigger>
 								<div
 									class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
-									<svelte:component this={item.icon} />
+									<item.icon />
 								</div>
 							</Popover.Trigger>
 
@@ -53,7 +57,7 @@
 									<a
 										href={child.href}
 										class="hover:bg-muted/50 rounded px-2 py-1.5"
-										on:click={() => handleTabClick(child, 1)}
+										onclick={() => handleTabClick(child, 1)}
 									>
 										{$_('components.sidebar.' + child.field)}
 									</a>
@@ -63,7 +67,7 @@
 											<a
 												href={scndChild.href}
 												class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
-												on:click={() => handleTabClick(scndChild, 2)}
+												onclick={() => handleTabClick(scndChild, 2)}
 											>
 												{$_('components.sidebar.' + scndChild.field)}
 											</a>
@@ -86,9 +90,9 @@
 						<a
 							href={item.href}
 							class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted/50 text-albi-950 hover:text-black"
-							on:click={() => handleTabClick(item, 0)}
+							onclick={() => handleTabClick(item, 0)}
 						>
-							<svelte:component this={item.icon} />
+							<item.icon />
 						</a>
 					</Tooltip.Trigger>
 

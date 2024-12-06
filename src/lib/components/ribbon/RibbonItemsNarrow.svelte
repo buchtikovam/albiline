@@ -5,8 +5,12 @@
 	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
-	export let ribbonItems: RibbonItem[];
-	export let isRibbonOpen: boolean = true;
+	interface Props {
+		ribbonItems: RibbonItem[];
+		isRibbonOpen?: boolean;
+	}
+
+	let { ribbonItems, isRibbonOpen = true }: Props = $props();
 
 
 	function setRibbonAction(action: RibbonActionEnum | undefined) {
@@ -23,10 +27,9 @@
 		{#each ribbonItems as ribbonItem}
 			<button
 				class="text-[10px] flex text-muted-foreground rounded hover:bg-muted/70"
-				on:click={() => setRibbonAction(ribbonItem.action)}
+				onclick={() => setRibbonAction(ribbonItem.action)}
 			>
-				<svelte:component
-					this={ribbonItem.icon}
+				<ribbonItem.icon
 					class="mr-1 size-3.5 muted-foreground"
 				/>
 				{$_('components.ribbon.' + ribbonItem.field)}
@@ -39,10 +42,9 @@
 			<Tooltip.Trigger class="min-w-5 mx-0.5 mt-auto">
 				<button
 					class="size-5 pt-1 rounded hover:bg-muted/70"
-					on:click={() => setRibbonAction(ribbonItem.action)}
+					onclick={() => setRibbonAction(ribbonItem.action)}
 				>
-					<svelte:component
-						this={ribbonItem.icon}
+					<ribbonItem.icon
 						class="size-4 mx-auto muted-foreground"
 					/>
 				</button>

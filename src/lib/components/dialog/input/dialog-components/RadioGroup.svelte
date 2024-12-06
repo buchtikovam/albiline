@@ -3,7 +3,11 @@
 	import * as RadioGroup from "$lib/components/ui/radio-group";
 	import type { InputRadioGroup } from "$lib/types/components/form/input-dialog/inputDialog";
 
-	export let item: InputRadioGroup;
+	interface Props {
+		item: InputRadioGroup;
+	}
+
+	let { item = $bindable() }: Props = $props();
 </script>
 
 <RadioGroup.Root bind:value={item.checkedValue}>

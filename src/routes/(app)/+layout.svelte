@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import './../../app.pcss';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
@@ -26,20 +28,27 @@
 		nextSelectedRowIndexStore
 	} from '$lib/stores/tableStore';
 	import { editedFormValuesStore } from '$lib/stores/autoformStore';
-	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
-
-	let innerWidth: number;
-
-    $: if (innerWidth < 768) {
-		isMobileStore.set(true)
-	} else {
-		isMobileStore.set(false)
+	interface Props {
+		children?: import('svelte').Snippet;
 	}
 
-	let isMobile: boolean = false;
+	let { children }: Props = $props();
+	let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
+
+	let innerWidth: number = $state();
+
+    run(() => {
+		if (innerWidth < 768) {
+			isMobileStore.set(true)
+		} else {
+			isMobileStore.set(false)
+		}
+	});
+
+	let isMobile: boolean = $state(false);
 	isMobileStore.subscribe((data) => isMobile = data)
 
-	let isMobileLayoutExpanded: boolean;
+	let isMobileLayoutExpanded: boolean = $state();
 	isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
 
 	onMount(() => {
@@ -118,22 +127,22 @@
 
 <div class="h-dvh w-dvh bg-albi-50">
 	<div class="flex h-dvh flex-col">
-		<header>
-			<Header />
-		</header>
+<!--		<header>-->
+<!--			<Header />-->
+<!--		</header>-->
 
-		<div class="flex flex-row flex-1 pb-4">
-			<div class="hidden md:block pl-4">
-				<Sidebar />
-			</div>
-			<main class="flex flex-1 flex-col rounded-l-md">
-				<Ribbon />
-				
-				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>
-					<slot />
-				</div>
-			</main>
-		</div>
+<!--		<div class="flex flex-row flex-1 pb-4">-->
+<!--			<div class="hidden md:block pl-4">-->
+<!--				<Sidebar />-->
+<!--			</div>-->
+<!--			<main class="flex flex-1 flex-col rounded-l-md">-->
+<!--				<Ribbon />-->
+<!--				-->
+<!--				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>-->
+<!--					{@render children?.()}-->
+<!--				</div>-->
+<!--			</main>-->
+<!--		</div>-->
 	</div>
 </div>
 

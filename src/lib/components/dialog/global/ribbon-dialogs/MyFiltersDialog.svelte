@@ -19,15 +19,15 @@
 		možnost řazení, editace a mazání filtrů
 	*/
 
-	let dialogOpen: boolean = false;
-	let warningDialogOpen: boolean = false;	
+	let dialogOpen: boolean = $state(false);
+	let warningDialogOpen: boolean = $state(false);	
 
-	let currentFilterId: number;
-	let filters: FetchedFilter[];
-	let deleteFilterConsent: Writable<boolean> = writable(false);
+	let currentFilterId: number = $state();
+	let filters: FetchedFilter[] = $state();
+	let deleteFilterConsent: Writable<boolean> = $state(writable(false));
 
-	let isEditing: boolean = false;
-	let currentEditedId: number | undefined = undefined;
+	let isEditing: boolean = $state(false);
+	let currentEditedId: number | undefined = $state(undefined);
 
 
 	async function fetchFilters() {
@@ -47,7 +47,7 @@
 
 
 	// Drag and drop pro řazení filtrů
-	let hovering: number | null;
+	let hovering: number | null = $state();
 	let start: number;
 
 	function dragFilter(e: DragEvent, index: number) {
@@ -186,8 +186,8 @@
 					>
 						{#if isEditing && currentEditedId === filter.id}
 							<form
-								on:submit={() => updateFilter(filter)}
-								on:focusout={() => updateFilter(filter)}
+								onsubmit={() => updateFilter(filter)}
+								onfocusout={() => updateFilter(filter)}
 								class="w-full">
 								<Input
 									class="w-fit h-7 m-1"
@@ -197,10 +197,10 @@
 						{:else}
 							<button
 								draggable="true"
-								on:click={() => loadFiltersInTable(filter.filters)}
-								on:dragstart={(e) => dragFilter(e, index)}
-								on:dragover={() => setHoveringFilter(index)}
-								on:dragend={(e) => dropFilter(e, hovering)}
+								onclick={() => loadFiltersInTable(filter.filters)}
+								ondragstart={(e) => dragFilter(e, index)}
+								ondragover={() => setHoveringFilter(index)}
+								ondragend={(e) => dropFilter(e, hovering)}
 								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
 							>
 								{filter.filterName}
@@ -209,7 +209,7 @@
 
 						<div class="flex gap-2 ml-4">
 							<button
-								on:click={() => {
+								onclick={() => {
 									isEditing = !isEditing
 									currentEditedId = filter.id
 								}}
@@ -219,7 +219,7 @@
 							</button>
 
 							<button
-								on:click={() => {
+								onclick={() => {
 									warningDialogOpen = true
 									if (filter.id) currentFilterId = filter.id
 								}}

@@ -3,12 +3,21 @@
 	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 	import DndColumnNew from '$lib/components/form/DndColumn.svelte';
 
-	export let formDef: Writable<AutoFormType>;
-	export let formValues = writable({});
-	export let translationRoute: string;
-	export let allowCrossColumnDND: boolean = true;
+	interface Props {
+		formDef: Writable<AutoFormType>;
+		formValues?: any;
+		translationRoute: string;
+		allowCrossColumnDND?: boolean;
+	}
 
-	let colDef: AutoFormType;
+	let {
+		formDef,
+		formValues = $bindable(writable({})),
+		translationRoute,
+		allowCrossColumnDND = true
+	}: Props = $props();
+
+	let colDef: AutoFormType = $state();
 
 	formDef.subscribe((data) => {
 		console.log(data);

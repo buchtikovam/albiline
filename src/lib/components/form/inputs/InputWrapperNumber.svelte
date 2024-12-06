@@ -5,12 +5,23 @@
 	import { getContext } from 'svelte';
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
  
-	export let value: number;
-	export let label;
-	export let inputDef: AutoFormInput;
-	export let disable: boolean = false;
-	export let field: string;
-	export let addToEdited: boolean = true;
+	interface Props {
+		value: number;
+		label: any;
+		inputDef: AutoFormInput;
+		disable?: boolean;
+		field: string;
+		addToEdited?: boolean;
+	}
+
+	let {
+		value = $bindable(),
+		label,
+		inputDef,
+		disable = false,
+		field,
+		addToEdited = true
+	}: Props = $props();
 
 	const initialValue = value;
 
@@ -53,7 +64,7 @@
 
 		<input
 			type="number"
-			on:input={(e) => validateNumberSchema(e)}
+			oninput={(e) => validateNumberSchema(e)}
 			bind:value
 			disabled={disable}
 			class={`${hasError ? "focus-visible:border-red-500" : ""} disabled:bg-slate-50 h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}

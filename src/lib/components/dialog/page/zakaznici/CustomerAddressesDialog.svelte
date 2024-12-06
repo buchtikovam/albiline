@@ -6,11 +6,15 @@
 	import { newCustomerAddressFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerAddressFormDef.js';
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 
-	export let colDef;
-	export let rowData: Writable<any[]> = writable([]);
-	export let open: boolean = false;
+	interface Props {
+		colDef: any;
+		rowData?: Writable<any[]>;
+		open?: boolean;
+	}
 
-	let openNewContactDialog: boolean = false;
+	let { colDef, rowData = $bindable(writable([])), open = $bindable(false) }: Props = $props();
+
+	let openNewContactDialog: boolean = $state(false);
 
 
 	function newCustomerAddressDialog() {
@@ -33,7 +37,7 @@
 				Výběr prodejny
 
 				<button
-					on:click={newCustomerAddressDialog}
+					onclick={newCustomerAddressDialog}
 				>
 					<Plus strokeWidth={2.5} class="text-albi-500 size-5 hover:text-albi-700"/>
 				</button>

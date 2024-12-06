@@ -2,9 +2,13 @@
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
 
-	export let direction: "left"|"right";
-	export let disable: boolean = false;
-	export let navigateDetailFn: () => void = () => {}
+	interface Props {
+		direction: "left"|"right";
+		disable?: boolean;
+		navigateDetailFn?: () => void;
+	}
+
+	let { direction, disable = false, navigateDetailFn = () => {} }: Props = $props();
 
 </script>
 
@@ -13,7 +17,7 @@
 <button
 	class={(disable ? "text-slate-300 " : "text-albi-500") + " size-5"}
 	disabled={disable}
-	on:click={navigateDetailFn}
+	onclick={navigateDetailFn}
 >
 	{#if direction === "left"}
 		<ArrowLeft class="size-5"/>

@@ -5,12 +5,21 @@
 	import { Button } from '$lib/components/ui/button';
 	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
 
-	export let dialogOpen: boolean = false;
-	export let label: string = "Nový kontakt";
-	export let formDef: AutoFormSimpleType;
-	export let translationRoute: string;
+	interface Props {
+		dialogOpen?: boolean;
+		label?: string;
+		formDef: AutoFormSimpleType;
+		translationRoute: string;
+	}
 
-	let address: CustomerAddressType = {
+	let {
+		dialogOpen = $bindable(false),
+		label = "Nový kontakt",
+		formDef,
+		translationRoute
+	}: Props = $props();
+
+	let address: CustomerAddressType = $state({
 		id: null,
 		customerNodeCode: null,
 		customerName: null,
@@ -40,7 +49,7 @@
 		dealerCode: null,
 		areaCode: null,
 		areaId: null
-	}
+	})
 
 	function addAddress() {
 		console.log(address);

@@ -6,15 +6,20 @@
 	import Info from 'lucide-svelte/icons/info';
 	import { beforeNavigate } from '$app/navigation';
 
-	/*
+	
+
+	interface Props {
+		/*
 		Toast komponent, který pomocí svelte sonneru zobrazuje
 		uživateli zpětnou vazbu na FE
 	*/
+		type: ToastVariant;
+		content: string;
+	}
 
-	export let type: ToastVariant;
-	export let content: string;
+	let { type, content }: Props = $props();
 
-	let hidden = false;
+	let hidden = $state(false);
 
 	beforeNavigate(() => {
 		hidden = true;

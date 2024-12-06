@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import { disableNavigationStore } from '$lib/stores/pageStore';
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
@@ -35,30 +37,38 @@
 	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
 	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 
-	export let data: {
+	interface Props {
+		data: {
 		response: {
 			item: CustomerType,
 			contacts: CustomerContactType[]
 		},
 		status: "success" | "fail",
 	};
+	}
+
+	let { data }: Props = $props();
 
 	// @ts-ignore // autoform
-	let formValues: Writable<CustomerType> = writable({});
-	$: formValues.set(data.response.item);
+	let formValues: Writable<CustomerType> = $state(writable({}));
+	run(() => {
+		formValues.set(data.response.item);
+	});
 
 	// contacts table
-	let contactValues: Writable<CustomerContactType[]> = writable([])
-	$: contactValues.set(data.response.contacts);
+	let contactValues: Writable<CustomerContactType[]> = $state(writable([]))
+	run(() => {
+		contactValues.set(data.response.contacts);
+	});
 
-	let editedContactValues: Writable<any[]> = writable([]);
-	let createdContacts: Writable<CustomerContactType[]> = writable([]);
+	let editedContactValues: Writable<any[]> = $state(writable([]));
+	let createdContacts: Writable<CustomerContactType[]> = $state(writable([]));
 
 	// page variables
 	const translationRoute = "routes.prodej.zakaznici.customer_detail";
-	let pageLayout = customerPageLayout;
-	let autoformDef = writable(customerDetailFormDef);
-	let openNewContactDialog: boolean = false;
+	let pageLayout = $state(customerPageLayout);
+	let autoformDef = $state(writable(customerDetailFormDef));
+	let openNewContactDialog: boolean = $state(false);
 	let pageSettings: PageMetaDataType;
 
 
@@ -78,12 +88,14 @@
 
 	// --- PAGE NAVIGATION BETWEEN SELECTED CUSTOMERS ----
 	// route parameters swapping logic
-	$: disableLeft = false;
-	$: disableRight = false;
+	let disableLeft = $state(false);
+	
+	let disableRight = $state(false);
+	
 
-	$: activeId = {
+	let activeId = $derived({
 		customerNodeCode: Number($page.params.customerNodeCode),
-	}
+	})
 
 	// disable editing if there are unsaved changes
 	editedFormValuesStore.subscribe((data) => {
@@ -249,13 +261,13 @@
 
 						<button
 							id="contacts"
-							on:click={() => pageLayout = flipItems(pageLayout)}
+							onclick={() => pageLayout = flipItems(pageLayout)}
 						>
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
 						<button
-							on:click={() => openNewContactDialog = true}
+							onclick={() => openNewContactDialog = true}
 						>
 							<Plus strokeWidth={2.5} class="size-4 text-albi-500"/>
 						</button>

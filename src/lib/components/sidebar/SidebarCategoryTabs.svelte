@@ -1,13 +1,21 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { activeCategoryStore } from '$lib/stores/sidebarStore';
 	import * as Tabs from "$lib/components/ui/tabs";
 	import { _ } from 'svelte-i18n'
 	import TabSeparator from '../tabs/TabSeparator.svelte';
 
-	let value = "all";
-	export let color: "primary" | "secondary" = "secondary";
+	let value = $state("all");
+	interface Props {
+		color?: "primary" | "secondary";
+	}
+
+	let { color = "secondary" }: Props = $props();
 	
-	$: activeCategoryStore.set(value)
+	run(() => {
+		activeCategoryStore.set(value)
+	});
 </script>
 
 

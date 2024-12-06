@@ -12,7 +12,10 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import LastYearButton from '$lib/components/date/range-buttons/LastYearButton.svelte';
 
-	/*
+	
+
+	interface Props {
+		/*
 		Vstupní parametry pro získávání dat jednotlivých stránek.
 
 		Komponent očekává, že se v $lib/data/inputDialogs nachází soubor, který se jmenuje stejně
@@ -21,11 +24,13 @@
 
 		Po vyplnění všech inputů +page.svelte získává data
 	*/
+		inputDialogObjects: Record<string, any>;
+	}
 
-	export let inputDialogObjects: Record<string, any>;
+	let { inputDialogObjects = $bindable() }: Props = $props();
 
-	let dialogOpen: boolean = false;
-	let dialogContent: InputDialog;
+	let dialogOpen: boolean = $state(false);
+	let dialogContent: InputDialog = $state();
 	let pathLength = $page.url.pathname.split('/').length;
 	let fileName = $page.url.pathname.split('/')[pathLength - 1];
 
@@ -104,7 +109,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form on:submit={handleDialogSubmitButton}>
+		<form onsubmit={handleDialogSubmitButton}>
 			{#if dialogContent}
 				<div class="flex flex-col gap-2.5 mb-4">
 					{#each dialogContent as item}

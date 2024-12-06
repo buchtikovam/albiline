@@ -4,11 +4,21 @@
 	import { getContext } from 'svelte';
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
-	export let value: boolean = false;
-	export let label: string;
-	export let disable: boolean = false;
-	export let field: string = "";
-	export let addToEdited: boolean = true;
+	interface Props {
+		value?: boolean;
+		label: string;
+		disable?: boolean;
+		field?: string;
+		addToEdited?: boolean;
+	}
+
+	let {
+		value = $bindable(false),
+		label,
+		disable = false,
+		field = "",
+		addToEdited = true
+	}: Props = $props();
 
 	const initialValue = value;
 </script>

@@ -37,11 +37,15 @@
 	import '$lib/ag-grid-theme-builder.pcss';
 
 
-	export let url: string;
-	export let requiredFields: string[];
-	export let gridOptionsCustom: GridOptions;
+	interface Props {
+		url: string;
+		requiredFields: string[];
+		gridOptionsCustom: GridOptions;
+	}
 
-	let gridContainer: HTMLElement;
+	let { url, requiredFields, gridOptionsCustom }: Props = $props();
+
+	let gridContainer: HTMLElement = $state();
 	let gridApi: GridApi<unknown>;
 
 
@@ -211,7 +215,7 @@
 
 
 	const columnDefaultEditable = new Map()
-	let isPageCompact: boolean;
+	let isPageCompact: boolean = $state();
 
 
 	onMount(() => {

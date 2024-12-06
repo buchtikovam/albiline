@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 
-	export let startDateValue: Date | undefined;
-	export let endDateValue: Date | undefined;
+	interface Props {
+		startDateValue: Date | undefined;
+		endDateValue: Date | undefined;
+	}
+
+	let { startDateValue = $bindable(), endDateValue = $bindable() }: Props = $props();
 
 
 	function setDates() {

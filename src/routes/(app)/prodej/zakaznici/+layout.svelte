@@ -14,13 +14,18 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { get } from 'svelte/store';
 	import { disableNavigationStore, disablePageTabsStore } from '$lib/stores/pageStore';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	let disableNav: boolean;
+	let { children }: Props = $props();
+
+	let disableNav: boolean = $state();
 	disableNavigationStore.subscribe((bool) => disableNav = bool)
 
 	let translationRouteTabs = "routes.prodej.zakaznici.layout_tabs"
-	let customerAddressCode: string|undefined;
-	let customerNodeCode: string|undefined;
+	let customerAddressCode: string|undefined = $state();
+	let customerNodeCode: string|undefined = $state();
 	let activeIndex: number;
 
 	activeSelectedRowIndexStore.subscribe((index) => {
@@ -33,7 +38,7 @@
 		}
 	})
 
-	let disablePageTabs = false;
+	let disablePageTabs = $state(false);
 
 	selectedRowsStore.subscribe((data) => {
 		if (data.length > 0) {
@@ -49,7 +54,7 @@
 
 
 
-	let route: string;
+	let route: string = $state();
 
 	page.subscribe((data) => {
 		if (get(selectedRowsStore).length === 0) { // for page refresh on a detail page (no selected row from table)
@@ -112,5 +117,5 @@
 </div>
 
 <div class="h-full bg-white rounded-lg">
-	<slot />
+	{@render children?.()}
 </div>

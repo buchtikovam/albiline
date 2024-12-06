@@ -1,3 +1,8 @@
+<script>
+	/** @type {{children?: import('svelte').Snippet}} */
+	let { children } = $props();
+</script>
+
 <div class="flex flex-col gap-2 md:flex-row md:gap-4">
-	<slot/>
+	{@render children?.()}
 </div>

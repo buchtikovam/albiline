@@ -18,13 +18,13 @@
 		<div class="flex gap-2 h-[28px]">
 			<button
 				class="px-1.5 bg-albi-500 font-bold text-white rounded-md text-xs"
-				on:click={() => locale.set("cs")}
+				onclick={() => locale.set("cs")}
 			>
 				CZ
 			</button>
 			<button
 				class="px-1.5 bg-albi-500 font-bold text-white rounded-md text-xs"
-				on:click={() => locale.set("en")}
+				onclick={() => locale.set("en")}
 			>
 				EN
 			</button>

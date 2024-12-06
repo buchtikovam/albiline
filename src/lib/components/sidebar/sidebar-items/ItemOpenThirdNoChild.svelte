@@ -5,9 +5,13 @@
 	import { _ } from 'svelte-i18n'
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 
-	export let item;
-	export let isMobile: boolean;
-	export let isOpen: boolean = false;
+	interface Props {
+		item: any;
+		isMobile: boolean;
+		isOpen?: boolean;
+	}
+
+	let { item, isMobile, isOpen = $bindable(false) }: Props = $props();
 </script>
 
 
@@ -18,7 +22,7 @@
 	>
 		<a
 			href="{item.href}"
-			on:click={() => {
+			onclick={() => {
 				handleTabClick(item, 2)
 				if (isMobile) {
 					isOpen = false;

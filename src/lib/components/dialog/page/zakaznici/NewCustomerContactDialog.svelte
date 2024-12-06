@@ -6,13 +6,23 @@
 		import { writable, type Writable } from 'svelte/store';
 		import type { CustomerContactType } from '$lib/types/page/customers';
 
-		export let dialogOpen: boolean = false;
-		export let label: string = "Nový kontakt";
-		export let formDef: AutoFormSimpleType;
-		export let translationRoute: string;
-		export let createdContacts: Writable<CustomerContactType[]> = writable([]);
+	interface Props {
+		dialogOpen?: boolean;
+		label?: string;
+		formDef: AutoFormSimpleType;
+		translationRoute: string;
+		createdContacts?: Writable<CustomerContactType[]>;
+	}
 
-		let contact: CustomerContactType = {
+	let {
+		dialogOpen = $bindable(false),
+		label = "Nový kontakt",
+		formDef,
+		translationRoute,
+		createdContacts = writable([])
+	}: Props = $props();
+
+		let contact: CustomerContactType = $state({
 				isDefault: false,
 				enabled: false,
 				name: null,
@@ -28,7 +38,7 @@
 				consignmentReturnInfo: false,
 				consignmentInfo: false,
 				carrierInfo: false
-		}
+		})
 
 		function addContact() {
 				createdContacts.update((data) => [...data, contact]);

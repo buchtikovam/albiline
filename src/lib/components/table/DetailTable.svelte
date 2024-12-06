@@ -7,9 +7,13 @@
 	import { writable } from 'svelte/store';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 
-	export let tableDef;
-	export let tableData = writable([]);
-	export let translationRoute;
+	interface Props {
+		tableDef: any;
+		tableData?: any;
+		translationRoute: any;
+	}
+
+	let { tableDef, tableData = $bindable(writable([])), translationRoute }: Props = $props();
 
 </script>
 

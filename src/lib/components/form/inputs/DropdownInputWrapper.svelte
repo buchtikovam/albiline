@@ -2,9 +2,13 @@
 	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import * as Select from "$lib/components/ui/select/index.js";
 
-	export let value: string;
-	export let options: string[];
-	export let label;
+	interface Props {
+		value: string;
+		options: string[];
+		label: any;
+	}
+
+	let { value = $bindable(), options, label }: Props = $props();
 
 	value = value.toUpperCase();
 </script>

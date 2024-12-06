@@ -7,8 +7,12 @@
 	import type { RibbonItem, RibbonSubItem } from '$lib/types/components/ribbon/ribbon';
 	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
-	export let ribbonItem: RibbonItem;
-	export let isRibbonOpen: boolean = true;
+	interface Props {
+		ribbonItem: RibbonItem;
+		isRibbonOpen?: boolean;
+	}
+
+	let { ribbonItem, isRibbonOpen = true }: Props = $props();
 
 	let children: RibbonSubItem[] = ribbonItem.children || [];
 
@@ -29,8 +33,7 @@
 					class="text-[9px] size-11 leading-none rounded hover:bg-muted/80 text-albi-950 hover:text-black"
 				>
 					<span class="flex w-11 items-center justify-center ml-1 text-albi-950 hover:text-black">
-						<svelte:component
-							this={ribbonItem.icon}
+						<ribbonItem.icon
 							class="size-4 muted-foreground"
 						/>
 						<ChevronDown class="size-2 " />
@@ -43,7 +46,7 @@
 		<DropdownMenu.Content class="w-fit">
 			{#each children as ribbonChild}
 				<DropdownMenu.Item class="w-full">
-					<button on:click={() => setRibbonAction(ribbonChild.action)}>
+					<button onclick={() => setRibbonAction(ribbonChild.action)}>
 						{$_('components.ribbon.' + ribbonChild.field)}
 					</button>
 				</DropdownMenu.Item>
@@ -55,8 +58,7 @@
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger class="ml-0.5 min-w-6 rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
 <!--					<Tooltip.Trigger class="flex items-center">-->
-					<svelte:component
-						this={ribbonItem.icon}
+					<ribbonItem.icon
 						class="size-4 "
 					/>
 					<ChevronDown class="size-2 mr-0.5" />
@@ -66,7 +68,7 @@
 			<DropdownMenu.Content class="w-fit ">
 				{#each children as ribbonChild}
 					<DropdownMenu.Item class="w-full">
-						<button on:click={() => setRibbonAction(ribbonChild.action)}>
+						<button onclick={() => setRibbonAction(ribbonChild.action)}>
 							{$_('components.ribbon.' + ribbonChild.field)}
 						</button>
 					</DropdownMenu.Item>

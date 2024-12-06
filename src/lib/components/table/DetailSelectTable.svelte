@@ -4,11 +4,15 @@
 	import { _ } from 'svelte-i18n'
 	import type { Writable } from 'svelte/store';
 
-	export let tableDef;
-	export let tableData: Writable<Row[]>;
-	export let translationRoute: string;
+	interface Props {
+		tableDef: any;
+		tableData: Writable<Row[]>;
+		translationRoute: string;
+	}
 
-	let rowData: Row[] = [];
+	let { tableDef, tableData, translationRoute }: Props = $props();
+
+	let rowData: Row[] = $state([]);
 
 	type Row = {
 		name: string,

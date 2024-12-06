@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `<button>` is invalid inside `<button>` -->
 <script lang="ts">
 	import { editedTableDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
 	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
@@ -162,13 +163,16 @@
 							on:mouseenter={() => showTabClosingButton(tab)}
 							on:mouseleave={() => hideTabClosingButton(tab)}
 						>
-							{$_('components.sidebar.' + tab.field)}
-							<button
-								on:click={(ev) => removeTab(tab, ev)}
-								class={`${tab.closingState}`}
-								>
-								<X class="ml-1 text-red-600 size-3.5"/>
-							</button>
+<!--							<div>-->
+								{$_('components.sidebar.' + tab.field)}
+<!--								<button-->
+<!--									on:click={(ev) => removeTab(tab, ev)}-->
+<!--									class={`${tab.closingState}`}-->
+<!--								>-->
+<!--									<X class="ml-1 text-red-600 size-3.5"/>-->
+<!--								</button>-->
+<!--							</div>-->
+
 						</button>
 					</Tabs.Trigger>
 				</button>

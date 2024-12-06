@@ -8,11 +8,16 @@
 	import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
 	import { pageCompactStore } from '$lib/stores/pageStore';
 
-	/*
+	
+
+	interface Props {
+		/*
 		Avatar komponent s dropdownem a uživatelskými nastaveními
 	*/
+		userName?: string;
+	}
 
-	export let userName: string = 'MBUC';
+	let { userName = 'MBUC' }: Props = $props();
 </script>
 
 
@@ -54,7 +59,7 @@
 
 			<DropdownMenu.Item>
 				<button
-					on:click={() => {
+					onclick={() => {
 						pageCompactStore.set(false);
 						window.location.reload();
 					}}
@@ -67,7 +72,7 @@
 
 			<DropdownMenu.Item>
 				<button
-					on:click={() => {
+					onclick={() => {
 						pageCompactStore.set(true);
 						window.location.reload();
 					}}

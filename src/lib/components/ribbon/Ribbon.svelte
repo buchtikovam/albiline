@@ -15,7 +15,7 @@
 		Resizable ribbon container obsahující různé ribbon items
 	*/
 
-	let isRibbonOpen: boolean = false;
+	let isRibbonOpen: boolean = $state(false);
 
 	function toggleRibbonOpen() {
 		isRibbonOpen = !isRibbonOpen;
@@ -70,7 +70,7 @@
 
 
 	<button 
-		on:click={toggleRibbonOpen} 
+		onclick={toggleRibbonOpen} 
 		class="overflow-visible pl-1.5"
 	>
 		{#if isRibbonOpen}

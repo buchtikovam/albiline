@@ -11,7 +11,7 @@
 		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
 	*/
 
-	let currentDialog: GlobalDialogOptions | undefined = undefined;
+	let currentDialog: GlobalDialogOptions | undefined = $state(undefined);
 
 	openedDialogStore.subscribe((dialog) => {
 		currentDialog = dialog

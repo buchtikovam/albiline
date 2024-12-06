@@ -8,7 +8,11 @@
 
 	import SuperDebug from "sveltekit-superforms";
  
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
  
 	const form = superForm(data.form, {
 		validators: zodClient(schema),
@@ -18,10 +22,12 @@
  
 <form method="POST" use:enhance>
 	<Field {form} name="email">
-		<Control let:attrs>
-			<Label>Email</Label>
-			<Input {...attrs} type="email" bind:value={$formData.email} />
-		</Control>
+		<Control >
+			{#snippet children({ attrs })}
+						<Label>Email</Label>
+				<Input {...attrs} type="email" bind:value={$formData.email} />
+								{/snippet}
+				</Control>
 		<Description>Use your company email if you have one.</Description>
 		<FieldErrors />
 	</Field>

@@ -13,14 +13,24 @@
 	import { onNavigate } from '$app/navigation';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 
-	export let rowData: Writable<any[]>;
-	export let editedRowData: Writable<any[]>;
-	export let createdRowData: Writable<any[]>;
-	export let requiredFields: string[]
-	export let gridOptionsCustom: GridOptions;
+	interface Props {
+		rowData: Writable<any[]>;
+		editedRowData: Writable<any[]>;
+		createdRowData: Writable<any[]>;
+		requiredFields: string[];
+		gridOptionsCustom: GridOptions;
+	}
+
+	let {
+		rowData,
+		editedRowData,
+		createdRowData,
+		requiredFields,
+		gridOptionsCustom
+	}: Props = $props();
 
 
-	let gridContainer: HTMLElement;
+	let gridContainer: HTMLElement = $state();
 	let gridApi: GridApi<unknown>;
 
 

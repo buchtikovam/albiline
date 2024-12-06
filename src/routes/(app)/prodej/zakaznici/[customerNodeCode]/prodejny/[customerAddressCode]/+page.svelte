@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
 	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
@@ -39,36 +41,44 @@
 	import { processRoute } from '$lib/utils/navigation/processRoute';
 	import type { GridOptions } from 'ag-grid-enterprise';
 
-	export let data: {
+	interface Props {
+		data: {
 		response: {
 			item: CustomerAddressType,
 			contacts: CustomerContactType[]
 		},
 		status: "success" | "fail",
 	};
+	}
+
+	let { data }: Props = $props();
 
 	// @ts-ignore // autoform
-	let formValues: Writable<CustomerAddressType> = writable({});
-	$: formValues.set(data.response.item);
+	let formValues: Writable<CustomerAddressType> = $state(writable({}));
+	run(() => {
+		formValues.set(data.response.item);
+	});
 
 	// contacts table
-	let contactValues: Writable<CustomerContactType[]> = writable([]) ;
-	$: contactValues.set(data.response.contacts);
+	let contactValues: Writable<CustomerContactType[]> = $state(writable([])) ;
+	run(() => {
+		contactValues.set(data.response.contacts);
+	});
 
-	let editedContactValues: Writable<any[]> = writable([]);
-	let createdContacts: Writable<CustomerContactType[]> = writable([]);
+	let editedContactValues: Writable<any[]> = $state(writable([]));
+	let createdContacts: Writable<CustomerContactType[]> = $state(writable([]));
 
 	// page variables
 	const translationRoute = "routes.prodej.zakaznici.address_detail";
-	let pageLayout = customerAddressPageLayout;
-	let autoformDef = writable(customerAddressDetailFormDef);
-	let openNewContactDialog: boolean = false;
-	let openAgGridDialog: boolean = false;
+	let pageLayout = $state(customerAddressPageLayout);
+	let autoformDef = $state(writable(customerAddressDetailFormDef));
+	let openNewContactDialog: boolean = $state(false);
+	let openAgGridDialog: boolean = $state(false);
 	let pageSettings: PageMetaDataType;
 
 
 	// get all selected rows from table
-	let selectedRows = get(selectedRowsStore)
+	let selectedRows = $state(get(selectedRowsStore))
 	selectedRowsStore.subscribe((data) => {
 		selectedRows = data;
 	});
@@ -76,13 +86,15 @@
 
 	// --- PAGE NAVIGATION BETWEEN SELECTED ADRRESSES ----
 	// route parameters swapping logic
-	$: disableLeft = false;
-	$: disableRight = false;
+	let disableLeft = $state(false);
+	
+	let disableRight = $state(false);
+	
 
-	$: activeId = {
+	let activeId = $derived({
 		customerNodeCode: Number($page.params.customerNodeCode),
 		customerAddressCode: Number($page.params.customerAddressCode)
-	}
+	})
 
 	// disable navigation if there are unsaved changes in form
 	editedFormValuesStore.subscribe((data) => {
@@ -135,7 +147,7 @@
 
 
 	// fetching for customer addresses ag-grid dialog
-	let addresses = writable([])
+	let addresses = $state(writable([]))
 
 	async function getAddresses() {
 		if (get(addresses).length === 0) {
@@ -280,7 +292,7 @@
 				<button
 					class={($disableNavigationStore ? "text-slate-300 " : "text-albi-500") + " w-6"}
 					disabled={$disableNavigationStore}
-					on:click={() => {
+					onclick={() => {
 						openAgGridDialog = true;
 						getAddresses();
 					}}
@@ -330,13 +342,13 @@
 
 						<button
 							id="contacts"
-							on:click={() => pageLayout = flipItems(pageLayout)}
+							onclick={() => pageLayout = flipItems(pageLayout)}
 						>
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
 						<button
-							on:click={() => openNewContactDialog = true}
+							onclick={() => openNewContactDialog = true}
 						>
 							<Plus strokeWidth={2.5} class="text-albi-500 size-4"/>
 						</button>

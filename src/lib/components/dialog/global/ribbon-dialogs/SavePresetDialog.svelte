@@ -13,8 +13,8 @@
 		po vložení názvu se provede savePresets funkce
 	*/
 
-	let dialogOpen: boolean = false;
-	let inputValue: string = "";
+	let dialogOpen: boolean = $state(false);
+	let inputValue: string = $state("");
 
 
 	function handleSavePresets(event: Event) {
@@ -47,7 +47,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form on:submit={handleSavePresets} class="p-0.5">
+		<form onsubmit={handleSavePresets} class="p-0.5">
 			<Label for="test" class="text-right">
 				Název nové šablony
 			</Label>

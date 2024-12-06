@@ -4,9 +4,13 @@
 	import Heart from 'lucide-svelte/icons/heart';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 
-	export let itemValue: string;
+	interface Props {
+		itemValue: string;
+	}
 
-	let category: string;
+	let { itemValue }: Props = $props();
+
+	let category: string = $state();
 	activeCategoryStore.subscribe((data) => {
 		category = data;
 	});

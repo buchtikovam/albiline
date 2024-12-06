@@ -9,10 +9,19 @@
 	import type { CustomerContactType } from '$lib/types/page/customers';
 	import type { Writable } from 'svelte/store';
 
-	export let addToEdited: boolean = true;
-	export let autoform: AutoFormSimpleType;
-	export let formValues: CustomerContactType;
-	export let translationRoute: string;
+	interface Props {
+		addToEdited?: boolean;
+		autoform: AutoFormSimpleType;
+		formValues: CustomerContactType;
+		translationRoute: string;
+	}
+
+	let {
+		addToEdited = true,
+		autoform,
+		formValues = $bindable(),
+		translationRoute
+	}: Props = $props();
 </script>
 
 

@@ -20,14 +20,25 @@
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 	import { disableInputs } from '$lib/stores/pageStore';
 
-	export let section: AutoFormSection[];
-	export let colName: string;
-	export let translationRoute: string;
-	export let autoformWritable: Writable<AutoFormType>;
-	export let allowCrossColumnDND: boolean = true
-	export let formValues = writable({});
+	interface Props {
+		section: AutoFormSection[];
+		colName: string;
+		translationRoute: string;
+		autoformWritable: Writable<AutoFormType>;
+		allowCrossColumnDND?: boolean;
+		formValues?: any;
+	}
 
-	let disable = false;
+	let {
+		section = $bindable(),
+		colName,
+		translationRoute,
+		autoformWritable,
+		allowCrossColumnDND = true,
+		formValues = writable({})
+	}: Props = $props();
+
+	let disable = $state(false);
 
 	disableInputs.subscribe((data) => {
 		disable = data
@@ -56,8 +67,8 @@
 <section
 	use:dragHandleZone="{{ items: section, flipDurationMs, type: allowCrossColumnDND ? undefined : colName }}"
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
-	on:consider={handleDndConsider}
-	on:finalize={handleDndFinalize}
+	onconsider={handleDndConsider}
+	onfinalize={handleDndFinalize}
 >
 	{#each section as item (item.id)}
 		<div animate:flip={{ duration: flipDurationMs }} >
@@ -70,8 +81,8 @@
 								   <SectionLabel label={$_(translationRoute + item.field)} />
 							   </Accordion.Trigger>
 
-							   <button type="button" on:click={() => openedDialogStore.set(item.dialogId)}>
-								   <svelte:component this={item.dialogIcon} class="size-4 text-albi-500"/>
+							   <button type="button" onclick={() => openedDialogStore.set(item.dialogId)}>
+								   <item.dialogIcon class="size-4 text-albi-500"/>
 								   {item.dialogTitle || ""}
 							   </button>
 						   </div>

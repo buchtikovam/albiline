@@ -4,8 +4,12 @@
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
 
-	export let items: SidebarItem[];
-	export let isSidebarCommandOpen: boolean;
+	interface Props {
+		items: SidebarItem[];
+		isSidebarCommandOpen: boolean;
+	}
+
+	let { items, isSidebarCommandOpen = $bindable() }: Props = $props();
 
 
 	function handleClick(item: SidebarItem, treeDepth: number): void {
@@ -32,7 +36,7 @@
 				<Command.Group heading={$_('components.sidebar.' + item.field).toUpperCase()} class="my-2">
 					{#each item.children as child}
 						<Command.Item class="">
-							<a href={child.href} on:click={() => handleClick(child, 1)}>
+							<a href={child.href} onclick={() => handleClick(child, 1)}>
 								{$_('components.sidebar.' + child.field)}
 							</a>
 						</Command.Item>
@@ -41,7 +45,7 @@
 							{#each child.children as secondChild}
 								<Command.Item>
 									<a href={secondChild.href} class="text-sm pl-4"
-									   on:click={() => handleClick(secondChild, 2)}>
+									   onclick={() => handleClick(secondChild, 2)}>
 										{$_('components.sidebar.' + secondChild.field)}
 									</a>
 								</Command.Item>
@@ -53,7 +57,7 @@
 				<!-- items bez children položek -->
 				<Command.Group>
 					<Command.Item>
-						<a href={item.href} on:click={() => handleClick(item, 0)}>
+						<a href={item.href} onclick={() => handleClick(item, 0)}>
 							{$_('components.sidebar.' + item.field)}
 						</a>
 					</Command.Item>

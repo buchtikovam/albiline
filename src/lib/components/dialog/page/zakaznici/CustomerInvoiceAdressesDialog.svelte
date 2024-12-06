@@ -8,8 +8,8 @@
 	import { apiServiceGET } from '$lib/api/apiService';
 
 	const activeRow = get(selectedRowsStore)[get(activeSelectedRowIndexStore)]
-	let dialogOpen: boolean = false;
-	let invoiceAddresses = writable([])
+	let dialogOpen: boolean = $state(false);
+	let invoiceAddresses = $state(writable([]))
 
 	async function getInvoiceAddresses() {
 		const res = await apiServiceGET(`customers/${activeRow.customerNodeCode}/invoice-addresses`)

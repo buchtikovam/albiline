@@ -3,16 +3,28 @@
 	import { writable, type Writable } from 'svelte/store';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	/*
+	
+
+	interface Props {
+		/*
 		Warning dialog s tlačítky pro udělení/zamítnutí souhlasu akce
 	*/
+		open?: boolean;
+		message: string;
+		desription: string;
+		buttonAllowLabel: string;
+		buttonDenyLabel: string;
+		consent?: Writable<boolean>;
+	}
 
-	export let open = true;
-	export let message: string;
-	export let desription: string;
-	export let buttonAllowLabel: string
-	export let buttonDenyLabel: string
-	export let consent: Writable<boolean> = writable(false);
+	let {
+		open = $bindable(true),
+		message,
+		desription,
+		buttonAllowLabel,
+		buttonDenyLabel,
+		consent = writable(false)
+	}: Props = $props();
 
 
 	function consentAllow() {

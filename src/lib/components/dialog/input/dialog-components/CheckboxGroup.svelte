@@ -3,7 +3,11 @@
 	import { Label } from "$lib/components/ui/label/index.js";
 	import type { InputCheckboxItem } from '$lib/types/components/form/input-dialog/inputDialog';
 
-	export let items: InputCheckboxItem[];
+	interface Props {
+		items: InputCheckboxItem[];
+	}
+
+	let { items }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-1">

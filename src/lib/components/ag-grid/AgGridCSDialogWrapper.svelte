@@ -10,10 +10,14 @@
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
 
-	export let colDef: any[];
-	export let rowData = writable([]);
+	interface Props {
+		colDef: any[];
+		rowData?: any;
+	}
 
-	let gridContainer: HTMLElement;
+	let { colDef, rowData = writable([]) }: Props = $props();
+
+	let gridContainer: HTMLElement = $state();
 	let gridApi: GridApi<unknown>;
 
 

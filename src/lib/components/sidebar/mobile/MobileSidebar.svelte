@@ -13,10 +13,14 @@
 	import { buttonBorderSwitch } from '$lib/utils/components/sidebar/buttonBorderSwitch';
 	import { onMount } from 'svelte';
 
-	export let isOpen: boolean = false;
+	interface Props {
+		isOpen?: boolean;
+	}
 
-	let filteredItems: SidebarItem[] = deepcopy(allItems);
-	let searchTerm = '';
+	let { isOpen = $bindable(false) }: Props = $props();
+
+	let filteredItems: SidebarItem[] = $state(deepcopy(allItems));
+	let searchTerm = $state('');
 
 
 	let recentItemValues: string[] = [];

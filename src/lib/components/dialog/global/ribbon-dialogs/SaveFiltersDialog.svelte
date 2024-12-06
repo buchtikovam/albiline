@@ -13,8 +13,8 @@
 		po vložení názvu se provede saveFilters funkce
 	*/
 
-	let dialogOpen: boolean = false;
-	let inputValue: string = "";
+	let dialogOpen: boolean = $state(false);
+	let inputValue: string = $state("");
 
 	
 	function handleSaveFilters(event: Event) {
@@ -47,7 +47,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form on:submit={handleSaveFilters} class="p-0.5">
+		<form onsubmit={handleSaveFilters} class="p-0.5">
 			<Label for="test" class="text-right">
 				Název nové kolekce
 			</Label>

@@ -24,8 +24,8 @@
 		tlačítky pro přepínání kategorií a inputem
 	*/
 
-	let isSidebarCommandOpen: boolean = false;
-	let isSidebarOpen: boolean;
+	let isSidebarCommandOpen: boolean = $state(false);
+	let isSidebarOpen: boolean = $state();
 	sidebarOpenStore.subscribe(data => {
 		isSidebarOpen = data;
 	});
@@ -51,8 +51,8 @@
 	});	
 
 
-	let filteredItems: SidebarItem[] = deepcopy(allItems);
-	let searchTerm = '';
+	let filteredItems: SidebarItem[] = $state(deepcopy(allItems));
+	let searchTerm = $state('');
 
 
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování

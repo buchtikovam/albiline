@@ -7,15 +7,26 @@
 	import { get } from 'svelte/store';
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
-	export let value: string|null;
-	export let label: string;
-	export let inputDef: AutoFormInput;
-	export let disable: boolean = false;
-	export let field: string = "";
-	export let addToEdited: boolean = true;
+	interface Props {
+		value: string|null;
+		label: string;
+		inputDef: AutoFormInput;
+		disable?: boolean;
+		field?: string;
+		addToEdited?: boolean;
+	}
 
-	let errorMessage = "";
-	let hasError: boolean = false;
+	let {
+		value = $bindable(),
+		label,
+		inputDef,
+		disable = false,
+		field = "",
+		addToEdited = true
+	}: Props = $props();
+
+	let errorMessage = $state("");
+	let hasError: boolean = $state(false);
 
 	const initialValue = value;
 
@@ -67,7 +78,7 @@
 
 		<input
 			type="text"
-			on:input={(e) => validateTextSchema(e)}
+			oninput={(e) => validateTextSchema(e)}
 			bind:value
 			disabled={disable}
 			class={`

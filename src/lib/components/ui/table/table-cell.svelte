@@ -1,22 +1,20 @@
 <script lang="ts">
 	import type { HTMLTdAttributes } from "svelte/elements";
+	import type { WithElementRef } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 
-	type $$Props = HTMLTdAttributes;
-
-	let className: $$Props["class"] = undefined;
-
-	let isCompact: string;
-
-
-	export { className as class };
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLTdAttributes> = $props();
 </script>
 
 <td
-	class={cn("px-3 py-1.5 align-middle whitespace-nowrap text-albi-950", className)}
-	{...$$restProps}
-	on:click
-	on:keydown
+	bind:this={ref}
+	class={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+	{...restProps}
 >
-	<slot />
+	{@render children?.()}
 </td>
