@@ -9,7 +9,6 @@
 	import CheckboxWrapper from './inputs/CheckboxWrapper.svelte';
 	import EmptyField from './inputs/EmptyField.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
-	import { _ } from 'svelte-i18n'
 	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform/autoform';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import Grip from 'lucide-svelte/icons/grip';
@@ -78,7 +77,7 @@
 						<div class="flex justify-between items-center pb-2">
 						   <div class="flex">
 							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" on:click={() => item.isOpen = !item.isOpen}>
-								   <SectionLabel label={$_(translationRoute + item.field)} />
+								   <SectionLabel label={translationRoute + item.field} />
 							   </Accordion.Trigger>
 
 							   <button type="button" onclick={() => openedDialogStore.set(item.dialogId)}>
@@ -94,7 +93,7 @@
 					{:else}
 						<div class="flex justify-between items-center pb-2">
 							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" on:click={() => item.isOpen = !item.isOpen}>
-								<SectionLabel label={$_(translationRoute + item.field)} />
+								<SectionLabel label={translationRoute + item.field} />
 							</Accordion.Trigger>
 
 							<div use:dragHandle aria-label="drag-handle" class="handle">
@@ -112,7 +111,7 @@
 										{#each Object.entries(row.inputs) as [key, value]}
 											{#if value.type === "text"}
 												<InputWrapperText
-													label={$_(translationRoute + key) || ""}
+													label={translationRoute + key || ""}
 													inputDef={value}
 													field={key}
 													bind:value={$formValues[key]}
@@ -121,7 +120,7 @@
 											{/if}
 											{#if value.type === "number"}
 												<InputWrapperNumber
-													label={$_(translationRoute + key)}
+													label={translationRoute + key}
 													inputDef={value}
 													field={key}
 													bind:value={$formValues[key]}
@@ -133,7 +132,7 @@
 												<div class="mt-5 w-full">
 													<CheckboxWrapper
 														field={key}
-														label={$_(translationRoute + key)}
+														label={translationRoute + key}
 														bind:value={$formValues[key]}
 														disable={disable}
 													/>
@@ -149,7 +148,7 @@
 													field={key}
 													bind:value={$formValues[key]}
 													options={value.dropdownOptions}
-													label={$_(translationRoute + key)}
+													label={translationRoute + key}
 													disable={disable}
 												/>
 											{/if}
@@ -158,7 +157,7 @@
 												<DateWrapper
 													field={key}
 													bind:value={$formValues[key]}
-													label={$_(translationRoute + key)}
+													label={translationRoute + key}
 													disable={disable}
 												/>
 											{/if}
@@ -172,7 +171,7 @@
 											<CheckboxWrapper
 												field={key}
 												bind:value={$formValues[key]}
-												label={$_(translationRoute + key)}
+												label={translationRoute + key}
 												disable={disable}
 											/>
 										{/each}

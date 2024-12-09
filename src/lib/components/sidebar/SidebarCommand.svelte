@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { _ } from 'svelte-i18n'
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
@@ -21,11 +20,11 @@
 
 
 <Command.Dialog bind:open={isSidebarCommandOpen} class="p-0">
-	<Command.Input placeholder={$_('components.sidebar.search_placeholder')} />
+	<Command.Input placeholder={'components.sidebar.search_placeholder'} />
 
 	<Command.List class="mt-2 p-0">
 		<Command.Empty class="-mt-2">
-			{$_('components.sidebar.command_empty')}
+			<!--{$_('components.sidebar.command_empty')}-->
 		</Command.Empty>
 
 		{#each items as item}
@@ -33,11 +32,11 @@
 				<Command.Separator class="my-2" />
 
 				<!-- items s children položkami -->
-				<Command.Group heading={$_('components.sidebar.' + item.field).toUpperCase()} class="my-2">
+				<Command.Group heading={'components.sidebar.' + item.field.toUpperCase()} class="my-2">
 					{#each item.children as child}
 						<Command.Item class="">
 							<a href={child.href} onclick={() => handleClick(child, 1)}>
-								{$_('components.sidebar.' + child.field)}
+								<!--{$_('components.sidebar.' + child.field)}-->
 							</a>
 						</Command.Item>
 
@@ -46,7 +45,7 @@
 								<Command.Item>
 									<a href={secondChild.href} class="text-sm pl-4"
 									   onclick={() => handleClick(secondChild, 2)}>
-										{$_('components.sidebar.' + secondChild.field)}
+										<!--{$_('components.sidebar.' + secondChild.field)}-->
 									</a>
 								</Command.Item>
 							{/each}
@@ -58,7 +57,7 @@
 				<Command.Group>
 					<Command.Item>
 						<a href={item.href} onclick={() => handleClick(item, 0)}>
-							{$_('components.sidebar.' + item.field)}
+							<!--{$_('components.sidebar.' + item.field)}-->
 						</a>
 					</Command.Item>
 				</Command.Group>

@@ -4,7 +4,6 @@
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import SidebarToggleButton from './SidebarToggleButton.svelte';
 	import Search from 'lucide-svelte/icons/search';
-	import { _ } from 'svelte-i18n'
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 
@@ -31,7 +30,7 @@
 			</button>
 
 			<Tooltip.Content class="ml-12 mt-12">
-				{$_('components.sidebar.search_tooltip')}
+				<!--{$_('components.sidebar.search_tooltip')}-->
 			</Tooltip.Content>
 		</Tooltip.Root>
 
@@ -59,7 +58,7 @@
 										class="hover:bg-muted/50 rounded px-2 py-1.5"
 										onclick={() => handleTabClick(child, 1)}
 									>
-										{$_('components.sidebar.' + child.field)}
+										<!--{$_('components.sidebar.' + child.field)}-->
 									</a>
 
 									{#if child.children.length > 0}
@@ -69,7 +68,7 @@
 												class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
 												onclick={() => handleTabClick(scndChild, 2)}
 											>
-												{$_('components.sidebar.' + scndChild.field)}
+												<!--{$_('components.sidebar.' + scndChild.field)}-->
 											</a>
 										{/each}
 									{/if}
@@ -79,7 +78,7 @@
 					</Tooltip.Trigger>
 
 					<Tooltip.Content class="ml-12 mt-12">
-						{$_('components.sidebar.' + item.field)}
+						<!--{$_('components.sidebar.' + item.field)}-->
 					</Tooltip.Content>
 				</Tooltip.Root>
 
@@ -97,7 +96,7 @@
 					</Tooltip.Trigger>
 
 					<Tooltip.Content class="ml-12 mt-12">
-						{$_('components.sidebar.' + item.field)}
+						<!--{$_('components.sidebar.' + item.field)}-->
 					</Tooltip.Content>
 				</Tooltip.Root>
 			{/if}

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { _ } from 'svelte-i18n'
 	import { ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
 	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
@@ -32,7 +31,7 @@
 				<ribbonItem.icon
 					class="mr-1 size-3.5 muted-foreground"
 				/>
-				{$_('components.ribbon.' + ribbonItem.field)}
+				{'components.ribbon.' + ribbonItem.field}
 			</button>
 		{/each}
 	</div>
@@ -51,7 +50,7 @@
 			</Tooltip.Trigger>
 
 			<Tooltip.Content>
-				{$_('components.ribbon.' + ribbonItem.field)}
+				{'components.ribbon.' + ribbonItem.field}
 			</Tooltip.Content>
 		</Tooltip.Root>
 	{/each}

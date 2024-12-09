@@ -1,7 +1,6 @@
 <script lang="ts">
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
-	import { _ } from 'svelte-i18n';
 	import { getContext } from 'svelte';
 	import { editedFormValuesStore, selectedInputStore } from '$lib/runes-global/autoformStore';
 	import { get } from 'svelte/store';
@@ -51,18 +50,18 @@
 
 			switch (e.issues[0].code) {
 				case "too_small":
-					errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum, field: label }});
+					// errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum, field: label }});
 					break;
 				case "too_big":
-					errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum, field: label }});
+					// errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum, field: label }});
 					break;
 				case "invalid_string":
 					switch (e.issues[0].validation) {
 						case "email":
-							errorMessage = $_('zod_errors.string.invalid_string.email');
+							// errorMessage = $_('zod_errors.string.invalid_string.email');
 							break;
 						default:
-							errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
+							// errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
 					}
 					break;
 			}

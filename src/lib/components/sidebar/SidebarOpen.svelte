@@ -8,7 +8,6 @@
 	import ItemOpenThirdNoChild from './sidebar-items/ItemOpenThirdNoChild.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
-	import { _ } from 'svelte-i18n'
 
 	interface Props {
 		searchTerm: string;
@@ -43,7 +42,7 @@
 											href={item.href}
 											onclick={() => handleTabClick(item, 0)}
 										>
-											{$_('components.sidebar.' + item.field)}
+											<!--{$_('components.sidebar.' + item.field)}-->
 										</a>
 									</div>
 								</Accordion.Trigger>
@@ -69,7 +68,7 @@
 																	href={secondChild.href}
 																	onclick={() => handleTabClick(secondChild, 1)}
 																>
-																	{$_('components.sidebar.' + secondChild.field)}
+																	<!--{$_('components.sidebar.' + secondChild.field)}-->
 																</a>
 															</div>
 														</Accordion.Trigger>

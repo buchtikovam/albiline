@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { _ } from 'svelte-i18n'
 	import Settings from 'lucide-svelte/icons/settings';
 	import LogOut from 'lucide-svelte/icons/log-out';
 	import User from 'lucide-svelte/icons/user';
@@ -28,7 +27,7 @@
 
 	<DropdownMenu.Content class="min-w-40 mr-4">
 		<DropdownMenu.Label class="font-bold text-albi-950 text-base">
-			{$_('components.avatar.welcome')}
+			{'components.avatar.welcome'}
 			<span class="text-albi-500">
 				{userName}
 			</span>
@@ -39,14 +38,14 @@
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
 					<User class="size-5 mr-2" />
-					{$_('components.avatar.profile')}
+					{'components.avatar.profile'}
 
 				</a>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
 					<Settings class="size-5 mr-2" />
-					{$_('components.avatar.settings')}
+					{'components.avatar.settings'}
 				</a>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
@@ -90,7 +89,7 @@
 			<DropdownMenu.Item>
 				<a href="/" class="flex items-center">
 					<LogOut class="size-5 mr-2" />
-					{$_('components.avatar.logout')}
+					{'components.avatar.logout'}
 				</a>
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>

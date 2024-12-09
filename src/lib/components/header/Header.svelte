@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { disableNavigationRune, openedTabsRune } from '$lib/runes-global/navigation.svelte.js';
 	import { page } from '$app/stores';
-	import { _ } from 'svelte-i18n';
 	import { slide } from 'svelte/transition';
 	import { goto, preloadData } from '$app/navigation';
 	import { get } from 'svelte/store';
@@ -76,7 +75,7 @@
 						}}
 						class="flex h-6 items-center font-bold"
 					>
-						{$_('components.sidebar.' + tab.field)}
+						{'components.sidebar.' + tab.field}
 						{#if (tab.closingState === 'block')}
 							<span transition:slide={{ axis: "x" }}>
 								<X
@@ -109,7 +108,7 @@
 			<div class="md:hidden w-full px-2">
 				<Input
 					class="h-[32px] rounded-md border-none focus-visible:ring-0"
-					placeholder={$_('routes.prodej.zakaznici.fulltext_placeholder')}
+					placeholder={'routes.prodej.zakaznici.fulltext_placeholder'}
 					type="text"
 					bind:value={fulltextFilterValue.value}
 				/>

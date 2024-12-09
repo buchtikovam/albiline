@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { _ } from 'svelte-i18n'
 	import { ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -38,7 +37,7 @@
 						/>
 						<ChevronDown class="size-2 " />
 					</span>
-					{$_('components.ribbon.' + ribbonItem.field)}
+					<!--{$_('components.ribbon.' + ribbonItem.field)}-->
 				</button>
 			</DropdownMenu.Trigger>
 		</div>
@@ -47,7 +46,7 @@
 			{#each children as ribbonChild}
 				<DropdownMenu.Item class="w-full">
 					<button onclick={() => setRibbonAction(ribbonChild.action)}>
-						{$_('components.ribbon.' + ribbonChild.field)}
+						<!--{$_('components.ribbon.' + ribbonChild.field)}-->
 					</button>
 				</DropdownMenu.Item>
 			{/each}
@@ -69,7 +68,7 @@
 				{#each children as ribbonChild}
 					<DropdownMenu.Item class="w-full">
 						<button onclick={() => setRibbonAction(ribbonChild.action)}>
-							{$_('components.ribbon.' + ribbonChild.field)}
+							<!--{$_('components.ribbon.' + ribbonChild.field)}-->
 						</button>
 					</DropdownMenu.Item>
 				{/each}
@@ -77,7 +76,7 @@
 		</DropdownMenu.Root>
 
 		<Tooltip.Content>
-			{$_('components.ribbon.' + ribbonItem.field)}
+			<!--{$_('components.ribbon.' + ribbonItem.field)}-->
 		</Tooltip.Content>
 	</Tooltip.Root>
 {/if}

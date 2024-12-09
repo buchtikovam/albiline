@@ -4,6 +4,9 @@
 	import './../../app.pcss';
 	import { type Snippet } from 'svelte';
 	import Header from '$lib/components/header/Header.svelte';
+	import { ParaglideJS } from '@inlang/paraglide-sveltekit'
+	import { i18n } from '$lib/i18n.js'
+
 
 	let { children }: { children?: Snippet } = $props();
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
@@ -96,25 +99,31 @@
 <!--	class="h-52 overflow-visible md:flex md:justify-end"-->
 <!--/>-->
 
-<div class="h-dvh w-dvh bg-albi-50">
-	<div class="flex h-dvh flex-col">
-		<header class="">
-			<Header />
-		</header>
+<ParaglideJS {i18n}>
+	<div class="h-dvh w-dvh bg-albi-50">
+		<div class="flex h-dvh flex-col">
+			<header class="">
+				<Header />
+			</header>
 
-<!--		<div class="flex flex-row flex-1 pb-4">-->
-<!--			<div class="hidden md:block pl-4">-->
-<!--				<Sidebar />-->
-<!--			</div>-->
-<!--			<main class="flex flex-1 flex-col rounded-l-md">-->
-<!--				<Ribbon />-->
-<!--				-->
-<!--				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>-->
-<!--					{@render children?.()}-->
-<!--				</div>-->
-<!--			</main>-->
-<!--		</div>-->
+			<!--		<div class="flex flex-row flex-1 pb-4">-->
+			<!--			<div class="hidden md:block pl-4">-->
+			<!--				<Sidebar />-->
+			<!--			</div>-->
+			<!--			<main class="flex flex-1 flex-col rounded-l-md">-->
+			<!--				<Ribbon />-->
+			<!--				-->
+			<!--				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>-->
+			<!--					{@render children?.()}-->
+			<!--				</div>-->
+			<!--			</main>-->
+			<!--		</div>-->
+		</div>
 	</div>
-</div>
 
-<!--<MainDialog/>-->
+	<!--<MainDialog/>-->
+
+
+</ParaglideJS>
+
+

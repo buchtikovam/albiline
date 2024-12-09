@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { _ } from 'svelte-i18n'
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform/autoform";
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
@@ -48,7 +47,7 @@
 								disable={false}
 								addToEdited={addToEdited}
 								field={key}
-								label={$_(translationRoute + '.' + key)}
+								label={translationRoute + '.' + key}
 								inputDef={value}
 							/>
 						{/if}
@@ -62,7 +61,7 @@
 						<CheckboxWrapper
 							addToEdited={addToEdited}
 							bind:value={formValues[key]}
-							label={$_(translationRoute + '.' + key)}
+							label={translationRoute + '.' + key}
 							field={key}
 						/>
 					{/each}

@@ -3,7 +3,6 @@
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import * as Accordion from '$lib/components/ui/accordion/index.js';
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
-	import { _ } from 'svelte-i18n'
 
 	interface Props {
 		item: any;
@@ -30,7 +29,7 @@
 				}}
 				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black"
 			>
-				{$_('components.sidebar.' + item.field)}
+				<!--{$_('components.sidebar.' + item.field)}-->
 			</a>
 		</Accordion.Item>
 	</ContextMenu.Trigger>
