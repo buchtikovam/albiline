@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { selectedRowsStore, showFulltextSearchStore } from '$lib/runes-global/tableStore';
+	import { selectedRowsStore, showFulltextSearchStore } from '$lib/runes-global/table.svelte';
 	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { getPageMetaData } from '$lib/utils/getPageMetaData';
 	import { onMount } from 'svelte';

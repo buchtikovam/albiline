@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { disableNavigationRune, openedTabsRune } from '$lib/runes-global/navigation.svelte.js';
+	import { disableNavigation, openedTabs } from '$lib/runes-global/navigation.svelte.js';
+	import { availableLanguageTags, languageTag } from "$lib/paraglide/runtime.js"
+	import { i18n } from '$lib/i18n.js'
 	import { page } from '$app/stores';
 	import { slide } from 'svelte/transition';
 	import { goto, preloadData } from '$app/navigation';
@@ -7,7 +9,7 @@
 	import Home from 'lucide-svelte/icons/home';
 	import Menu from 'lucide-svelte/icons/menu';
 	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
-	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
+	// import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import Input from '../ui/input/input.svelte';
@@ -24,10 +26,9 @@
 	let pathName = $state("");
 
 	$effect(() => {
-		pathName = getTabValue($page.url.pathname, openedTabsRune.value);
+		pathName = getTabValue($page.url.pathname, openedTabs.value);
+		console.log("effect", pathName);
 	});
-
-	$inspect(pathName);
 
 	let openMobileSidebar: boolean = $state(false);
 </script>
@@ -45,14 +46,14 @@
             <!-- default tabs ,-->
             <Tabs.Trigger
                 value="/"
-				disabled={disableNavigationRune.value}
+				disabled={disableNavigation.value}
                 onclick={() => goto("/")}
 			>
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
 
             <!-- tabs opened by user -->
-            {#each openedTabsRune.value as tab}
+            {#each openedTabs.value as tab}
 				<TabSeparator/>
 				<!--onmouseenter={() => preloadData(tab.url)}-->
 				<button
@@ -62,7 +63,7 @@
 				>
 					<Tabs.Trigger
 						value={tab.url}
-						disabled={disableNavigationRune.value && tab.url !== pathName}
+						disabled={disableNavigation.value && tab.url !== pathName}
 						onclick={() => {
 							goto(tab.url)
 						}}
@@ -92,6 +93,20 @@
 	</Tabs.Root>
 
 
+	<div class="flex gap-2">
+		{#each availableLanguageTags as lang}
+			<!-- the hreflang attribute decides which language the link points to -->
+			<a
+				href={i18n.route($page.url.pathname)}
+				hreflang={lang}
+				aria-current={lang === languageTag() ? "page" : undefined}
+			>
+				{lang}
+			</a>
+		{/each}
+	</div>
+
+
 	<div
 		class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0"
 	>
@@ -119,4 +134,4 @@
 	</div>
 </div>
 
-<MobileSidebar bind:isOpen={openMobileSidebar}/>
+<!--<MobileSidebar bind:isOpen={openMobileSidebar}/>-->

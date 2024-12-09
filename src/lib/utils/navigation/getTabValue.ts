@@ -3,9 +3,9 @@ import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 export function getTabValue(url: string, storedTabs: HeaderTab[]) {
 	console.log("get tab value");
 
-	if (url === "/") return url;
+	if (url === "/" || url === "/en" || url === "/sk" || url === "/pl") return url;
 
-	const urlLength = url.split('/').length;
+	/*const urlLength = url.split('/').length;
 
 	for (const tab of storedTabs) { // found match, no need to continue
 		if (url === tab.url) {
@@ -49,7 +49,7 @@ export function getTabValue(url: string, storedTabs: HeaderTab[]) {
 				return `/${url.split('/').slice(1, -1).join('/')}`;
 			}
 		}
-	}
+	}*/
 
 	return "";
 }

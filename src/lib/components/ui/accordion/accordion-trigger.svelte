@@ -18,7 +18,7 @@
 	<AccordionPrimitive.Trigger
 		bind:ref
 		class={cn(
-			"flex flex-1 items-center justify-between py-3 px-2 font-medium hover:underline transition-all [&[data-state=open]>svg]:rotate-180",
+			"flex flex-1 items-center justify-between py-2 px-1.5 font-medium hover:underline transition-all [&[data-state=open]>svg]:rotate-180",
 			className
 		)}
 		{...restProps}
