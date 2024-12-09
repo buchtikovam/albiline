@@ -3,9 +3,7 @@
 
 	import './../../app.pcss';
 	import { type Snippet } from 'svelte';
-	import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
-
-
+	import Header from '$lib/components/header/Header.svelte';
 
 	let { children }: { children?: Snippet } = $props();
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
@@ -98,19 +96,10 @@
 <!--	class="h-52 overflow-visible md:flex md:justify-end"-->
 <!--/>-->
 
-<div class="h-dvh w-dvh bg-violet-100">
+<div class="h-dvh w-dvh bg-albi-50">
 	<div class="flex h-dvh flex-col">
-		<header class="p-8">
-			<ContextMenu.Root>
-				<ContextMenu.Trigger>Right click</ContextMenu.Trigger>
-				<ContextMenu.Content>
-					<ContextMenu.Item>Profile</ContextMenu.Item>
-					<ContextMenu.Item>Billing</ContextMenu.Item>
-					<ContextMenu.Item>Team</ContextMenu.Item>
-					<ContextMenu.Item>Subscription</ContextMenu.Item>
-				</ContextMenu.Content>
-			</ContextMenu.Root>
-<!--			<Header />-->
+		<header class="">
+			<Header />
 		</header>
 
 <!--		<div class="flex flex-row flex-1 pb-4">-->

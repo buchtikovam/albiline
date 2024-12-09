@@ -1,4 +1,4 @@
-import { activeCategoryStore } from '$lib/stores/sidebarStore';
+import { activeCategoryStore } from '$lib/runes-global/sidebarStore';
 import { get } from 'svelte/store';
 
 

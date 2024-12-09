@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { activeCategoryStore } from '$lib/stores/sidebarStore';
+	import { activeCategoryStore } from '$lib/runes-global/sidebarStore';
 	import * as Tabs from "$lib/components/ui/tabs";
 	import { _ } from 'svelte-i18n'
 	import TabSeparator from '../tabs/TabSeparator.svelte';

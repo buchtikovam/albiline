@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { favoriteItemsStore, activeCategoryStore } from '$lib/stores/sidebarStore';
+	import { favoriteItemsStore, activeCategoryStore } from '$lib/runes-global/sidebarStore';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 	import Heart from 'lucide-svelte/icons/heart';
 	import * as ContextMenu from '$lib/components/ui/context-menu';

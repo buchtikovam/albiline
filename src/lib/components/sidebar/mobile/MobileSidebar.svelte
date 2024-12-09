@@ -5,7 +5,7 @@
 	import { get } from 'svelte/store';
 	import deepcopy from 'deepcopy';
 	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';
-	import { activeCategoryStore, favoriteItemsStore, recentItemsStore } from '$lib/stores/sidebarStore';
+	import { activeCategoryStore, favoriteItemsStore, recentItemsStore } from '$lib/runes-global/sidebarStore';
 	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { allItems } from '$lib/data/page-components/sidebar';

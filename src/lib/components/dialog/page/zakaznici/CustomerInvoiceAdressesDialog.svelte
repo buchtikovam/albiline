@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/tableStore';
 	import { get, writable } from 'svelte/store';
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';

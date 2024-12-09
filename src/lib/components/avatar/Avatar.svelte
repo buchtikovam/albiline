@@ -6,7 +6,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import FoldVertical from 'lucide-svelte/icons/fold-vertical';
 	import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
-	import { pageCompactStore } from '$lib/stores/pageStore';
+	import { pageCompactStore } from '$lib/runes-global/page.svelte';
 
 	
 
@@ -26,7 +26,7 @@
 		<User class="size-5 m-1 mx-auto text-slate-50"/>
 	</DropdownMenu.Trigger>
 
-	<DropdownMenu.Content class="min-w-60">
+	<DropdownMenu.Content class="min-w-40 mr-4">
 		<DropdownMenu.Label class="font-bold text-albi-950 text-base">
 			{$_('components.avatar.welcome')}
 			<span class="text-albi-500">

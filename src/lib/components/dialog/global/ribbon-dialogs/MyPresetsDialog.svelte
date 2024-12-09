@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/stores/tableStore';
-	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes-global/tableStore';
+	import { openedDialogStore, ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';

@@ -25,12 +25,6 @@ export const presetStore: Writable<Preset[]> = writable([]);
 // po vybrání šablony z ribbonu se nastaví do této proměnné, po jejíž změně se načte do tabulky
 export const selectedPresetStore: Writable<Preset> = writable();
 
-// boolean store pro zobrazení fulltextového vyhledávání
-export const showFulltextSearchStore: Writable<boolean> = writable(false);
-
-// store pro uhování hodnoty fulltextového vyhledávání, po změně se po debounce provolá rq na BE
-export const fulltextFilterValueStore: Writable<string> = writable();
-
 // id vybraného řádku v tabulce
 export const selectedRowsStore: Writable<Record<string, string|number|boolean|Date>[]> = writable([]);
 

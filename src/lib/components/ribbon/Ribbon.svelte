@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ribbonOpenStore } from '$lib/stores/ribbonStore';
+	import { ribbonOpenStore } from '$lib/runes-global/ribbonStore';
 	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 	import { ribbonItems } from '$lib/data/page-components/ribbon';
 	import { Separator } from '$lib/components/ui/separator';

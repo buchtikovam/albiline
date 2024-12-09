@@ -1,33 +1,33 @@
-import { currentActiveTabStore, openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
-import { recentItemsStore } from '$lib/stores/sidebarStore';
-import type { SidebarItem, HeaderTab } from '$lib/types/components/sidebar/sidebar';
-import { get } from 'svelte/store';
-import { editedTableDataStore } from '$lib/stores/tableStore';
+// import { currentActiveTabRune, openedTabsRune } from '$lib/global-state/tabStore.svelte';
+// import { recentItemsStore } from '$lib/global-state/sidebarStore';
+// import type { SidebarItem, HeaderTab } from '$lib/types/components/sidebar/sidebar';
+// import { get } from 'svelte/store';
+// import { editedTableDataStore } from '$lib/global-state/tableStore';
 
-
-export function handleTabClick(item: SidebarItem, treeDepth: number): void {	
-	if (get(editedTableDataStore).length === 0) {
-		
-		if (get(allowTabAdding)) {
-			const tab: HeaderTab = {
-				field: item.field,
-				url: item.href,
-				closingState: 'hidden',
-				treeDepth: treeDepth
-			};
-
-			const containsObject: boolean = get(openedTabsStore)
-				.some(obj => obj.field === tab.field);
-
-			if (!containsObject) {
-				openedTabsStore.update((data: HeaderTab[]) => data.concat(tab));
-			}
-
-			currentActiveTabStore.set(tab.url);
-
-			if (!get(recentItemsStore).includes(item.field)) {
-				recentItemsStore.update((data: string[]) => data.concat(item.field));
-			}
-		}	
-	}
+// item: SidebarItem, treeDepth: number
+export function handleTabClick(): void {
+	// if (get(editedTableDataStore).length === 0) {
+	//
+	// 	// if (get(allowTabAdding)) {
+	// 		const tab: HeaderTab = {
+	// 			field: item.field,
+	// 			url: item.href,
+	// 			closingState: 'hidden',
+	// 			treeDepth: treeDepth
+	// 		};
+	//
+	// 		const containsObject: boolean = get(openedTabsRune)
+	// 			.some(obj => obj.field === tab.field);
+	//
+	// 		if (!containsObject) {
+	// 			openedTabsRune.update((data: HeaderTab[]) => data.concat(tab));
+	// 		}
+	//
+	// 		currentActiveTabRune.set(tab.url);
+	//
+	// 		if (!get(recentItemsStore).includes(item.field)) {
+	// 			recentItemsStore.update((data: string[]) => data.concat(item.field));
+	// 		}
+	// 	}
+	// // }
 }

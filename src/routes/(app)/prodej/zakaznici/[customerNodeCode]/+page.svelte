@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
-	import { disableNavigationStore } from '$lib/stores/pageStore';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/tableStore';
+	import { disableNavigationStore } from '$lib/runes-global/page.svelte';
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
-	import { editedFormValuesStore } from '$lib/stores/autoformStore';
+	import { editedFormValuesStore } from '$lib/runes-global/autoformStore';
 	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
 	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import { page } from '$app/stores';
 	import { _ } from 'svelte-i18n'
 	import {

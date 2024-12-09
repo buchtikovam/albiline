@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sidebarOpenStore } from '$lib/stores/sidebarStore';
+	import { sidebarOpenStore } from '$lib/runes-global/sidebarStore';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Menu from 'lucide-svelte/icons/menu';
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n'
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';

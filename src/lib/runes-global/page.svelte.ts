@@ -13,8 +13,10 @@ export const sessionKeyStore: Writable<string> = persisted(
 
 export const disableInputs: Writable<boolean> = writable(false);
 
-export const disableNavigationStore: Writable<boolean> = writable(false);
-
-export const disablePageTabsStore: Writable<boolean> = writable(false);
-
 export const pageCompactStore: Writable<boolean> = persisted("pageCompactStore", false);
+
+// boolean runa pro zobrazení fulltextového vyhledávání
+export const showFulltextSearch: { value: boolean } = $state({ value: false });
+
+// runa pro uhování hodnoty fulltextového vyhledávání, po změně se po debounce provolá rq na BE
+export const fulltextFilterValue: { value: string } = $state({ value: "" });

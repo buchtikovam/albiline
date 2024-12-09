@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import { _ } from 'svelte-i18n'
 	import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
 	import * as Tooltip from '$lib/components/ui/tooltip';

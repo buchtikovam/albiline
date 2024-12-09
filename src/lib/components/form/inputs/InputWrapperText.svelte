@@ -3,7 +3,7 @@
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { _ } from 'svelte-i18n';
 	import { getContext } from 'svelte';
-	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
+	import { editedFormValuesStore, selectedInputStore } from '$lib/runes-global/autoformStore';
 	import { get } from 'svelte/store';
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 

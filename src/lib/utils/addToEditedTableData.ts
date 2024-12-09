@@ -1,7 +1,7 @@
 import { get, type Writable } from 'svelte/store';
-import { disableNavigationStore } from '$lib/stores/pageStore';
+import { disableNavigationStore } from '$lib/runes-global/page.svelte';
 import type { CellValueChangedEvent } from 'ag-grid-enterprise';
-import { editedTableDataStore } from '$lib/stores/tableStore';
+import { editedTableDataStore } from '$lib/runes-global/tableStore';
 
 export function addToEditedTableData(
 	event: CellValueChangedEvent,

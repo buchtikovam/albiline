@@ -1,4 +1,4 @@
-import { activeSelectedRowIndexStore } from '$lib/stores/tableStore';
+import { activeSelectedRowIndexStore } from '$lib/runes-global/tableStore';
 import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 

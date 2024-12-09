@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { openedDialogStore } from '$lib/stores/ribbonStore';
+	import { openedDialogStore } from '$lib/runes-global/ribbonStore';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';

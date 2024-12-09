@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n'
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
 	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import * as Tooltip from '$lib/components/ui/tooltip';

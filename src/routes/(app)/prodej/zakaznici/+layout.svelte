@@ -5,7 +5,7 @@
 		fulltextFilterValueStore,
 		selectedRowsStore,
 		showFulltextSearchStore
-	} from '$lib/stores/tableStore';
+	} from '$lib/runes-global/tableStore';
 	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
 	import { _ } from 'svelte-i18n'
@@ -13,7 +13,7 @@
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { get } from 'svelte/store';
-	import { disableNavigationStore, disablePageTabsStore } from '$lib/stores/pageStore';
+	import { disableNavigationStore, disablePageTabsStore } from '$lib/runes-global/page.svelte';
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

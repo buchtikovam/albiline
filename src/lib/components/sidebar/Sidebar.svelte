@@ -4,7 +4,7 @@
 		recentItemsStore,
 		favoriteItemsStore,
 		activeCategoryStore
-	} from '$lib/stores/sidebarStore';
+	} from '$lib/runes-global/sidebarStore';
 	import { get } from 'svelte/store';
 	import { allItems } from '$lib/data/page-components/sidebar';
 	import { Input } from '$lib/components/ui/input';
