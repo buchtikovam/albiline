@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes-global/tableStore';
+	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes-global/table.svelte';
 	import { openedDialogStore, ribbonActionStore } from '$lib/runes-global/ribbonStore';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";

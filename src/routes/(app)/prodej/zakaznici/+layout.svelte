@@ -5,7 +5,7 @@
 		fulltextFilterValueStore,
 		selectedRowsStore,
 		showFulltextSearchStore
-	} from '$lib/runes-global/tableStore';
+	} from '$lib/runes-global/table.svelte';
 	import { page } from '$app/stores';
 	import { Input } from '$lib/components/ui/input';
 	import { _ } from 'svelte-i18n'

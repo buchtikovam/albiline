@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/tableStore';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/table.svelte';
 	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
 	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
 	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';

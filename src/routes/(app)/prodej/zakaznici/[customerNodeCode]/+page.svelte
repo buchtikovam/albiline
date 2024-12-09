@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/tableStore';
+	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/table.svelte';
 	import { disableNavigationStore } from '$lib/runes-global/page.svelte';
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import { editedFormValuesStore } from '$lib/runes-global/autoformStore';

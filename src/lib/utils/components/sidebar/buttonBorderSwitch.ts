@@ -1,4 +1,4 @@
-import { activeCategoryStore } from '$lib/runes-global/sidebarStore';
+import { sidebarCategory } from '$lib/runes-global/sidebar.svelte';
 import { get } from 'svelte/store';
 
 
@@ -10,7 +10,7 @@ export function buttonBorderSwitch() {
 		button.classList.remove('-pt-1');
 	});
 
-	const activeButton = document.querySelector(`.${get(activeCategoryStore)}`);
+	const activeButton = document.querySelector(`.${get(sidebarCategory)}`);
 
 	if (activeButton) {
 		activeButton.classList.add('border-b-2');

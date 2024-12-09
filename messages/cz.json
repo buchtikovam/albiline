@@ -1,3 +1,33 @@
 {
-    "$schema": "https://inlang.com/schema/inlang-message-format"
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+
+	"components_avatar_welcome": "Vítejte, ",
+	"components_avatar_profile": "Profil",
+	"components_avatar_settings": "Nastavení",
+	"components_avatar_view": "Zobrazení",
+	"components_avatar_view_default" : "Výchozí",
+	"components_avatar_view_compact" : "Kompaktní",
+	"components_avatar_logout": "Odhlásit se",
+
+	"components_sidebar_category_all" : "Všechny",
+	"components_sidebar_category_recent" : "Nedávné",
+	"components_sidebar_category_favorite" : "Oblíbené",
+	"components_sidebar_search_placeholder" : "Filtrovat...",
+
+	"components_sidebar_item_pruvodni_list" : "Průvodní list",
+	"components_sidebar_item_sklad" : "Sklad",
+	"components_sidebar_item_sklad_hodinovka" : "Hodinovka",
+	"components_sidebar_item_sklad_prijem_a_vydej" : "Příjem a výdej",
+	"components_sidebar_item_sklad_stav_skladu" : "Stav skladu",
+	"components_sidebar_item_sklad_zasilky" : "Zásilky",
+	"components_sidebar_item_vyroba" : "Výroba",
+	"components_sidebar_item_vyroba_motivy" : "Motivy",
+	"components_sidebar_item_vyroba_raznice" : "Raznice",
+	"components_sidebar_item_vyroba_obalky" : "Obálky",
+	"components_sidebar_item_vyroba_texty" : "Texty",
+	"components_sidebar_item_prodej" : "Prodej",
+	"components_sidebar_item_prodej_zakaznici" : "Zákazníci",
+	"components_sidebar_item_prodej_zakaznici_sk" : "Zákazníci SK",
+	"components_sidebar_item_prodej_prehledy" : "Přehledy",
+	"components_sidebar_item_prodej_analyza_prodeju": "Analýza prodejů"
 }

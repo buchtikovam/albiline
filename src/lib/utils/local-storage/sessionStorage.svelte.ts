@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 
-export class LocalStore<T> {
+export class SessionStore<T> {
 	value = $state<T>() as T;
 	key = '';
 
@@ -30,6 +30,6 @@ export class LocalStore<T> {
 	}
 }
 
-export function localStore<T>(key: string, value: T) {
-	return new LocalStore(key, value);
+export function sessionStore<T>(key: string, value: T) {
+	return new SessionStore(key, value);
 }

@@ -18,7 +18,7 @@ const config = {
 		// files: {
 		// 	serviceWorker: undefined,
 		// }
-	}
+	},
 };
 
 export default config;

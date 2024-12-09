@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { sidebarOpenStore } from '$lib/runes-global/sidebarStore';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Menu from 'lucide-svelte/icons/menu';
 
@@ -10,18 +9,18 @@
 	let { isSidebarOpen }: Props = $props();
 
 
-	function toggleOpen() {
-		sidebarOpenStore.update(() => !isSidebarOpen)
-	}
+	// function toggleOpen() {
+	// 	sidebarOpenStore.update(() => !isSidebarOpen)
+	// }
 </script>
 
 
 
-<Button
-	variant="ghost"
-	size="icon"
-	class="hover:bg-muted/50 text-albi-950 hover:text-black"
-	on:click={toggleOpen}
->
+<!--<Button-->
+<!--	variant="ghost"-->
+<!--	size="icon"-->
+<!--	class="hover:bg-muted/50 text-albi-950 hover:text-black"-->
+<!--	on:click={toggleOpen}-->
+<!--&gt;-->
 	<Menu class="h-6 w-6" />
-</Button>
+<!--</Button>-->

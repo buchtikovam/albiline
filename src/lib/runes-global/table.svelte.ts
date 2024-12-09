@@ -4,7 +4,7 @@ import type { Preset } from '$lib/types/components/table/presets';
 import type { ColDef, ColGroupDef } from 'ag-grid-community';
 
 // k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
-export const editedTableDataStore: Writable<any[]> = writable([]);
+export const editedTableData: { value: any[] } = $state({ value:[] });
 
 // defaultní definice sloupečků, která se vytvoří z /lib/data/ag-grid/col-def,
 // důležité pro nastavení defaultní šablony přes ribbon
