@@ -14,13 +14,13 @@
 </script>
 
 <CommandPrimitive.Group
-	class={cn("text-foreground overflow-hidden p-1", className)}
+	class={cn("text-albi-950 overflow-hidden p-2", className)}
 	bind:ref
 	{...restProps}
 >
 	{#if heading}
 		<CommandPrimitive.GroupHeading
-			class="text-muted-foreground px-2 py-1.5 text-xs font-medium"
+			class="text-slate-400 px-2 py-1.5 text-xs font-medium"
 		>
 			{heading}
 		</CommandPrimitive.GroupHeading>

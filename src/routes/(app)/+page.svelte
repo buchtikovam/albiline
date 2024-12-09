@@ -1,9 +1,9 @@
-<script lang="ts"></script>
+<!--<script lang="ts"></script>-->
 
-<div class="flex flex-col bg-white flex-1 items-center justify-center h-dvh rounded-lg">
+<!--<div class="flex flex-col bg-white flex-1 items-center justify-center h-dvh rounded-lg">-->
+<!--//-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-</div>
-
-<svelte:head>
-	<title>Albiline</title>
-</svelte:head>
+<!--<svelte:head>-->
+<!--	<title>Albiline</title>-->
+<!--</svelte:head>-->

@@ -16,7 +16,7 @@
 <CheckboxPrimitive.Root
 	bind:ref
 	class={cn(
-		"border-primary ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground peer box-content size-4 shrink-0 rounded-sm border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
+		"peer box-content size-5 shrink-0 flex justify-center items-center rounded-md border bg-white border-border ring-offset-background focus-visible:outline-none focus-visible:ring-0 focus-visible:border-albi-500 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:bg-slate-50 data-[disabled=true]:cursor-not-allowed data-[state=checked]:bg-albi-500 data-[state=checked]:text-white",
 		className
 	)}
 	bind:checked
@@ -24,11 +24,11 @@
 	{...restProps}
 >
 	{#snippet children({ checked, indeterminate })}
-		<div class="flex size-4 items-center justify-center text-current">
+		<div class="size-4 text-current">
 			{#if indeterminate}
 				<Minus class="size-3.5" />
 			{:else}
-				<Check class={cn("size-3.5", !checked && "text-transparent")} />
+				<Check strokeWidth={3} class={cn("size-4", !checked && "text-transparent")} />
 			{/if}
 		</div>
 	{/snippet}

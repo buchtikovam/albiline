@@ -138,7 +138,7 @@
             <!-- default tabs -->
             <Tabs.Trigger
                 value="/"
-                on:click={() => goto("/")}
+                onclick={() => goto("/")}
 				disabled={disableNav}
                 >
                 <Home class="w-4 h-4" />
@@ -154,7 +154,7 @@
 				>
 					<Tabs.Trigger
 						value={tab.url}
-						on:click={() => goto(tab.url)}
+						onclick={() => goto(tab.url)}
 						disabled={disableNav && tab.url !== pathname}
 					>
 						<button

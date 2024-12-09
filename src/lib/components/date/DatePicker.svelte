@@ -2,7 +2,7 @@
 	import { run } from 'svelte/legacy';
 
 	import type { DateValue } from '@internationalized/date';
-	import { flyAndScale } from '$lib/utils';
+	// import { flyAndScale } from '$lib/utils';
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
@@ -76,74 +76,74 @@
 				</DatePicker.Input>
 
 
-		<DatePicker.Content
-			sideOffset={6}
-			transition={flyAndScale}
-			transitionConfig={{ duration: 150, y: -8 }}
-			class="z-50"
-		>
-			<DatePicker.Calendar
-				class="rounded-lg border bg-background p-4"
-				
-				
-			>
-				{#snippet children({ months, weekdays })}
-								<DatePicker.Header class="flex items-center justify-between">
-						<DatePicker.PrevButton
-							class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">
-							<ChevronLeft class="mx-auto" />
-						</DatePicker.PrevButton>
+<!--		<DatePicker.Content-->
+<!--			sideOffset={6}-->
+<!--			transition={flyAndScale}-->
+<!--			transitionConfig={{ duration: 150, y: -8 }}-->
+<!--			class="z-50"-->
+<!--		>-->
+<!--			<DatePicker.Calendar-->
+<!--				class="rounded-lg border bg-background p-4"-->
+<!--				-->
+<!--				-->
+<!--			>-->
+<!--				{#snippet children({ months, weekdays })}-->
+<!--								<DatePicker.Header class="flex items-center justify-between">-->
+<!--						<DatePicker.PrevButton-->
+<!--							class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">-->
+<!--							<ChevronLeft class="mx-auto" />-->
+<!--						</DatePicker.PrevButton>-->
 
-						<DatePicker.Heading class="font-medium" />
+<!--						<DatePicker.Heading class="font-medium" />-->
 
-						<DatePicker.NextButton
-							class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">
-							<ChevronRight class="mx-auto" />
-						</DatePicker.NextButton>
-					</DatePicker.Header>
+<!--						<DatePicker.NextButton-->
+<!--							class="size-10 rounded-9px rounded-md text-muted-foreground hover:bg-muted/50 hover:text-black">-->
+<!--							<ChevronRight class="mx-auto" />-->
+<!--						</DatePicker.NextButton>-->
+<!--					</DatePicker.Header>-->
 
-					<div class="pt-4">
-						{#each months as month}
-							<DatePicker.Grid
-								class="w-full select-none"
-							>
-								<DatePicker.GridHead>
-									<DatePicker.GridRow class="mb-1 flex w-full justify-between">
-										{#each weekdays as day}
-											<DatePicker.HeadCell
-												class="w-10 rounded-md text-xs !font-normal text-muted-foreground"
-											>
-												<div>{day.slice(0, 2)}</div>
-											</DatePicker.HeadCell>
-										{/each}
-									</DatePicker.GridRow>
-								</DatePicker.GridHead>
+<!--					<div class="pt-4">-->
+<!--						{#each months as month}-->
+<!--							<DatePicker.Grid-->
+<!--								class="w-full select-none"-->
+<!--							>-->
+<!--								<DatePicker.GridHead>-->
+<!--									<DatePicker.GridRow class="mb-1 flex w-full justify-between">-->
+<!--										{#each weekdays as day}-->
+<!--											<DatePicker.HeadCell-->
+<!--												class="w-10 rounded-md text-xs !font-normal text-muted-foreground"-->
+<!--											>-->
+<!--												<div>{day.slice(0, 2)}</div>-->
+<!--											</DatePicker.HeadCell>-->
+<!--										{/each}-->
+<!--									</DatePicker.GridRow>-->
+<!--								</DatePicker.GridHead>-->
 
-								<DatePicker.GridBody>
-									{#each month.weeks as weekDates}
-										<DatePicker.GridRow class="flex w-full">
-											{#each weekDates as date}
-												<DatePicker.Cell
-													{date}
-													class="relative size-10 !p-0 text-center text-sm"
-												>
-													<DatePicker.Day
-														{date}
-														month={month.value}
-														class="inline-flex size-10 items-center justify-center rounded-md border border-transparent bg-transparent text-sm hover:bg-muted data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-albi-500 data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
-													>
-														{date.day}
-													</DatePicker.Day>
-												</DatePicker.Cell>
-											{/each}
-										</DatePicker.GridRow>
-									{/each}
-								</DatePicker.GridBody>
-							</DatePicker.Grid>
-						{/each}
-					</div>
-											{/snippet}
-						</DatePicker.Calendar>
-		</DatePicker.Content>
+<!--								<DatePicker.GridBody>-->
+<!--									{#each month.weeks as weekDates}-->
+<!--										<DatePicker.GridRow class="flex w-full">-->
+<!--											{#each weekDates as date}-->
+<!--												<DatePicker.Cell-->
+<!--													{date}-->
+<!--													class="relative size-10 !p-0 text-center text-sm"-->
+<!--												>-->
+<!--													<DatePicker.Day-->
+<!--														{date}-->
+<!--														month={month.value}-->
+<!--														class="inline-flex size-10 items-center justify-center rounded-md border border-transparent bg-transparent text-sm hover:bg-muted data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-albi-500 data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"-->
+<!--													>-->
+<!--														{date.day}-->
+<!--													</DatePicker.Day>-->
+<!--												</DatePicker.Cell>-->
+<!--											{/each}-->
+<!--										</DatePicker.GridRow>-->
+<!--									{/each}-->
+<!--								</DatePicker.GridBody>-->
+<!--							</DatePicker.Grid>-->
+<!--						{/each}-->
+<!--					</div>-->
+<!--											{/snippet}-->
+<!--						</DatePicker.Calendar>-->
+<!--		</DatePicker.Content>-->
 	</div>
 </DatePicker.Root>
