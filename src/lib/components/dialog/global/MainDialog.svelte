@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CustomerDetailInvoiceAdressesDialog from '$lib/components/dialog/page/zakaznici/CustomerInvoiceAdressesDialog.svelte';
-	import { openedDialogStore } from '$lib/runes-global/ribbonStore';
+	import { openedDialogStore } from '$lib/runes/ribbon.svelte';
 	import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 	import MyFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/MyFiltersDialog.svelte';
 	import SaveFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/SaveFiltersDialog.svelte';

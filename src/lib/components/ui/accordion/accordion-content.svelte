@@ -18,7 +18,7 @@
 	)}
 	{...restProps}
 >
-	<div class="flex h-full flex-col pb-4 text-sm">
+	<div class="flex h-full flex-col text-sm">
 		{@render children?.()}
 	</div>
 </AccordionPrimitive.Content>

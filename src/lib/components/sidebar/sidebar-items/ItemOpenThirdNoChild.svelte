@@ -6,11 +6,11 @@
 
 	interface Props {
 		item: any;
-		isMobile: boolean;
 		isOpen?: boolean;
+		isMobile?: boolean;
 	}
 
-	let { item, isMobile, isOpen = $bindable(false) }: Props = $props();
+	let { item, isMobile, isOpen = $bindable() }: Props = $props();
 </script>
 
 
@@ -22,16 +22,14 @@
 		<a
 			href="{item.href}"
 			onclick={() => {
-				handleTabClick(item, 2)
-				if (isMobile) {
-					isOpen = false;
-				}
+				handleTabClick(item, 2);
+				if (isMobile) isOpen = false;
 			}}
 			class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-albi-950 hover:text-black"
 		>
-			<!--{$_('components.sidebar.' + item.field)}-->
+			{ item.translation() }
 		</a>
 	</Accordion.Item>
 </ContextMenu.Trigger>
 
-<ContextMenuContent itemValue={item.field} />
+<ContextMenuContent field={item.field} />

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ribbonOpenStore } from '$lib/runes-global/ribbonStore';
+	import { ribbonOpen } from '$lib/runes/ribbon.svelte';
 	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 	import { ribbonItems } from '$lib/data/page-components/ribbon';
 	import { Separator } from '$lib/components/ui/separator';
@@ -10,56 +10,39 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
 	import ChevronUp from 'lucide-svelte/icons/chevron-up';
-
-	/*
-		Resizable ribbon container obsahující různé ribbon items
-	*/
-
-	let isRibbonOpen: boolean = $state(false);
-
-	function toggleRibbonOpen() {
-		isRibbonOpen = !isRibbonOpen;
-		ribbonOpenStore.set(isRibbonOpen)
-	}
-
-	onMount(() => {
-		isRibbonOpen = get(ribbonOpenStore)
-	}) // md:mx-2 md:my-0 md:p-2 md:mr-4 
 </script>
 
 
 
-<div class="
-	mx-4 mb-2 p-1.5 rounded-lg bg-white flex justify-between
-	md:mx-2 md:my-0 md:p-2 md:mr-4 
-">
-	<div class="flex gap-0.5 items-center w-full overflow-auto ">
+<div class={`
+	${ribbonOpen.value ? "h-[58px]" : "h-8"} mx-4 mb-2 p-1.5 rounded-lg bg-white flex justify-between
+	md:mx-2 md:my-0 md:p-2 md:mr-4 transition-all duration-300
+`}>
+	<div class="flex gap-0.5 items-center w-full overflow-x-auto ">
 		{#each ribbonItems as ribbonItem}
 			{#if Array.isArray(ribbonItem)}
-				<RibbonItemsNarrow
-					ribbonItems={ribbonItem}
-					isRibbonOpen={isRibbonOpen}
-				/>
+<!--				<RibbonItemsNarrow-->
+<!--					ribbonItems={ribbonItem}-->
+<!--					isRibbonOpen={isRibbonOpen}-->
+<!--				/>-->
 			{:else}
 				{#if ribbonItem.type === RibbonTypeEnum.ITEM}
 					<RibbonItem
 						ribbonItem={ribbonItem}
-						isRibbonOpen={isRibbonOpen}
 					/>
 				{/if}
 
 				{#if ribbonItem.type === RibbonTypeEnum.DROPDOWN}
 					<RibbonDropdownItem
 						ribbonItem={ribbonItem}
-						isRibbonOpen={isRibbonOpen}
 					/>
 				{/if}
 
 				{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
 					<Separator orientation="vertical" class={
-						(isRibbonOpen
-							? "h-[20px]"
-							: "h-[14px]")
+						(ribbonOpen.value
+							? "min-h-[20px]"
+							: "min-h-[12px]")
 							+ " mx-1.5 md:mx-2.5 bg-albi-200 w-[2px]"
 						}
 					/>
@@ -69,11 +52,11 @@
 	</div>
 
 
-	<button 
-		onclick={toggleRibbonOpen} 
-		class="overflow-visible pl-1.5"
+	<button
+		onclick={() => ribbonOpen.value = !ribbonOpen.value}
+		class="overflow-visible"
 	>
-		{#if isRibbonOpen}
+		{#if ribbonOpen.value}
 			<ChevronDown class="size-4 bg-background text-albi-500" />
 		{:else}
 			<ChevronUp class="size-4 bg-background text-albi-500" />

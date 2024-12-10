@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { showFulltextSearchStore } from '$lib/runes-global/table.svelte';
+	import { showFulltextSearchStore } from '$lib/runes/table.svelte';
 
 	showFulltextSearchStore.set(false)
 </script>

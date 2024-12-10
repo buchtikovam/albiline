@@ -1,4 +1,4 @@
-import { sidebarCategory } from '$lib/runes-global/sidebar.svelte';
+import { sidebarCategory } from '$lib/runes/sidebar.svelte';
 import { get } from 'svelte/store';
 
 
@@ -14,6 +14,5 @@ export function buttonBorderSwitch() {
 
 	if (activeButton) {
 		activeButton.classList.add('border-b-2');
-		activeButton.classList.add('-pt-1');
-	}
+		activeButton.classList.add('-pt-1');	}
 }

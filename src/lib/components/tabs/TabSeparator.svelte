@@ -8,4 +8,4 @@
 	let { color = "primary" }: Props = $props();
 </script>
 
-<Separator orientation="vertical" class={`w-[2px] ${ color === "primary" ? "bg-albi-400" : "bg-gray-200"} h-3.5 mx-1`}/>
+<Separator orientation="vertical" class={`w-[2px] ${ color === "primary" ? "bg-albi-400" : "bg-gray-200"} !min-h-[16px] mx-1`}/>

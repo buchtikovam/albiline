@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { sessionKeyStore } from '$lib/runes-global/page.svelte';
+import { sessionKeyStore } from '$lib/runes/page.svelte';
 
 const apiRoute = "http://10.2.2.10/albiline.test/api/v1/"
 

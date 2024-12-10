@@ -1,26 +1,16 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Menu from 'lucide-svelte/icons/menu';
-
-	interface Props {
-		isSidebarOpen: boolean;
-	}
-
-	let { isSidebarOpen }: Props = $props();
-
-
-	// function toggleOpen() {
-	// 	sidebarOpenStore.update(() => !isSidebarOpen)
-	// }
+	import { sidebarOpen } from '$lib/runes/sidebar.svelte';
 </script>
 
 
 
-<!--<Button-->
-<!--	variant="ghost"-->
-<!--	size="icon"-->
-<!--	class="hover:bg-muted/50 text-albi-950 hover:text-black"-->
-<!--	on:click={toggleOpen}-->
-<!--&gt;-->
-	<Menu class="h-6 w-6" />
-<!--</Button>-->
+<Button
+	variant="ghost"
+	size="icon"
+	class="size-6 p-4 hover:bg-muted/50 text-albi-950 hover:text-black"
+	onclick={() => sidebarOpen.value = !sidebarOpen.value}
+>
+	<Menu class="size-6" />
+</Button>

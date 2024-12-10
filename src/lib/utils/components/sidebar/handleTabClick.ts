@@ -1,15 +1,11 @@
-// import { currentActiveTabRune, openedTabsRune } from '$lib/global-state/tabStore.svelte';
-// import { recentItemsStore } from '$lib/global-state/sidebarStore';
 import type { HeaderTab, SidebarItem } from '$lib/types/components/sidebar/sidebar';
-import { editedTableData } from '$lib/runes-global/table.svelte';
-// import { get } from 'svelte/store';
-import { openedTabs } from '$lib/runes-global/navigation.svelte';
-// import { editedTableDataStore } from '$lib/global-state/tableStore';
+import { editedTableData } from '$lib/runes/table.svelte';
+import { openedTabs } from '$lib/runes/navigation.svelte';
+import { recentItems } from '$lib/runes/sidebar.svelte';
 
 
 export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 	if (editedTableData.value.length === 0) {
-
 		const tab: HeaderTab = {
 			field: item.field,
 			url: item.href,
@@ -17,7 +13,7 @@ export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 			treeDepth: treeDepth
 		};
 
-		console.log(openedTabs.value);
+		console.log(tab);
 
 		let containsObject: boolean = false;
 
@@ -30,10 +26,8 @@ export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 			openedTabs.value.push(tab);
 		}
 
-		// currentActiveTabRune.set(tab.url);
-
-		// if (!get(recentItemsStore).includes(item.field)) {
-		// 	recentItemsStore.update((data: string[]) => data.concat(item.field));
-		// }
+		if (!recentItems.value.includes(item.field)) {
+			recentItems.value.push(item.field);
+		}
 	}
 }

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { editedFormValuesStore } from '$lib/runes-global/autoformStore';
+import { editedFormValuesStore } from '$lib/runes/autoformStore';
 
 export function addToEditedFormData(
 	initialValue: string | number | Date | boolean,

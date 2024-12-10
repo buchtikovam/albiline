@@ -2,6 +2,7 @@
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import * as Command from '$lib/components/ui/command';
+	import * as m from "$lib/paraglide/messages.js"
 
 	interface Props {
 		items: SidebarItem[];
@@ -20,23 +21,23 @@
 
 
 <Command.Dialog bind:open={isSidebarCommandOpen} class="p-0">
-	<Command.Input placeholder={'components.sidebar.search_placeholder'} />
+	<Command.Input placeholder={m.components_sidebar_search_placeholder()} />
 
-	<Command.List class="mt-2 p-0">
+	<Command.List>
 		<Command.Empty class="-mt-2">
-			<!--{$_('components.sidebar.command_empty')}-->
+			{m.components_sidebar_command_empty()}
 		</Command.Empty>
 
 		{#each items as item}
 			{#if item.children.length > 0}
-				<Command.Separator class="my-2" />
+				<Command.Separator/>
 
 				<!-- items s children položkami -->
-				<Command.Group heading={'components.sidebar.' + item.field.toUpperCase()} class="my-2">
+				<Command.Group heading={item.translation()}>
 					{#each item.children as child}
 						<Command.Item class="">
 							<a href={child.href} onclick={() => handleClick(child, 1)}>
-								<!--{$_('components.sidebar.' + child.field)}-->
+								{child.translation()}
 							</a>
 						</Command.Item>
 
@@ -45,7 +46,7 @@
 								<Command.Item>
 									<a href={secondChild.href} class="text-sm pl-4"
 									   onclick={() => handleClick(secondChild, 2)}>
-										<!--{$_('components.sidebar.' + secondChild.field)}-->
+										{secondChild.translation()}
 									</a>
 								</Command.Item>
 							{/each}
@@ -57,7 +58,7 @@
 				<Command.Group>
 					<Command.Item>
 						<a href={item.href} onclick={() => handleClick(item, 0)}>
-							<!--{$_('components.sidebar.' + item.field)}-->
+							{item.translation()}
 						</a>
 					</Command.Item>
 				</Command.Group>

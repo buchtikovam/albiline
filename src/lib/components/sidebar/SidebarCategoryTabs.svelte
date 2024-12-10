@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sidebarCategory } from '$lib/runes-global/sidebar.svelte';
+	import { sidebarCategory } from '$lib/runes/sidebar.svelte';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
 	import * as m from "$lib/paraglide/messages.js"
 	import * as Tabs from "$lib/components/ui/tabs";
@@ -15,10 +15,11 @@
 
 
 
-<Tabs.Root value={value}>
+<Tabs.Root value={value || "all"}>
     <Tabs.List class={ color === "primary" ? "bg-albi-500" : "bg-slate-300"}>
 		<Tabs.Trigger
 			value="all"
+			onclick={() => sidebarCategory.value = "all"}
 		>
 			{m.components_sidebar_category_all()}
 		</Tabs.Trigger>
@@ -27,6 +28,7 @@
 
 		<Tabs.Trigger
 			value="recent"
+			onclick={() => sidebarCategory.value = "recent"}
 		>
 			{m.components_sidebar_category_recent()}
 		</Tabs.Trigger>
@@ -35,6 +37,7 @@
 
 		<Tabs.Trigger
 			value="favorite"
+			onclick={() => sidebarCategory.value = "favorite"}
 		>
 			{m.components_sidebar_category_favorite()}
 		</Tabs.Trigger>

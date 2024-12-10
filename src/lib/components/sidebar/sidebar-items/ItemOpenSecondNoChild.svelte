@@ -1,16 +1,16 @@
 <script lang="ts">
-	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
+	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
+	import ContextMenuFavorite from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import * as Accordion from '$lib/components/ui/accordion/index.js';
-	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 
 	interface Props {
 		item: any;
-		isMobile: boolean;
+		isMobile?: boolean;
 		isOpen?: boolean;
 	}
 
-	let { item, isMobile, isOpen = $bindable(false) }: Props = $props();
+	let { item, isOpen = $bindable(), isMobile }: Props = $props();
 </script>	
 
 <ContextMenu.Root>
@@ -23,16 +23,14 @@
 				href="{item.href}"
 				onclick={() => {
 					handleTabClick(item, 1)
-					if (isMobile) {
-						isOpen = false;
-					}
+					if (isMobile) isOpen = false;
 				}}
 				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black"
 			>
-				<!--{$_('components.sidebar.' + item.field)}-->
+				{item.translation() }
 			</a>
 		</Accordion.Item>
 	</ContextMenu.Trigger>
 
-	<ContextMenuContent itemValue={item.field} />
+	<ContextMenuFavorite field={item.field} />
 </ContextMenu.Root>

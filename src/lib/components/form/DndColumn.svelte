@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { openedDialogStore } from '$lib/runes-global/ribbonStore';
+	import { openedDialogStore } from '$lib/runes/ribbon.svelte';
 	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import type { CustomerData } from '$lib/types/tables/zakaznici';
@@ -17,7 +17,7 @@
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
 	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
-	import { disableInputs } from '$lib/runes-global/page.svelte';
+	import { disableInputs } from '$lib/runes/page.svelte';
 
 	interface Props {
 		section: AutoFormSection[];

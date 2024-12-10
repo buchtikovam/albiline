@@ -1,6 +1,5 @@
 import type { SidebarItem } from "$lib/types/components/sidebar/sidebar";
-// import { _ } from 'svelte-i18n';
-import { get } from 'svelte/store';
+// import * as m from "$lib/paraglide/messages.js"
 
 
 export function filterItemsSearch(items: SidebarItem[], searchTerm: string): SidebarItem[] {
@@ -10,12 +9,13 @@ export function filterItemsSearch(items: SidebarItem[], searchTerm: string): Sid
 
 	return items.map((item: SidebarItem): SidebarItem => {
 		item.open = false;
-		item.hide = true;
+		item.hide = true
 
-		// if (get(_)('components.sidebar.' + item.field).toLowerCase().includes(searchTerm.toLowerCase())) {
-		// 	item.open = true;
-		// 	item.hide = false;
-		// }
+
+		if (item.translation().toLowerCase().includes(searchTerm.toLowerCase())) {
+			item.open = true;
+			item.hide = false;
+		}
 
 		item.children = filterItemsSearch(item.children, searchTerm);
 

@@ -1,4 +1,4 @@
-import { activeSelectedRowIndexStore } from '$lib/runes-global/table.svelte';
+import { activeSelectedRowIndexStore } from '$lib/runes/table.svelte';
 import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 

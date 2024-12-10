@@ -1,36 +1,36 @@
 <script lang="ts">
-	import { disableNavigation, openedTabs } from '$lib/runes-global/navigation.svelte.js';
-	import { availableLanguageTags, languageTag } from "$lib/paraglide/runtime.js"
+	import { fulltextFilterValue, showFulltextSearch } from '$lib/runes/page.svelte';
+	import { disableNavigation, openedTabs } from '$lib/runes/navigation.svelte.js';
+	import { languageTag } from "$lib/paraglide/runtime.js"
 	import { i18n } from '$lib/i18n.js'
 	import { page } from '$app/stores';
+	import { getTabValue } from '$lib/utils/navigation/getTabValue';
+	import { deleteTab } from '$lib/utils/navigation/deleteTab.svelte';
 	import { slide } from 'svelte/transition';
-	import { goto, preloadData } from '$app/navigation';
-	import { get } from 'svelte/store';
+	import { goto } from '$app/navigation';
 	import Home from 'lucide-svelte/icons/home';
 	import Menu from 'lucide-svelte/icons/menu';
-	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
-	// import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
+	import X from 'lucide-svelte/icons/x';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
 	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import Input from '../ui/input/input.svelte';
-	import X from 'lucide-svelte/icons/x';
+	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { getTabValue } from '$lib/utils/navigation/getTabValue';
-	import { deleteTab } from '$lib/utils/navigation/deleteTab.svelte';
-	import { fulltextFilterValue, showFulltextSearch } from '$lib/runes-global/page.svelte';
 
-	/*
-		Header komponenent s hlavními taby a avatarem
-	*/
 
 	let pathName = $state("");
 
 	$effect(() => {
 		pathName = getTabValue($page.url.pathname, openedTabs.value);
-		console.log("effect", pathName);
 	});
 
 	let openMobileSidebar: boolean = $state(false);
+
+	// function getLabelByTabField(field: string) {
+	//
+	//
+	// 	return
+	// }
 </script>
 
 
@@ -76,7 +76,7 @@
 						}}
 						class="flex h-6 items-center font-bold"
 					>
-						{'components.sidebar.' + tab.field}
+						{ tab.field }
 						{#if (tab.closingState === 'block')}
 							<span transition:slide={{ axis: "x" }}>
 								<X
@@ -93,17 +93,22 @@
 	</Tabs.Root>
 
 
-	<div class="flex gap-2">
-		{#each availableLanguageTags as lang}
-			<!-- the hreflang attribute decides which language the link points to -->
-			<a
-				href={i18n.route($page.url.pathname)}
-				hreflang={lang}
-				aria-current={lang === languageTag() ? "page" : undefined}
-			>
-				{lang}
-			</a>
-		{/each}
+	<div class="gap-2 hidden md:flex">
+		<a
+			href={i18n.route($page.url.pathname)}
+			hreflang={"en"}
+			aria-current={"en" === languageTag() ? "page" : undefined}
+		>
+			{"en"}
+		</a>
+
+		<a
+			href={i18n.route($page.url.pathname)}
+			hreflang={"cz"}
+			aria-current={"cz" === languageTag() ? "page" : undefined}
+		>
+			{"cz"}
+		</a>
 	</div>
 
 
@@ -134,4 +139,5 @@
 	</div>
 </div>
 
-<!--<MobileSidebar bind:isOpen={openMobileSidebar}/>-->
+
+<MobileSidebar bind:isOpen={openMobileSidebar}/>

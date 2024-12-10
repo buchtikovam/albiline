@@ -1,4 +1,4 @@
-import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes-global/table.svelte';
+import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes/table.svelte';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';

@@ -1,10 +1,12 @@
 <script lang="ts">
 	import './../../app.pcss';
 	import { type Snippet } from 'svelte';
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import Header from '$lib/components/header/Header.svelte';
 	import { ParaglideJS } from '@inlang/paraglide-sveltekit'
 	import { i18n } from '$lib/i18n.js'
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
+	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 
 
 	let { children }: { children?: Snippet } = $props();
@@ -99,26 +101,28 @@
 <!--/>-->
 
 <ParaglideJS {i18n}>
-	<div class="h-dvh w-dvh bg-albi-50">
-		<div class="flex h-dvh flex-col">
-			<header class="">
-				<Header />
-			</header>
+	<Tooltip.Provider delayDuration={300}>
+		<div class="h-dvh w-dvh bg-albi-50">
+			<div class="flex h-dvh flex-col">
+				<header class="">
+					<Header />
+				</header>
 
-			<div class="flex flex-row flex-1 pb-4">
-				<div class="hidden md:block pl-4">
-					<Sidebar />
+				<div class="flex flex-row flex-1 pb-4">
+					<div class="hidden md:block pl-4">
+						<Sidebar />
+					</div>
+					<main class="flex flex-1 flex-col rounded-l-md">
+						<Ribbon />
+		<!--				-->
+		<!--				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>-->
+		<!--					{@render children?.()}-->
+		<!--				</div>-->
+					</main>
 				</div>
-	<!--			<main class="flex flex-1 flex-col rounded-l-md">-->
-	<!--				<Ribbon />-->
-	<!--				-->
-	<!--				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>-->
-	<!--					{@render children?.()}-->
-	<!--				</div>-->
-	<!--			</main>-->
 			</div>
 		</div>
-	</div>
+	</Tooltip.Provider>
 
 	<!--<MainDialog/>-->
 

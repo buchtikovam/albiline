@@ -4,33 +4,36 @@
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import SidebarToggleButton from './SidebarToggleButton.svelte';
 	import Search from 'lucide-svelte/icons/search';
+	import * as m from "$lib/paraglide/messages.js"
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';
 
 	interface Props {
 		filteredItems: SidebarItem[];
 		isSidebarCommandOpen: boolean;
-		isSidebarOpen: boolean;
 	}
 
-	let { filteredItems, isSidebarCommandOpen = $bindable(), isSidebarOpen = $bindable() }: Props = $props();
+	let {
+		filteredItems = $bindable(),
+		isSidebarCommandOpen = $bindable()
+	}: Props = $props();
 </script>
 
 
 
 <div class="flex-1">
 	<nav class="flex flex-col gap-2 justify-center">
-		<Tooltip.Root openDelay={800}>
+		<Tooltip.Root>
 			<button onclick={() => isSidebarCommandOpen = !isSidebarCommandOpen}>
 				<Tooltip.Trigger>
 					<span class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
-					<Search />
+						<Search />
 					</span>
 				</Tooltip.Trigger>
 			</button>
 
-			<Tooltip.Content class="ml-12 mt-12">
-				<!--{$_('components.sidebar.search_tooltip')}-->
+			<Tooltip.Content side="right">
+				{m.components_sidebar_closed_search_tooltip()}
 			</Tooltip.Content>
 		</Tooltip.Root>
 
@@ -41,13 +44,14 @@
 		{#each filteredItems as item}
 			<!-- item s children položkami. Po najetí myši ukáže tooltip a po kliknutí popover se všemi children položkami -->
 			{#if item.children.length > 0}
-				<Tooltip.Root openDelay={800}>
+				<Tooltip.Root>
 					<Tooltip.Trigger>
 						<Popover.Root>
 							<Popover.Trigger>
+								{@const Icon = item.icon}
 								<div
 									class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
-									<item.icon />
+									<Icon />
 								</div>
 							</Popover.Trigger>
 
@@ -58,7 +62,7 @@
 										class="hover:bg-muted/50 rounded px-2 py-1.5"
 										onclick={() => handleTabClick(child, 1)}
 									>
-										<!--{$_('components.sidebar.' + child.field)}-->
+										{child.translation()}
 									</a>
 
 									{#if child.children.length > 0}
@@ -68,7 +72,7 @@
 												class="hover:bg-muted/50 rounded pr-2 pl-6 py-1.5"
 												onclick={() => handleTabClick(scndChild, 2)}
 											>
-												<!--{$_('components.sidebar.' + scndChild.field)}-->
+												{scndChild.translation()}
 											</a>
 										{/each}
 									{/if}
@@ -77,26 +81,27 @@
 						</Popover.Root>
 					</Tooltip.Trigger>
 
-					<Tooltip.Content class="ml-12 mt-12">
-						<!--{$_('components.sidebar.' + item.field)}-->
+					<Tooltip.Content side="right">
+						{item.translation()}
 					</Tooltip.Content>
 				</Tooltip.Root>
 
 				<!-- item bez children položek. Po najetí myši ukáže tooltip -->
 			{:else }
-				<Tooltip.Root openDelay={800}>
-					<Tooltip.Trigger>
+				<Tooltip.Root >
+					<Tooltip.Trigger class="flex justify-center">
+						{@const Icon = item.icon}
 						<a
 							href={item.href}
-							class="flex text-sm font-medium items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted/50 text-albi-950 hover:text-black"
+							class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50"
 							onclick={() => handleTabClick(item, 0)}
 						>
-							<item.icon />
+							<Icon />
 						</a>
 					</Tooltip.Trigger>
 
-					<Tooltip.Content class="ml-12 mt-12">
-						<!--{$_('components.sidebar.' + item.field)}-->
+					<Tooltip.Content side="right">
+						{item.translation()}
 					</Tooltip.Content>
 				</Tooltip.Root>
 			{/if}
@@ -105,5 +110,5 @@
 </div>
 
 <div class="flex justify-center pb-2">
-	<SidebarToggleButton bind:isSidebarOpen />
+	<SidebarToggleButton />
 </div>

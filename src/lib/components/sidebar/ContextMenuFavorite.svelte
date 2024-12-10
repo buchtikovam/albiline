@@ -1,49 +1,40 @@
 <script lang="ts">
-	import { favoriteItemsStore, sidebarCategory } from '$lib/runes-global/sidebar.svelte';
+	import { favoriteItems, sidebarCategory } from '$lib/runes/sidebar.svelte';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 	import Heart from 'lucide-svelte/icons/heart';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import * as m from "$lib/paraglide/messages.js";
 
-	interface Props {
-		itemValue: string;
-	}
-
-	let { itemValue }: Props = $props();
-
-	// let category: string = $state();
-	// sidebarCategory.subscribe((data) => {
-	// 	category = data;
-	// });
-
+	let { field }: { field: string } = $props();
 
 	function addToFavorites() {
-		favoriteItemsStore.update(data => data.concat(itemValue));
+		if (favoriteItems.value.includes(field)) return;
+		favoriteItems.value.push(field);
 	}
 
-
 	function removeFromFavorites() {
-		favoriteItemsStore.update(data => data.filter((item) => item.indexOf(itemValue) === -1));
+		favoriteItems.value = favoriteItems.value.filter((item) => item.indexOf(field) === -1);
 	}
 </script>
 
 
 
 <ContextMenu.Content>
-	<!--{#if category !== "favorite"}-->
-	<!--	<ContextMenu.Item-->
-	<!--		class="flex gap-2 text-sm"-->
-	<!--		on:click={addToFavorites}-->
-	<!--	>-->
-	<!--		<Heart class="w-4 h-4 text-red-600" />-->
-	<!--		Přidat do oblíbených-->
-	<!--	</ContextMenu.Item>-->
-	<!--{:else}-->
-	<!--	<ContextMenu.Item-->
-	<!--		class="flex gap-2 text-sm"-->
-	<!--		on:click={removeFromFavorites}-->
-	<!--	>-->
-	<!--		<HeartCrack class="w-4 h-4 text-red-600" />-->
-	<!--		Odebrat z oblíbených-->
-	<!--	</ContextMenu.Item>-->
-	<!--{/if}-->
+	{#if sidebarCategory.value === "favorite"}
+		<ContextMenu.Item
+			class="flex gap-2 text-sm"
+			onclick={removeFromFavorites}
+		>
+			<HeartCrack class="size-4 fill-red-200 text-red-600" />
+			{m.components_sidebar_context_menu_remove_from_favorites()}
+		</ContextMenu.Item>
+	{:else}
+		<ContextMenu.Item
+			class="flex gap-2 text-sm"
+			onclick={addToFavorites}
+		>
+			<Heart  class="size-4 fill-red-200 text-red-600" />
+			{m.components_sidebar_context_menu_add_to_favorites()}
+		</ContextMenu.Item>
+	{/if}
 </ContextMenu.Content>

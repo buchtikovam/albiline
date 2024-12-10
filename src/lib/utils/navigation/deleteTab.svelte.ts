@@ -1,5 +1,5 @@
 import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
-import { openedTabs } from '$lib/runes-global/navigation.svelte';
+import { openedTabs } from '$lib/runes/navigation.svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';

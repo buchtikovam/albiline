@@ -13,6 +13,10 @@
 	"components_sidebar_category_recent" : "Nedávné",
 	"components_sidebar_category_favorite" : "Oblíbené",
 	"components_sidebar_search_placeholder" : "Filtrovat...",
+	"components_sidebar_closed_search_tooltip" : "Vyhledat",
+	"components_sidebar_command_empty" : "Tady je prázdno",
+	"components_sidebar_context_menu_add_to_favorites" : "Přidat do oblíbených",
+	"components_sidebar_context_menu_remove_from_favorites" : "Odebrat z oblíbených",
 
 	"components_sidebar_item_pruvodni_list" : "Průvodní list",
 	"components_sidebar_item_sklad" : "Sklad",
@@ -29,5 +33,31 @@
 	"components_sidebar_item_prodej_zakaznici" : "Zákazníci",
 	"components_sidebar_item_prodej_zakaznici_sk" : "Zákazníci SK",
 	"components_sidebar_item_prodej_prehledy" : "Přehledy",
-	"components_sidebar_item_prodej_analyza_prodeju": "Analýza prodejů"
+	"components_sidebar_item_prodej_analyza_prodeju": "Analýza prodejů",
+
+	"components_ribbon_item_new" : "Nový",
+	"components_ribbon_item_edit" : "Editovat",
+	"components_ribbon_item_delete" : "Smazat",
+	"components_ribbon_item_fill_down": "Vyplň dolů",
+	"components_ribbon_item_save" : "Uložit",
+	"components_ribbon_item_load" : "Načíst",
+	"components_ribbon_item_print" : "Tisk",
+	"components_ribbon_item_export_choice" : "Export",
+	"components_ribbon_item_export_pdf" : "PDF",
+	"components_ribbon_item_export_excel" : "Excel",
+	"components_ribbon_item_export_csv" : "CSV",
+	"components_ribbon_item_import" : "Import",
+	"components_ribbon_item_filter_quick" : "Rychlý filtr",
+	"components_ribbon_item_filter_in_range" : "Filtr ve výběru",
+	"components_ribbon_item_filter_out_of_range" : "Mimo výběr",
+	"components_ribbon_item_filter_undo" : "Filtr krok zpět",
+	"components_ribbon_item_filter_remove" : "Zrušit filtry",
+	"components_ribbon_item_filters" : "Moje filtry",
+	"components_ribbon_item_save_filters" : "Uložit aktuální filtry",
+	"components_ribbon_item_my_filters" : "Vybrat z uložených filtrů",
+	"components_ribbon_item_presets": "Moje šablony",
+	"components_ribbon_item_save_preset": "Uložit aktuální šablonu",
+	"components_ribbon_item_my_presets": "Vybrat u uložených šablon"
+
+
 }

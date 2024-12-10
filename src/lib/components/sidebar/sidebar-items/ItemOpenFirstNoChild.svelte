@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
-	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
+	import ContextMenuFavorite from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
-
 
 	interface Props {
 		item: any;
-		value: string;
 		isMobile?: boolean;
 		isOpen?: boolean;
 	}
 
-	let { item, value, isMobile = false, isOpen = $bindable(true) }: Props = $props();
+	let { item, isMobile, isOpen = $bindable() }: Props = $props();
 </script>	
 
 
@@ -21,17 +19,15 @@
 		<a
 			href={item.href}
 			onclick={() => {
-				handleTabClick(item, 0)
-				if (isMobile) {
-					isOpen = false;
-				}	
+				handleTabClick(item, 0);
+				if (isMobile) isOpen = false;
 			}}
-			class="flex text-sm font-bold items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted/50 text-albi-950 hover:text-black"
+			class="flex text-sm font-bold items-center gap-3 rounded-lg py-2 px-1.5 hover:bg-muted/50 text-albi-950 hover:text-black"
 		>
 			<Icon />
-			{(value)}
+			<span class="whitespace-nowrap">{item.translation()}</span>
 		</a>
 	</ContextMenu.Trigger>
 
-	<ContextMenuContent itemValue={item.field} />
+	<ContextMenuFavorite field={item.field} />
 </ContextMenu.Root>

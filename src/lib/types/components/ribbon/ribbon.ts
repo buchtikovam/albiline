@@ -1,5 +1,4 @@
-import type { Icon } from 'lucide-svelte';
-import type { ComponentType } from 'svelte';
+import type { Icon as IconType } from 'lucide-svelte';
 import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
@@ -11,13 +10,15 @@ export type RibbonSeparator = {
 export type RibbonItem = {
 	type: RibbonTypeEnum,
 	field: string,
-	icon?: ComponentType<Icon>,
+	icon?: typeof IconType,
 	action: RibbonActionEnum,
+	translation: () => string,
 	hide: boolean,
 	children?: RibbonSubItem[],
 }
 
 export type RibbonSubItem = {
 	field: string,
+	translation: () => string,
 	action: RibbonActionEnum,
 }

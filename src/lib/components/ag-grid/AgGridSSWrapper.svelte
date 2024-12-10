@@ -9,11 +9,11 @@
 		selectedPresetStore,
 		selectedRowsStore,
 		setColDefToDefault
-	} from '$lib/runes-global/table.svelte';
-	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from '$lib/runes-global/ribbonStore';
-	import { disablePageTabsStore, pageCompactStore, sessionKeyStore } from '$lib/runes-global/page.svelte';
+	} from '$lib/runes/table.svelte';
+	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte';
+	import { disablePageTabsStore, pageCompactStore, sessionKeyStore } from '$lib/runes/page.svelte';
 	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
-	import { filtersStore } from '$lib/runes-global/table.svelte.js';
+	import { filtersStore } from '$lib/runes/table.svelte.js';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 	import { onDestroy, onMount } from 'svelte';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pageCompact } from '$lib/runes-global/page.svelte';
+	import { pageCompact } from '$lib/runes/page.svelte';
 	import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
 	import FoldVertical from 'lucide-svelte/icons/fold-vertical';
 	import Settings from 'lucide-svelte/icons/settings';

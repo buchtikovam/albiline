@@ -6,6 +6,7 @@ export type SidebarItem = {
 	href: string;
 	open: boolean;
 	hide: boolean;
+	translation: () => string;
 	icon: null|typeof IconType;
 	children: SidebarItem[];
 }
