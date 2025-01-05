@@ -1,6 +1,6 @@
 <script lang="ts">
 	interface Props {
-		label: any;
+		label: string;
 	}
 
 	let { label }: Props = $props();

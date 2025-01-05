@@ -1,36 +1,35 @@
 <script lang="ts">
-	import { type Writable, writable } from 'svelte/store';
 	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 	import DndColumnNew from '$lib/components/form/DndColumn.svelte';
 
 	interface Props {
-		formDef: Writable<AutoFormType>;
-		formValues?: any;
+		formDef: AutoFormType;
+		formValues: any;
 		translationRoute: string;
 		allowCrossColumnDND?: boolean;
 	}
 
 	let {
-		formDef,
-		formValues = $bindable(writable({})),
+		formDef = $bindable({}),
+		formValues = $bindable({}),
 		translationRoute,
 		allowCrossColumnDND = true
 	}: Props = $props();
 
-	let colDef: AutoFormType = $state();
+	let colDef: { value: AutoFormType } = $state({ value: {} });
 
-	formDef.subscribe((data) => {
-		console.log(data);
-		colDef = data;
+	$effect(() => {
+		console.log(formDef);
+		colDef.value = formDef;
 	})
 </script>
 
 
 <form method="POST" autocomplete="off">
 	<div class="w-full gap-4 xl:flex ">
-		{#each Object.entries(colDef) as [key, value]}
+		{#each Object.entries(colDef.value) as [key, value]}
 			<DndColumnNew
-				section={value}
+				bind:section={colDef.value[key]}
 				autoformWritable={formDef}
 				colName={key}
 				allowCrossColumnDND={allowCrossColumnDND}

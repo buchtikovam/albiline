@@ -2,7 +2,6 @@
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { getContext } from 'svelte';
-	import { editedFormValuesStore, selectedInputStore } from '$lib/runes/autoformStore';
 	import { get } from 'svelte/store';
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 

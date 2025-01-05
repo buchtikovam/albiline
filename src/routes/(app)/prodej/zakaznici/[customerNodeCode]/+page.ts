@@ -1,27 +1,27 @@
 import type { PageLoad } from "./$types";
 
 
-export const load: PageLoad = async ({ fetch, params }) => {
-	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}`)
-
-	if (res.ok) {
-		const response = await res.json();
-		const contacts = response.contacts;
-		const item = response.item;
-
-		if (contacts && item) {
-			return {
-				response: {
-					item: item,
-					contacts: contacts
-				},
-				state: {
-					status: "success",
-					message: ""
-				}
-			};
-		}
-	}
+export const load: PageLoad = async () => {
+	// const res = await fetch(`http://111110.2.2.100/albiline.test/api/v1/customers/${params.customerNodeCode}`)
+	//
+	// if (res.ok) {
+	// 	const response = await res.json();
+	// 	const contacts = response.contacts;
+	// 	const item = response.item;
+	//
+	// 	if (contacts && item) {
+	// 		return {
+	// 			response: {
+	// 				item: item,
+	// 				contacts: contacts
+	// 			},
+	// 			state: {
+	// 				status: "success",
+	// 				message: ""
+	// 			}
+	// 		};
+	// 	}
+	// }
 
 	return {
 		response: {

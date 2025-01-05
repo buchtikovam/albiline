@@ -60,7 +60,7 @@
 				<button
 					onclick={() => {
 						pageCompact.value = false;
-						// window.location.reload();
+						window.location.reload();
 					}}
 					class="flex items-center"
 				>
@@ -73,7 +73,7 @@
 				<button
 					onclick={() => {
 						pageCompact.value = true;
-						// window.location.reload();
+						window.location.reload();
 					}}
 					class="flex items-center"
 				>

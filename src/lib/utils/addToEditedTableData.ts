@@ -1,15 +1,13 @@
-import { get, type Writable } from 'svelte/store';
-import { disableNavigationStore } from '$lib/runes/page.svelte';
 import type { CellValueChangedEvent } from 'ag-grid-enterprise';
-import { editedTableDataStore } from '$lib/runes/table.svelte';
+import { disableNavigation } from '$lib/runes/navigation.svelte';
+
 
 export function addToEditedTableData(
 	event: CellValueChangedEvent,
 	requiredFields: string[],
-	store: Writable<any[]>
+	editedData: any[]
 ): void {
 	const colId: string = event.column.getColId();
-	const editedData: any[] = get(store);
 	let foundMatch: boolean = false;
 
 	// function to check if record already exists by comparing all required fields
@@ -24,7 +22,6 @@ export function addToEditedTableData(
 		if (checkForMatch(record)) {
 			foundMatch = true;
 			record[colId] = event.newValue;
-			editedTableDataStore.set(editedData)
 		}
 	})
 
@@ -37,10 +34,9 @@ export function addToEditedTableData(
 		})
 
 		newRow[colId] = event.newValue;
-		store.update((records) => records.concat(newRow));
+		editedData.push(newRow);
 	}
 
 	// disable navigation on page
-	disableNavigationStore.set(true);
-	console.log(get(store));
+	disableNavigation.value = true;
 }

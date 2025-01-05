@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ribbonActionStore, ribbonOpen } from '$lib/runes/ribbon.svelte';
+	import { ribbonAction, ribbonOpen } from '$lib/runes/ribbon.svelte';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
+	import type { RibbonItem, RibbonSubItem } from '$lib/types/components/ribbon/ribbon';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import type { RibbonItem, RibbonSubItem } from '$lib/types/components/ribbon/ribbon';
-	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
 
 	let { ribbonItem }: {
@@ -12,12 +12,6 @@
 	} = $props();
 
 	let children: RibbonSubItem[] = ribbonItem.children || [];
-
-	function setRibbonAction(itemAction: RibbonActionEnum | undefined) {
-		if (itemAction) {
-			ribbonActionStore.set(itemAction);
-		}
-	}
 </script>
 
 
@@ -43,8 +37,10 @@
 
 		<DropdownMenu.Content class="w-fit">
 			{#each children as ribbonChild}
-				<DropdownMenu.Item class="w-full" onclick>
-					<button onclick={() => setRibbonAction(ribbonChild.action)}>
+				<DropdownMenu.Item class="w-full">
+					<button onclick={() => {
+						ribbonAction.value = ribbonItem.action;
+					}}>
 						{ ribbonChild.translation() }
 					</button>
 				</DropdownMenu.Item>
@@ -52,32 +48,36 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {:else}
-	<Tooltip.Root>
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger class="ml-0.5 min-w-6 rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
-				<Tooltip.Trigger class="flex items-center">
-					{@const Icon = ribbonItem.icon}
+	<div class="min-w-6 ml-0.5">
+		<Tooltip.Root>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger class="rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
+					<Tooltip.Trigger class="flex  items-center w-auto">
+						{@const Icon = ribbonItem.icon}
 
-					<Icon
-						class="size-4 "
-					/>
-					<ChevronDown class="size-2 mr-0.5" />
-				</Tooltip.Trigger>
-			</DropdownMenu.Trigger>
+						<Icon
+							class="size-4 "
+						/>
+						<ChevronDown class="size-2 mr-0.5" />
+					</Tooltip.Trigger>
+				</DropdownMenu.Trigger>
 
-			<DropdownMenu.Content side="top">
-				{#each children as ribbonChild}
-					<DropdownMenu.Item class="w-full">
-						<button onclick={() => setRibbonAction(ribbonChild.action)}>
-							{ ribbonChild.translation() }
-						</button>
-					</DropdownMenu.Item>
-				{/each}
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
+				<DropdownMenu.Content side="top">
+					{#each children as ribbonChild}
+						<DropdownMenu.Item class="w-full">
+							<button onclick={() => {
+								ribbonAction.value = ribbonItem.action;
+							}}>
+								{ ribbonChild.translation() }
+							</button>
+						</DropdownMenu.Item>
+					{/each}
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 
-		<Tooltip.Content>
-			{ ribbonItem.translation() }
-		</Tooltip.Content>
-	</Tooltip.Root>
+			<Tooltip.Content>
+				{ ribbonItem.translation() }
+			</Tooltip.Content>
+		</Tooltip.Root>
+	</div>
 {/if}

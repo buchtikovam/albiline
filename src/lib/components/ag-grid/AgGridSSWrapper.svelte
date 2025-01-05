@@ -1,24 +1,17 @@
 <script lang="ts">
 	import {
-		activeSelectedRowIndexStore,
-		defaultColDef,
-		editedTableDataStore,
-		fulltextFilterValueStore,
-		presetStore,
-		selectedFilterStore,
-		selectedPresetStore,
-		selectedRowsStore,
-		setColDefToDefault
+		activeSelectedRowIndex, defaultColDef,
+		editedTableData,
+		filtersToSave,
+		presetToSave, selectedFilters, selectedPreset, setColDefToDefault,
+		storedSelectedRows
 	} from '$lib/runes/table.svelte';
-	import { isEditAllowedStore, openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte';
-	import { disablePageTabsStore, pageCompactStore, sessionKeyStore } from '$lib/runes/page.svelte';
+	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
 	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
-	import { filtersStore } from '$lib/runes/table.svelte.js';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import { scrollGridToTop } from '$lib/utils/components/ag-grid/scrollGridToTop';
-	import { get } from 'svelte/store';
 	import { customToast } from '$lib/utils/customToast';
 	import {
 		type CellValueChangedEvent,
@@ -31,10 +24,11 @@
 		type IServerSideGetRowsParams
 	} from 'ag-grid-enterprise';
 	import type { ColumnOrder, TableRowRequest } from '$lib/types/components/table/table';
-	import type { ColDef } from 'ag-grid-community';
-	import type { Preset } from '$lib/types/components/table/presets';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import '$lib/ag-grid-theme-builder.pcss';
+	import { disablePageTabs } from '$lib/runes/navigation.svelte';
+	import { isEditAllowed, ribbonAction } from '$lib/runes/ribbon.svelte';
+	import type { ColDef } from 'ag-grid-community';
 
 
 	interface Props {
@@ -43,8 +37,14 @@
 		gridOptionsCustom: GridOptions;
 	}
 
-	let { url, requiredFields, gridOptionsCustom }: Props = $props();
+	let {
+		url,
+		requiredFields,
+		gridOptionsCustom
+	}: Props = $props();
 
+
+	// @ts-ignore
 	let gridContainer: HTMLElement = $state();
 	let gridApi: GridApi<unknown>;
 
@@ -69,25 +69,25 @@
 				addToEditedTableData(
 					event,
 					["customerNodeCode", "customerAddressCode"],
-					editedTableDataStore
+					editedTableData.value
 				)
 			}
 		},
 
 		onColumnResized: () => {
-			presetStore.set(gridApi.getColumnDefs() || [])
+			presetToSave.value = gridApi.getColumnDefs() || []
 		},
 
 		onFilterChanged() {
-			filtersStore.set(gridApi.getFilterModel());
+			filtersToSave.value = gridApi.getFilterModel();
 		},
 
 		onColumnMoved: () => {
-			presetStore.set(gridApi.getColumnDefs() || [])
+			presetToSave.value = gridApi.getColumnDefs() || [];
 		},
 
 		onColumnVisible: () => {
-			presetStore.set(gridApi.getColumnDefs() || [])
+			presetToSave.value = gridApi.getColumnDefs() || [];
 		},
 
 		getRowId: (params: GetRowIdParams) => {
@@ -98,8 +98,8 @@
 			const selectedRows: any[] = gridApi.getSelectedRows();
 			let rowArr: {[key: string]: any}[] = []
 
-			disablePageTabsStore.set(selectedRows.length === 0)
-			activeSelectedRowIndexStore.set(0)
+			disablePageTabs.value = selectedRows.length > 0;
+			activeSelectedRowIndex.value = 0
 
 			selectedRows.forEach((row) => {
 				let rowObj: {[key: string]: any} = {}
@@ -110,7 +110,7 @@
 				rowArr.push(rowObj);
 			})
 
-			selectedRowsStore.set(rowArr)
+			storedSelectedRows.value = rowArr;
 		},
 	}
 
@@ -156,7 +156,7 @@
 			previousSort = currentSort;
 
 			// custom request model
-			updatedParamsRequest.fulltext = get(fulltextFilterValueStore)
+			updatedParamsRequest.fulltext = fulltextFilterValue.value;
 			updatedParamsRequest.lastRow = lastRow;
 			updatedParamsRequest.rowBatchSize = rowBatchSize;
 
@@ -184,7 +184,7 @@
 					body: JSON.stringify(params.request),
 					headers: {
 						"Content-Type": "application/json",
-						"Session-Key": get(sessionKeyStore)
+						"Session-Key": sessionKey.value || "",
 					}
 				}
 			)
@@ -202,84 +202,44 @@
 
 
 	// listening to fulltext filter changes from layout, refresh grid with delay
+	let isInitial = true;
 	let timer: NodeJS.Timeout;
-	fulltextFilterValueStore.subscribe((data) => {
-		if (data) {
+
+	function debounceFulltext() {
+		clearTimeout(timer)
+
+		timer = setTimeout(async () => {
+			await tick();
+			lastRow = null;
+			gridApi.onFilterChanged()
+		}, 1000)
+	}
+
+	$effect(() => {
+		if (fulltextFilterValue.value) {
+			isInitial = false;
+			debounceFulltext();
+		}
+
+		if (fulltextFilterValue.value === "" && !isInitial) {
 			clearTimeout(timer)
-			timer = setTimeout(() => {
-				lastRow = null;
-				gridApi.onFilterChanged()
-			}, 1000);
+			debounceFulltext();
 		}
 	})
 
 
-	const columnDefaultEditable = new Map()
-	let isPageCompact: boolean = $state();
+	const columnDefaultEditable = new Map();
 
 
-	onMount(() => {
+	// runs when component is mounted only
+	$effect(() => {
 		gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		gridApi.setGridOption('serverSideDatasource', datasource);
-		defaultColDef.set(gridApi.getColumnDefs() || [])
+		defaultColDef.value = gridApi.getColumnDefs() || [];
 
-
-		// setting filters from ribbon
-		selectedFilterStore.subscribe((filters) => {
-			if (filters) {
-				gridApi.setFilterModel(filters)
-				gridApi.onFilterChanged()
-			}
-		})
-
-
-		// setting preset from ribbon
-		selectedPresetStore.subscribe((preset) => {
-			if (preset) {
-				console.log("preset", preset);
-				let columnOrder: ColumnOrder = []
-
-				preset.forEach(obj => {
-					columnOrder.push({ colId: obj.colId})
-				})
-
-				gridApi.setGridOption("columnDefs", preset)
-
-				gridApi.applyColumnState({
-					state: columnOrder,
-					applyOrder: true
-				});
-			}
-		})
-
-
-		// if true, then set columnDefs to default
-		// invoked from ribbon
-		setColDefToDefault.subscribe((data) => {
-			if (data) {
-				let columnOrder: ColumnOrder = [];
-				let defaultColumnDef = get(defaultColDef);
-
-				defaultColumnDef.forEach(obj => {
-					columnOrder.push({ colId: obj.field});
-				});
-
-				gridApi.setGridOption("columnDefs", defaultColumnDef);
-
-				gridApi.applyColumnState({
-					state: columnOrder,
-					applyOrder: true
-				});
-
-				setColDefToDefault.set(false);
-			}
-		})
-
-
-		// set background color of editable columns on page load,
-		// map initial column editable state
-		const initialColDef = gridApi.getColumnDefs()
-		const canEdit = get(isEditAllowedStore);
+		// set background color of editable columns on page load, map initial column editable state
+		const initialColDef = gridApi.getColumnDefs();
+		const canEdit = isEditAllowed.value;
 
 		initialColDef?.map((column: ColDef) => {
 			columnDefaultEditable.set(column.field, column.editable)
@@ -295,40 +255,6 @@
 
 		gridApi.setGridOption("columnDefs", initialColDef);
 
-
-		// disable page tabs if no row is selected
-		disablePageTabsStore.update(() => {
-			if (get(selectedRowsStore).length > 0) {
-				return false;
-			}
-
-			return gridApi.getSelectedRows().length === 0;
-		})
-
-
-		// if routing between list and details, restore column order, visibility
-		if (get(presetStore)?.length > 0) {
-			let columnOrder: ColumnOrder = []
-
-			get(presetStore).forEach((obj: Preset) => {
-				columnOrder.push({ colId: obj.colId})
-			})
-
-			gridApi.setGridOption("columnDefs", get(presetStore))
-
-			gridApi.applyColumnState({
-				state: columnOrder,
-				applyOrder: true
-			});
-		}
-
-
-		// if routing from details to list, restore filters
-		if (Object.keys(get(filtersStore)).length > 0) {
-			gridApi.setFilterModel(get(filtersStore))
-		}
-
-
 		// remove selection on shift
 		window.addEventListener("keydown", (e) => {
 			if (e.shiftKey) {
@@ -336,121 +262,211 @@
 			}
 		})
 
-		// set compact mode
-		isPageCompact = get(pageCompactStore);
+		// // if routing between list and details, restore column order, visibility
+		// if (get(presetStore)?.length > 0) {
+		// 	let columnOrder: ColumnOrder = []
+		//
+		// 	get(presetStore).forEach((obj: Preset) => {
+		// 		columnOrder.push({ colId: obj.colId})
+		// 	})
+		//
+		// 	gridApi.setGridOption("columnDefs", get(presetStore))
+		//
+		// 	gridApi.applyColumnState({
+		// 		state: columnOrder,
+		// 		applyOrder: true
+		// 	});
+		// }
+		//
+		//
+		// // if routing from details to list, restore filters
+		// if (Object.keys(get(filtersStore)).length > 0) {
+		// 	gridApi.setFilterModel(get(filtersStore))
+		// }
+		//
+		//
+
+		return () => {
+			fulltextFilterValue.value = "";
+		}
 	})
 
 
-	onDestroy(() => {
-		fulltextFilterValueStore.set(undefined)
+	// runs when user chooses filter from ribbon
+	$effect(() => {
+		if (Object.keys(selectedFilters.value).length > 0) {
+			console.log("chosen filter");
+			gridApi.setFilterModel(selectedFilters.value)
+			gridApi.onFilterChanged()
+		}
 	})
 
 
-	ribbonActionStore.subscribe((action) => {
-		if (action === RibbonActionEnum.EDIT) {
-			isEditAllowedStore.update((data) => !data)
+	// runs when user chooses preset from ribbon
+	$effect(() => {
+		if (selectedPreset.value.length > 0) {
+			console.log("chosen preset");
 
-			const currentColDef = gridApi.getColumnDefs()
-			let isEditable = get(isEditAllowedStore)
+			let columnOrder: ColumnOrder = []
 
-			if (currentColDef) {
-				currentColDef.map((column: ColDef) => {
-					if (columnDefaultEditable.get(column.field)) {
-						column.editable = isEditable;
-						column.cellStyle = {
-							backgroundColor: isEditable ?
-								"rgba(245,198,11,0.05)" :
-								"rgba(0, 0, 0, 0)"
-						};
-					}
-				})
+			selectedPreset.value.forEach(obj => {
+				columnOrder.push({ colId: obj.colId})
+			})
 
-				gridApi.setGridOption("columnDefs", currentColDef);
-			}
+			gridApi.setGridOption("columnDefs", selectedPreset.value)
+
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+		}
+	})
+
+
+	// runs from ribbon -> my presets. Restores default column order, widths, visibility
+	$effect(() => {
+		if (setColDefToDefault.value) {
+			console.log("set to default");
+			let columnOrder: ColumnOrder = [];
+			let defaultColumnDef = defaultColDef.value;
+
+			defaultColumnDef.forEach(obj => {
+				// @ts-ignore
+				columnOrder.push({ colId: obj.field });
+			});
+
+			gridApi.setGridOption("columnDefs", defaultColumnDef);
+
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+
+			setColDefToDefault.value = false;
+		}
+	});
+
+
+	// disable page tabs if no row is selected
+	$effect(() => {
+		if (storedSelectedRows.value) {
+			disablePageTabs.value = gridApi.getSelectedRows().length === 0;
+		}
+	})
+
+
+	// runs when user clicks ribbon button
+	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.EDIT) {
+			isEditAllowed.value = !isEditAllowed.value;
+
+			const currentColDef = gridApi.getColumnDefs();
+			let isEditable = isEditAllowed.value;
+
+			console.log("edit");
+
+			// if (currentColDef) {
+			// 	currentColDef.map((column: ColDef) => {
+			// 		if (columnDefaultEditable.get(column.field)) {
+			// 			column.editable = isEditable;
+			// 			column.cellStyle = {
+			// 				backgroundColor: isEditable ?
+			// 					"rgba(245,198,11,0.05)" :
+			// 					"rgba(0, 0, 0, 0)"
+			// 			};
+			// 		}
+			// 	})
+			//
+			// 	gridApi.setGridOption("columnDefs", currentColDef);
+			// }
 
 			isEditable === true
 				? customToast("InfoToast", "Editace byla povolena")
 				: customToast("InfoToast", "Editace byla zakázána")
 		}
 
-		if (action === RibbonActionEnum.SAVE) {
-			console.log(get(editedTableDataStore));
-		}
 
-		if (action === RibbonActionEnum.LOAD) {
-			gridApi.refreshServerSide();
-		}
-
-		if (action === RibbonActionEnum.FILTER_QUICK) {
-			const columnName = gridApi.getFocusedCell()?.column.getColId();
-			const selection = window.getSelection()?.toString().trim();
-
-			if (columnName && selection) {
-				const cellType = "text";
-				let currentFilters = gridApi.getFilterModel();
-
-				currentFilters[columnName] = {
-					filterType: "multi",
-					filterModels: [{
-						filterType: cellType,
-						type: "contains",
-						filter: selection
-					}, null]
-				}
-
-				gridApi.setFilterModel(currentFilters);
-				gridApi.onFilterChanged();
-			}
-		}
-
-		if (action === RibbonActionEnum.FILTER_UNDO) {
-			recentFilters.pop()
-			if (recentFilters.length > 0) {
-				gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
-			} else {
-				gridApi.setFilterModel(null);
-			}
-		}
-
-		if (action === RibbonActionEnum.FILTER_REMOVE) {
-			gridApi.setFilterModel(null);
-		}
-
-		if (action === RibbonActionEnum.SAVE_FILTERS) {
-			if (Object.keys(gridApi.getFilterModel()).length > 0) {
-				// openedDialogStore.set("ribbon-save-filters")
-				// filtersStore.set(gridApi.getFilterModel())
-				console.log(gridApi.getFilterModel());
-			} else {
-				customToast("InfoToast", "Nemáte žádné filtry k uložení.")
-			}
-		}
-
-		if (action === RibbonActionEnum.MY_FILTERS) {
-			openedDialogStore.set("ribbon-my-filters")
-		}
-
-		if(action === RibbonActionEnum.SAVE_PRESET) {
-			openedDialogStore.set("ribbon-save-preset");
-
-			console.log(gridApi.getColumnDefs());
-			// presetStore.set(gridApi.getColumnDefs() || [])
-		}
-
-		if(action === RibbonActionEnum.MY_PRESETS) {
-			openedDialogStore.set("ribbon-my-presets");
-		}
-
-		ribbonActionStore.set(undefined);
+		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
-</script>
 
+
+
+
+		// if (action === RibbonActionEnum.SAVE) {
+		// 	console.log(get(editedTableDataStore));
+		// }
+
+		// if (action === RibbonActionEnum.LOAD) {
+		// 	gridApi.refreshServerSide();
+		// }
+		//
+		// if (action === RibbonActionEnum.FILTER_QUICK) {
+		// 	const columnName = gridApi.getFocusedCell()?.column.getColId();
+		// 	const selection = window.getSelection()?.toString().trim();
+		//
+		// 	if (columnName && selection) {
+		// 		const cellType = "text";
+		// 		let currentFilters = gridApi.getFilterModel();
+		//
+		// 		currentFilters[columnName] = {
+		// 			filterType: "multi",
+		// 			filterModels: [{
+		// 				filterType: cellType,
+		// 				type: "contains",
+		// 				filter: selection
+		// 			}, null]
+		// 		}
+		//
+		// 		gridApi.setFilterModel(currentFilters);
+		// 		gridApi.onFilterChanged();
+		// 	}
+		// }
+		//
+		// if (action === RibbonActionEnum.FILTER_UNDO) {
+		// 	recentFilters.pop()
+		// 	if (recentFilters.length > 0) {
+		// 		gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
+		// 	} else {
+		// 		gridApi.setFilterModel(null);
+		// 	}
+		// }
+		//
+		// if (action === RibbonActionEnum.FILTER_REMOVE) {
+		// 	gridApi.setFilterModel(null);
+		// }
+		//
+		// if (action === RibbonActionEnum.SAVE_FILTERS) {
+		// 	if (Object.keys(gridApi.getFilterModel()).length > 0) {
+		// 		// openedDialogStore.set("ribbon-save-filters")
+		// 		// filtersStore.set(gridApi.getFilterModel())
+		// 		console.log(gridApi.getFilterModel());
+		// 	} else {
+		// 		customToast("InfoToast", "Nemáte žádné filtry k uložení.")
+		// 	}
+		// }
+		//
+		// if (action === RibbonActionEnum.MY_FILTERS) {
+		// 	openedDialogStore.set("ribbon-my-filters")
+		// }
+		//
+		// if(action === RibbonActionEnum.SAVE_PRESET) {
+		// 	openedDialogStore.set("ribbon-save-preset");
+		//
+		// 	console.log(gridApi.getColumnDefs());
+		// 	// presetStore.set(gridApi.getColumnDefs() || [])
+		// }
+		//
+		// if(action === RibbonActionEnum.MY_PRESETS) {
+		// 	openedDialogStore.set("ribbon-my-presets");
+		// }
+		//
+</script>
 
 
 <div class="flex flex-column h-full">
 	<div
 		id="datagrid"
-		class={(isPageCompact ? "compact" : "normal") + " ag-theme-custom"}
+		class={(pageCompact.value ? "compact" : "normal") + " ag-theme-custom"}
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>
@@ -464,7 +480,6 @@
 	}
 
 	.normal {
-		--ag-grid-size: 6px; /* very compact */
-
+		--ag-grid-size: 6px;
 	}
 </style>

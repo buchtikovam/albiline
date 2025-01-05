@@ -1,19 +1,15 @@
-import { localStore } from '$lib/utils/local-storage/localStorage.svelte';
+import { LocalStore, localStore } from '$lib/utils/local-storage/localStorage.svelte';
+import { SessionStore, sessionStore } from '$lib/utils/local-storage/sessionStorage.svelte';
 
 // export const isMobileLayoutExpandedStore: Writable<boolean> = writable(false);
 //
 // export const isMobileStore: Writable<boolean> = writable(false);
 //
-// export const sessionKeyStore: Writable<string> = persisted(
-// 	'sessionKey',
-// 	undefined,
-// 	{ storage: 'session' }
-// );
+export const sessionKey: SessionStore<string|null> = sessionStore('sessionKey', "504a58f3-58b2-48f9-8eed-40646bb9c122");
 
-// export const disableInputs: Writable<boolean> = writable(false);
+export const disableInputs: { value: boolean } = $state({ value: false });
 
-// @ts-expect-error Type LocalStore is an issue in components, doesn't affect runtime
-export const pageCompact: { value: boolean } = localStore("pageCompact", { value: false });
+export const pageCompact: LocalStore<boolean>= localStore("pageCompact", false );
 
 // boolean runa pro zobrazení fulltextového vyhledávání
 export const showFulltextSearch: { value: boolean } = $state({ value: false });

@@ -1,30 +1,29 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { selectedFilterStore } from '$lib/runes/table.svelte';
-	import { openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte';
+	/*import { page } from '$app/stores';
+	import { selectedFilters } from '$lib/runes/table.svelte';
+	import { openedDialog, ribbonAction } from '$lib/runes/ribbon.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
-	// import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
+	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import { customToast } from '$lib/utils/customToast';
-	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import X from 'lucide-svelte/icons/x';
+	import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
 	import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	/*
+	/!*
 		Dialog zobrazující uložené column filtry pro danou tabulku,
 		možnost řazení, editace a mazání filtrů
-	*/
+	*!/
 
 	let dialogOpen: boolean = $state(false);
 	let warningDialogOpen: boolean = $state(false);	
 
 	let currentFilterId: number = $state();
 	let filters: FetchedFilter[] = $state();
-	let deleteFilterConsent: Writable<boolean> = $state(writable(false));
+	let deleteFilterConsent: boolean = $state(false);
 
 	let isEditing: boolean = $state(false);
 	let currentEditedId: number | undefined = $state(undefined);
@@ -41,7 +40,7 @@
 			});
 		} catch (error) {
 			console.error('Error fetching input-filters:', error);
-			customToast("Warning", "Nepovedlo se fetchnout filtery.")
+			customToast("Warning", "Nepovedlo se získat filtery.")
 		}
 	}
 
@@ -107,11 +106,11 @@
 
 
 	function loadFiltersInTable(filters: ColumnFilters) {
-		selectedFilterStore.set(filters)
-		ribbonActionStore.set(undefined);
+		selectedFilters.value = filters;
+		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		dialogOpen = false;
 		setTimeout(() => {
-			openedDialogStore.set(undefined);
+			openedDialog.value = "empty";
 		}, 250);
 	}
 
@@ -142,26 +141,26 @@
 
 
 	// Nastavuje se ve warning dialogu. Pokud je true, zvolený filtr se smaže
-	deleteFilterConsent.subscribe((consent) => {
-		if (consent) {
-			deleteFilter(currentFilterId);
-		}
+	// deleteFilterConsent.subscribe((consent) => {
+	// 	if (consent) {
+	// 		deleteFilter(currentFilterId);
+	// 	}
+	//
+	// 	deleteFilterConsent.set(false);
+	// });
 
-		deleteFilterConsent.set(false);
-	});
-
-
-	onMount(() => {
-		dialogOpen = true;
-		fetchFilters()
-	});
+	//
+	// onMount(() => {
+	// 	dialogOpen = true;
+	// 	fetchFilters()
+	// });*/
 </script>
 
 
 
+<!--
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="!w-[400px]">
 		<Dialog.Header>
@@ -195,45 +194,45 @@
 								/>
 							</form>
 						{:else}
-							<button
-								draggable="true"
-								onclick={() => loadFiltersInTable(filter.filters)}
-								ondragstart={(e) => dragFilter(e, index)}
-								ondragover={() => setHoveringFilter(index)}
-								ondragend={(e) => dropFilter(e, hovering)}
-								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
-							>
-								{filter.filterName}
-							</button>
+&lt;!&ndash;							<button&ndash;&gt;
+&lt;!&ndash;								draggable="true"&ndash;&gt;
+&lt;!&ndash;								onclick={() => loadFiltersInTable(filter.filters)}&ndash;&gt;
+&lt;!&ndash;								ondragstart={(e) => dragFilter(e, index)}&ndash;&gt;
+&lt;!&ndash;								ondragover={() => setHoveringFilter(index)}&ndash;&gt;
+&lt;!&ndash;								ondragend={(e) => dropFilter(e, hovering)}&ndash;&gt;
+&lt;!&ndash;								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"&ndash;&gt;
+&lt;!&ndash;							>&ndash;&gt;
+&lt;!&ndash;								{filter.filterName}&ndash;&gt;
+&lt;!&ndash;							</button>&ndash;&gt;
 						{/if}
 
 						<div class="flex gap-2 ml-4">
-							<button
-								onclick={() => {
-									isEditing = !isEditing
-									currentEditedId = filter.id
-								}}
-								class="size-5"
-							>
-								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />
-							</button>
+&lt;!&ndash;							<button&ndash;&gt;
+&lt;!&ndash;								onclick={() => {&ndash;&gt;
+&lt;!&ndash;									isEditing = !isEditing&ndash;&gt;
+&lt;!&ndash;									currentEditedId = filter.id&ndash;&gt;
+&lt;!&ndash;								}}&ndash;&gt;
+&lt;!&ndash;								class="size-5"&ndash;&gt;
+&lt;!&ndash;							>&ndash;&gt;
+&lt;!&ndash;								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />&ndash;&gt;
+&lt;!&ndash;							</button>&ndash;&gt;
 
-							<button
-								onclick={() => {
-									warningDialogOpen = true
-									if (filter.id) currentFilterId = filter.id
-								}}
-								class="size-5"
-							>
-								<X class="size-4 text-albi-600 hover:text-albi-900" />
-							</button>
+&lt;!&ndash;							<button&ndash;&gt;
+&lt;!&ndash;								onclick={() => {&ndash;&gt;
+&lt;!&ndash;									warningDialogOpen = true&ndash;&gt;
+&lt;!&ndash;									if (filter.id) currentFilterId = filter.id&ndash;&gt;
+&lt;!&ndash;								}}&ndash;&gt;
+&lt;!&ndash;								class="size-5"&ndash;&gt;
+&lt;!&ndash;							>&ndash;&gt;
+&lt;!&ndash;								<X class="size-4 text-albi-600 hover:text-albi-900" />&ndash;&gt;
+&lt;!&ndash;							</button>&ndash;&gt;
 						</div>
 					</div>
 				{/each}
 			</div>
 		{:else}
-			<!-- Placeholdery během toho, co se filtry fetchují.
-			Ukáže se jen při pomalém internetu -->
+			&lt;!&ndash; Placeholdery během toho, co se filtry fetchují.
+			Ukáže se jen při pomalém internetu &ndash;&gt;
 			<div class="space-y-3 mt-2">
 				<Skeleton class="h-4 w-[250px]" />
 				<Skeleton class="h-4 w-[180px]" />
@@ -251,3 +250,4 @@
 	buttonAllowLabel="Smazat filtr"
 	buttonDenyLabel="Zrušit"
 />
+-->

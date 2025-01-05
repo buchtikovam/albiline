@@ -6,13 +6,7 @@
 	import Info from 'lucide-svelte/icons/info';
 	import { beforeNavigate } from '$app/navigation';
 
-	
-
 	interface Props {
-		/*
-		Toast komponent, který pomocí svelte sonneru zobrazuje
-		uživateli zpětnou vazbu na FE
-	*/
 		type: ToastVariant;
 		content: string;
 	}

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { fulltextFilterValue, showFulltextSearch } from '$lib/runes/page.svelte';
 	import { disableNavigation, openedTabs } from '$lib/runes/navigation.svelte.js';
-	import { languageTag } from "$lib/paraglide/runtime.js"
 	import { i18n } from '$lib/i18n.js'
 	import { page } from '$app/stores';
+	import { languageTag } from "$lib/paraglide/runtime.js"
 	import { getTabValue } from '$lib/utils/navigation/getTabValue';
 	import { deleteTab } from '$lib/utils/navigation/deleteTab.svelte';
 	import { slide } from 'svelte/transition';
@@ -19,16 +19,16 @@
 
 
 	let pathName = $state("");
+	let disabled = $derived(disableNavigation.value);
 
 	$effect(() => {
 		pathName = getTabValue($page.url.pathname, openedTabs.value);
+
 	});
 
 	let openMobileSidebar: boolean = $state(false);
 
 	// function getLabelByTabField(field: string) {
-	//
-	//
 	// 	return
 	// }
 </script>
@@ -46,7 +46,7 @@
             <!-- default tabs ,-->
             <Tabs.Trigger
                 value="/"
-				disabled={disableNavigation.value}
+				disabled={disabled}
                 onclick={() => goto("/")}
 			>
                 <Home class="w-4 h-4" />
@@ -63,7 +63,7 @@
 				>
 					<Tabs.Trigger
 						value={tab.url}
-						disabled={disableNavigation.value && tab.url !== pathName}
+						disabled={disabled && tab.url !== pathName}
 						onclick={() => {
 							goto(tab.url)
 						}}

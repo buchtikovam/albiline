@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { ribbonOpen } from '$lib/runes/ribbon.svelte';
-	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 	import { ribbonItems } from '$lib/data/page-components/ribbon';
+	import { ribbonOpen } from '$lib/runes/ribbon.svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
+	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import ChevronUp from 'lucide-svelte/icons/chevron-up';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
-	import ChevronUp from 'lucide-svelte/icons/chevron-up';
 </script>
 
 
@@ -18,13 +16,12 @@
 	${ribbonOpen.value ? "h-[58px]" : "h-8"} mx-4 mb-2 p-1.5 rounded-lg bg-white flex justify-between
 	md:mx-2 md:my-0 md:p-2 md:mr-4 transition-all duration-300
 `}>
-	<div class="flex gap-0.5 items-center w-full overflow-x-auto ">
+	<div class="flex gap-0.5 items-center w-full overflow-x-auto">
 		{#each ribbonItems as ribbonItem}
 			{#if Array.isArray(ribbonItem)}
-<!--				<RibbonItemsNarrow-->
-<!--					ribbonItems={ribbonItem}-->
-<!--					isRibbonOpen={isRibbonOpen}-->
-<!--				/>-->
+				<RibbonItemsNarrow
+					ribbonItems={ribbonItem}
+				/>
 			{:else}
 				{#if ribbonItem.type === RibbonTypeEnum.ITEM}
 					<RibbonItem
@@ -63,5 +60,3 @@
 		{/if}
 	</button>
 </div>
-	
-

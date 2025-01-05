@@ -57,7 +57,9 @@
 	"components_ribbon_item_my_filters" : "Vybrat z uložených filtrů",
 	"components_ribbon_item_presets": "Moje šablony",
 	"components_ribbon_item_save_preset": "Uložit aktuální šablonu",
-	"components_ribbon_item_my_presets": "Vybrat u uložených šablon"
+	"components_ribbon_item_my_presets": "Vybrat u uložených šablon",
 
-
+	"routes_prodej_customers_tabs_list" : "Seznam",
+	"routes_prodej_customers_tabs_customer_detail" : "Zákazník",
+	"routes_prodej_customers_tabs_address_detail" : "Prodejna"
 }
