@@ -2,310 +2,409 @@ import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
 import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
 import Repeat from 'lucide-svelte/icons/repeat';
+import * as m from '$lib/paraglide/messages.js'
 
 export const customerDetailFormDef: AutoFormType = {
-	col1 : [
+	left: [
 		{
-			field: "section_fakturacni_adresa",
 			id: uuidv4(),
+			field: "section_fakturacni_adresa",
+			translation: m.routes_prodej_zakaznici_customer_detail_form_section_fakturacni_adresa,
 			hasDialog: true,
 			dialogId: "customer-detail-invoice-addresses",
-			dialogIcon: Repeat,
+			icon: Repeat,
 			isOpen: true,
 			rows: [
-				{ // row 1
-					rowType: "full",
-					inputs: {
-						"name": {
+				{
+					rowType: "row",
+					rowInputs: [
+						{
+							field: "name",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_name,
 							type: "text",
 							schema: z.string().min(1).max(255),
 						},
-					}
+					]
 				},
-				{ // row 2
-					rowType: "full",
-					inputs: {
-						"street": {
+				{
+					rowType: "row",
+					rowInputs: [
+						{
+							field: "street",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_street,
 							type: "text",
 							schema: z.string().max(255),
 						},
-						"city": {
+						{
+							field: "city",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_city,
 							type: "text",
 							schema: z.string().max(255),
 						},
-					}
+					]
 				},
-				{ // row 3
-					rowType: "full",
-					inputs: {
-						"postalCode": {
+				{
+					rowType: "row",
+					rowInputs: [
+						{
+							field: "postalCode",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_postal_code,
 							type: "text",
 							schema: z.string().max(10), // regex for postal code
 						},
-						"countryCode": {
+						{
+							field: "countryCode",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_country_code,
 							type: "dropdown",
 							dropdownOptions: ["CZ", "SK", "PL"],
 							schema: z.enum(["CZ", "SK", "PL"]),
 						},
-					}
+					]
 				},
-				{ // row 4
-					rowType: "full",
-					inputs: {
-						"ico": {
+				{
+					rowType: "row",
+					rowInputs: [
+						{
+							field: "ico",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_ico,
 							type: "number",
 							schema: z.number().min(8).max(8),
 						},
-						"dic": {
+						{
+							field: "dic",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_dic,
 							type: "text",
 							schema: z.string().min(8).max(10),
 						},
-					}
+					]
 				},
-				{ // row 5
-					rowType: "full",
-					inputs: {
-						"icDph": {
+				{
+					rowType: "row",
+					rowInputs: [
+						{
+							field: "icDph",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_icdph,
 							type: "text",
 							schema: z.string().min(8).max(10),
 						},
-						"companyName": {
+						{
+							field: "companyName",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_company_name,
 							type: "text",
 							schema: z.string().max(255),
 						},
-					}
+					]
 				}
 			]
 		},
-
 		{
-			field: "section_nastaveni_fakturace",
 			id: uuidv4(),
+			field: "section_nastaveni_fakturace",
+			translation: m.routes_prodej_zakaznici_customer_detail_form_section_nastaveni_fakturace,
 			isOpen: true,
 			rows: [
 				{ // row 1
-					rowType: "full",
-					inputs: {
-						"paymentTypeCode": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "dropdown",
+							field: "paymentTypeCode",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_payment_type_code,
 							dropdownOptions: ["V", "A", "B", "C"],
 							schema: z.enum(["V", "A", "B", "C"]),
 						},
-						"dueDays": {
+						{
 							type: "number",
-							schema: z.number(),
-						},
-					}
+							field: "dueDays",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_due_days,
+							schema: z.number()
+						}
+					]
 				},
+
 				{ // row 2
-					rowType: "full",
-					inputs: {
-						"invoiceCopies": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "number",
-							schema: z.number(),
+							field: "invoiceCopies",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_invoice_copies,
+							schema: z.number()
 						},
-						"deliveryNoteCopies": {
+						{
 							type: "number",
-							schema: z.number(),
+							field: "deliveryNoteCopies",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_delivery_note_copies,
+							schema: z.number()
 						},
-					}
+					]
 				},
 				{ // row 3
-					rowType: "full",
-					inputs: {
-						"customerStoreCode": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "number",
-							schema: z.number(),
+							field: "customerStoreCode",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_customer_store_code,
+							schema: z.number()
 						},
-						"_customerStoreCode": {
-							type: "empty",
+						{
+							type: "empty"
 						},
-					}
+					]
 				},
 				{ // row 4
 					rowType: "checkbox",
-					inputs: {
-						"consignmentSaleEnabled": {
+					rowInputs: [
+						{
+							type: "checkbox",
+							field: "consignmentSaleEnabled",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_consignment_sale_enabled,
+							schema: z.boolean(),
+						},
+						{
+							field: "isReturnAllowed",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_is_return_allowed,
 							type: "checkbox",
 							schema: z.boolean(),
 						},
-						"isReturnAllowed": {
+						{
+							field: "useAssortedEanCodes",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_use_assorted_ean_codes,
 							type: "checkbox",
 							schema: z.boolean(),
 						},
-						"useAssortedEanCodes": {
-							type: "checkbox",
-							schema: z.boolean(),
-						},
-					}
+					]
 				},
 			]
 		}
 	],
-
-	col2 : [
+	right: [
 		{
-			field: "section_dalsi_udaje",
 			id: uuidv4(),
+			field: "section_dalsi_udaje",
+			translation: m.routes_prodej_zakaznici_customer_detail_form_section_dalsi_udaje,
 			isOpen: true,
 			rows: [
 				{ // row 1
-					rowType: "full",
-					inputs: {
-						"customerAlbiCode": {
+					rowType: "row",
+					rowInputs: [
+						{
+							field: "customerAlbiCode",
 							type: "text",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_customer_albi_code,
 							schema: z.string(),
 						},
-						"keyCustomerTypeId": {
+						{
 							type: "number",
+							field: "keyCustomerTypeId",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_key_customer_type_id,
 							schema: z.number(),
 						},
-					}
+					]
 				},
 				{ // row 2
-					rowType: "full",
-					inputs: {
-						"creditLimit": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "number",
+							field: "creditLimit",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_credit_limit,
 							schema: z.number(),
 						},
-						"unpaidAmount": {
+						{
 							type: "number",
+							field: "unpaidAmount",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_unpaid_amount,
 							schema: z.number(),
 						},
-					}
+					],
 				},
 				{ // row 3
-					rowType: "full",
-					inputs: {
-						"lastPaymentDate": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "date",
+							field: "lastPaymentDate",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_last_payment_date,
 							schema: z.date(),
 						},
-						"email": {
+						{
 							type: "text",
+							field: "email",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_email,
 							schema: z.string().email(),
 						},
-					}
+					]
 				},
 			]
 		},
+
 		{
-			field: "section_edi",
 			id: uuidv4(),
+			field: "section_edi",
+			translation: m.routes_prodej_zakaznici_customer_detail_form_section_edi,
 			isOpen: true,
 			rows: [
 				{ // row 1
-					rowType: "full",
-					inputs: {
-						"ediInboxEanCode": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "number",
+							field: "ediInboxEanCode",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_edi_inbox_ean_code,
 							schema: z.number(),
 						},
-						"ediInboxEanCodeForInvoice": {
+						{
 							type: "number",
+							field: "ediInboxEanCodeForInvoice",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_edi_inbox_ean_code_for_invoice,
 							schema: z.number(),
 						},
-					}
+					],
 				},
 				{ // row 2
-					rowType: "full",
-					inputs: {
-						"customerStoreEan": {
+					rowType: "row",
+					rowInputs: [
+						{
 							type: "number",
+							field: "customerStoreEan",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_customer_store_ean,
 							schema: z.number(),
 						},
-						"_customerStoreEan": {
+						{
 							type: "empty",
 						},
-					}
+					],
 				},
 				{ // row 3
 					rowType: "checkbox",
-					inputs: {
-						"sendDeliveryNodeViaEdi": {
+					rowInputs: [
+						{
 							type: "checkbox",
+							field: "sendDeliveryNodeViaEdi",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_send_delivery_note_via_edi,
 							schema: z.boolean(),
 						},
-						"sendCreditNoteViaEdi": {
+						{
 							type: "checkbox",
+							field: "sendCreditNoteViaEdi",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_send_credit_note_via_edi,
 							schema: z.boolean(),
 						},
-						"useDiacriticalMarksInEdiDocuments": {
+						{
 							type: "checkbox",
+							field: "useDiacriticalMarksInEdiDocuments",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_use_diacritical_marks_in_edi_documents,
 							schema: z.boolean(),
 						},
-						"sendInvoiceViaEdi": {
+						{
 							type: "checkbox",
+							field: "sendInvoiceViaEdi",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_send_invoice_via_edi,
 							schema: z.boolean(),
 						},
-					}
+					]
 				},
 			]
 		},
 		{
-			field: "section_nastaveni",
 			id: uuidv4(),
+			field: "section_nastaveni",
+			translation: m.routes_prodej_zakaznici_customer_detail_form_section_nastaveni,
 			isOpen: true,
 			rows: [
 				{ // row 3
 					rowType: "checkbox",
-					inputs: {
-						"consignmentOuputCheck": {
+					rowInputs: [
+						{
 							type: "checkbox",
+							field: "consignmentOuputCheck",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_consignment_output_check,
 							schema: z.boolean(),
 						},
-						"printPricesOnDeliveryNote": {
+						{
 							type: "checkbox",
+							field: "printPricesOnDeliveryNote",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_print_prices_on_delivery_note,
 							schema: z.boolean(),
 						},
-						"sendInvoiceAfterApproval": {
+						{
 							type: "checkbox",
+							field: "sendInvoiceAfterApproval",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_send_invoice_after_approval,
 							schema: z.boolean(),
 						},
-						"isChargedWithoutVat": {
+						{
 							type: "checkbox",
+							field: "isChargedWithoutVat",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_is_charged_without_vat,
 							schema: z.boolean(),
 						},
-						"alwaysAllowOrdering": {
+						{
 							type: "checkbox",
+							field: "alwaysAllowOrdering",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_always_allow_ordering,
 							schema: z.boolean(),
 						},
-						"invoiceConfirmationNotRequired": {
+						{
 							type: "checkbox",
+							field: "invoiceConfirmationNotRequired",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_invoice_confirmation_not_required,
 							schema: z.boolean(),
 						},
-						"claimNotificationDisabled": {
+						{
 							type: "checkbox",
+							field: "claimNotificationDisabled",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_claim_notification_disabled,
 							schema: z.boolean(),
 						},
-						"b2BeshopEnabled": {
+						{
 							type: "checkbox",
+							field: "b2BeshopEnabled",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_b2b_eshop_enabled,
 							schema: z.boolean(),
 						},
-						"isBlocked": {
+						{
 							type: "checkbox",
+							field: "isBlocked",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_is_blocked,
 							schema: z.boolean(),
 						},
-						"isBadPlayer": {
+						{
 							type: "checkbox",
+							field: "isBadPayer",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_is_bad_payer,
 							schema: z.boolean(),
 						},
-						"isApproved": {
+						{
 							type: "checkbox",
+							field: "isApproved",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_is_approved,
 							schema: z.boolean(),
 						},
-						"contractRecieved": {
+						{
 							type: "checkbox",
+							field: "contractRecieved",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_contract_recieved,
 							schema: z.boolean(),
 						},
-						"tradeLicenceRecieved": {
+						{
 							type: "checkbox",
+							field: "tradeLicenceRecieved",
+							translation: m.routes_prodej_zakaznici_customer_detail_form_input_trade_licence_recieved,
 							schema: z.boolean(),
 						},
-					}
+					],
 				},
 			]
 		}
-	],
+	]
 }
+
+
+//
+//
+//
+// 	],
+// }

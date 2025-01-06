@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { DateValue } from '@internationalized/date';
-	// import { flyAndScale } from '$lib/utils';
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
@@ -23,7 +20,7 @@
 
 	let value: DateValue|undefined = $state();
 
-	run(() => {
+	$effect(() => {
 		if (value) {
 			dateValue = new Date(value.year, value.month, value.day)
 		}
@@ -41,7 +38,7 @@
 	locale="cz"
 >
 	<div class="flex w-full flex-col gap-0.5 ">
-		<DatePicker.Label class="block select-none text-sm font-medium">
+		<DatePicker.Label class="block select-none text-sm font-medium text-slate-500">
 			{ label }
 		</DatePicker.Label>
 

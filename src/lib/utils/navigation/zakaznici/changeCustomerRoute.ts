@@ -1,4 +1,4 @@
-import { activeSelectedRowIndexStore } from '$lib/runes/table.svelte';
+import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
 import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 
@@ -18,17 +18,18 @@ export function changeCustomerRoute(
 		id.customerNodeCode === activeId.customerNodeCode
 	);
 
-	if (activeRowIndex === -1) return;
+	if (activeRowIndex === -1) return {
+		right: true,
+		left: true
+	};
 
 	if (direction === "right") {
 		const nextIndex = activeRowIndex + 1;
 
 		// locate item in non-unique selected rows and set its id, to allow navigation to customer addresses
-		activeSelectedRowIndexStore.set(
-			selectedRows.findIndex((item) => {
-				return item === uniqueSelectedRows[nextIndex];
-			})
-		)
+		activeSelectedRowIndex.value = selectedRows.findIndex((item) => {
+			return item === uniqueSelectedRows[nextIndex];
+		})
 
 		const newRoute = processRoute(
 			routeId,
@@ -54,11 +55,9 @@ export function changeCustomerRoute(
 	if (direction === "left") {
 		const prevIndex = activeRowIndex - 1;
 
-		activeSelectedRowIndexStore.set(
-			selectedRows.findIndex((item) => {
-				return item === uniqueSelectedRows[prevIndex];
-			})
-		)
+		activeSelectedRowIndex.value = 	selectedRows.findIndex((item) => {
+			return item === uniqueSelectedRows[prevIndex];
+		})
 
 		const newRoute = processRoute(
 			routeId,

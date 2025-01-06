@@ -16,3 +16,5 @@ export const showFulltextSearch: { value: boolean } = $state({ value: false });
 
 // runa pro uhování hodnoty fulltextového vyhledávání, po změně se po debounce provolá rq na BE
 export const fulltextFilterValue: { value: string } = $state({ value: "" });
+
+export const activeTabIndex: { value: number } = $state({ value: 0 })

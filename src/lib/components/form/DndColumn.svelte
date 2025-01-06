@@ -1,101 +1,80 @@
 <script lang="ts">
-	// import { openedDialogStore } from '$lib/runes/ribbon.svelte';
 	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
-	// import type { CustomerData } from '$lib/types/tables/zakaznici';
-	// import { writable, type Writable } from 'svelte/store';
-	// import FormInputSection from './containers/FormInputSection.svelte';
-	// import FormCheckboxSection from './containers/FormCheckboxSection.svelte';
-	// import CheckboxWrapper from './inputs/CheckboxWrapper.svelte';
-	// import EmptyField from './inputs/EmptyField.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
 	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform/autoform';
-	// import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	// import Grip from 'lucide-svelte/icons/grip';
-	// import FormContainer from '$lib/components/form/containers/FormContainer.svelte';
-	// import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
-	// import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
-	// import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
-	// import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 	import { disableInputs } from '$lib/runes/page.svelte';
 	import Grip from 'lucide-svelte/icons/grip';
 	import { type Icon as IconType } from 'lucide-svelte';
-
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import { openedDialog } from '$lib/runes/ribbon.svelte';
 	import FormContainer from '$lib/components/form/containers/FormContainer.svelte';
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
 	import FormCheckboxSection from '$lib/components/form/containers/FormCheckboxSection.svelte';
+	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
+	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
+	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
+	import EmptyField from '$lib/components/form/inputs/EmptyField.svelte';
+	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
+	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 
 	interface Props {
-		section: AutoFormSection[];
+		formDef: AutoFormType;
 		colName: string;
-		translationRoute: string;
-		autoformWritable: AutoFormType;
 		allowCrossColumnDND?: boolean;
-		formValues?: any;
+		initialFormValues: any
 	}
 
 	let {
-		section = $bindable(),
+		formDef = $bindable(),
 		colName,
-		translationRoute,
-		autoformWritable,
+		initialFormValues,
 		allowCrossColumnDND = true,
-		formValues = $bindable({})
 	}: Props = $props();
 
 	let disable = $derived(disableInputs);
-	//
-	// disableInputs.subscribe((data) => {
-	// 	disable = data
-	// })
-	//
-	//
+	let column = $derived(formDef[colName]);
+
 	const flipDurationMs = 300;
 
 	function handleDndConsider(ev: CustomEvent<{ items: AutoFormSection[] }>) {
-		section = ev.detail.items
+		// sections = ev.detail.items;
 	}
 
 	function handleDndFinalize(ev: CustomEvent<{ items: AutoFormSection[] }>) {
-		section = ev.detail.items;
+		// sections = ev.detail.items;
+	}
 
-		// autoformWritable.update((autoform) => {
-		// 	const columnKey = Object.keys(autoform).find(key => key === colName);
-		// 	if (columnKey) autoform[columnKey] = section;
-		// 	return autoform;
-		// });
+	function updateFormValues(field: string, newValue: any) {
+		// formValues[field] = newValue;
 	}
 </script>
 
 
 
 <section
-	use:dragHandleZone="{{ items: section, flipDurationMs, type: allowCrossColumnDND ? undefined : colName }}"
+	use:dragHandleZone="{{ items: column, flipDurationMs, type: allowCrossColumnDND ? undefined : colName }}"
 	class="w-full pb-2 flex flex-col gap-2 min-h-4"
 	onconsider={handleDndConsider}
 	onfinalize={handleDndFinalize}
 >
-	{#each section as item (item.id)}
+	{#each column as section (section.id)}
 		<div animate:flip={{ duration: flipDurationMs }} >
-			<Accordion.Root value={[item.isOpen ? item.field : ""]}>
-				<Accordion.Item value={item.field}>
-					{#if item.hasDialog}
-						{@const Icon = item.icon}
+			<Accordion.Root value={[section.isOpen ? section.field : ""]}>
+				<Accordion.Item value={section.field}>
+					{#if section.hasDialog}
+						{@const Icon = section.icon}
 						<div class="flex justify-between items-center pb-2">
 
 							<div class="flex">
-							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" onclick={() => item.isOpen = !item.isOpen}>
-								   <SectionLabel label={item.field} />
+							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" onclick={() => section.isOpen = !section.isOpen}>
+								   <SectionLabel label={section.translation()} />
 							   </Accordion.Trigger>
 
 
-							   <button type="button" onclick={() => openedDialog.value = item.dialogId}>
-
-
+							   <button type="button" onclick={() => openedDialog.value = section.dialogId || "empty"}>
 								   <Icon class="size-4 text-albi-500"/>
-								   {item.dialogTitle || ""}
+								   {section.dialogTitle || ""}
 							   </button>
 						   </div>
 
@@ -105,8 +84,8 @@
 					   </div>
 					{:else}
 						<div class="flex justify-between items-center pb-2">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" onclick={() => item.isOpen = !item.isOpen}>
-								<SectionLabel label={item.field} />
+							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" onclick={() => section.isOpen = !section.isOpen}>
+								<SectionLabel label={section.translation()} />
 							</Accordion.Trigger>
 
 							<div use:dragHandle aria-label="drag-handle" class="handle">
@@ -118,76 +97,76 @@
 
 					<Accordion.Content>
 						<FormContainer>
-							{#each item.rows as row}
-								{#if row.rowType === "full"}
+							{#each section.rows as row}
+								{#if row.rowType === "row"}
 									<FormInputSection>
-										{#each Object.entries(row.inputs) as [key, value]}
-											{#if value.type === "text"}
-<!--												<InputWrapperText-->
-<!--													label={translationRoute + key || ""}-->
-<!--													inputDef={value}-->
-<!--													field={key}-->
-<!--													bind:value={$formValues[key]}-->
-<!--													disable={disable}-->
-<!--												/>-->
+										{#each row.rowInputs as input}
+											{#if input.type === "text"}
+												<InputWrapperText
+													label={input.translation()}
+													schema={input.schema}
+													field={input.field}
+													value={initialFormValues[input.field]}
+													disable={disable.value}
+												/>
 											{/if}
-<!--											{#if value.type === "number"}-->
-<!--												<InputWrapperNumber-->
-<!--													label={translationRoute + key}-->
-<!--													inputDef={value}-->
-<!--													field={key}-->
-<!--													bind:value={$formValues[key]}-->
-<!--													disable={disable}-->
-<!--												/>-->
-<!--											{/if}-->
+											{#if input.type === "number"}
+												<InputWrapperNumber
+													label={input.translation()}
+													schema={input.schema}
+													field={input.field}
+													value={initialFormValues[input.field]}
+													disable={disable.value}
+												/>
+											{/if}
 
-<!--											{#if value.type === "checkbox"}-->
-<!--												<div class="mt-5 w-full">-->
-<!--													<CheckboxWrapper-->
-<!--														field={key}-->
-<!--														label={translationRoute + key}-->
-<!--														bind:value={$formValues[key]}-->
-<!--														disable={disable}-->
-<!--													/>-->
-<!--												</div>-->
-<!--											{/if}-->
+							<!--				{#if value.type === "checkbox"}-->
+							<!--					<div class="mt-5 w-full">-->
+							<!--						<CheckboxWrapper-->
+							<!--							field={key}-->
+							<!--							label={translationRoute + key}-->
+							<!--							bind:value={formValues.value[key]}-->
+							<!--							disable={disable.value}-->
+							<!--						/>-->
+							<!--					</div>-->
+							<!--				{/if}-->
 
-<!--											{#if value.type === "empty"}-->
-<!--												<EmptyField/>-->
-<!--											{/if}-->
+											{#if input.type === "empty"}
+												<EmptyField/>
+											{/if}
 
-<!--											{#if value.type === "dropdown"}-->
-<!--												<DropdownWrapper-->
-<!--													field={key}-->
-<!--													bind:value={$formValues[key]}-->
-<!--													options={value.dropdownOptions}-->
-<!--													label={translationRoute + key}-->
-<!--													disable={disable}-->
-<!--												/>-->
-<!--											{/if}-->
+											{#if input.type === "dropdown"}
+												<DropdownWrapper
+													field={input.field}
+													value={initialFormValues[input.field]}
+													options={input.dropdownOptions}
+													label={input.translation()}
+												/>
+											{/if}
 
-<!--											{#if value.type === "date"}-->
-<!--												<DateWrapper-->
-<!--													field={key}-->
-<!--													bind:value={$formValues[key]}-->
-<!--													label={translationRoute + key}-->
-<!--													disable={disable}-->
-<!--												/>-->
-<!--											{/if}-->
+							<!--				{#if value.type === "date"}-->
+							<!--					<DateWrapper-->
+							<!--						field={key}-->
+							<!--						bind:value={formValues.value[key]}-->
+							<!--						label={translationRoute + key}-->
+							<!--					/>-->
+							<!--				{/if}-->
 										{/each}
 									</FormInputSection>
 								{/if}
 
 								{#if row.rowType === "checkbox"}
 									<FormCheckboxSection>
-<!--										{#each Object.entries(row.inputs) as [key]}-->
-<!--											<CheckboxWrapper-->
-<!--												field={key}-->
-<!--												bind:value={$formValues[key]}-->
-<!--												label={translationRoute + key}-->
-<!--												disable={disable}-->
-<!--											/>-->
-<!--										{/each}-->
+										{#each row.rowInputs as input}
+											{#if input.type === "checkbox"}
+												<CheckboxWrapper
+													field={input.field}
+													value={initialFormValues[input.field]}
+													label={input.translation()}
+													disable={disable.value}
+												/>
+											{/if}
+										{/each}
 									</FormCheckboxSection>
 								{/if}
 							{/each}

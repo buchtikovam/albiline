@@ -6,7 +6,6 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
-
 	let { ribbonItem }: {
 		ribbonItem: RibbonItem;
 	} = $props();

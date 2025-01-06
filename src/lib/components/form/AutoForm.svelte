@@ -4,37 +4,29 @@
 
 	interface Props {
 		formDef: AutoFormType;
-		formValues: any;
-		translationRoute: string;
+		initialFormValues: any;
 		allowCrossColumnDND?: boolean;
 	}
 
 	let {
-		formDef = $bindable({}),
-		formValues = $bindable({}),
-		translationRoute,
+		formDef = $bindable(),
+		initialFormValues,
 		allowCrossColumnDND = true
 	}: Props = $props();
 
-	let colDef: { value: AutoFormType } = $state({ value: {} });
-
-	$effect(() => {
-		console.log(formDef);
-		colDef.value = formDef;
-	})
+	// console.log(formDef);
+	// console.log(formValues);
 </script>
 
 
 <form method="POST" autocomplete="off">
 	<div class="w-full gap-4 xl:flex ">
-		{#each Object.entries(colDef.value) as [key, value]}
+		{#each Object.entries(formDef) as [key]}
 			<DndColumnNew
-				bind:section={colDef.value[key]}
-				autoformWritable={formDef}
+				bind:formDef={formDef}
 				colName={key}
 				allowCrossColumnDND={allowCrossColumnDND}
-				translationRoute={translationRoute}
-				bind:formValues
+				initialFormValues={initialFormValues}
 			/>
 		{/each}
 	</div>

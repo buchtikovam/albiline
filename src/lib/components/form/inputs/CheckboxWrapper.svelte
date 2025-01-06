@@ -5,7 +5,7 @@
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
 	interface Props {
-		value?: boolean;
+		value: boolean;
 		label: string;
 		disable?: boolean;
 		field?: string;
@@ -13,7 +13,7 @@
 	}
 
 	let {
-		value = $bindable(false),
+		value = $bindable(),
 		label,
 		disable = false,
 		field = "",
@@ -21,18 +21,22 @@
 	}: Props = $props();
 
 	const initialValue = value;
+
+	if (!initialValue) {
+		value = false;
+	}
 </script>
 
 
 <div class="w-full flex items-center gap-1.5">
 	<Checkbox
-		on:click={() => {
+		bind:checked={value}
+		disabled={disable}
+		onclick={() => {
 			if (addToEdited) {
 				addToEditedFormData(initialValue, field, !value);
 			}
 		}}
-		disabled={disable}
-		bind:checked={value}
 	/>
 
 	<InputLabel

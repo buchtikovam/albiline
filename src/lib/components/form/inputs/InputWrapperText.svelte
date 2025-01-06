@@ -3,12 +3,13 @@
 	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
 	import { getContext } from 'svelte';
 	import { get } from 'svelte/store';
+	import { z } from "zod";
 	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
 	interface Props {
 		value: string|null;
 		label: string;
-		inputDef: AutoFormInput;
+		schema: z.ZodType<T>;
 		disable?: boolean;
 		field?: string;
 		addToEdited?: boolean;
@@ -17,7 +18,7 @@
 	let {
 		value = $bindable(),
 		label,
-		inputDef,
+		schema,
 		disable = false,
 		field = "",
 		addToEdited = true
@@ -32,10 +33,9 @@
 		value = String(value).trim();
 	}
 
-	function validateTextSchema(ev: Event) {
+	function validateTextSchema(ev) {
 		const inputValue = ev.target?.value;
-
-		if (addToEdited) {
+	/*	if (addToEdited) {
 			addToEditedFormData(initialValue, field, inputValue);
 		}
 
@@ -64,7 +64,7 @@
 					}
 					break;
 			}
-		}
+		}*/
 	}
 </script>
 

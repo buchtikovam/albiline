@@ -36,7 +36,7 @@
 		}}
 	>
 		<Select.Trigger>
-			<Select.Value />
+<!--			<Select.Value />-->
 		</Select.Trigger>
 
 		<Select.Content>

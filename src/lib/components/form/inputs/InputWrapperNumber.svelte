@@ -8,7 +8,7 @@
 	interface Props {
 		value: number;
 		label: any;
-		inputDef: AutoFormInput;
+		schema: z.ZodType<T>;
 		disable?: boolean;
 		field: string;
 		addToEdited?: boolean;
@@ -17,7 +17,7 @@
 	let {
 		value = $bindable(),
 		label,
-		inputDef,
+		schema,
 		disable = false,
 		field,
 		addToEdited = true

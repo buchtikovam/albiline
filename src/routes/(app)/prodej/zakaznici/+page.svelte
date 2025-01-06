@@ -2,7 +2,7 @@
 	import { getPageMetaData } from '$lib/utils/getPageMetaData';
 	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
 	import { onMount } from 'svelte';
-	import { showFulltextSearch } from '$lib/runes/page.svelte';
+	import { activeTabIndex, showFulltextSearch } from '$lib/runes/page.svelte';
 	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { goto } from '$app/navigation';
 	import { storedSelectedRows } from '$lib/runes/table.svelte';
@@ -17,6 +17,7 @@
 		pageMetaData = await getPageMetaData();
 	})
 
+	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 
 	// ag grid gridOptions containing conditional routing cant be generic,

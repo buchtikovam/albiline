@@ -59,7 +59,85 @@
 	"components_ribbon_item_save_preset": "Uložit aktuální šablonu",
 	"components_ribbon_item_my_presets": "Vybrat u uložených šablon",
 
-	"routes_prodej_customers_tabs_list" : "Seznam",
-	"routes_prodej_customers_tabs_customer_detail" : "Zákazník",
-	"routes_prodej_customers_tabs_address_detail" : "Prodejna"
+	"routes_prodej_zakaznici_tabs_list" : "Seznam",
+	"routes_prodej_zakaznici_tabs_customer_detail" : "Zákazník",
+	"routes_prodej_zakaznici_tabs_address_detail" : "Prodejna",
+
+	"routes_prodej_zakaznici_customer_detail_label" : "Detail zákazníka",
+	"routes_prodej_zakaznici_customer_detail_form_section_fakturacni_adresa" : "Fakturační adresa",
+	"routes_prodej_zakaznici_customer_detail_form_section_nastaveni_fakturace" : "Nastavení fakturace",
+	"routes_prodej_zakaznici_customer_detail_form_section_dalsi_udaje" : "Další údaje",
+	"routes_prodej_zakaznici_customer_detail_form_section_edi" : "EDI",
+	"routes_prodej_zakaznici_customer_detail_form_section_nastaveni" : "Nastavení",
+	"routes_prodej_zakaznici_customer_detail_form_input_name" : "Jméno",
+	"routes_prodej_zakaznici_customer_detail_form_input_street" : "Ulice",
+	"routes_prodej_zakaznici_customer_detail_form_input_city" : "Město",
+	"routes_prodej_zakaznici_customer_detail_form_input_postal_code" : "PSČ",
+	"routes_prodej_zakaznici_customer_detail_form_input_country_code" : "Země",
+	"routes_prodej_zakaznici_customer_detail_form_input_ico" : "IČO",
+	"routes_prodej_zakaznici_customer_detail_form_input_dic" : "DIČ",
+	"routes_prodej_zakaznici_customer_detail_form_input_icdph" : "IčDPH",
+	"routes_prodej_zakaznici_customer_detail_form_input_company_name" : "Společnost",
+	"routes_prodej_zakaznici_customer_detail_form_input_payment_type_code" : "Typ platby",
+	"routes_prodej_zakaznici_customer_detail_form_input_due_days" : "Splatnost",
+	"routes_prodej_zakaznici_customer_detail_form_input_invoice_copies" : "Počet faktur",
+	"routes_prodej_zakaznici_customer_detail_form_input_delivery_note_copies" : "Počet dodacích listů",
+	"routes_prodej_zakaznici_customer_detail_form_input_customer_store_code" : "ID zákazníka dle zákazníka",
+	"routes_prodej_zakaznici_customer_detail_form_input_consignment_sale_enabled" : "Komise",
+	"routes_prodej_zakaznici_customer_detail_form_input_use_assorted_ean_codes": "Asortní EANy",
+	"routes_prodej_zakaznici_customer_detail_form_input_is_return_allowed" : "Vratka povolena",
+	"routes_prodej_zakaznici_customer_detail_form_input_customer_albi_code" : "ID ALBI dodavatel",
+	"routes_prodej_zakaznici_customer_detail_form_input_key_customer_type_id" : "Typ KZ",
+	"routes_prodej_zakaznici_customer_detail_form_input_credit_limit" : "Úvěrový rámec",
+	"routes_prodej_zakaznici_customer_detail_form_input_unpaid_amount" : "Nesplaceno",
+	"routes_prodej_zakaznici_customer_detail_form_input_last_payment_date" : "Poslední platba",
+	"routes_prodej_zakaznici_customer_detail_form_input_email" : "Reg. e-mail do e-shopu",
+	"routes_prodej_zakaznici_customer_detail_form_input_edi_inbox_ean_code" : "EAN schránky",
+	"routes_prodej_zakaznici_customer_detail_form_input_edi_inbox_ean_code_for_invoice" : "EAN centrály",
+	"routes_prodej_zakaznici_customer_detail_form_input_customer_store_ean" : "EAN zákazníka",
+	"routes_prodej_zakaznici_customer_detail_form_input_send_delivery_note_via_edi" : "Dodací list",
+	"routes_prodej_zakaznici_customer_detail_form_input_send_credit_note_via_edi" : "Dobropis",
+	"routes_prodej_zakaznici_customer_detail_form_input_use_diacritical_marks_in_edi_documents" : "Použít diakritiku",
+	"routes_prodej_zakaznici_customer_detail_form_input_send_invoice_via_edi" : "Faktury",
+	"routes_prodej_zakaznici_customer_detail_form_input_consignment_output_check" : "Výstupní kontrola",
+	"routes_prodej_zakaznici_customer_detail_form_input_print_prices_on_delivery_note" : "DL tisk cena",
+	"routes_prodej_zakaznici_customer_detail_form_input_send_invoice_after_approval" : "Faktury dodatečně",
+	"routes_prodej_zakaznici_customer_detail_form_input_is_charged_without_vat" : "Účtovat bez DPH",
+	"routes_prodej_zakaznici_customer_detail_form_input_always_allow_ordering" : "Neblokovat",
+	"routes_prodej_zakaznici_customer_detail_form_input_invoice_confirmation_not_required" : "Nevyžadovat potvrzení faktur",
+	"routes_prodej_zakaznici_customer_detail_form_input_claim_notification_disabled" : "Neupomínat",
+	"routes_prodej_zakaznici_customer_detail_form_input_b2b_eshop_enabled" : "B2B aktivní",
+	"routes_prodej_zakaznici_customer_detail_form_input_is_blocked" : "Blokovaný zákazník",
+	"routes_prodej_zakaznici_customer_detail_form_input_is_bad_payer" : "Neplatič",
+	"routes_prodej_zakaznici_customer_detail_form_input_is_approved" : "Schváleno",
+	"routes_prodej_zakaznici_customer_detail_form_input_contract_recieved" : "Smlouva",
+	"routes_prodej_zakaznici_customer_detail_form_input_trade_licence_recieved" : "Živnostenský list"
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

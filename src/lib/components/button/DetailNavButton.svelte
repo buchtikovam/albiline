@@ -4,12 +4,11 @@
 
 	interface Props {
 		direction: "left"|"right";
-		disable?: boolean;
+		disable: boolean;
 		navigateDetailFn?: () => void;
 	}
 
-	let { direction, disable = false, navigateDetailFn = () => {} }: Props = $props();
-
+	let { direction, disable = $bindable(), navigateDetailFn = () => {} }: Props = $props();
 </script>
 
 
