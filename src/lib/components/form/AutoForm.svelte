@@ -5,12 +5,14 @@
 	interface Props {
 		formDef: AutoFormType;
 		initialFormValues: any;
+		editedFormValues: Record<string, any>
 		allowCrossColumnDND?: boolean;
 	}
 
 	let {
 		formDef = $bindable(),
 		initialFormValues,
+		editedFormValues = $bindable(),
 		allowCrossColumnDND = true
 	}: Props = $props();
 
@@ -27,6 +29,7 @@
 				colName={key}
 				allowCrossColumnDND={allowCrossColumnDND}
 				initialFormValues={initialFormValues}
+				bind:editedFormValues={editedFormValues}
 			/>
 		{/each}
 	</div>

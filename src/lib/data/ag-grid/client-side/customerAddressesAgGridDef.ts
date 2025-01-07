@@ -1,4 +1,4 @@
-import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/runes/table.svelte';
+import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
@@ -165,31 +165,27 @@ function selectBtn(params: ICellRendererParams) {
 	link.addEventListener("click", () => {
 		let match = false;
 
-		selectedRowsStore.update((data) => {
-			data.forEach((item) => {
-				if (
-					item.customerNodeCode === selectedRow.customerNodeCode &&
-					item.customerAddressCode === selectedRow.customerAddressCode
-				) {
-					match = true;
-				}
-			})
+		const storedRows = storedSelectedRows.value;
 
-			if (!match) {
-				return data.concat(selectedRow);
+		storedRows.forEach((item) => {
+			if (
+				item.customerNodeCode === selectedRow.customerNodeCode &&
+				item.customerAddressCode === selectedRow.customerAddressCode
+			) {
+				match = true;
 			}
-
-			return data;
 		})
 
-		const selectedRows = get(selectedRowsStore);
+		if (!match) {
+			storedRows.concat(selectedRow);
+		}
 
-		const currentIndex = selectedRows.findIndex((id) =>
+		storedSelectedRows.value = storedRows;
+
+		activeSelectedRowIndex.value = storedSelectedRows.value.findIndex((id) =>
 			id.customerNodeCode === selectedRow.customerNodeCode &&
 			id.customerAddressCode === selectedRow.customerAddressCode
 		);
-
-		activeSelectedRowIndexStore.set(currentIndex)
 	})
 
 	div.appendChild(link)

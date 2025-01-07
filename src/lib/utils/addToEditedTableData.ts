@@ -6,7 +6,7 @@ export function addToEditedTableData(
 	event: CellValueChangedEvent,
 	requiredFields: string[],
 	editedData: any[]
-): void {
+) {
 	const colId: string = event.column.getColId();
 	let foundMatch: boolean = false;
 
@@ -39,4 +39,6 @@ export function addToEditedTableData(
 
 	// disable navigation on page
 	disableNavigation.value = true;
+
+	return editedData;
 }

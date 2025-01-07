@@ -9,19 +9,42 @@
 		dialogOpen: boolean;
 		label: string;
 		formDef: AutoFormSimpleType;
-		translationRoute: string;
-		createdContacts?: CustomerContactType[];
+		createdContacts: CustomerContactType[];
 	}
 
 	let {
 		dialogOpen = $bindable(),
 		label,
 		formDef,
-		translationRoute,
 		createdContacts = $bindable()
 	}: Props = $props();
 
-		let contact: CustomerContactType = $state({
+
+	let contact: CustomerContactType = $state({
+		createdRowId: createdContacts.length, // only for frontend, irrelevant for backend
+		isDefault: false,
+		enabled: false,
+		name: null,
+		surname: null,
+		mobile: null,
+		phone: null,
+		email: null,
+		note: null,
+		pdfInvoice: false,
+		pdfDeliveryNote: false,
+		csvInvoice: false,
+		csvDeliveryNote: false,
+		consignmentReturnInfo: false,
+		consignmentInfo: false,
+		carrierInfo: false
+	})
+
+
+	function addContact() {
+		createdContacts.push(contact);
+
+		contact = {
+			createdRowId: createdContacts.length,
 			isDefault: false,
 			enabled: false,
 			name: null,
@@ -37,31 +60,10 @@
 			consignmentReturnInfo: false,
 			consignmentInfo: false,
 			carrierInfo: false
-		})
-
-		function addContact() {
-			// createdContacts.update((data) => [...data, contact]);
-
-			contact = {
-				isDefault: false,
-				enabled: false,
-				name: null,
-				surname: null,
-				mobile: null,
-				phone: null,
-				email: null,
-				note: null,
-				pdfInvoice: false,
-				pdfDeliveryNote: false,
-				csvInvoice: false,
-				csvDeliveryNote: false,
-				consignmentReturnInfo: false,
-				consignmentInfo: false,
-				carrierInfo: false
-			}
-
-			dialogOpen = false;
 		}
+
+		dialogOpen = false;
+	}
 </script>
 
 
@@ -73,23 +75,21 @@
 		interactOutsideBehavior="ignore"
 	>
 		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2">
-					{ label }
+			<Dialog.Title class="">
+				{ label }
 			</Dialog.Title>
 		</Dialog.Header>
 
 		<div class="mb-4 h-full">
-<!--			<AutoFormSimple-->
-<!--				addToEdited={false}-->
-<!--				bind:formValues={contact}-->
-<!--				translationRoute={translationRoute}-->
-<!--				autoform={formDef}-->
-<!--			/>-->
+			<AutoFormSimple
+				bind:formValues={contact}
+				autoform={formDef}
+			/>
 		</div>
 
 		<Dialog.Footer>
 			<Button
-				class="w-full bg-albi-500 text-background font-bolder"
+				class="w-full bg-albi-500 font-bold text-background font-bolder"
 				onclick={addContact}
 			>
 				Uložit

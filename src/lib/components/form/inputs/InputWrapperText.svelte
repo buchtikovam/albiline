@@ -1,51 +1,46 @@
 <script lang="ts">
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
-	import { getContext } from 'svelte';
-	import { get } from 'svelte/store';
 	import { z } from "zod";
-	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
 	interface Props {
 		value: string|null;
 		label: string;
 		schema: z.ZodType<T>;
 		disable?: boolean;
-		field?: string;
-		addToEdited?: boolean;
+		addToEditedFormData: (newValue: string, initialValue: string|null) => void;
 	}
 
 	let {
-		value = $bindable(),
+		value,
 		label,
 		schema,
 		disable = false,
-		field = "",
-		addToEdited = true
+		addToEditedFormData
 	}: Props = $props();
+
 
 	let errorMessage = $state("");
 	let hasError: boolean = $state(false);
-
-	const initialValue = value;
 
 	if (value !== null) {
 		value = String(value).trim();
 	}
 
+
 	function validateTextSchema(ev) {
 		const inputValue = ev.target?.value;
-	/*	if (addToEdited) {
-			addToEditedFormData(initialValue, field, inputValue);
-		}
 
 		try {
-			inputDef.schema.parse(inputValue);
+			schema.parse(inputValue);
 			errorMessage = "";
 			hasError = false;
+
+			addToEditedFormData(inputValue, value);
 		} catch (e) {
 			console.log(e);
+			addToEditedFormData(inputValue, value);
 			hasError = true;
+			errorMessage = e.issues[0].code;
 
 			switch (e.issues[0].code) {
 				case "too_small":
@@ -64,7 +59,7 @@
 					}
 					break;
 			}
-		}*/
+		}
 	}
 </script>
 
@@ -77,7 +72,7 @@
 		<input
 			type="text"
 			oninput={(e) => validateTextSchema(e)}
-			bind:value
+			value={value}
 			disabled={disable}
 			class={`
 				${hasError ? "focus-visible:border-red-600 " : ""}

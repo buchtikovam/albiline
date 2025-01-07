@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
-	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import {
 			createGrid,
 			type GridApi,
@@ -15,7 +13,7 @@
 		rowData?: any;
 	}
 
-	let { colDef, rowData = writable([]) }: Props = $props();
+	let { colDef, rowData }: Props = $props();
 
 	let gridContainer: HTMLElement = $state();
 	let gridApi: GridApi<unknown>;
@@ -46,28 +44,28 @@
 	}
 
 
-	onMount(() => {
+	$effect(() => {
 		gridApi = createGrid(gridContainer, gridOptions);
 
-		rowData.subscribe((data) => {
-			if (data) {
-				if (data.length > 0 && gridApi) {
-					gridApi.setGridOption("rowData", data);
-				}
+	})
+
+
+	$effect(() => {
+		if (rowData) {
+			if (rowData.length > 0 && gridApi) {
+				gridApi.setGridOption("rowData", rowData);
 			}
-		})
+		}
 	})
 </script>
 
 
-<!--<div class="h-full">-->
-	<div class="flex flex-column h-full">
-		<div
-			id="datagrid"
-			class="ag-theme-custom "
-			style="flex: 1 1 auto"
-			bind:this={gridContainer}
-		></div>
-	</div>
-<!--</div>-->
 
+<div class="flex flex-column h-full">
+	<div
+		id="datagrid"
+		class="ag-theme-custom "
+		style="flex: 1 1 auto"
+		bind:this={gridContainer}
+	></div>
+</div>

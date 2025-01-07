@@ -5,7 +5,7 @@ import { SessionStore, sessionStore } from '$lib/utils/local-storage/sessionStor
 //
 // export const isMobileStore: Writable<boolean> = writable(false);
 //
-export const sessionKey: SessionStore<string|null> = sessionStore('sessionKey', "504a58f3-58b2-48f9-8eed-40646bb9c122");
+export const sessionKey: SessionStore<string|null> = sessionStore('sessionKey', "504a58f3-58b2-48f9-8eed-40646bb9c123");
 
 export const disableInputs: { value: boolean } = $state({ value: false });
 

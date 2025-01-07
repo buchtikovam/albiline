@@ -1,27 +1,27 @@
 <script lang="ts">
+	import { disableInputs } from '$lib/runes/page.svelte';
+	import { openedDialog } from '$lib/runes/ribbon.svelte';
 	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
-	import * as Accordion from "$lib/components/ui/accordion";
-	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform/autoform';
-	import { disableInputs } from '$lib/runes/page.svelte';
 	import Grip from 'lucide-svelte/icons/grip';
-	import { type Icon as IconType } from 'lucide-svelte';
-	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	import { openedDialog } from '$lib/runes/ribbon.svelte';
-	import FormContainer from '$lib/components/form/containers/FormContainer.svelte';
-	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
+	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform/autoform';
 	import FormCheckboxSection from '$lib/components/form/containers/FormCheckboxSection.svelte';
-	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
+	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
+	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
-	import EmptyField from '$lib/components/form/inputs/EmptyField.svelte';
 	import DropdownWrapper from '$lib/components/form/inputs/DropdownWrapper.svelte';
+	import FormContainer from '$lib/components/form/containers/FormContainer.svelte';
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
+	import EmptyField from '$lib/components/form/inputs/EmptyField.svelte';
+	import * as Accordion from "$lib/components/ui/accordion";
 
 	interface Props {
 		formDef: AutoFormType;
 		colName: string;
 		allowCrossColumnDND?: boolean;
+		editedFormValues: Record<string, any>,
 		initialFormValues: any
 	}
 
@@ -29,6 +29,7 @@
 		formDef = $bindable(),
 		colName,
 		initialFormValues,
+		editedFormValues = $bindable(),
 		allowCrossColumnDND = true,
 	}: Props = $props();
 
@@ -38,15 +39,19 @@
 	const flipDurationMs = 300;
 
 	function handleDndConsider(ev: CustomEvent<{ items: AutoFormSection[] }>) {
-		// sections = ev.detail.items;
+		formDef[colName] = ev.detail.items;
 	}
 
 	function handleDndFinalize(ev: CustomEvent<{ items: AutoFormSection[] }>) {
-		// sections = ev.detail.items;
+		formDef[colName] = ev.detail.items;
 	}
 
-	function updateFormValues(field: string, newValue: any) {
-		// formValues[field] = newValue;
+	function updateFormValues(newValue: any, initialValue: any, field: string) {
+		editedFormValues[field] = newValue;
+
+		if (initialValue === newValue) {
+			delete editedFormValues[field];
+		}
 	}
 </script>
 
@@ -60,35 +65,52 @@
 >
 	{#each column as section (section.id)}
 		<div animate:flip={{ duration: flipDurationMs }} >
-			<Accordion.Root value={[section.isOpen ? section.field : ""]}>
+			<Accordion.Root type="single" value={(section.isOpen ? section.field : "")}>
 				<Accordion.Item value={section.field}>
 					{#if section.hasDialog}
 						{@const Icon = section.icon}
 						<div class="flex justify-between items-center pb-2">
 
 							<div class="flex">
-							   <Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" onclick={() => section.isOpen = !section.isOpen}>
+							   <Accordion.Trigger
+								   class="p-0 pr-2 text-albi-500 w-fit justify-start items-center gap-2"
+								   onclick={() => section.isOpen = !section.isOpen}
+							   >
 								   <SectionLabel label={section.translation()} />
 							   </Accordion.Trigger>
 
 
-							   <button type="button" onclick={() => openedDialog.value = section.dialogId || "empty"}>
+							   <button
+								   type="button"
+								   onclick={() => openedDialog.value = section.dialogId || "empty"}
+							   >
 								   <Icon class="size-4 text-albi-500"/>
 								   {section.dialogTitle || ""}
 							   </button>
 						   </div>
 
-						   <div use:dragHandle aria-label="drag-handle" class="handle">
+						   <div
+							   use:dragHandle
+							   aria-label="drag-handle"
+							   class="handle"
+						   >
 							   <Grip class="size-4 text-slate-300"/>
 						   </div>
 					   </div>
 					{:else}
 						<div class="flex justify-between items-center pb-2">
-							<Accordion.Trigger class="text-albi-500 w-fit justify-start items-center gap-2" onclick={() => section.isOpen = !section.isOpen}>
+							<Accordion.Trigger
+								class="p-0 pr-2 text-albi-500 w-fit justify-start items-center gap-2"
+								onclick={() => section.isOpen = !section.isOpen}
+							>
 								<SectionLabel label={section.translation()} />
 							</Accordion.Trigger>
 
-							<div use:dragHandle aria-label="drag-handle" class="handle">
+							<div
+								use:dragHandle
+								aria-label="drag-handle"
+								class="handle"
+							>
 								<Grip class="size-4 text-slate-300"/>
 							</div>
 						</div>
@@ -105,31 +127,38 @@
 												<InputWrapperText
 													label={input.translation()}
 													schema={input.schema}
-													field={input.field}
 													value={initialFormValues[input.field]}
 													disable={disable.value}
+													addToEditedFormData={
+														(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+													}
 												/>
 											{/if}
 											{#if input.type === "number"}
 												<InputWrapperNumber
 													label={input.translation()}
 													schema={input.schema}
-													field={input.field}
 													value={initialFormValues[input.field]}
 													disable={disable.value}
+													addToEditedFormData={
+														(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+													}
 												/>
 											{/if}
 
-							<!--				{#if value.type === "checkbox"}-->
-							<!--					<div class="mt-5 w-full">-->
-							<!--						<CheckboxWrapper-->
-							<!--							field={key}-->
-							<!--							label={translationRoute + key}-->
-							<!--							bind:value={formValues.value[key]}-->
-							<!--							disable={disable.value}-->
-							<!--						/>-->
-							<!--					</div>-->
-							<!--				{/if}-->
+											{#if input.type === "checkbox"}
+												<div class="mt-5 w-full">
+													<CheckboxWrapper
+														label={input.translation()}
+														schema={input.schema}
+														value={initialFormValues[input.field]}
+														disable={disable.value}
+														addToEditedFormData={
+															(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+														}
+													/>
+												</div>
+											{/if}
 
 											{#if input.type === "empty"}
 												<EmptyField/>
@@ -137,20 +166,27 @@
 
 											{#if input.type === "dropdown"}
 												<DropdownWrapper
-													field={input.field}
+													label={input.translation()}
+													schema={input.schema}
 													value={initialFormValues[input.field]}
 													options={input.dropdownOptions}
-													label={input.translation()}
+													addToEditedFormData={
+														(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+													}
 												/>
 											{/if}
 
-							<!--				{#if value.type === "date"}-->
-							<!--					<DateWrapper-->
-							<!--						field={key}-->
-							<!--						bind:value={formValues.value[key]}-->
-							<!--						label={translationRoute + key}-->
-							<!--					/>-->
-							<!--				{/if}-->
+											{#if input.type === "date"}
+												<DateWrapper
+													label={input.translation()}
+													schema={input.schema}
+													disable={disable.value}
+													value={initialFormValues[input.field]}
+													addToEditedFormData={
+														(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+													}
+												/>
+											{/if}
 										{/each}
 									</FormInputSection>
 								{/if}
@@ -160,10 +196,13 @@
 										{#each row.rowInputs as input}
 											{#if input.type === "checkbox"}
 												<CheckboxWrapper
-													field={input.field}
-													value={initialFormValues[input.field]}
 													label={input.translation()}
+													schema={input.schema}
+													value={initialFormValues[input.field]}
 													disable={disable.value}
+													addToEditedFormData={
+														(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+													}
 												/>
 											{/if}
 										{/each}

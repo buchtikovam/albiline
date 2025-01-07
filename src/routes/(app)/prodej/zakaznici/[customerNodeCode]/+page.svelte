@@ -1,29 +1,30 @@
 <script lang="ts">
+	import {
+		customerAndAddressContactsAgGridDef
+	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
 	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
 	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
-	import { storedSelectedRows } from '$lib/runes/table.svelte';
+	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex } from '$lib/runes/page.svelte';
 	import { page } from '$app/stores';
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
 	import { flipItems } from '$lib/utils/flipItems';
-	import { flip } from 'svelte/animate';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import * as m from '$lib/paraglide/messages.js';
-	import {
-		customerAndAddressContactsAgGridDef
-	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
 	import type { CustomerContactType, CustomerType } from '$lib/types/page/customers';
-	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import type { GridOptions } from 'ag-grid-enterprise';
-	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
-	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
+	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/NewCustomerContactDialog.svelte';
+	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
+	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import * as m from '$lib/paraglide/messages.js';
+	import { flip } from 'svelte/animate';
 
 	interface Props {
 		data: {
@@ -40,12 +41,30 @@
 	activeTabIndex.value = 2;
 
 	let initialFormValues: CustomerType = $derived(data.response.item);
-	// let contactValues: CustomerContactType[] = $derived(data.response.contacts)
+	let editedFormValues: Record<string, any> = $state({ })
+
+	let contactValues: CustomerContactType[] = $derived(data.response.contacts)
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
+
 	let pageLayout = $state(customerPageLayout);
 	let autoformDef: AutoFormType = $state(customerDetailFormDef);
 	let openNewContactDialog: boolean = $state(false);
+
+
+	$inspect(editedFormValues);
+	$effect(() => {
+		if (Object.keys(editedFormValues).length > 0) {
+			disableNavigation.value = true;
+			disableLeft = true;
+			disableRight = true;
+		} else {
+			disableNavigation.value = false;
+
+			if (uniqueSelectedRows[activeSelectedRowIndex.value + 1]) disableRight = false;
+			if (uniqueSelectedRows[activeSelectedRowIndex.value - 1]) disableLeft = false;
+		}
+	})
 
 
 	// get all unique selected rows from table
@@ -95,28 +114,21 @@
 	})
 
 
-	//
-	// // disable editing if there are unsaved changes
-	// editedFormValuesStore.subscribe((data) => {
-	// 	if (Object.keys(data).length > 0) {
-	// 		disableNavigationStore.set(true);
-	// 		disableLeft = true;
-	// 		disableRight = true;
-	// 	} else {
-	// 		disableNavigationStore.set(false);
-	// 		if (selectedRows[get(activeSelectedRowIndexStore) + 1]) disableRight = false;
-	// 		if (selectedRows[get(activeSelectedRowIndexStore) - 1]) disableLeft = false;
-	// 	}
-	// })
+	$effect(() => {
+		if (createdContacts.length > 0) {
+			disableNavigation.value = true;
+			disableLeft = true;
+			disableRight = true;
+		}
+	})
 
-	// disable navigation if new contact was created
-	// createdContacts.subscribe((data) => {
-	// 	if (data.length > 0) {
-	// 		disableNavigationStore.set(true);
-	// 		disableLeft = true;
-	// 		disableRight = true;
-	// 	}
-	// })
+
+	const contactsGridOptions: GridOptions = {
+		columnDefs: customerAndAddressContactsAgGridDef,
+	}
+
+	$inspect(editedContactValues);
+	$inspect(createdContacts)
 </script>
 
 
@@ -154,13 +166,14 @@
 	</div>
 
 	{#each pageLayout as item (item.id)}
-		<div animate:flip="{{ duration: 100}}">
+		<div >
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
 					<!-- customer detail form -->
 					<AutoForm
 						allowCrossColumnDND={false}
 						initialFormValues={initialFormValues}
+						bind:editedFormValues={editedFormValues}
 						bind:formDef={autoformDef}
 					/>
 				</div>
@@ -170,7 +183,7 @@
 			{#if item.type === "contacts"}
 				<div class={item.isLast ? "" : "mb-4"}>
 					<div class="flex gap-2" >
-						<SectionLabel label="Kontakty"/>
+						<SectionLabel label={m.routes_prodej_zakaznici_detail_contacts_label()}/>
 
 						<button
 							id="contacts"
@@ -186,13 +199,13 @@
 						</button>
 					</div>
 
-<!--					<AgGridCSWrapper-->
-<!--						requiredFields={["customerPersonCode"]}-->
-<!--						bind:rowData={contactValues}-->
-<!--						gridOptionsCustom={contactsGridOptions}-->
-<!--						bind:createdRowData={createdContacts}-->
-<!--						bind:editedRowData={editedContactValues}-->
-<!--					/>-->
+					<AgGridCSWrapper
+						requiredFields={["customerPersonCode"]}
+						rowData={contactValues}
+						gridOptionsCustom={contactsGridOptions}
+						bind:createdRowData={createdContacts}
+						bind:editedRowData={editedContactValues}
+					/>
 				</div>
 			{/if}
 		</div>
@@ -206,5 +219,4 @@
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
 	label="Nový kontakt zákazníka"
-	translationRoute="routes.prodej.zakaznici.customer_and_address_contact"
 />

@@ -8,11 +8,11 @@
 
 	interface Props {
 		colDef: any;
-		rowData?: Writable<any[]>;
-		open?: boolean;
+		rowData: any[];
+		open: boolean;
 	}
 
-	let { colDef, rowData = $bindable(writable([])), open = $bindable(false) }: Props = $props();
+	let { colDef, rowData , open = $bindable() }: Props = $props();
 
 	let openNewContactDialog: boolean = $state(false);
 
@@ -27,7 +27,6 @@
 
 <Dialog.Root
 	bind:open
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content
 		class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col"
@@ -45,7 +44,7 @@
 		</Dialog.Header>
 
 		<AgGridCSDialogWrapper
-			bind:rowData={rowData}
+			rowData={rowData}
 			colDef={colDef}
 		/>
 	</Dialog.Content>

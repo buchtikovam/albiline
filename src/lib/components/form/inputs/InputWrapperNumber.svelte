@@ -1,58 +1,51 @@
 <script lang="ts">
 	import { z } from "zod";
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
-	import { getContext } from 'svelte';
-	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
- 
+
+
 	interface Props {
 		value: number;
 		label: any;
 		schema: z.ZodType<T>;
 		disable?: boolean;
-		field: string;
-		addToEdited?: boolean;
+		addToEditedFormData: (newValue: number, initialValue: number|null) => void;
 	}
 
 	let {
-		value = $bindable(),
+		value,
 		label,
 		schema,
 		disable = false,
-		field,
-		addToEdited = true
+		addToEditedFormData
 	}: Props = $props();
 
-	const initialValue = value;
 
-	let errorMessage = "";
-	let hasError: boolean = false;
+	let errorMessage = $state("");
+	let hasError: boolean = $state(false);
 
-	function validateNumberSchema(ev: Event) {
-		const inputValue = ev.target?.value;
+	function validateNumberSchema(ev) {
+		const inputValue = Number(ev.target?.value);
 
-		if (addToEdited) {
-			addToEditedFormData(initialValue, field, inputValue);
+		try {
+			schema.parse(inputValue);
+			errorMessage = "";
+			hasError = false;
+			addToEditedFormData(inputValue, value);
+		} catch (e) {
+			console.log(e);
+			addToEditedFormData(inputValue, value);
+			hasError = true;
+			errorMessage = e.issues[0].code;
+
+			switch (e.issues[0].code) {
+				case "too_small":
+					// errorMessage = $_('zod_errors.number.too_small', {values: { min: e.issues[0].minimum }});
+					break;
+				case "too_big":
+					// errorMessage = $_('zod_errors.number.too_big', {values: { max: e.issues[0].maximum }});
+					break;
+			}
 		}
-
-
-		// try {
-		// 	inputDef.schema.parse(inputValue);
-		// 	errorMessage = "";
-		// 	hasError = false;
-		// } catch (e) {
-		// 	console.log(e);
-		// 	hasError = true;
-		//
-		// 	switch (e.issues[0].code) {
-		// 		case "too_small":
-		// 			errorMessage = $_('zod_errors.number.too_small', {values: { min: e.issues[0].minimum }});
-		// 			break;
-		// 		case "too_big":
-		// 			errorMessage = $_('zod_errors.number.too_big', {values: { max: e.issues[0].maximum }});
-		// 			break;
-		// 	}
-		// }
 	}
 </script>
 
@@ -65,9 +58,9 @@
 		<input
 			type="number"
 			oninput={(e) => validateNumberSchema(e)}
-			bind:value
+			value={value}
 			disabled={disable}
-			class={`${hasError ? "focus-visible:border-red-500" : ""} disabled:bg-slate-50 h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
+			class={`${hasError ? "focus-visible:border-red-500 " : ""} disabled:bg-slate-50 h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
 		>
 
 		<p class="text-xs text-red-700 w-full">{errorMessage}</p>
