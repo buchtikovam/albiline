@@ -15,7 +15,7 @@
 	import Plus from 'lucide-svelte/icons/plus';
 	import type { CustomerContactType, CustomerType } from '$lib/types/page/customers';
 	import type { GridOptions } from 'ag-grid-enterprise';
-	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
+	import type { AutoFormType } from '$lib/types/components/form/autoform';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
@@ -24,7 +24,7 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js';
-	import { flip } from 'svelte/animate';
+
 
 	interface Props {
 		data: {

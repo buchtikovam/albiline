@@ -1,6 +1,6 @@
 import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-import { get } from 'svelte/store';
 import { page } from '$app/stores';
+import { get } from 'svelte/store';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
 
 const bgHEX = "#fff7df";

@@ -86,7 +86,7 @@
 																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.field) : []}
 																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<ItemOpenThirdNoChild item={thirdChild} />
+																		<ItemOpenThirdNoChild item={thirdChild} isMobile={false} isMobileSidebarOpen={false} />
 																	{/each}
 																</Accordion.Root>
 															</ContextMenu.Root>
@@ -98,7 +98,7 @@
 											</ContextMenu.Root>
 										{:else}
 											<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-											<ItemOpenSecondNoChild item={secondChild} />
+											<ItemOpenSecondNoChild item={secondChild} isMobile={false} isMobileSidebarOpen={false} />
 										{/if}
 									{/each}
 								</Accordion.Root>
@@ -110,7 +110,7 @@
 
 				{:else}
 					<!-- accordiony první vrstvy (item nemá children položky) -->
-					<ItemOpenFirstNoChild item={item}/>
+					<ItemOpenFirstNoChild item={item} isMobile={false} isMobileSidebarOpen={false}/>
 				{/if}
 			</div>
 		{/each}

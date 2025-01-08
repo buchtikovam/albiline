@@ -2,6 +2,7 @@ interface RouteParams {
 	[key: string]: string | number;
 }
 
+
 export function processRoute(route: string, params: RouteParams): string {
 	// Split the route into segments, excluding the initial "(app)" segment
 

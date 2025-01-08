@@ -9,6 +9,7 @@
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import ContextMenuFavorite from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import MobileFavoritesButton from '$lib/components/sidebar/mobile/MobileFavoritesButton.svelte';
+	import { isMobile } from '$lib/runes/page.svelte';
 
 	interface Props {
 		searchTerm: string;
@@ -16,9 +17,10 @@
 		isOpen: boolean;
 	}
 
+
 	let { searchTerm, filteredItems = $bindable(), isOpen = $bindable() }: Props = $props();
 
-	let isMobile = true;
+	let isMobileSidebar = $derived(isMobile.value);
 </script>
 
 
@@ -97,7 +99,7 @@
 																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.field) : []}
 																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<ItemOpenThirdNoChild item={thirdChild} bind:isOpen isMobile />
+																		<ItemOpenThirdNoChild item={thirdChild} bind:isMobileSidebarOpen={isOpen} isMobile={isMobileSidebar} />
 																	{/each}
 																</Accordion.Root>
 															</ContextMenu.Root>
@@ -109,7 +111,7 @@
 											</ContextMenu.Root>
 										{:else}
 											<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-											<ItemOpenSecondNoChild item={secondChild} bind:isOpen isMobile/>
+											<ItemOpenSecondNoChild item={secondChild} bind:isMobileSidebarOpen={isOpen} isMobile={isMobileSidebar}/>
 										{/if}
 									{/each}
 								</Accordion.Root>
@@ -121,7 +123,7 @@
 
 				{:else}
 					<!-- accordiony první vrstvy (item nemá children položky) -->
-					<ItemOpenFirstNoChild item={item} bind:isOpen isMobile/>
+					<ItemOpenFirstNoChild item={item} bind:isMobileSidebarOpen={isOpen} isMobile={isMobileSidebar}/>
 				{/if}
 			</div>
 		{/each}

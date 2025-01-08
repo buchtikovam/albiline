@@ -1,6 +1,6 @@
 import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
-import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
+import { goto } from '$app/navigation';
 
 
 export function changeCustomerRoute(

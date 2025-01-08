@@ -1,13 +1,9 @@
 <script lang="ts">
-	import {
-		activeSelectedRowIndex,
-		editedTableData,
-		nextSelectedRowIndex
-	} from '$lib/runes/table.svelte';
+	import { editedTableData } from '$lib/runes/table.svelte';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import { editedFormValues } from '$lib/runes/autoformStore.svelte';
-	import { pwaInfo } from 'virtual:pwa-info';
 	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
+	import { isMobile } from '$lib/runes/page.svelte';
+	import { pwaInfo } from 'virtual:pwa-info';
 	import { i18n } from '$lib/i18n.js'
 	import { beforeNavigate } from '$app/navigation';
 	import { ParaglideJS } from '@inlang/paraglide-sveltekit'
@@ -17,30 +13,19 @@
 	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Header from '$lib/components/header/Header.svelte';
-	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
 	let { children }: { children?: Snippet } = $props();
 
 	let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
+	let innerWidth: number = $state(0);
 
-	// let innerWidth: number = $state();
-	//
-    // run(() => {
-	// 	if (innerWidth < 768) {
-	// 		isMobileStore.set(true)
-	// 	} else {
-	// 		isMobileStore.set(false)
-	// 	}
-	// });
-	//
-	// let isMobile: boolean = $state(false);
-	// isMobileStore.subscribe((data) => isMobile = data)
 
-	// let isMobileLayoutExpanded: boolean = $state();
-	// isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
+    $effect(() => {
+		isMobile.value = innerWidth < 768;
+	});
 
-	// let webManifest = $state("");
 
 	beforeNavigate(({ cancel }) => {
 		if (editedTableData.value.length > 0) {
@@ -49,16 +34,6 @@
 			} else {
 				editedTableData.value = [];
 				disableNavigation.value = false;
-			}
-		}
-
-		if (Object.keys(editedFormValues.value).length > 0) {
-			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
-				cancel();
-			} else {
-				editedFormValues.value = {};
-				disableNavigation.value = false;
-				activeSelectedRowIndex.value = nextSelectedRowIndex.value;
 			}
 		}
 	})
@@ -79,7 +54,7 @@
 
 
 
-<!--<svelte:window bind:innerWidth/>-->
+<svelte:window bind:innerWidth/>
 
 {#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}
 	<ReloadPrompt />
@@ -87,9 +62,8 @@
 
 
 
-<!-- isMobile ? "top-center" : "bottom-right" -->
 <Toaster
-	position="bottom-right"
+	position={isMobile ? "top-center" : "bottom-right"}
 	class="h-52 overflow-visible md:flex md:justify-end"
 />
 

@@ -1,7 +1,7 @@
-import { get } from 'svelte/store';
 import { sessionKey } from '$lib/runes/page.svelte';
 
 const apiRoute = "http://10.2.2.10/albiline.test/api/v1/"
+
 
 export async function apiServiceGET(endpoint: string): Promise<Response> {
 	const url = apiRoute + endpoint;

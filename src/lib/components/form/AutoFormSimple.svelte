@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform/autoform";
+	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
 	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';

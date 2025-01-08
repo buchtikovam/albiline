@@ -1,6 +1,7 @@
-import type { ColumnFilters } from '$lib/types/components/table/columnFilter';
 import type { Preset } from '$lib/types/components/table/presets';
 import type { ColDef, ColGroupDef } from 'ag-grid-community';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
 export const editedTableData: { value: any[] } = $state({ value:[] });
@@ -13,10 +14,10 @@ export const defaultColDef: { value: (ColDef<unknown, any> | ColGroupDef<unknown
 export const setColDefToDefault: { value: boolean } = $state({ value: false })
 
 // store pro uchovávání filtrů v tabulce, důležité pro ukládání nové sady filtrů
-export const filtersToSave: { value: ColumnFilters } = $state({ value: {} });
+export const filtersToSave: { value: Record<string, any> } = $state({ value: {} });
 
 // po vybrání sady filtrů z ribbonu se nastaví do této proměnné, po jejíž změně se načtou filtry do tabulky
-export const selectedFilters: { value: ColumnFilters } = $state({ value: {} });
+export const selectedFilters: { value: Record<string, any> } = $state({ value: {} });
 
 // store pro uchování rozložení sloupečků v tabulce, pro ukládání nové šablony
 export const presetToSave: { value: Preset[] } = $state({ value: [] });
@@ -28,5 +29,3 @@ export const selectedPreset: { value: Preset[] } = $state({ value: [] });
 export const storedSelectedRows: { value: Record<string, string|number|boolean|Date>[] }  = $state({ value: [] });
 
 export const activeSelectedRowIndex: { value: number } = $state({ value: 0 });
-
-export const nextSelectedRowIndex: { value: number } = $state({ value: 0 });

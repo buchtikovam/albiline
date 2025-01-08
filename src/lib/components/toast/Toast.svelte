@@ -4,7 +4,6 @@
 	import CircleCheck from 'lucide-svelte/icons/circle-check';
 	import CircleX from 'lucide-svelte/icons/circle-x';
 	import Info from 'lucide-svelte/icons/info';
-	import { beforeNavigate } from '$app/navigation';
 
 	interface Props {
 		type: ToastVariant;
@@ -13,10 +12,13 @@
 
 	let { type, content }: Props = $props();
 
+
 	let hidden = $state(false);
 
-	beforeNavigate(() => {
-		hidden = true;
+	$effect(() => {
+		return (() => {
+			hidden = true;
+		})
 	})
 </script>
 

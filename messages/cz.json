@@ -1,6 +1,7 @@
 {
     "$schema": "https://inlang.com/schema/inlang-message-format",
 
+
 	"components_avatar_welcome": "Vítejte, ",
 	"components_avatar_profile": "Profil",
 	"components_avatar_settings": "Nastavení",
@@ -117,6 +118,7 @@
 
 
 	"routes_prodej_zakaznici_address_detail_label" : "Prodejny zákazníka {customerName} ({customerAddressCode})",
+	"routes_prodej_zakaznici_address_detail_label_mobile" : "Prodejny zákazníka {customerAddressCode}",
 	"routes_prodej_zakaznici_address_detail_form_section_address_detail" : "Detail adresy",
 	"routes_prodej_zakaznici_address_detail_form_section_oz" : "OZ a oblasti",
 	"routes_prodej_zakaznici_address_detail_form_section_settings" : "Nastavení",
@@ -148,6 +150,14 @@
 	"routes_prodej_zakaznici_address_detail_form_input_picking_box_packing" : "Balit do KLT",
 	"routes_prodej_zakaznici_address_detail_form_input_split_order_by_food" : "Food/Nonfood",
 	"routes_prodej_zakaznici_address_detail_form_input_note" : "Poznámka",
+
+	"routes_prodej_zakaznici_address_detail_new_address_form_input_name" : "Název",
+	"routes_prodej_zakaznici_address_detail_new_address_form_input_company_name" : "Společnost",
+	"routes_prodej_zakaznici_address_detail_new_address_form_input_street" : "Ulice",
+	"routes_prodej_zakaznici_address_detail_new_address_form_input_city" : "Město",
+	"routes_prodej_zakaznici_address_detail_new_address_form_input_postal_code" : "PSČ",
+	"routes_prodej_zakaznici_address_detail_new_address_form_input_country_code" : "Země",
+
 
 	"routes_prodej_zakaznici_detail_contacts_label" : "Kontakty",
 	"routes_prodej_zakaznici_detail_contacts_input_name" : "Jméno",

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
-import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
+import type { AutoFormType } from '$lib/types/components/form/autoform';
 import Repeat from 'lucide-svelte/icons/repeat';
 import * as m from '$lib/paraglide/messages.js'
 

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import * as m from '$lib/paraglide/messages.js'
-import type { AutoFormSimpleType } from '$lib/types/components/form/autoform/autoform';
+import type { AutoFormSimpleType } from '$lib/types/components/form/autoform';
 
 export const newCustomerContactFormDef: AutoFormSimpleType = [
 	{

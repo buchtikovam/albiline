@@ -78,6 +78,7 @@ export type CustomerAddressType = {
 	areaId: string|null
 }
 
+
 export type CustomerContactType = {
 	isDefault: boolean,
 	enabled: boolean,

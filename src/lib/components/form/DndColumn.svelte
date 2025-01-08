@@ -4,7 +4,7 @@
 	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import Grip from 'lucide-svelte/icons/grip';
-	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform/autoform';
+	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform';
 	import FormCheckboxSection from '$lib/components/form/containers/FormCheckboxSection.svelte';
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';

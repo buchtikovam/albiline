@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { get, writable } from 'svelte/store';
-	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
+	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';
 	import { apiServiceGET } from '$lib/api/apiService';
-	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
+	import { onMount } from 'svelte';
+	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 
 
 	interface Props {
@@ -23,12 +21,10 @@
 		const res = await apiServiceGET(`customers/${activeRow.customerNodeCode}/invoice-addresses`)
 
 		if (res.ok) {
-			console.log("fetch");
 			const data = await res.json();
 			invoiceAddresses = data.items;
 		}
 	}
-
 
 	onMount(() => {
 		getInvoiceAddresses();

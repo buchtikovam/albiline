@@ -19,7 +19,9 @@ import Columns3 from 'lucide-svelte/icons/columns-3';
 import Save from 'lucide-svelte/icons/save';
 import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 
+
 type RibbonItems = RibbonItem[] | RibbonItem | RibbonSeparator;
+
 
 export const ribbonItems: RibbonItems[] = [
 	{

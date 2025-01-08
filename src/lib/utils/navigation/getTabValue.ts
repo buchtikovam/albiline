@@ -1,5 +1,6 @@
 import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 
+
 export function getTabValue(url: string, storedTabs: HeaderTab[]) {
 	if (url === "/" || url === "/en" || url === "/sk" || url === "/pl") return url;
 

@@ -1,14 +1,9 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { writable, type Writable } from 'svelte/store';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	
 
 	interface Props {
-		/*
-		Warning dialog s tlačítky pro udělení/zamítnutí souhlasu akce
-	*/
 		open: boolean;
 		message: string;
 		desription: string;
@@ -29,13 +24,13 @@
 
 	function consentAllow() {
 		open = false;
-		consent.set(true);
+		consent = true;
 	}
 
 
 	function consentDenied() {
 		open = false;
-		consent.set(false);
+		consent = false;
 	}
 </script>
 

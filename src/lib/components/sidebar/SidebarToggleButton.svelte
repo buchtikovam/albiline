@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { sidebarOpen } from '$lib/runes/sidebar.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Menu from 'lucide-svelte/icons/menu';
-	import { sidebarOpen } from '$lib/runes/sidebar.svelte';
 </script>
 
 

@@ -16,6 +16,7 @@
 
 	let { isOpen = $bindable() }: Props = $props();
 
+
 	let filteredItems: SidebarItem[] = $state(deepcopy(allItems));
 	let searchTerm = $state("");
 
@@ -40,6 +41,7 @@
 			));
 		}
 	}
+
 
 	$effect(() => {
 		search(searchTerm, sidebarCategory.value);
@@ -73,8 +75,6 @@
 				</div>
 			</div>
 		</div>
-
-
 	</Dialog.Content>
 </Dialog.Root>
 

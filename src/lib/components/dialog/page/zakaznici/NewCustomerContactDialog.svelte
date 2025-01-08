@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform/autoform";
+	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
 	import type { CustomerContactType } from '$lib/types/page/customers';
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -80,7 +80,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<div class="mb-4 h-full">
+		<div class="h-full">
 			<AutoFormSimple
 				bind:formValues={contact}
 				autoform={formDef}

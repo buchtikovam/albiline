@@ -1,6 +1,7 @@
 import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
-import { goto } from '$app/navigation';
 import { processRoute } from '$lib/utils/navigation/processRoute';
+import { goto } from '$app/navigation';
+
 
 export function changeCustomerAddressRoute(
 	selectedRows: Record<string, any>[],
@@ -25,7 +26,7 @@ export function changeCustomerAddressRoute(
 			customerAddressCode: selectedRows[nextIndex].customerAddressCode || ""
 		})
 
-		goto(newRoute)
+		goto(newRoute);
 
 		if (!selectedRows[currentIndex + 2]) {
 			return {
@@ -49,7 +50,7 @@ export function changeCustomerAddressRoute(
 			customerAddressCode: selectedRows[prevIndex].customerAddressCode
 		})
 
-		goto(newRoute)
+		goto(newRoute);
 
 		if (!selectedRows[currentIndex - 2]) {
 			return {

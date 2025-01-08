@@ -23,14 +23,9 @@
 
 	$effect(() => {
 		pathName = getTabValue($page.url.pathname, openedTabs.value);
-
 	});
 
 	let openMobileSidebar: boolean = $state(false);
-
-	// function getLabelByTabField(field: string) {
-	// 	return
-	// }
 </script>
 
 

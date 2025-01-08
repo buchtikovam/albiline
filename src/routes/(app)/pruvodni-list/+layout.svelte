@@ -8,9 +8,7 @@
 
 
 <svelte:head>
-	<title>
-		Průvodní list
-	</title>
+	<title>Průvodní list</title>
 </svelte:head>
 
 

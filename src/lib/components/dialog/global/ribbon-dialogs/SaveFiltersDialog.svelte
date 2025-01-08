@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { openedDialogStore } from '$lib/runes/ribbon.svelte';
+	import { openedDialog } from '$lib/runes/ribbon.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
-	import { saveFilters } from '$lib/utils/components/ribbon/saveFilters';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
@@ -19,10 +18,10 @@
 	
 	function handleSaveFilters(event: Event) {
 		event.preventDefault();
-		saveFilters(inputValue, $page.url.pathname);
+		// saveFilters(inputValue, $page.url.pathname);
 
 		setTimeout(() => {
-			openedDialogStore.set(undefined)
+			openedDialog.value = "empty";
 		}, 250)
 
 		dialogOpen = false
@@ -38,7 +37,6 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="!w-fit">
 		<Dialog.Header>

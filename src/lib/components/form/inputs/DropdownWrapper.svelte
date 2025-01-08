@@ -1,7 +1,7 @@
 <script lang="ts">
-  	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import * as Select from "$lib/components/ui/select/index.js";
 	import { z } from 'zod';
+	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
+	import * as Select from "$lib/components/ui/select/index.js";
 
 	export const disable: boolean = false;
 	interface Props {
@@ -21,6 +21,9 @@
 	}: Props = $props();
 
 	let dropdownValue = $state(value);
+
+	if (!value) dropdownValue = "‎";
+
 	let hasError = $state(false);
 	let errorMessage = $state("");
 

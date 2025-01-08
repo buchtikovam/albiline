@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
-	import * as Command from '$lib/components/ui/command';
+	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import * as m from "$lib/paraglide/messages.js"
+	import * as Command from '$lib/components/ui/command';
 
 	interface Props {
 		items: SidebarItem[];

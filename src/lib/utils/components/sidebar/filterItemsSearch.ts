@@ -1,5 +1,4 @@
 import type { SidebarItem } from "$lib/types/components/sidebar/sidebar";
-// import * as m from "$lib/paraglide/messages.js"
 
 
 export function filterItemsSearch(items: SidebarItem[], searchTerm: string): SidebarItem[] {

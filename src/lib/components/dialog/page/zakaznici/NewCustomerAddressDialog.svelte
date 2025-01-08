@@ -1,22 +1,20 @@
 <script lang="ts">
-	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform/autoform";
-	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
+	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
+	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	interface Props {
 		dialogOpen?: boolean;
 		label?: string;
 		formDef: AutoFormSimpleType;
-		translationRoute: string;
 	}
 
 	let {
 		dialogOpen = $bindable(false),
 		label = "Nový kontakt",
 		formDef,
-		translationRoute
 	}: Props = $props();
 
 	let address: CustomerAddressType = $state({
@@ -54,14 +52,12 @@
 	function addAddress() {
 		console.log(address);
 	}
-
 </script>
 
 
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="">
 		<Dialog.Header>
@@ -74,7 +70,6 @@
 			<AutoFormSimple
 				addToEdited={false}
 				bind:formValues={address}
-				translationRoute={translationRoute}
 				autoform={formDef}
 			/>
 		</div>

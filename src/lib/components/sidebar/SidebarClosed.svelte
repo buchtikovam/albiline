@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import { Separator } from '$lib/components/ui/separator';
+	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
+	import Search from 'lucide-svelte/icons/search';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import SidebarToggleButton from './SidebarToggleButton.svelte';
-	import Search from 'lucide-svelte/icons/search';
 	import * as m from "$lib/paraglide/messages.js"
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Popover from '$lib/components/ui/popover';

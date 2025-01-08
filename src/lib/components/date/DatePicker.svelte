@@ -4,8 +4,6 @@
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
 	import { DatePicker } from 'bits-ui';
-	import { getContext } from 'svelte';
-
 
 	interface Props {
 		dateValue?: Date|undefined;

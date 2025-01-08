@@ -1,6 +1,6 @@
+import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 import type { Icon as IconType } from 'lucide-svelte';
 import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
-import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 
 
 export type RibbonSeparator = {

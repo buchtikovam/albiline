@@ -13,6 +13,7 @@ export function addToEditedTableData(
 	// function to check if record already exists by comparing all required fields
 	function checkForMatch(record: string) {
 		return requiredFields.every((field: string) => {
+			// @ts-expect-error ...
 			return record[field] === event.data[field]
 		});
 	}

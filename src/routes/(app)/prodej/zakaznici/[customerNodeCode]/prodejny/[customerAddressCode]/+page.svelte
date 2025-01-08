@@ -1,33 +1,36 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import * as m from '$lib/paraglide/messages.js'
-	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
-	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
-	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import Repeat from 'lucide-svelte/icons/repeat';
-	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
-	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
-	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
-	import type { GridOptions } from 'ag-grid-enterprise';
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
+	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
+	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
+	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
+	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
+	import { disableNavigation } from '$lib/runes/navigation.svelte';
+	import { activeTabIndex, isMobile } from '$lib/runes/page.svelte';
+	import { ribbonAction } from '$lib/runes/ribbon.svelte';
+	import { page } from '$app/stores';
+	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService';
+	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
+	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { customToast } from '$lib/utils/customToast';
 	import { flipItems } from '$lib/utils/flipItems';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
+	import Repeat from 'lucide-svelte/icons/repeat';
 	import Plus from 'lucide-svelte/icons/plus';
-	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
+	import * as m from '$lib/paraglide/messages.js';
+	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
+	import type { GridOptions } from 'ag-grid-enterprise';
+	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/NewCustomerContactDialog.svelte';
-	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
-	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
-	import { apiServiceGET } from '$lib/api/apiService';
-	import { customToast } from '$lib/utils/customToast';
-	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
 	import CustomerAddressesDialog from '$lib/components/dialog/page/zakaznici/CustomerAddressesDialog.svelte';
+	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
+	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
+	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
 
 	interface Props {
 		data: {
@@ -41,22 +44,22 @@
 
 	let { data }: Props = $props();
 
+	activeTabIndex.value = 1;
+
 	let initialFormValues: CustomerAddressType = $derived(data.response.item);
-	$inspect(initialFormValues);
-	let editedFormValues: Record<string, any> = $state({})
+	let editedFormValues: Record<string, any> = $state({});
 
 	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
 
 	let pageLayout = $state(customerAddressPageLayout);
-	let pageSettings: PageMetaDataType;
 
 	let openNewContactDialog: boolean = $state(false);
 	let openAgGridDialog: boolean = $state(false);
 
 	let autoformDef = $state(customerAddressDetailFormDef);
-	let selectedRows = $derived(storedSelectedRows.value)
+	let selectedRows = $derived(storedSelectedRows.value);
 
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
@@ -64,7 +67,7 @@
 	let activeRouteId = $derived({
 		customerNodeCode: Number($page.params.customerNodeCode),
 		customerAddressCode: Number($page.params.customerAddressCode)
-	})
+	});
 
 
 	// disable navigation if there are unsaved changes in form
@@ -86,6 +89,7 @@
 		}
 	})
 
+
 	// disable navigation if new contact was created
 	$effect(() => {
 		if (createdContacts.length > 0) {
@@ -95,7 +99,8 @@
 		}
 	})
 
-	// // called when user swappes to the next/previous address
+
+	// called when user swappes to the next/previous address
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
 		const returnedDisable = changeCustomerAddressRoute(
 			selectedRows,
@@ -107,19 +112,6 @@
 		disableLeft = returnedDisable.left;
 		disableRight = returnedDisable.right;
 	}
-
-	// activeSelectedRowIndexStore.subscribe((data) => {
-	// 	disableRight = false;
-	// 	disableLeft = false;
-	//
-	// 	if (!selectedRows[data + 1]) {
-	// 		disableRight = true
-	// 	}
-	//
-	// 	if (!selectedRows[data - 1]) {
-	// 		disableLeft = true
-	// 	}
-	// })
 
 
 	// fetching for customer addresses ag-grid dialog
@@ -139,7 +131,7 @@
 	}
 
 
-
+	// runs during mount and unmount
 	$effect(() => {
 		const currentIndex = selectedRows.findIndex((id) =>
 			id.customerNodeCode === activeRouteId.customerNodeCode
@@ -149,53 +141,75 @@
 		if (!selectedRows[currentIndex - 1]) disableLeft = true;
 
 		return(() => {
-			addresses.set([]);
+			addresses = [];
 			openAgGridDialog = false;
 		})
 	})
 
 
-	// ribbonActionStore.subscribe((action) => {
-	// 	if (action === RibbonActionEnum.SAVE) {
-	// 		const saveObj = {
-	// 			item: get(editedFormValuesStore),
-	//
-	// 			contacts: {
-	// 				insert: get(createdContacts),
-	// 				update: get(editedContactValues),
-	// 				delete: []
-	// 			},
-	// 		}
-	//
-	// 		if (Object.keys(saveObj.item).length > 0) {
-	// 			saveObj.item.customerAddressCode = Number($page.params.customerAddressCode)
-	// 			saveObj.item.customerNodeCode = Number($page.params.customerNodeCode)
-	// 		}
-	//
-	// 		updateAndReload(saveObj);
-	// 		console.log(JSON.stringify(saveObj, null, 1));
-	// 	}
-	//
-	// 	ribbonActionStore.set(undefined);
-	// })
+	// runs when ribbon action changes
+	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.SAVE) {
+			if (
+				Object.keys(editedFormValues).length > 0 ||
+				createdContacts.length > 0 ||
+				editedContactValues.length > 0
+			) {
+				const saveObj = {
+					item: editedFormValues,
+
+					contacts: {
+						insert: createdContacts,
+						update: editedContactValues,
+						delete: []
+					},
+				}
+
+				console.log(JSON.stringify(saveObj, null, 1));
+
+				if (Object.keys(saveObj.item).length > 0) {
+					saveObj.item.customerAddressCode = Number($page.params.customerAddressCode)
+					saveObj.item.customerNodeCode = Number($page.params.customerNodeCode)
+				}
+
+				updateAndReload(saveObj);
+			} else {
+				customToast(
+					"InfoToast",
+					"Nemáte nic k uložení. Nejdříve proveďte změny."
+				)
+			}
+		}
+
+		ribbonAction.value = RibbonActionEnum.UNKNOWN;
+	})
+
 
 	// save data on the api
-	// async function updateAndReload(saveObj) {
-	// 	const res = await apiServicePOST(
-	// 		`customers/${$page.params.customerNodeCode}/addresses/${$page.params.customerAddressCode}`,
-	// 		saveObj
-	// 	)
-	//
-	// 	if (res.ok) {
-	// 		editedFormValuesStore.set({});
-	// 		editedContactValues.set([]);
-	// 		createdContacts.set([]);
-	// 		disableNavigationStore.set(false);
-	// 		disableLeft = false;
-	// 		disableRight = false;
-	// 		await invalidateAll();
-	// 	}
-	// }
+	async function updateAndReload(saveObj) {
+		const res = await apiServicePOST(
+			`customers/${$page.params.customerNodeCode}/addresses/${$page.params.customerAddressCode}`,
+			saveObj
+		)
+
+		if (res.ok) {
+			editedFormValues = {};
+			editedContactValues = [];
+			createdContacts = [];
+			disableNavigation.value = false;
+			customToast(
+				"Success",
+				"Změny byly úspěšně uloženy"
+			);
+			await invalidateAll();
+		} else {
+			customToast(
+				"Critical",
+				"Nepovedlo se uložit změny."
+			)
+		}
+	}
+
 
 	// function savePageLayout() {
 	// 	const pageStripped = pageLayout.map((item) => {
@@ -225,11 +239,10 @@
 	// 	console.log(JSON.stringify(pageLayoutObj, null, 1));
 	// }
 
+
 	const contactsGridOptions: GridOptions = {
 		columnDefs: customerAndAddressContactsAgGridDef,
 	}
-
-	$inspect(editedFormValues)
 </script>
 
 
@@ -246,14 +259,21 @@
 		<div class="flex justify-between">
 			<!-- page label + get addresses button -->
 			<div class="flex gap-1.5">
-				<DetailPageLabel
-					label={`${m.routes_prodej_zakaznici_address_detail_label(
+				{#if isMobile.value}
+					<DetailPageLabel
+						label={`${m.routes_prodej_zakaznici_address_detail_label_mobile(
+							{ customerAddressCode: initialFormValues.customerAddressCode || ""}
+						)}`}
+					/>
+				{:else}
+					<DetailPageLabel
+						label={`${m.routes_prodej_zakaznici_address_detail_label(
 						{
 							customerName: initialFormValues.customerName || "",
 							customerAddressCode: initialFormValues.customerAddressCode || ""})
-						}
-					`}
-				/>
+						}`}
+					/>
+				{/if}
 
 
 				<button
@@ -321,7 +341,7 @@
 						</button>
 					</div>
 
-<!--					&lt;!&ndash; contacts table &ndash;&gt;-->
+					<!-- contacts table -->
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}
 						rowData={contactValues}

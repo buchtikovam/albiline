@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { openedDialogStore } from '$lib/runes/ribbon.svelte';
+	import { openedDialog } from '$lib/runes/ribbon.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { savePresets } from '$lib/utils/components/ribbon/savePresets';
 
 	/*
 		Dialog pro uložení nové šablony,
@@ -19,10 +18,10 @@
 
 	function handleSavePresets(event: Event) {
 		event.preventDefault();
-		savePresets(inputValue, $page.url.pathname);
+		// savePresets(inputValue, $page.url.pathname);
 
 		setTimeout(() => {
-			openedDialogStore.set(undefined)
+			openedDialog.value = "empty";
 		}, 250)
 
 		dialogOpen = false
@@ -38,7 +37,6 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="!w-fit">
 		<Dialog.Header>

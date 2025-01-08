@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AutoFormType } from '$lib/types/components/form/autoform/autoform';
+	import type { AutoFormType } from '$lib/types/components/form/autoform';
 	import DndColumnNew from '$lib/components/form/DndColumn.svelte';
 
 	interface Props {
@@ -15,9 +15,6 @@
 		editedFormValues = $bindable(),
 		allowCrossColumnDND = true
 	}: Props = $props();
-
-	// console.log(formDef);
-	// console.log(formValues);
 </script>
 
 

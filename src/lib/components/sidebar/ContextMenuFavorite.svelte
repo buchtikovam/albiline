@@ -2,8 +2,8 @@
 	import { favoriteItems, sidebarCategory } from '$lib/runes/sidebar.svelte';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 	import Heart from 'lucide-svelte/icons/heart';
-	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import * as m from "$lib/paraglide/messages.js";
+	import * as ContextMenu from '$lib/components/ui/context-menu';
 
 	let { field }: { field: string } = $props();
 

@@ -4,7 +4,9 @@ import Hammer from 'lucide-svelte/icons/hammer';
 import * as m from '$lib/paraglide/messages.js'
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
+
 import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
+
 
 export const allItems: SidebarItem[] = [
 	{

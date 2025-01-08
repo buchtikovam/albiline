@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { ribbonAction, ribbonOpen } from '$lib/runes/ribbon.svelte';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import type { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import type { RibbonItem, RibbonSubItem } from '$lib/types/components/ribbon/ribbon';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';

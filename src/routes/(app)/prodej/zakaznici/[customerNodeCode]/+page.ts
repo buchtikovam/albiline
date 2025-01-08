@@ -25,7 +25,7 @@ export const load: PageLoad = async ({ params, fetch}) => {
 
 	return {
 		response: {
-			item: {},
+			item: getObject(),
 			contacts: [],
 		},
 		state: {
@@ -34,3 +34,42 @@ export const load: PageLoad = async ({ params, fetch}) => {
 		}
 	};
 };
+
+
+function getObject() {
+	return {
+		id: null,
+		customerNodeCode: "",
+		customerName: "",
+		name: "",
+		dic: "",
+		customerAlbiCode: null,
+		icDph: "",
+		email: "",
+		customerAddressCode: null,
+		companyName: null,
+		street: "",
+		city: "",
+		postalCode: "",
+		countryCode: "",
+		note: null,
+		paymentTypeCode: "",
+		dueDays: null,
+		invoiceCopies: null,
+		deliveryNoteCopies: null,
+		customerRank: "",
+		retailStoreTypeId: null,
+		customerStoreCode: null,
+		customerStoreEan: "",
+		packingNote: null,
+		consignmentSaleEnabled: false,
+		isReturnAllowed: false,
+		isForConsignmentReturn: false,
+		useAssortedEanCodes: false,
+		pickingBoxPacking: false,
+		splitOrderByFood: false,
+		dealerCode: null,
+		areaCode: null,
+		areaId: null
+	}
+}

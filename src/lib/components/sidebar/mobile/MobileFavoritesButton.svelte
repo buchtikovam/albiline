@@ -4,12 +4,12 @@
 
 	let { field }: { field: string } = $props();
 
+
 	let isFavorite: boolean = $state(false);
 
 	$effect(() => {
 		favoriteItems.value.includes(field) ? (isFavorite = true) : (isFavorite = false);
 	})
-
 </script>
 
 

@@ -5,11 +5,15 @@
 
 	interface Props {
 		item: any;
-		isMobile?: boolean;
-		isOpen?: boolean;
+		isMobileSidebarOpen: boolean;
+		isMobile: boolean;
 	}
 
-	let { item, isMobile, isOpen = $bindable() }: Props = $props();
+	let {
+		item,
+		isMobileSidebarOpen = $bindable(),
+		isMobile
+	}: Props = $props();
 </script>	
 
 
@@ -20,7 +24,9 @@
 			href={item.href}
 			onclick={() => {
 				handleTabClick(item, 0);
-				if (isMobile) isOpen = false;
+				if (isMobile) {
+					isMobileSidebarOpen = false;
+				}
 			}}
 			class="flex text-sm font-bold items-center gap-3 rounded-lg py-2 px-1.5 hover:bg-muted/50 text-albi-950 hover:text-black"
 		>

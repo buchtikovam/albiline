@@ -1,8 +1,9 @@
-import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 import { openedTabs } from '$lib/runes/navigation.svelte';
-import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { goto } from '$app/navigation';
 import { get } from 'svelte/store';
+import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
+
 
 export function deleteTab(tab: HeaderTab) {
 	console.log("remove tab");
