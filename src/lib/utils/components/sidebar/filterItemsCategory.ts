@@ -1,5 +1,6 @@
 import type { SidebarItem } from "$lib/types/components/sidebar/sidebar";
 
+
 export function filterItemsCategory(items: SidebarItem[], itemsValues: string[]): SidebarItem[] {
 	if (itemsValues.length === 0) {
 		return [];

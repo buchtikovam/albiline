@@ -1,31 +1,56 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import InputLabel from '../labels/InputLabel.svelte';
-	import { getContext } from 'svelte';
-	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
+	import { z } from 'zod';
 
-	export let value: boolean = false;
-	export let label: string;
-	export let disable: boolean = false;
-	export let field: string = "";
-	export let addToEdited: boolean = true;
+	interface Props {
+		value: boolean;
+		label: string;
+		schema: z.ZodType<T>;
+		disable?: boolean;
+		addToEditedFormData: (newValue: boolean, initialValue: boolean) => void;
+	}
 
-	const initialValue = value;
+	let {
+		value,
+		label,
+		schema,
+		disable = false,
+		addToEditedFormData
+	}: Props = $props();
+
+
+	let checkedValue = $state(false);
+	let hasError = $state(false);
+
+	if (value) checkedValue = value;
+
+	function validateBooleanSchema() {
+		try {
+			schema.parse(!checkedValue);
+			hasError = false;
+			addToEditedFormData(!checkedValue, value);
+		} catch (e) {
+			console.log(e);
+			hasError = true;
+			addToEditedFormData(!checkedValue, value);
+		}
+	}
 </script>
 
 
-<div class="w-full flex items-center gap-1.5">
-	<Checkbox
-		on:click={() => {
-			if (addToEdited) {
-				addToEditedFormData(initialValue, field, !value);
-			}
-		}}
-		disabled={disable}
-		bind:checked={value}
-	/>
 
-	<InputLabel
-		label={label}
-	/>
+<div class="w-full flex flex-col">
+	<div class="flex items-center gap-1.5">
+		<Checkbox
+			class={(hasError ? "data-[state=checked]:border-red-600" : "data-[state=checked]:border-border") + " focus-visible:border-albi-500"}
+			bind:checked={checkedValue}
+			disabled={disable}
+			onclick={() => validateBooleanSchema()}
+		/>
+
+		<InputLabel
+			label={label}
+		/>
+	</div>
 </div>

@@ -1,29 +1,36 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { writable, type Writable } from 'svelte/store';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	/*
-		Warning dialog s tlačítky pro udělení/zamítnutí souhlasu akce
-	*/
 
-	export let open = true;
-	export let message: string;
-	export let desription: string;
-	export let buttonAllowLabel: string
-	export let buttonDenyLabel: string
-	export let consent: Writable<boolean> = writable(false);
+	interface Props {
+		open: boolean;
+		message: string;
+		desription: string;
+		buttonAllowLabel: string;
+		buttonDenyLabel: string;
+		consent: boolean;
+	}
+
+	let {
+		open = $bindable(true),
+		message,
+		desription,
+		buttonAllowLabel,
+		buttonDenyLabel,
+		consent = $bindable(false)
+	}: Props = $props();
 
 
 	function consentAllow() {
 		open = false;
-		consent.set(true);
+		consent = true;
 	}
 
 
 	function consentDenied() {
 		open = false;
-		consent.set(false);
+		consent = false;
 	}
 </script>
 
@@ -45,14 +52,14 @@
 		<Dialog.Footer class="mt-4">
 			<Button
 				class="w-full bg-albi-500 text-background font-bolder"
-				on:click={consentAllow}
+				onclick={consentAllow}
 			>
 				{buttonAllowLabel}
 			</Button>
 
 			<Button
 				class="w-full bg-red-500 text-background font-bolder"
-				on:click={consentDenied}
+				onclick={consentDenied}
 			>
 				{buttonDenyLabel}
 			</Button>

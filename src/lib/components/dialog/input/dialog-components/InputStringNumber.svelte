@@ -1,10 +1,14 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import type { InputDialogNumber, InputDialogString } from '$lib/types/components/form/input-dialog/inputDialog';
+	import type { InputDialogNumber, InputDialogString } from '$lib/types/components/form/inputDialog';
 
-	export let item: InputDialogString | InputDialogNumber;
-	export let value: string | number;
+	interface Props {
+		item: InputDialogString | InputDialogNumber;
+		value: string | number;
+	}
+
+	let { item, value = $bindable() }: Props = $props();
 </script>
 
 <div>

@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { page } from '$app/stores';
-	import type { InputDialog, InputDialogItem } from '$lib/types/components/form/input-dialog/inputDialog';
+	import type { InputDialog, InputDialogItem } from '$lib/types/components/form/inputDialog';
 	import { onMount } from 'svelte';
 	import { customToast } from '$lib/utils/customToast';
 	import DatePicker from '$lib/components/date/DatePicker.svelte';
-	import InputStringNumber from '$lib/components/dialog/input-dialog/dialog-components/InputStringNumber.svelte';
-	import DateRange from '$lib/components/dialog/input-dialog/dialog-components/DateRange.svelte';
-	import RadioGroup from '$lib/components/dialog/input-dialog/dialog-components/RadioGroup.svelte';
-	import CheckboxGroup from '$lib/components/dialog/input-dialog/dialog-components/CheckboxGroup.svelte';
+	import InputStringNumber from '$lib/components/dialog/input/dialog-components/InputStringNumber.svelte';
+	import DateRange from '$lib/components/dialog/input/dialog-components/DateRange.svelte';
+	import RadioGroup from '$lib/components/dialog/input/dialog-components/RadioGroup.svelte';
+	import CheckboxGroup from '$lib/components/dialog/input/dialog-components/CheckboxGroup.svelte';
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import LastYearButton from '$lib/components/date/range-buttons/LastYearButton.svelte';
 
@@ -22,10 +22,14 @@
 		Po vyplnění všech inputů +page.svelte získává data
 	*/
 
-	export let inputDialogObjects: Record<string, any>;
+	interface Props {
+		inputDialogObjects: Record<string, any>;
+	}
 
-	let dialogOpen: boolean = false;
-	let dialogContent: InputDialog;
+	let { inputDialogObjects = $bindable() }: Props = $props();
+
+	let dialogOpen: boolean = $state(false);
+	let dialogContent: InputDialog = $state();
 	let pathLength = $page.url.pathname.split('/').length;
 	let fileName = $page.url.pathname.split('/')[pathLength - 1];
 
@@ -104,7 +108,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form on:submit={handleDialogSubmitButton}>
+		<form onsubmit={handleDialogSubmitButton}>
 			{#if dialogContent}
 				<div class="flex flex-col gap-2.5 mb-4">
 					{#each dialogContent as item}

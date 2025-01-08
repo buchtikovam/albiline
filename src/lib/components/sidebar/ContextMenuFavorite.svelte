@@ -1,45 +1,40 @@
 <script lang="ts">
-	import { favoriteItemsStore, activeCategoryStore } from '$lib/stores/sidebarStore';
+	import { favoriteItems, sidebarCategory } from '$lib/runes/sidebar.svelte';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 	import Heart from 'lucide-svelte/icons/heart';
+	import * as m from "$lib/paraglide/messages.js";
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 
-	export let itemValue: string;
-
-	let category: string;
-	activeCategoryStore.subscribe((data) => {
-		category = data;
-	});
-
+	let { field }: { field: string } = $props();
 
 	function addToFavorites() {
-		favoriteItemsStore.update(data => data.concat(itemValue));
+		if (favoriteItems.value.includes(field)) return;
+		favoriteItems.value.push(field);
 	}
 
-
 	function removeFromFavorites() {
-		favoriteItemsStore.update(data => data.filter((item) => item.indexOf(itemValue) === -1));
+		favoriteItems.value = favoriteItems.value.filter((item) => item.indexOf(field) === -1);
 	}
 </script>
 
 
 
 <ContextMenu.Content>
-	{#if category !== "favorite"}
+	{#if sidebarCategory.value === "favorite"}
 		<ContextMenu.Item
 			class="flex gap-2 text-sm"
-			on:click={addToFavorites}
+			onclick={removeFromFavorites}
 		>
-			<Heart class="w-4 h-4 text-red-600" />
-			Přidat do oblíbených
+			<HeartCrack class="size-4 fill-red-200 text-red-600" />
+			{m.components_sidebar_context_menu_remove_from_favorites()}
 		</ContextMenu.Item>
 	{:else}
 		<ContextMenu.Item
 			class="flex gap-2 text-sm"
-			on:click={removeFromFavorites}
+			onclick={addToFavorites}
 		>
-			<HeartCrack class="w-4 h-4 text-red-600" />
-			Odebrat z oblíbených
+			<Heart  class="size-4 fill-red-200 text-red-600" />
+			{m.components_sidebar_context_menu_add_to_favorites()}
 		</ContextMenu.Item>
 	{/if}
 </ContextMenu.Content>

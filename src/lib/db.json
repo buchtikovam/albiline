@@ -1,31 +1,4 @@
 {
-  "autoforms": {
-    "name": "",
-    "firstName": "",
-    "lastName": "",
-    "id_albi_dodavatel": "",
-    "typ_kz": "",
-    "uverovy_ramec": "",
-    "nesplaceno": "",
-    "posledni_platba": "",
-    "popis_blizsi": "",
-    "i_name": "",
-    "i_street": "",
-    "i_city": "",
-    "i_postalCode": "",
-    "i_ico": "",
-    "i_dic": "",
-    "i_icDph": "",
-    "edi_ean_schranky": "",
-    "edi_ean_centraly": "",
-    "edi_dl": false,
-    "edi_dobropis": true,
-    "edi_dia": true,
-    "edi_faktury": false,
-    "node": "",
-    "vychozi_fa_ad": "",
-    "typ_fa_ad": ""
-  },
   "filters": [
     {
       "id": "33ba",

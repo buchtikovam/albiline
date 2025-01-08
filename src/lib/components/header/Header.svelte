@@ -1,127 +1,31 @@
 <script lang="ts">
-	import { editedTableDataStore, fulltextFilterValueStore, showFulltextSearchStore } from '$lib/stores/tableStore';
-	import { openedTabsStore, allowTabAdding } from '$lib/stores/tabStore';
-	import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
-	import { goto, preloadData } from '$app/navigation';
-	import { get } from 'svelte/store';
-	import { _ } from 'svelte-i18n'
-	import X from 'lucide-svelte/icons/x';
-	import Home from 'lucide-svelte/icons/home';
-	import Avatar from '$lib/components/avatar/Avatar.svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import Menu from 'lucide-svelte/icons/menu';
+	import { fulltextFilterValue, showFulltextSearch } from '$lib/runes/page.svelte';
+	import { disableNavigation, openedTabs } from '$lib/runes/navigation.svelte.js';
+	import { i18n } from '$lib/i18n.js'
 	import { page } from '$app/stores';
+	import { languageTag } from "$lib/paraglide/runtime.js"
+	import { getTabValue } from '$lib/utils/navigation/getTabValue';
+	import { deleteTab } from '$lib/utils/navigation/deleteTab.svelte';
+	import { slide } from 'svelte/transition';
+	import { goto } from '$app/navigation';
+	import Home from 'lucide-svelte/icons/home';
+	import Menu from 'lucide-svelte/icons/menu';
+	import X from 'lucide-svelte/icons/x';
+	import TabSeparator from '../tabs/TabSeparator.svelte';
+	import Avatar from '$lib/components/avatar/Avatar.svelte';
 	import Input from '../ui/input/input.svelte';
 	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
-	import TabSeparator from '../tabs/TabSeparator.svelte';
-	import { disableNavigationStore } from '$lib/stores/pageStore';
-	
-	/*
-	Header komponenent s hlavními taby a avatarem
-	*/
+	import * as Tabs from '$lib/components/ui/tabs';
 
-	let storedTabs: HeaderTab[];
-	openedTabsStore.subscribe(data => storedTabs = data);
 
-	let disableNav: boolean;
-	disableNavigationStore.subscribe((bool) => disableNav = bool)
+	let pathName = $state("");
+	let disabled = $derived(disableNavigation.value);
 
-	$: pathname = getTabValue($page.url.pathname)
+	$effect(() => {
+		pathName = getTabValue($page.url.pathname, openedTabs.value);
+	});
 
-	function getTabValue(url: string) {
-		if (url === "/") return url;
-
-		let urlLength = url.split('/').length;
-
-		for (let tab of storedTabs) { // found match, no need to continue
-			if (url === tab.url) {
-				return url
-			}
-		}
-
- 		for (let tab of storedTabs) {
-			let tabUrlLength = tab.url.split('/').length;
-
-			if (url.includes(tab.url)) {
-				if ( // => /param/[var]
-					tab.treeDepth === 0 &&
-					urlLength > 2 &&
-					tabUrlLength === urlLength - 1
-				) {
-					return `/${url.split('/').slice(1, -1)[0]}`;
-				}
-
-				if ( // => /param/param/[var]
-					tab.treeDepth === 1 &&
-					urlLength > 3 &&
-					tabUrlLength === urlLength - 1
-				) {
-					return `/${url.split('/').slice(1, -1).join('/')}`;
-				}
-
-				if ( // => /param/param/[var]/.../[var]
-					tab.treeDepth === 1 &&
-					urlLength > 5 &&
-					tabUrlLength === urlLength - 3
-				) {
-					return `/${url.split('/').slice(1, 3).join('/')}`;
-				}
-
-				if ( // => /param/param/param/[var]
-					tab.treeDepth === 2 &&
-					urlLength > 4 &&
-					tabUrlLength === urlLength - 1
-				) {
-					return `/${url.split('/').slice(1, -1).join('/')}`;
-				}
-			}
-		}
-	}
-	
-
-	function removeTab(tab: HeaderTab, ev: MouseEvent) {
-		if (ev.button === 1) { // remove tab on wheel mouse button click
-			storedTabs.forEach((storedTab) => {
-				if (storedTab.field === tab.field) {
-					const index = storedTabs.indexOf(tab);
-					storedTabs.splice(storedTabs.indexOf(tab), 1);
-					openedTabsStore.set(storedTabs);
-
-					// after tab was removed, redirect on available tab
-					if ($page.url.pathname === tab.url) {
-						if (storedTabs.length === 0) {
-							goto("/");
-							return;
-						}
-
-						if (storedTabs[index]) { // was spliced, so no need to increment index
-							goto(storedTabs[index].url);
-							return;
-						}
-
-						if (storedTabs[index - 1]) {
-							goto(storedTabs[index - 1].url)
-							return;
-						}
-					}
-				}
-			});
-		}
-	}
-
-	function showTabClosingButton(tab: HeaderTab) {
-		if (get(allowTabAdding)) {
-			tab.closingState = 'flex';
-			openedTabsStore.update(() => storedTabs);
-		}
-	}
-
-	function hideTabClosingButton(tab: HeaderTab) {
-		tab.closingState = 'hidden';
-		openedTabsStore.update(() => storedTabs);
-	}
-
-	let openMobileSidebar : boolean = false;
+	let openMobileSidebar: boolean = $state(false);
 </script>
 
 
@@ -130,46 +34,53 @@
 	class="flex justify-between px-4 pt-4 pb-2 md:pt-2 "
 >
     <Tabs.Root
-		class="hidden w-fit h-fit md:block rounded-md "
-		bind:value={pathname}
+		class="hidden w-fit h-fit md:block rounded-md"
+		value={pathName}
 	>
         <Tabs.List>
-            <!-- default tabs -->
+            <!-- default tabs ,-->
             <Tabs.Trigger
                 value="/"
-                on:click={() => goto("/")}
-				disabled={disableNav}
-                >
+				disabled={disabled}
+                onclick={() => goto("/")}
+			>
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
 
             <!-- tabs opened by user -->
-            {#each storedTabs as tab}
+            {#each openedTabs.value as tab}
 				<TabSeparator/>
-
+				<!--onmouseenter={() => preloadData(tab.url)}-->
 				<button
-					on:mouseenter={() => preloadData(tab.url)}
-					class="flex"
+					class="flex items-center h-8"
+					onmouseenter={() => tab.closingState = 'block'}
+					onmouseleave={() => tab.closingState = 'hidden'}
 				>
 					<Tabs.Trigger
 						value={tab.url}
-						on:click={() => goto(tab.url)}
-						disabled={disableNav && tab.url !== pathname}
+						disabled={disabled && tab.url !== pathName}
+						onclick={() => {
+							goto(tab.url)
+						}}
+						onauxclick={(ev) => {
+							console.log("aux");
+							ev.preventDefault();
+							if (ev.button === 1) {
+								deleteTab(tab);
+							}
+						}}
+						class="flex h-6 items-center font-bold"
 					>
-						<button
-							class="flex items-center font-bold"
-							on:auxclick={(ev) => removeTab(tab, ev)}
-							on:mouseenter={() => showTabClosingButton(tab)}
-							on:mouseleave={() => hideTabClosingButton(tab)}
-						>
-							{$_('components.sidebar.' + tab.field)}
-							<button
-								on:click={(ev) => removeTab(tab, ev)}
-								class={`${tab.closingState}`}
-								>
-								<X class="ml-1 text-red-600 size-3.5"/>
-							</button>
-						</button>
+						{ tab.field }
+						{#if (tab.closingState === 'block')}
+							<span transition:slide={{ axis: "x" }}>
+								<X
+									strokeWidth={3}
+									onclick={() => deleteTab(tab)}
+									class={`${tab.closingState} ml-1 text-red-500 size-3.5`}
+								/>
+							</span>
+						{/if}
 					</Tabs.Trigger>
 				</button>
 			{/each}
@@ -177,31 +88,51 @@
 	</Tabs.Root>
 
 
+	<div class="gap-2 hidden md:flex">
+		<a
+			href={i18n.route($page.url.pathname)}
+			hreflang={"en"}
+			aria-current={"en" === languageTag() ? "page" : undefined}
+		>
+			{"en"}
+		</a>
+
+		<a
+			href={i18n.route($page.url.pathname)}
+			hreflang={"cz"}
+			aria-current={"cz" === languageTag() ? "page" : undefined}
+		>
+			{"cz"}
+		</a>
+	</div>
+
+
 	<div
 		class="flex justify-between items-center w-full md:block my-auto h-[32px] md:w-min md:p-0"
 	>
 		<!-- mobile menu sidebar button -->
 		<button
-			on:click={() => openMobileSidebar = true}
+			onclick={() => openMobileSidebar = true}
 			class="rounded-md bg-albi-500 min-w-[32px] size-[32px] md:hidden"
 		>
-			<Menu class="size-5 m-1 mx-auto text-slate-50"/> 
+			<Menu class="size-5 m-1 mx-auto text-slate-50"/>
 		</button>
 
 		<!-- mobile fulltext search -->
-		{#if $showFulltextSearchStore === true}
+		{#if showFulltextSearch.value === true}
 			<div class="md:hidden w-full px-2">
 				<Input
 					class="h-[32px] rounded-md border-none focus-visible:ring-0"
-					placeholder={$_('routes.prodej.zakaznici.fulltext_placeholder')}
+					placeholder={'routes.prodej.zakaznici.fulltext_placeholder'}
 					type="text"
-					bind:value={$fulltextFilterValueStore}
+					bind:value={fulltextFilterValue.value}
 				/>
 			</div>
 		{/if}
-		
+
 		<Avatar />
 	</div>
 </div>
+
 
 <MobileSidebar bind:isOpen={openMobileSidebar}/>

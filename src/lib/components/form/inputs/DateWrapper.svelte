@@ -1,12 +1,53 @@
 <script lang="ts">
 	import DatePicker from '$lib/components/date/DatePicker.svelte';
+	import { z } from 'zod';
 
-	export let value: Date|undefined;
-	export let label: string;
-	export let disabled: boolean = false;
-	export let field: string; // todo finish update disabled and edited data => addToEditedFormData(initialValue, field, value);
+	interface Props {
+		value: Date|undefined;
+		label: string;
+		disable?: boolean;
+		schema: z.ZodType<T>;
+		addToEditedFormData: (newValue: Date, initialValue: Date|null) => void;
+	}
+
+	let {
+		value,
+		label,
+		disable,
+		schema,
+		addToEditedFormData
+	}: Props = $props();
+
+	let dateValue = $state(value);
+	let hasError = $state(false);
+	let errorMessage = $state("");
+
+	$effect(() => {
+		if (dateValue) {
+			validateDateSchema(dateValue)
+		}
+	})
+
+	function validateDateSchema(newValue: Date) {
+		try {
+			schema.parse(newValue);
+			errorMessage = "";
+			hasError = false;
+			addToEditedFormData(newValue, value);
+		} catch (e) {
+			console.log(e);
+			errorMessage = e.issues[0].code;
+			hasError = true;
+			addToEditedFormData(newValue, value);
+			return false;
+		}
+	}
 </script>
 
 <div class="w-full">
-	<DatePicker bind:dateValue={value} label={label}/>
+	<DatePicker hasError={hasError} bind:dateValue={dateValue} label={label}/>
+
+	<p class="text-xs text-red-700 w-full">
+		{errorMessage}
+	</p>
 </div>

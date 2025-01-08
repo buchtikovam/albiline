@@ -1,98 +1,120 @@
 import { z } from 'zod';
-import type { AutoFormSimpleType } from '$lib/types/components/form/autoform/autoform';
+import * as m from '$lib/paraglide/messages.js'
+import type { AutoFormSimpleType } from '$lib/types/components/form/autoform';
 
 export const newCustomerContactFormDef: AutoFormSimpleType = [
 	{
-		rowType: "full",
-		inputs: {
-			"name": {
+		rowType: "row",
+		rowInputs: [
+			{
+				field: "name",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_name,
 				type: "text",
 				schema: z.string().max(255),
 			},
-
-			"surname": {
+			{
+				field: "surname",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_surname,
 				type: "text",
 				schema: z.string().max(255),
 			},
-		}
+		],
 	},
+
 	{
-		rowType: "full",
-		inputs: {
-			"mobile": {
+		rowType: "row",
+		rowInputs: [
+			{
+				field: "mobile",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_mobile,
 				type: "text",
 				schema: z.string().max(255),
 			},
-
-			"phone": {
+			{
+				field: "phone",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_phone,
 				type: "text",
 				schema: z.string().max(255),
 			},
-		}
+		],
 	},
+
 	{
-		rowType: "full",
-		inputs: {
-			"email": {
-				type: "text",
-				schema: z.string().email().max(255),
-			},
-
-			"note": {
+		rowType: "row",
+		rowInputs: [
+			{
+				field: "email",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_email,
 				type: "text",
 				schema: z.string().max(255),
 			},
-
-		}
+			{
+				field: "note",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_note,
+				type: "text",
+				schema: z.string().max(255),
+			},
+		],
 	},
+
 	{
 		rowType: "checkbox",
-		inputs: {
-			"isDefault": {
+		rowInputs: [
+			{
+				field: "isDefault",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_is_default,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"enabled": {
+			{
+				field: "enabled",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_enabled,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"pdfInvoice": {
+			{
+				field: "pdfInvoice",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_pdf_invoice,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"pdfDeliveryNote": {
+			{
+				field: "pdfDeliveryNote",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_pdf_delivery_note,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"csvInvoice": {
+			{
+				field: "csvInvoice",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_csv_invoice,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"csvDeliveryNote": {
+			{
+				field: "csvDeliveryNote",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_csv_delivery_note,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"consignmentReturnInfo": {
+			{
+				field: "consignmentReturnInfo",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_consignment_return_info,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"consignmentInfo": {
+			{
+				field: "consignmentInfo",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_consignment_info,
 				type: "checkbox",
 				schema: z.boolean(),
 			},
-
-			"carrierInfo": {
+			{
+				field: "carrierInfo",
+				translation: m.routes_prodej_zakaznici_detail_contacts_input_carrier_info,
 				type: "checkbox",
 				schema: z.boolean(),
-			}
-		}
+			},
+		],
 	},
 ]
 

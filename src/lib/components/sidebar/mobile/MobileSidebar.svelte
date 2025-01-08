@@ -1,99 +1,62 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog';
-	import CategoryButton from '$lib/components/sidebar/SidebarCategoryTabs.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import { get } from 'svelte/store';
-	import deepcopy from 'deepcopy';
-	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';
-	import { activeCategoryStore, favoriteItemsStore, recentItemsStore } from '$lib/stores/sidebarStore';
-	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';
-	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
+	import { sidebarCategory, favoriteItems, recentItems } from '$lib/runes/sidebar.svelte';
 	import { allItems } from '$lib/data/page-components/sidebar';
+	import { Input } from '$lib/components/ui/input';
+	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';
+	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';
+	import deepcopy from 'deepcopy';
+	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import MobileSidebarItems from './MobileSidebarItems.svelte';
-	import { buttonBorderSwitch } from '$lib/utils/components/sidebar/buttonBorderSwitch';
-	import { onMount } from 'svelte';
+	import CategoryButton from '$lib/components/sidebar/SidebarCategoryTabs.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 
-	export let isOpen: boolean = false;
+	interface Props {
+		isOpen: boolean;
+	}
 
-	let filteredItems: SidebarItem[] = deepcopy(allItems);
-	let searchTerm = '';
-
-
-	let recentItemValues: string[] = [];
-	recentItemsStore.subscribe(recentItems => {
-		recentItemValues = recentItems;
-	});
+	let { isOpen = $bindable() }: Props = $props();
 
 
-	let favoriteItemValues: string[] = [];
-	favoriteItemsStore.subscribe(favoriteItems => {
-		// znovu načtění itemů po odebrání položky z favorites
-		if (favoriteItemValues.length > favoriteItems.length) {
-			filteredItems = deepcopy(filterItemsSearch(
-				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItems)),
-				searchTerm
-			));
-		}
-
-		favoriteItemValues = favoriteItems;
-	});	
+	let filteredItems: SidebarItem[] = $state(deepcopy(allItems));
+	let searchTerm = $state("");
 
 
-	function search(searchTerm: string): void {
-		const activeCategoryStoreData = get(activeCategoryStore);
-
-		if (activeCategoryStoreData === '' || activeCategoryStoreData === 'all') {
+	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
+	function search(searchTerm: string, category: "all"|"recent"|"favorite"): void {
+		if (category === 'all') {
 			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
 		}
 
-		if (activeCategoryStoreData === 'recent') {
+		if (category === 'recent') {
 			filteredItems = deepcopy(filterItemsSearch(
-				deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
+				deepcopy(filterItemsCategory(deepcopy(allItems), recentItems.value)),
 				searchTerm
 			));
 		}
 
-		if (activeCategoryStoreData === 'favorite') {
+		if (category === 'favorite') {
 			filteredItems = deepcopy(filterItemsSearch(
-				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
+				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItems.value)),
 				searchTerm
 			));
 		}
 	}
 
 
-	onMount(() => {
-		activeCategoryStore.subscribe(data => {
-			if (data === '' || data === 'all') {
-				filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
-				buttonBorderSwitch();
-			}
-
-			if (data === 'recent') {
-				filteredItems = deepcopy(filterItemsSearch(
-					deepcopy(filterItemsCategory(deepcopy(allItems), recentItemValues)),
-					searchTerm
-				));
-				buttonBorderSwitch();
-			}
-
-			if (data === 'favorite') {
-				filteredItems = deepcopy(filterItemsSearch(
-					deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItemValues)),
-					searchTerm
-				));
-				buttonBorderSwitch();
-			}
-		})
-	});
+	$effect(() => {
+		search(searchTerm, sidebarCategory.value);
+	})
 </script>
 
 
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="h-full  bg-albi-50 p-2 border-none">
-		<div class="bg-white h-full flex flex-col items-center rounded-lg p-4">
-			<CategoryButton color="primary" />
+	<Dialog.Content class="h-full block md:hidden border-none ">
+		<div class="bg-none h-full flex flex-col bg-white items-center rounded-lg ">
+			<div class="h-9">
+
+				<CategoryButton color="primary" />
+			</div>
 
 
 			<div class="flex flex-col w-full h-full">
@@ -101,20 +64,17 @@
 					class="my-4 focus-visible:ring-0"
 					placeholder="Filtrovat..."
 					bind:value={searchTerm}
-					on:input={() => search(searchTerm)}
 				/>
-	
+
 				<div class="h-full overflow-auto">
 					<MobileSidebarItems
-						bind:searchTerm
+						{searchTerm}
 						bind:filteredItems
 						bind:isOpen
 					/>
 				</div>
-			</div>		
+			</div>
 		</div>
-
-		
 	</Dialog.Content>
 </Dialog.Root>
 

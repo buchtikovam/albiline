@@ -1,0 +1,24 @@
+{
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+
+	"components_avatar_welcome": "Welcome, ",
+	"components_avatar_profile": "Profile",
+	"components_avatar_settings": "Settings",
+	"components_avatar_view": "View",
+	"components_avatar_view_default" : "Default",
+	"components_avatar_view_compact" : "Compact",
+	"components_avatar_logout": "Log out",
+
+	"components_sidebar_category_all" : "All",
+	"components_sidebar_category_recent" : "Recent",
+	"components_sidebar_category_favorite" : "Favorite",
+	"components_sidebar_search_placeholder" : "Filter...",
+	"components_sidebar_closed_search_tooltip" : "Search",
+	"components_sidebar_command_empty" : "Nothing was found",
+	"components_sidebar_context_menu_add_to_favorites" : "Add to favorites",
+	"components_sidebar_context_menu_remove_from_favorites" : "Remove from favorites",
+
+	"components_sidebar_item_sklad" : "Warehouse",
+	"components_sidebar_item_vyroba" : "Manufacturing",
+	"components_sidebar_item_prodej" : "Sales"
+}

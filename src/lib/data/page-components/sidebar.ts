@@ -1,9 +1,12 @@
 import TableProperties from 'lucide-svelte/icons/table-properties';
 import Warehouse from 'lucide-svelte/icons/warehouse';
 import Hammer from 'lucide-svelte/icons/hammer';
+import * as m from '$lib/paraglide/messages.js'
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
+
 import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
+
 
 export const allItems: SidebarItem[] = [
 	{
@@ -11,6 +14,7 @@ export const allItems: SidebarItem[] = [
 		href: '/pruvodni-list',
 		open: false,
 		hide: false,
+		translation: m.components_sidebar_item_pruvodni_list,
 		icon: TableProperties,
 		children: [],
 	},
@@ -19,6 +23,7 @@ export const allItems: SidebarItem[] = [
 		href: '/sklad',
 		open: false,
 		hide: false,
+		translation: m.components_sidebar_item_sklad,
 		icon: Warehouse,
 		children: [
 			{
@@ -26,6 +31,7 @@ export const allItems: SidebarItem[] = [
 				href: '/sklad/hodinovka',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_sklad_hodinovka,
 				icon: null,
 				children: [],
 			},
@@ -34,6 +40,7 @@ export const allItems: SidebarItem[] = [
 				href: '/sklad/prijem-a-vydej',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_sklad_prijem_a_vydej,
 				icon: null,
 				children: [],
 			},
@@ -42,6 +49,7 @@ export const allItems: SidebarItem[] = [
 				href: '/sklad/stav-skladu',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_sklad_stav_skladu,
 				icon: null,
 				children: [],
 			},
@@ -50,6 +58,7 @@ export const allItems: SidebarItem[] = [
 				href: '/sklad/zasilky',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_sklad_zasilky,
 				icon: null,
 				children: [],
 			},
@@ -60,6 +69,7 @@ export const allItems: SidebarItem[] = [
 		href: '/vyroba',
 		open: false,
 		hide: false,
+		translation: m.components_sidebar_item_vyroba,
 		icon: Hammer,
 		children: [
 			{
@@ -67,6 +77,7 @@ export const allItems: SidebarItem[] = [
 				href: '/vyroba/motivy',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_vyroba_motivy,
 				icon: null,
 				children: [],
 			},
@@ -75,6 +86,7 @@ export const allItems: SidebarItem[] = [
 				href: '/vyroba/raznice',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_vyroba_raznice,
 				icon: null,
 				children: [],
 			},
@@ -83,6 +95,7 @@ export const allItems: SidebarItem[] = [
 				href: '/vyroba/obalky',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_vyroba_obalky,
 				icon: null,
 				children: [],
 			},
@@ -91,6 +104,7 @@ export const allItems: SidebarItem[] = [
 				href: '/vyroba/texty',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_vyroba_texty,
 				icon: null,
 				children: [],
 			}
@@ -101,6 +115,7 @@ export const allItems: SidebarItem[] = [
 		href: '/prodej',
 		open: false,
 		hide: false,
+		translation: m.components_sidebar_item_prodej,
 		icon: HandCoins,
 		children: [
 			{
@@ -108,6 +123,7 @@ export const allItems: SidebarItem[] = [
 				href: '/prodej/zakaznici',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_prodej_zakaznici,
 				icon: null,
 				children: [],
 			},
@@ -116,6 +132,7 @@ export const allItems: SidebarItem[] = [
 				href: '/prodej/zakaznici-sk',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_prodej_zakaznici_sk,
 				icon: null,
 				children: [],
 			},
@@ -124,6 +141,7 @@ export const allItems: SidebarItem[] = [
 				href: '/prodej/prehledy',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_prodej_prehledy,
 				icon: null,
 				children: [],
 			},
@@ -132,6 +150,7 @@ export const allItems: SidebarItem[] = [
 				href: '/prodej/analyza-prodeju',
 				open: false,
 				hide: false,
+				translation: m.components_sidebar_item_prodej_analyza_prodeju,
 				icon: null,
 				children: [],
 			}

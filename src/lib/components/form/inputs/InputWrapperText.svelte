@@ -1,57 +1,61 @@
 <script lang="ts">
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import type { AutoFormInput } from '$lib/types/components/form/autoform/autoform';
-	import { _ } from 'svelte-i18n';
-	import { getContext } from 'svelte';
-	import { editedFormValuesStore, selectedInputStore } from '$lib/stores/autoformStore';
-	import { get } from 'svelte/store';
-	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
+	import { z } from "zod";
 
-	export let value: string|null;
-	export let label: string;
-	export let inputDef: AutoFormInput;
-	export let disable: boolean = false;
-	export let field: string = "";
-	export let addToEdited: boolean = true;
+	interface Props {
+		value: string|null;
+		label: string;
+		schema: z.ZodType<T>;
+		disable?: boolean;
+		addToEditedFormData: (newValue: string, initialValue: string|null) => void;
+	}
 
-	let errorMessage = "";
-	let hasError: boolean = false;
+	let {
+		value,
+		label,
+		schema,
+		disable = false,
+		addToEditedFormData
+	}: Props = $props();
 
-	const initialValue = value;
+
+	let errorMessage = $state("");
+	let hasError: boolean = $state(false);
 
 	if (value !== null) {
 		value = String(value).trim();
 	}
 
-	function validateTextSchema(ev: Event) {
+
+	function validateTextSchema(ev) {
 		const inputValue = ev.target?.value;
 
-		if (addToEdited) {
-			addToEditedFormData(initialValue, field, inputValue);
-		}
-
 		try {
-			inputDef.schema.parse(inputValue);
+			schema.parse(inputValue);
 			errorMessage = "";
 			hasError = false;
+
+			addToEditedFormData(inputValue, value);
 		} catch (e) {
 			console.log(e);
+			addToEditedFormData(inputValue, value);
 			hasError = true;
+			errorMessage = e.issues[0].code;
 
 			switch (e.issues[0].code) {
 				case "too_small":
-					errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum, field: label }});
+					// errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum, field: label }});
 					break;
 				case "too_big":
-					errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum, field: label }});
+					// errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum, field: label }});
 					break;
 				case "invalid_string":
 					switch (e.issues[0].validation) {
 						case "email":
-							errorMessage = $_('zod_errors.string.invalid_string.email');
+							// errorMessage = $_('zod_errors.string.invalid_string.email');
 							break;
 						default:
-							errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
+							// errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
 					}
 					break;
 			}
@@ -67,8 +71,8 @@
 
 		<input
 			type="text"
-			on:input={(e) => validateTextSchema(e)}
-			bind:value
+			oninput={(e) => validateTextSchema(e)}
+			value={value}
 			disabled={disable}
 			class={`
 				${hasError ? "focus-visible:border-red-600 " : ""}

@@ -1,38 +1,41 @@
 <script lang="ts">
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { _ } from 'svelte-i18n'
+	import { ribbonAction, ribbonOpen } from '$lib/runes/ribbon.svelte';
 	import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
-	export let ribbonItem: RibbonItem;
-	export let isRibbonOpen: boolean = true;
-
-
-	function setRibbonAction() {
-		if (ribbonItem.action) {
-			ribbonActionStore.set(ribbonItem.action);
-		}
-	}
+	let { ribbonItem }: {
+		ribbonItem: RibbonItem;
+	} = $props();
 </script>
 
 
 
-{#if isRibbonOpen === true}
+{#if ribbonOpen.value}
+	{@const Icon = ribbonItem.icon}
 	<button
-		class="text-[10px] text-albi-950 hover:text-black min-w-11 w-11 h-11 rounded hover:bg-muted/80 leading-none overflow-visible"
-		on:click={setRibbonAction}
+		class="text-[10px] text-albi-950 hover:text-black min-w-11 w-11 h-11 line-clamp-2 rounded hover:bg-muted/80 leading-none overflow-visible"
+		onclick={() => {
+			ribbonAction.value = ribbonItem.action;
+		}}
 	>
-		<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
-		{$_('components.ribbon.' + ribbonItem.field)}
+		<Icon class="size-4 mx-auto muted-foreground" />
+		{ribbonItem.translation()}
 	</button>
 {:else}
-	<Tooltip.Root openDelay={800}>
-		<Tooltip.Trigger class="w-5 min-w-5">
-			<svelte:component this={ribbonItem.icon} class="size-4 mx-auto muted-foreground" />
+	<Tooltip.Root >
+		<Tooltip.Trigger
+			class="w-5 min-w-5"
+			onclick={() => {
+				ribbonAction.value = ribbonItem.action
+			}}
+		>
+			{@const Icon = ribbonItem.icon}
+
+			<Icon class="size-4 mx-auto muted-foreground" />
 		</Tooltip.Trigger>
 
-		<Tooltip.Content>
-			{$_('components.ribbon.' + ribbonItem.field)}
+		<Tooltip.Content side="top">
+			{ ribbonItem.translation() }
 		</Tooltip.Content>
 	</Tooltip.Root>
 {/if}

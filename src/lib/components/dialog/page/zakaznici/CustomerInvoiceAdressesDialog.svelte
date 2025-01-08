@@ -1,26 +1,30 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
-	import { get, writable } from 'svelte/store';
-	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
+	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';
 	import { apiServiceGET } from '$lib/api/apiService';
+	import { onMount } from 'svelte';
+	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 
-	const activeRow = get(selectedRowsStore)[get(activeSelectedRowIndexStore)]
-	let dialogOpen: boolean = false;
-	let invoiceAddresses = writable([])
+
+	interface Props {
+		dialogOpen: boolean;
+		invoiceAddresses: any[]
+	}
+
+	let { dialogOpen = $bindable(), invoiceAddresses }: Props = $props();
+
+
+	const activeRow = storedSelectedRows.value[activeSelectedRowIndex.value]
 
 	async function getInvoiceAddresses() {
 		const res = await apiServiceGET(`customers/${activeRow.customerNodeCode}/invoice-addresses`)
 
 		if (res.ok) {
-			console.log("fetch");
 			const data = await res.json();
-			invoiceAddresses.set(data.items);
+			invoiceAddresses = data.items;
 		}
 	}
-
 
 	onMount(() => {
 		getInvoiceAddresses();
@@ -32,7 +36,6 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content
 		class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col"
@@ -46,7 +49,7 @@
 		</Dialog.Header>
 
 		<AgGridCSDialogWrapper
-			bind:rowData={invoiceAddresses}
+			rowData={invoiceAddresses}
 			colDef={customerInvoiceAddressesAgGridDef}
 		/>
 	</Dialog.Content>

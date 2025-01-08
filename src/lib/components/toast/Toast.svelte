@@ -4,20 +4,21 @@
 	import CircleCheck from 'lucide-svelte/icons/circle-check';
 	import CircleX from 'lucide-svelte/icons/circle-x';
 	import Info from 'lucide-svelte/icons/info';
-	import { beforeNavigate } from '$app/navigation';
 
-	/*
-		Toast komponent, který pomocí svelte sonneru zobrazuje
-		uživateli zpětnou vazbu na FE
-	*/
+	interface Props {
+		type: ToastVariant;
+		content: string;
+	}
 
-	export let type: ToastVariant;
-	export let content: string;
+	let { type, content }: Props = $props();
 
-	let hidden = false;
 
-	beforeNavigate(() => {
-		hidden = true;
+	let hidden = $state(false);
+
+	$effect(() => {
+		return (() => {
+			hidden = true;
+		})
 	})
 </script>
 

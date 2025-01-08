@@ -13,14 +13,24 @@
 	import { onNavigate } from '$app/navigation';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 
-	export let rowData: Writable<any[]>;
-	export let editedRowData: Writable<any[]>;
-	export let createdRowData: Writable<any[]>;
-	export let requiredFields: string[]
-	export let gridOptionsCustom: GridOptions;
+	interface Props {
+		rowData: any[];
+		editedRowData:	any[];
+		createdRowData: any[];
+		requiredFields: string[];
+		gridOptionsCustom: GridOptions;
+	}
+
+	let {
+		rowData,
+		editedRowData = $bindable(),
+		createdRowData = $bindable(),
+		requiredFields,
+		gridOptionsCustom
+	}: Props = $props();
 
 
-	let gridContainer: HTMLElement;
+	let gridContainer: HTMLElement = $state();
 	let gridApi: GridApi<unknown>;
 
 
@@ -40,8 +50,11 @@
 
 		rowData: [],
 
+		// function to update editedRowData store,
+		// if record already exists, is added to editedRowData
+		// if record was created during runtime, has not been saved and is being edited, gets added to createdRowData
+		// checks created x edited by unique field, that only existing records have
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
-			console.log(event.data);
 			let isInitialColumn = requiredFields.every((field) => {
 				return event.data[field] !== undefined;
 			})
@@ -56,7 +69,7 @@
 				} else {
 					addToEditedTableData(
 						event,
-						requiredFields,
+						["createdRowId"],
 						createdRowData,
 					)
 				}
@@ -72,24 +85,30 @@
 	}
 
 
-	createdRowData.subscribe((data) => {
-		if (data.length > 0) {
+	let createdRowAmount: number = $state(0);
+
+	$effect(() => {
+		console.log("effect");
+		if (createdRowData.length > 0 && createdRowAmount < createdRowData.length) {
+			console.log("effect if");
+			createdRowAmount++;
+
 			gridApi.applyTransaction({
-				add: [data[data.length - 1]],
+				add: [createdRowData[createdRowData.length - 1]],
 				addIndex: 0,
 			})
 		}
 	})
 
-
-	onMount(() => {
+	$effect(() => {
 		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
+	})
 
-		rowData.subscribe((data) => {
-			if (data) {
-				gridApi.setGridOption("rowData", data);
-			}
-		})
+
+	$effect(() => {
+		if (rowData) {
+			gridApi.setGridOption("rowData", rowData);
+		}
 	})
 </script>
 

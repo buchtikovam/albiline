@@ -1,90 +1,39 @@
 <script lang="ts">
-	import './../../app.pcss';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
-	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
-	import Header from '$lib/components/header/Header.svelte';
-	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
-	import {
-		isMobileStore,
-		isMobileLayoutExpandedStore,
-		sessionKeyStore,
-		disableNavigationStore
-	} from '$lib/stores/pageStore';
-	import { onMount } from 'svelte';
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-
-	// PWA
-	import { pwaInfo } from 'virtual:pwa-info';
+	import { editedTableData } from '$lib/runes/table.svelte';
+	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
+	import { isMobile } from '$lib/runes/page.svelte';
+	import { pwaInfo } from 'virtual:pwa-info';
+	import { i18n } from '$lib/i18n.js'
 	import { beforeNavigate } from '$app/navigation';
-	import { get } from 'svelte/store';
-	import {
-		activeSelectedRowIndexStore,
-		editedTableDataStore,
-		nextSelectedRowIndexStore
-	} from '$lib/stores/tableStore';
-	import { editedFormValuesStore } from '$lib/stores/autoformStore';
-	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
+	import { ParaglideJS } from '@inlang/paraglide-sveltekit'
+	import { Toaster } from 'svelte-sonner';
+	import './../../app.pcss';
+	import { type Snippet } from 'svelte';
+	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
+	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
+	import Header from '$lib/components/header/Header.svelte';
+	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
-	let innerWidth: number;
+	let { children }: { children?: Snippet } = $props();
 
-    $: if (innerWidth < 768) {
-		isMobileStore.set(true)
-	} else {
-		isMobileStore.set(false)
-	}
+	let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
+	let innerWidth: number = $state(0);
 
-	let isMobile: boolean = false;
-	isMobileStore.subscribe((data) => isMobile = data)
 
-	let isMobileLayoutExpanded: boolean;
-	isMobileLayoutExpandedStore.subscribe((data) => isMobileLayoutExpanded = data)
+    $effect(() => {
+		isMobile.value = innerWidth < 768;
+	});
 
-	onMount(() => {
-		// klávesové zkratky pro ribbon
-		function handleKeydown(e: KeyboardEvent) {
-			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				ribbonActionStore.set(RibbonActionEnum.FILTER_QUICK)
-			}
 
-			if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				ribbonActionStore.set(RibbonActionEnum.SAVE);
-			}
-
-			if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				ribbonActionStore.set(RibbonActionEnum.LOAD);
-			}
-		}
-
-		document.addEventListener('keydown', handleKeydown);
-
-		if (!get(sessionKeyStore)) {
-			sessionKeyStore.set("504a58f3-58b2-48f9-8eed-40646bb9c122")
-		}
-	})
-
-	beforeNavigate(({cancel}) => {
-		if (get(editedTableDataStore).length > 0) {
+	beforeNavigate(({ cancel }) => {
+		if (editedTableData.value.length > 0) {
 			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
 				cancel();
 			} else {
-				editedTableDataStore.set([]);
-				disableNavigationStore.set(false);
-			}
-		}
-
-		if (Object.keys(get(editedFormValuesStore)).length > 0) {
-			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
-				cancel();
-			} else {
-				editedFormValuesStore.set({});
-				disableNavigationStore.set(false);
-				// activeSelectedRowIndexStore.set(get(nextSelectedRowIndexStore));
+				editedTableData.value = [];
+				disableNavigation.value = false;
 			}
 		}
 	})
@@ -99,9 +48,11 @@
 	{#each pwaAssetsHead.links as link}
 		<link {...link} />
 	{/each}
-	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+
 	{@html webManifest}
 </svelte:head>
+
+
 
 <svelte:window bind:innerWidth/>
 
@@ -116,25 +67,31 @@
 	class="h-52 overflow-visible md:flex md:justify-end"
 />
 
-<div class="h-dvh w-dvh bg-albi-50">
-	<div class="flex h-dvh flex-col">
-		<header>
-			<Header />
-		</header>
+<ParaglideJS {i18n}>
+	<Tooltip.Provider delayDuration={300}>
+		<div class="h-dvh w-dvh bg-albi-50">
+			<div class="flex h-dvh flex-col">
+				<header class="">
+					<Header />
+				</header>
 
-		<div class="flex flex-row flex-1 pb-4">
-			<div class="hidden md:block pl-4">
-				<Sidebar />
-			</div>
-			<main class="flex flex-1 flex-col rounded-l-md">
-				<Ribbon />
-				
-				<div class={(isMobileLayoutExpanded ? "px-4" : "px-4") + " flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0"}>
-					<slot />
+				<div class="flex flex-row flex-1 pb-4">
+					<div class="hidden md:block pl-4">
+						<Sidebar />
+					</div>
+					<main class="flex flex-1 flex-col rounded-l-md">
+						<Ribbon />
+
+						<div class="flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0 px-4">
+							{@render children?.()}
+						</div>
+					</main>
 				</div>
-			</main>
+			</div>
 		</div>
-	</div>
-</div>
+	</Tooltip.Provider>
 
-<MainDialog/>
+	<MainDialog/>
+</ParaglideJS>
+
+

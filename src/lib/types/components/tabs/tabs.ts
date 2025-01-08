@@ -1,1 +1,4 @@
-export type Tab = { name: string, value: string }
+export type Tab = {
+	name: string,
+	value: string
+}

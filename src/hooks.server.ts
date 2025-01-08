@@ -1,11 +1,3 @@
-// hooks.server.ts
-import type { Handle } from '@sveltejs/kit'
-import { locale } from 'svelte-i18n'
+import { i18n } from '$lib/i18n.js';
 
-export const handle: Handle = async ({ event, resolve }) => {	
-	const lang = event.request.headers.get('accept-language')?.split(',')[0];
-	if (lang) {
-		locale.set(lang)
-	}
-	return resolve(event)
-}
+export const handle = i18n.handle();

@@ -11,6 +11,7 @@ import ListFilter from 'lucide-svelte/icons/list-filter';
 import Printer from 'lucide-svelte/icons/printer';
 import FileUp from 'lucide-svelte/icons/file-up';
 import FileDown from 'lucide-svelte/icons/file-down';
+import * as m from "$lib/paraglide/messages.js"
 import Scan from 'lucide-svelte/icons/scan';
 import Undo2 from 'lucide-svelte/icons/undo-2';
 import ListPlus from 'lucide-svelte/icons/list-plus';
@@ -18,13 +19,16 @@ import Columns3 from 'lucide-svelte/icons/columns-3';
 import Save from 'lucide-svelte/icons/save';
 import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
 
+
 type RibbonItems = RibbonItem[] | RibbonItem | RibbonSeparator;
+
 
 export const ribbonItems: RibbonItems[] = [
 	{
 		field: "new",
 		type: RibbonTypeEnum.ITEM,
 		icon: FilePlus,
+		translation: m.components_ribbon_item_new,
 		action: RibbonActionEnum.NEW,
 		hide: false,
 	},
@@ -33,6 +37,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: Pencil,
 		hide: false,
+		translation: m.components_ribbon_item_edit,
 		action: RibbonActionEnum.EDIT,
 	},
 	{
@@ -40,6 +45,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: FileX2,
 		hide: false,
+		translation: m.components_ribbon_item_delete,
 		action: RibbonActionEnum.DELETE,
 	},
 
@@ -52,6 +58,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: ArrowDownWideNarrow,
 		hide: false,
+		translation: m.components_ribbon_item_fill_down,
 		action: RibbonActionEnum.FILL_DOWN,
 	},
 	{
@@ -63,13 +70,15 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: Save,
 		hide: false,
+		translation: m.components_ribbon_item_save,
 		action: RibbonActionEnum.SAVE,
 	},
 	{
-		field: "reload",
+		field: "load",
 		type: RibbonTypeEnum.ITEM,
 		icon: RefreshCcw,
 		hide: false,
+		translation: m.components_ribbon_item_load,
 		action: RibbonActionEnum.LOAD,
 	},
 	{
@@ -81,6 +90,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: Printer,
 		hide: false,
+		translation: m.components_ribbon_item_print,
 		action: RibbonActionEnum.PRINT,
 	},
 	{
@@ -88,15 +98,23 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.DROPDOWN,
 		icon: FileUp,
 		hide: false,
+		translation: m.components_ribbon_item_export_choice,
 		action: RibbonActionEnum.EXPORT_CHOICE,
 		children: [
 			{
 				field: "export_excel",
-				action: RibbonActionEnum.EXPORT_EXCEL
+				action: RibbonActionEnum.EXPORT_EXCEL,
+				translation: m.components_ribbon_item_export_excel
 			},
 			{
 				field: "export_csv",
-				action: RibbonActionEnum.EXPORT_CSV
+				action: RibbonActionEnum.EXPORT_CSV,
+				translation: m.components_ribbon_item_export_csv
+			},
+			{
+				field: "export_pdf",
+				action: RibbonActionEnum.EXPORT_PDF,
+				translation: m.components_ribbon_item_export_pdf
 			},
 		]
 	},
@@ -107,6 +125,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: FileDown,
 		hide: false,
+		translation: m.components_ribbon_item_import,
 		action: RibbonActionEnum.IMPORT,
 	},
 
@@ -119,6 +138,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: ListFilter,
 		hide: false,
+		translation: m.components_ribbon_item_filter_quick,
 		action: RibbonActionEnum.FILTER_QUICK,
 	},
 	
@@ -127,6 +147,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: Scan,
 		hide: false,
+		translation: m.components_ribbon_item_filter_in_range,
 		action: RibbonActionEnum.FILTER_IN_RANGE,
 	},
 	{
@@ -134,6 +155,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: Filter,
 		hide: false,
+		translation: m.components_ribbon_item_filter_out_of_range,
 		action: RibbonActionEnum.FILTER_OUT_OF_RANGE,
 	},
 	{
@@ -141,6 +163,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: Undo2,
 		hide: false,
+		translation: m.components_ribbon_item_filter_undo,
 		action: RibbonActionEnum.FILTER_UNDO,
 	},
 	{
@@ -148,6 +171,7 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.ITEM,
 		icon: FilterX,
 		hide: false,
+		translation: m.components_ribbon_item_filter_remove,
 		action: RibbonActionEnum.FILTER_REMOVE,
 	},
 	{
@@ -155,15 +179,18 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.DROPDOWN,
 		icon: ListPlus,
 		hide: false,
+		translation: m.components_ribbon_item_filters,
 		action: RibbonActionEnum.UNKNOWN,
 		children: [
 			{
 				field: "save_filters",
-				action: RibbonActionEnum.SAVE_FILTERS
+				action: RibbonActionEnum.SAVE_FILTERS,
+				translation: m.components_ribbon_item_save_filters,
 			},
 			{
 				field: "my_filters",
-				action: RibbonActionEnum.MY_FILTERS
+				action: RibbonActionEnum.MY_FILTERS,
+				translation: m.components_ribbon_item_my_filters,
 			},
 		]
 	},
@@ -176,15 +203,18 @@ export const ribbonItems: RibbonItems[] = [
 		type: RibbonTypeEnum.DROPDOWN,
 		icon: Columns3,
 		hide: false,
+		translation: m.components_ribbon_item_presets,
 		action: RibbonActionEnum.UNKNOWN,
 		children: [
 			{
 				field: "save_preset",
-				action: RibbonActionEnum.SAVE_PRESET
+				action: RibbonActionEnum.SAVE_PRESET,
+				translation: m.components_ribbon_item_save_preset,
 			},
 			{
 				field: "my_presets",
-				action: RibbonActionEnum.MY_PRESETS
+				action: RibbonActionEnum.MY_PRESETS,
+				translation: m.components_ribbon_item_my_presets,
 			},
 		]
 	},

@@ -1,12 +1,16 @@
 <script lang="ts">
-	import type { InputDialogDateRange } from '$lib/types/components/form/input-dialog/inputDialog';
+	import type { InputDialogDateRange } from '$lib/types/components/form/inputDialog';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import DatePicker from '$lib/components/date/DatePicker.svelte';
 	import LastYearButton from '$lib/components/date/range-buttons/LastYearButton.svelte';
 
-	export let item: InputDialogDateRange;
-	export let startDateValue: Date | undefined
-	export let endDateValue: Date | undefined;
+	interface Props {
+		item: InputDialogDateRange;
+		startDateValue: Date | undefined;
+		endDateValue: Date | undefined;
+	}
+
+	let { item = $bindable(), startDateValue = $bindable(), endDateValue = $bindable() }: Props = $props();
 </script>
 
 

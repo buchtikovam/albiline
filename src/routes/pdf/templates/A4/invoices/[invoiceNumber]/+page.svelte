@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `<td>` is invalid inside `<thead>` -->
 <script lang="ts">
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
 	import type { InvoiceData, InvoiceItem } from '$lib/types/pdfs/invoiceData';

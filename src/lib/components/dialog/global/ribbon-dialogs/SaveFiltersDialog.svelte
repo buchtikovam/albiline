@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { openedDialogStore } from '$lib/stores/ribbonStore';
+	import { openedDialog } from '$lib/runes/ribbon.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
-	import { saveFilters } from '$lib/utils/components/ribbon/saveFilters';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
@@ -13,16 +12,16 @@
 		po vložení názvu se provede saveFilters funkce
 	*/
 
-	let dialogOpen: boolean = false;
-	let inputValue: string = "";
+	let dialogOpen: boolean = $state(false);
+	let inputValue: string = $state("");
 
 	
 	function handleSaveFilters(event: Event) {
 		event.preventDefault();
-		saveFilters(inputValue, $page.url.pathname);
+		// saveFilters(inputValue, $page.url.pathname);
 
 		setTimeout(() => {
-			openedDialogStore.set(undefined)
+			openedDialog.value = "empty";
 		}, 250)
 
 		dialogOpen = false
@@ -38,7 +37,6 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="!w-fit">
 		<Dialog.Header>
@@ -47,7 +45,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form on:submit={handleSaveFilters} class="p-0.5">
+		<form onsubmit={handleSaveFilters} class="p-0.5">
 			<Label for="test" class="text-right">
 				Název nové kolekce
 			</Label>

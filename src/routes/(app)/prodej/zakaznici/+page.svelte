@@ -1,31 +1,33 @@
 <script lang="ts">
-	import { selectedRowsStore, showFulltextSearchStore } from '$lib/stores/tableStore';
-	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { getPageMetaData } from '$lib/utils/getPageMetaData';
-	import { onMount } from 'svelte';
 	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
-	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import type { CellDoubleClickedEvent, GridOptions } from 'ag-grid-enterprise';
+	import { onMount } from 'svelte';
+	import { activeTabIndex, showFulltextSearch } from '$lib/runes/page.svelte';
+	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { goto } from '$app/navigation';
+	import { storedSelectedRows } from '$lib/runes/table.svelte';
+	import type { CellDoubleClickedEvent } from 'ag-grid-community';
+	import type { GridOptions } from 'ag-grid-enterprise';
+	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
+
 
 	let pageMetaData: PageMetaDataType;
 
 	onMount(async () => {
-		if (!pageMetaData) {
-			pageMetaData = await getPageMetaData();
-		}
+		pageMetaData = await getPageMetaData();
 	})
 
-	showFulltextSearchStore.set(true);
+	activeTabIndex.value = 0;
+	showFulltextSearch.value = true;
 
 	// ag grid gridOptions containing conditional routing cant be generic,
 	// so this is a workaround
 	const gridOptions: GridOptions = {
 		onCellDoubleClicked(event: CellDoubleClickedEvent) {
-			selectedRowsStore.set([{
+			storedSelectedRows.value = [{
 				customerAddressCode: event.data.customerAddressCode,
 				customerNodeCode: event.data.customerNodeCode
-			}])
+			}]
 
 			if (event.column.getColId() === "customerAddressCode") {
 				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`);
@@ -55,7 +57,7 @@
 
 
 
-<AgGridSSWrapper 
+<AgGridSSWrapper
 	gridOptionsCustom={gridOptions}
 	requiredFields={["customerNodeCode", "customerAddressCode"]}
 	url="http://10.2.2.10/albiline.test/api/v1/customers"

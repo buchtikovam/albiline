@@ -7,70 +7,84 @@
 	import ItemOpenThirdNoChild from '$lib/components/sidebar/sidebar-items/ItemOpenThirdNoChild.svelte';
 	import ContextMenuContent from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
+	import ContextMenuFavorite from '$lib/components/sidebar/ContextMenuFavorite.svelte';
+	import MobileFavoritesButton from '$lib/components/sidebar/mobile/MobileFavoritesButton.svelte';
+	import { isMobile } from '$lib/runes/page.svelte';
 
-	export let searchTerm: string;
-	export let filteredItems: SidebarItem[];
-	export let isOpen: boolean;
+	interface Props {
+		searchTerm: string;
+		filteredItems: SidebarItem[];
+		isOpen: boolean;
+	}
 
-	let isMobile = true;
+
+	let { searchTerm, filteredItems = $bindable(), isOpen = $bindable() }: Props = $props();
+
+	let isMobileSidebar = $derived(isMobile.value);
 </script>
 
 
 
 <Accordion.Root
 	class="flex-1 overflow-auto"
-	multiple
-	value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.value) : []}
+	type="multiple"
+	value={searchTerm !== "" ? filteredItems.filter((child) => !child.hide).map((child) => child.field) : []}
 >
 	<div class="text-sm">
 		{#each filteredItems as item}
+
 			<div class={(item.hide ? "hidden" : "") + " flex flex-col gap-2"}>
 				<!-- accordiony první vrstvy (item má children položky) -->
 				{#if item.children.length > 0 }
 					<ContextMenu.Root>
-						<Accordion.Item value={item.value}>
-							<ContextMenu.Trigger>
-								<Accordion.Trigger class="hover:bg-muted/50 rounded-md">
-									<div
-										class="flex text-sm font-bold w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black">
-										<svelte:component this={item.icon} />
-										<a
-											href={item.href}
-											on:click={() => {
-												handleTabClick(item, 0);
-												isOpen = false;
-											}}
-										>
-											{item.name}
-										</a>
-									</div>
-								</Accordion.Trigger>
+						<Accordion.Item value={item.field}>
+							<ContextMenu.Trigger class="flex hover:bg-muted/50 rounded-md w-full justify-between">
+								<div class="block w-full">
+									<Accordion.Trigger class="!flex-1 !w-full">
+										{@const Icon = item.icon}
+										<div
+											class="flex text-sm font-bold w-full items-center gap-3 rounded-lg text-albi-950 hover:text-black">
+											<Icon />
+											<a
+												href={"#"}
+												onclick={() => {
+													handleTabClick(item, 0);
+													isOpen = false;
+												}}
+											>
+												{ item.translation() }
+											</a>
+										</div>
+									</Accordion.Trigger>
+								</div>
+
+<!--								<MobileFavoritesButton field={item.field} />-->
 							</ContextMenu.Trigger>
 
 							<Accordion.Content class="px-2 ">
 								<!-- accordiony druhé vrstvy -->
 								<Accordion.Root
-									multiple
-									value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.value) : []}
+									type="multiple"
+									value={searchTerm !== "" ? item.children.filter((child) => !child.hide).map((child) => child.field) : []}
 								>
 									{#each item.children.filter((child) => !child.hide) as secondChild}
 										<!-- accordiony druhé vrstvy (child item má children položky) -->
 										{#if secondChild.children.length > 0}
 											<ContextMenu.Root>
-												<Accordion.Item value={secondChild.value}>
+												<Accordion.Item value={secondChild.field}>
 													<ContextMenu.Trigger>
 														<Accordion.Trigger
-															class="hover:bg-muted/50 rounded-md">
+															class="hover:bg-muted/50 rounded-md flex-1">
 															<div
-																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black">
+																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-albi-950 hover:text-black">
 																<a
 																	href={secondChild.href}
-																	on:click={() => {
-																		handleTabClick(secondChild, 1);
+																	onclick={() => {
+																		handleTabClick(secondChild, 1)
 																		isOpen = false;
 																	}}
 																>
-																	{secondChild.name}
+																	{ item.translation() }
 																</a>
 															</div>
 														</Accordion.Trigger>
@@ -81,11 +95,11 @@
 														<div class="flex flex-col px-2">
 															<ContextMenu.Root>
 																<Accordion.Root
-																	multiple
-																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.value) : []}
+																	type="multiple"
+																	value={searchTerm !== "" ? secondChild.children.filter((child) => !child.hide).map((child) => child.field) : []}
 																>
 																	{#each secondChild.children.filter((child) => !child.hide) as thirdChild}
-																		<ItemOpenThirdNoChild item={thirdChild} isMobile bind:isOpen/>
+																		<ItemOpenThirdNoChild item={thirdChild} bind:isMobileSidebarOpen={isOpen} isMobile={isMobileSidebar} />
 																	{/each}
 																</Accordion.Root>
 															</ContextMenu.Root>
@@ -93,23 +107,23 @@
 													</Accordion.Content>
 												</Accordion.Item>
 
-												<ContextMenuContent itemValue={secondChild.value} />
+												<ContextMenuFavorite field={secondChild.field} />
 											</ContextMenu.Root>
 										{:else}
 											<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-											<ItemOpenSecondNoChild item={secondChild} isMobile bind:isOpen/>
+											<ItemOpenSecondNoChild item={secondChild} bind:isMobileSidebarOpen={isOpen} isMobile={isMobileSidebar}/>
 										{/if}
 									{/each}
 								</Accordion.Root>
 							</Accordion.Content>
 						</Accordion.Item>
 
-						<ContextMenuContent itemValue={item.value} />
+						<ContextMenuFavorite field={item.field} />
 					</ContextMenu.Root>
 
 				{:else}
 					<!-- accordiony první vrstvy (item nemá children položky) -->
-					<ItemOpenFirstNoChild item={item} isMobile bind:isOpen/>
+					<ItemOpenFirstNoChild item={item} bind:isMobileSidebarOpen={isOpen} isMobile={isMobileSidebar}/>
 				{/if}
 			</div>
 		{/each}

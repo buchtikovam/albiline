@@ -1,17 +1,45 @@
 <script lang="ts">
-  	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
+	import { z } from 'zod';
+	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 	import * as Select from "$lib/components/ui/select/index.js";
-	import { getContext } from 'svelte';
-	import { addToEditedFormData } from '$lib/utils/addToEditedFormData';
 
-	export let value: string = "A";
-	export let options: string[] = [];
-	export let label;
 	export const disable: boolean = false;
-	export let field: string;
+	interface Props {
+		value: string;
+		options?: string[];
+		schema: z.ZodType<T>;
+		label: any;
+		addToEditedFormData: (newValue: any, initialValue: any) => void;
+	}
 
-	const initialValue = value; // check if this works
-	// value = value.toUpperCase();
+	let {
+		value,
+		options = [],
+		schema,
+		label,
+		addToEditedFormData
+	}: Props = $props();
+
+	let dropdownValue = $state(value);
+
+	if (!value) dropdownValue = "‎";
+
+	let hasError = $state(false);
+	let errorMessage = $state("");
+
+	function validateDropdownSchema(selectedValue: any) {
+		try {
+			schema.parse(selectedValue);
+			hasError = false;
+			errorMessage = "";
+			addToEditedFormData(selectedValue, value);
+		} catch (e) {
+			hasError = true;
+			errorMessage = e.issues[0].message;
+			addToEditedFormData(selectedValue, value);
+			console.log(e);
+		}
+	}
 </script>
 
 
@@ -19,15 +47,13 @@
 <div class="w-full flex flex-col">
 	<InputLabel label={label} />
 	<Select.Root
+		type="single"
 		disabled={disable}
-		selected={{value: value, label: value}}
-		onSelectedChange={(v) => {
-			v && (value = v.value);
-			addToEditedFormData(initialValue, field, value);
-		}}
+		bind:value={dropdownValue}
+		onValueChange={(v) => validateDropdownSchema(v)}
 	>
-		<Select.Trigger>
-			<Select.Value />
+		<Select.Trigger class={hasError ? "focus:border-red-600" : "focus:border-albi-500"}>
+			{ dropdownValue }
 		</Select.Trigger>
 
 		<Select.Content>
@@ -36,4 +62,8 @@
 			{/each}
 		</Select.Content>
 	</Select.Root>
+
+	<p class="text-xs text-red-700 w-full">
+		{errorMessage}
+	</p>
 </div>

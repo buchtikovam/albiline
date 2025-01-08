@@ -1,33 +1,45 @@
 <script lang="ts">
-	import { activeCategoryStore } from '$lib/stores/sidebarStore';
-	import * as Tabs from "$lib/components/ui/tabs";
-	import { _ } from 'svelte-i18n'
+	import { sidebarCategory } from '$lib/runes/sidebar.svelte';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
+	import * as m from "$lib/paraglide/messages.js"
+	import * as Tabs from "$lib/components/ui/tabs";
 
-	let value = "all";
-	export let color: "primary" | "secondary" = "secondary";
-	
-	$: activeCategoryStore.set(value)
+	let value = $derived(sidebarCategory.value);
+
+	interface Props {
+		color?: "primary" | "secondary";
+	}
+
+	let { color = "secondary" }: Props = $props();
 </script>
 
 
 
-<Tabs.Root bind:value={value}>
-    <Tabs.List class={ color === "primary" ? "bg-albi-500" : "bg-gray-300"}>
-		<Tabs.Trigger value="all" class="font-bold">
-			{$_('components.sidebar.all')}
+<Tabs.Root value={value || "all"}>
+    <Tabs.List class={ color === "primary" ? "bg-albi-500" : "bg-slate-300"}>
+		<Tabs.Trigger
+			value="all"
+			onclick={() => sidebarCategory.value = "all"}
+		>
+			{m.components_sidebar_category_all()}
 		</Tabs.Trigger>
 
 		<TabSeparator color={color}/>
 
-		<Tabs.Trigger value="recent" class="font-bold">
-			{$_('components.sidebar.recent')}
+		<Tabs.Trigger
+			value="recent"
+			onclick={() => sidebarCategory.value = "recent"}
+		>
+			{m.components_sidebar_category_recent()}
 		</Tabs.Trigger>
 
 		<TabSeparator color={color}/>
 
-		<Tabs.Trigger value="favorite" class="font-bold">
-			{$_('components.sidebar.favorite')}
+		<Tabs.Trigger
+			value="favorite"
+			onclick={() => sidebarCategory.value = "favorite"}
+		>
+			{m.components_sidebar_category_favorite()}
 		</Tabs.Trigger>
     </Tabs.List>
 </Tabs.Root>

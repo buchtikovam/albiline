@@ -1,120 +1,101 @@
 <script lang="ts">
-	import { activeSelectedRowIndexStore, selectedRowsStore } from '$lib/stores/tableStore';
-	import { disableNavigationStore } from '$lib/stores/pageStore';
-	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
-	import { editedFormValuesStore } from '$lib/stores/autoformStore';
-	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
-	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
-	import { ribbonActionStore } from '$lib/stores/ribbonStore';
-	import { page } from '$app/stores';
-	import { _ } from 'svelte-i18n'
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
+	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
+	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
+	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
+	import { disableNavigation } from '$lib/runes/navigation.svelte';
+	import { activeTabIndex } from '$lib/runes/page.svelte';
+	import { page } from '$app/stores';
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
-	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	import { getPageMetaData } from '$lib/utils/getPageMetaData';
-	import { onNavigate } from '$app/navigation';
 	import { flipItems } from '$lib/utils/flipItems';
-	import { onMount } from 'svelte';
-	import { flip } from "svelte/animate";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import { get, type Writable, writable } from 'svelte/store';
 	import type { CustomerContactType, CustomerType } from '$lib/types/page/customers';
-	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
+	import type { GridOptions } from 'ag-grid-enterprise';
+	import type { AutoFormType } from '$lib/types/components/form/autoform';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-	import NewCustomerContactDialog
-		from '$lib/components/dialog/page/zakaznici/NewCustomerContactDialog.svelte';
+	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
-	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
-	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
-	import type { GridOptions } from 'ag-grid-enterprise';
-	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
-	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
-
-	export let data: {
-		response: {
-			item: CustomerType,
-			contacts: CustomerContactType[]
-		},
-		status: "success" | "fail",
-	};
-
-	// @ts-ignore // autoform
-	let formValues: Writable<CustomerType> = writable({});
-	$: formValues.set(data.response.item);
-
-	// contacts table
-	let contactValues: Writable<CustomerContactType[]> = writable([])
-	$: contactValues.set(data.response.contacts);
-
-	let editedContactValues: Writable<any[]> = writable([]);
-	let createdContacts: Writable<CustomerContactType[]> = writable([]);
-
-	// page variables
-	const translationRoute = "routes.prodej.zakaznici.customer_detail";
-	let pageLayout = customerPageLayout;
-	let autoformDef = writable(customerDetailFormDef);
-	let openNewContactDialog: boolean = false;
-	let pageSettings: PageMetaDataType;
+	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
+	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 
 
-	// get all unique selected rows from table
-	const selectedRows = get(selectedRowsStore);
-	const uniqueSelectedRows = selectedRows.reduce((
-		acc: Record<string, string | number | boolean | Date>[],
-		item
-	) => {
-		const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
-		if (existingIndex === -1) {
-			acc.push(item);
-		}
-		return acc;
-	}, []);
-
-
-	// --- PAGE NAVIGATION BETWEEN SELECTED CUSTOMERS ----
-	// route parameters swapping logic
-	$: disableLeft = false;
-	$: disableRight = false;
-
-	$: activeId = {
-		customerNodeCode: Number($page.params.customerNodeCode),
+	interface Props {
+		data: {
+			response: {
+				item: CustomerType,
+				contacts: CustomerContactType[]
+			},
+			status: "success" | "fail",
+		};
 	}
 
-	// disable editing if there are unsaved changes
-	editedFormValuesStore.subscribe((data) => {
-		if (Object.keys(data).length > 0) {
-			disableNavigationStore.set(true);
+	let { data }: Props = $props();
+
+	activeTabIndex.value = 2;
+
+	let initialFormValues: CustomerType = $derived(data.response.item);
+	let editedFormValues: Record<string, any> = $state({ })
+
+	let contactValues: CustomerContactType[] = $derived(data.response.contacts)
+	let editedContactValues: any[] = $state([]);
+	let createdContacts: CustomerContactType[] = $state([]);
+
+	let pageLayout = $state(customerPageLayout);
+	let autoformDef: AutoFormType = $state(customerDetailFormDef);
+	let openNewContactDialog: boolean = $state(false);
+
+
+	$inspect(editedFormValues);
+	$effect(() => {
+		if (Object.keys(editedFormValues).length > 0) {
+			disableNavigation.value = true;
 			disableLeft = true;
 			disableRight = true;
 		} else {
-			disableNavigationStore.set(false);
-			if (selectedRows[get(activeSelectedRowIndexStore) + 1]) disableRight = false;
-			if (selectedRows[get(activeSelectedRowIndexStore) - 1]) disableLeft = false;
+			disableNavigation.value = false;
+
+			if (uniqueSelectedRows[activeSelectedRowIndex.value + 1]) disableRight = false;
+			if (uniqueSelectedRows[activeSelectedRowIndex.value - 1]) disableLeft = false;
 		}
 	})
 
-	// disable navigation if new contact was created
-	createdContacts.subscribe((data) => {
-		if (data.length > 0) {
-			disableNavigationStore.set(true);
-			disableLeft = true;
-			disableRight = true;
-		}
+
+	// get all unique selected rows from table
+	const uniqueSelectedRows = $derived.by(() => {
+		return storedSelectedRows.value.reduce((
+			acc: Record<string, string | number | boolean | Date>[],
+			item
+		) => {
+			const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
+			if (existingIndex === -1) {
+				acc.push(item);
+			}
+			return acc;
+		}, [])
+	})
+
+	let disableLeft = $state(false);
+	let disableRight = $state(false);
+
+	let activeRouteId = $derived({
+		customerNodeCode: Number($page.params.customerNodeCode),
 	})
 
 
 	// called when user swappes to the next/previous customer
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
 		let returnedDisable = changeCustomerRoute(
-			selectedRows,
+			storedSelectedRows.value,
 			uniqueSelectedRows,
 			direction,
-			activeId,
+			activeRouteId,
 			$page.route.id || "/"
 		);
 
@@ -123,41 +104,22 @@
 	}
 
 
-	onMount(async () => {
-		// disable navigation buttons if user is located on the first/last customer
+	$effect(() => {
 		const currentIndex = uniqueSelectedRows.findIndex((id) =>
-			id.customerNodeCode === activeId.customerNodeCode
+			id.customerNodeCode === activeRouteId.customerNodeCode
 		);
 
 		if (!uniqueSelectedRows[currentIndex + 1]) disableRight = true;
 		if (!uniqueSelectedRows[currentIndex - 1]) disableLeft = true;
-
-		if (!pageSettings) pageSettings = await getPageMetaData();
 	})
 
 
-	ribbonActionStore.subscribe((action) => {
-		if (action === RibbonActionEnum.SAVE) {
-			console.log("save");
-
-			disableNavigationStore.set(false);
-			if (selectedRows[get(activeSelectedRowIndexStore) + 1]) disableRight = false;
-			if (selectedRows[get(activeSelectedRowIndexStore) - 1]) disableLeft = false;
-
-			const saveObj = {
-				item: get(editedFormValuesStore),
-
-				contacts: {
-					insert: get(createdContacts),
-					update: get(editedContactValues),
-					delete: []
-				},
-			}
-
-			console.log(JSON.stringify(saveObj, null, 1));
+	$effect(() => {
+		if (createdContacts.length > 0) {
+			disableNavigation.value = true;
+			disableLeft = true;
+			disableRight = true;
 		}
-
-		ribbonActionStore.set(undefined);
 	})
 
 
@@ -165,38 +127,14 @@
 		columnDefs: customerAndAddressContactsAgGridDef,
 	}
 
-
-	// function savePageLayout() {
-	// 	const pageStripped = pageLayout.map((item) => {
-	// 		return item.type;
-	// 	})
-	//
-	// 	const formDefStripped = []
-	//
-	// 	Object.entries(get(autoformDef)).map(([key, value]) => {
-	// 		let temp = {};
-	//
-	// 		temp[key] = value.map((item) => {
-	// 			return {
-	// 				field: item.field,
-	// 				isOpen: item.isOpen,
-	// 			}
-	// 		});
-	// 		formDefStripped.push(temp)
-	// 	})
-	//
-	//
-	// 	const pageLayoutObj = {
-	// 		pageLayout: pageStripped,
-	// 		formDef: formDefStripped,
-	// 	}
-	// }
+	$inspect(editedContactValues);
+	$inspect(createdContacts)
 </script>
 
 
 
 <svelte:head>
-	<title>Zákazník {$formValues.customerNodeCode || ""} | Albiline</title>
+	<title>Zákazník {initialFormValues.customerNodeCode || ""} | Albiline</title>
 </svelte:head>
 
 
@@ -207,7 +145,7 @@
 		<div class="flex justify-between">
 			<!-- page label -->
 			<DetailPageLabel
-				label={`${ $_(translationRoute + '.header', { values: { customerNodeCode: $formValues.customerNodeCode || "customerNodeCode"}})}`}
+				label={m.routes_prodej_zakaznici_customer_detail_label() + " " + initialFormValues.customerNodeCode}
 			/>
 
 			<!-- page navigation buttons -->
@@ -216,27 +154,27 @@
 					direction="left"
 					bind:disable={disableLeft}
 					navigateDetailFn={() => changeRouteParameterAndDisable("left")}
-				/>
+					/>
 
 				<DetailNavButton
 					direction="right"
 					bind:disable={disableRight}
 					navigateDetailFn={() => changeRouteParameterAndDisable("right")}
-				/>
+					/>
 			</div>
 		</div>
 	</div>
 
 	{#each pageLayout as item (item.id)}
-		<div animate:flip="{{duration: 300}}">
+		<div >
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
 					<!-- customer detail form -->
 					<AutoForm
-						translationRoute={translationRoute + ".autoform."}
 						allowCrossColumnDND={false}
+						initialFormValues={initialFormValues}
+						bind:editedFormValues={editedFormValues}
 						bind:formDef={autoformDef}
-						bind:formValues
 					/>
 				</div>
 			{/if}
@@ -245,17 +183,17 @@
 			{#if item.type === "contacts"}
 				<div class={item.isLast ? "" : "mb-4"}>
 					<div class="flex gap-2" >
-						<SectionLabel label="Kontakty"/>
+						<SectionLabel label={m.routes_prodej_zakaznici_detail_contacts_label()}/>
 
 						<button
 							id="contacts"
-							on:click={() => pageLayout = flipItems(pageLayout)}
+							onclick={() => pageLayout = flipItems(pageLayout)}
 						>
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
 						<button
-							on:click={() => openNewContactDialog = true}
+							onclick={() => openNewContactDialog = true}
 						>
 							<Plus strokeWidth={2.5} class="size-4 text-albi-500"/>
 						</button>
@@ -263,7 +201,7 @@
 
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}
-						bind:rowData={contactValues}
+						rowData={contactValues}
 						gridOptionsCustom={contactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
@@ -281,5 +219,4 @@
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
 	label="Nový kontakt zákazníka"
-	translationRoute="routes.prodej.zakaznici.customer_and_address_contact"
 />

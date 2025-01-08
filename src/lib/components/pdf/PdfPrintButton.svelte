@@ -2,7 +2,11 @@
 	import { jsPDF } from "jspdf";
 	import { onMount } from "svelte";
 
-	export let url: string;
+	interface Props {
+		url: string;
+	}
+
+	let { url }: Props = $props();
 	let html2pdf: any;
 
 	onMount(async () => {
@@ -99,4 +103,4 @@
 	}
 </script>
 
-<button on:click={() => print()}>Print</button>
+<button onclick={() => print()}>Print</button>

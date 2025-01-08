@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/stores/tableStore';
-	import { openedDialogStore, ribbonActionStore } from '$lib/stores/ribbonStore';
+	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes/table.svelte';
+	import { openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';
@@ -19,15 +19,15 @@
 		možnost řazení, editace a mazání šablon
 	*/
 
-	let dialogOpen: boolean = false;
-	let warningDialogOpen: boolean = false;	
+	let dialogOpen: boolean = $state(false);
+	let warningDialogOpen: boolean = $state(false);	
 
-	let currentPresetId: number;
-	let presets: FetchedPreset[];
-	let deleteConsent: Writable<boolean> = writable(false);
+	let currentPresetId: number = $state();
+	let presets: FetchedPreset[] = $state();
+	let deleteConsent: Writable<boolean> = $state(writable(false));
 
-	let isEditing: boolean = false;
-	let currentEditedId: number | undefined = undefined;
+	let isEditing: boolean = $state(false);
+	let currentEditedId: number | undefined = $state(undefined);
 
 
 	async function fetchPresets() {
@@ -47,7 +47,7 @@
 
 
 	// Drag and drop pro řazení filtrů
-	let hovering: number | null;
+	let hovering: number | null = $state();
 	let start: number;
 
 	function dragPreset(e: DragEvent, index: number) {
@@ -191,7 +191,7 @@
 			<div>
 				<button
 					class="hover:bg-muted/70 rounded-md text-left text-sm w-full hover:text-primary px-1.5 py-2"
-					on:click={setDefault}
+					onclick={setDefault}
 				>
 					Výchozí
 				</button>
@@ -203,8 +203,8 @@
 					>
 						{#if isEditing && currentEditedId === preset.id}
 							<form
-								on:submit={() => updatePreset(preset)}
-								on:focusout={() => updatePreset(preset)}
+								onsubmit={() => updatePreset(preset)}
+								onfocusout={() => updatePreset(preset)}
 								class="w-full">
 								<Input
 									class="w-fit h-7 m-1"
@@ -214,10 +214,10 @@
 						{:else}
 							<button
 								draggable="true"
-								on:click={() => loadPresetsInTable(preset.presets)}
-								on:dragstart={(e) => dragPreset(e, index)}
-								on:dragover={() => setHoveringPreset(index)}
-								on:dragend={(e) => dropPreset(e, hovering)}
+								onclick={() => loadPresetsInTable(preset.presets)}
+								ondragstart={(e) => dragPreset(e, index)}
+								ondragover={() => setHoveringPreset(index)}
+								ondragend={(e) => dropPreset(e, hovering)}
 								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
 							>
 								{preset.presetName}
@@ -226,7 +226,7 @@
 
 						<div class="flex gap-2 ml-4">
 							<button
-								on:click={() => {
+								onclick={() => {
 									isEditing = !isEditing
 									currentEditedId = preset.id
 								}}
@@ -236,7 +236,7 @@
 							</button>
 
 							<button
-								on:click={() => {
+								onclick={() => {
 									warningDialogOpen = true
 									if (preset.id) currentPresetId = preset.id
 								}}

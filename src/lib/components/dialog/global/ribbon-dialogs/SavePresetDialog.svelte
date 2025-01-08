@@ -1,28 +1,27 @@
 <script lang="ts">
-	import { openedDialogStore } from '$lib/stores/ribbonStore';
+	import { openedDialog } from '$lib/runes/ribbon.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { savePresets } from '$lib/utils/components/ribbon/savePresets';
 
 	/*
 		Dialog pro uložení nové šablony,
 		po vložení názvu se provede savePresets funkce
 	*/
 
-	let dialogOpen: boolean = false;
-	let inputValue: string = "";
+	let dialogOpen: boolean = $state(false);
+	let inputValue: string = $state("");
 
 
 	function handleSavePresets(event: Event) {
 		event.preventDefault();
-		savePresets(inputValue, $page.url.pathname);
+		// savePresets(inputValue, $page.url.pathname);
 
 		setTimeout(() => {
-			openedDialogStore.set(undefined)
+			openedDialog.value = "empty";
 		}, 250)
 
 		dialogOpen = false
@@ -38,7 +37,6 @@
 
 <Dialog.Root
 	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
 >
 	<Dialog.Content class="!w-fit">
 		<Dialog.Header>
@@ -47,7 +45,7 @@
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form on:submit={handleSavePresets} class="p-0.5">
+		<form onsubmit={handleSavePresets} class="p-0.5">
 			<Label for="test" class="text-right">
 				Název nové šablony
 			</Label>

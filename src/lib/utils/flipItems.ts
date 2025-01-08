@@ -5,9 +5,5 @@ export function flipItems(items: any[]) {
 	items[0].isLast = false;
 	items[1].isLast = true;
 
-	// setTimeout(() => {
-	// 	document.getElementById("contacts")?.scrollIntoView({ behavior: "smooth"});
-	// }, 300);
-
 	return items;
 }

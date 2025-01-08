@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { _ } from 'svelte-i18n'
-	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform/autoform";
+	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
 	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
@@ -9,39 +8,49 @@
 	import type { CustomerContactType } from '$lib/types/page/customers';
 	import type { Writable } from 'svelte/store';
 
-	export let addToEdited: boolean = true;
-	export let autoform: AutoFormSimpleType;
-	export let formValues: CustomerContactType;
-	export let translationRoute: string;
+	interface Props {
+		autoform: AutoFormSimpleType;
+		formValues: Record<string, any>;
+	}
+
+	let {
+		autoform,
+		formValues = $bindable(),
+	}: Props = $props();
+
+	function updateFormValues(newValue: any, initialValue: any, field: string) {
+		formValues[field] = newValue;
+	}
 </script>
 
 
 <form method="POST" autocomplete="off" class="overflow-auto">
 	<div class="w-full flex flex-col gap-1 h-full">
 		{#each autoform as row}
-			{#if row.rowType === "full"}
+			{#if row.rowType === "row"}
 				<FormInputSection>
-					{#each Object.entries(row.inputs) as [key, value]}
-						{#if value.type === "text"}
+					{#each row.rowInputs as input}
+						{#if input.type === "text"}
 							<InputWrapperText
-								bind:value={formValues[key]}
+								label={input.translation()}
+								schema={input.schema}
+								value={formValues[input.field]}
 								disable={false}
-								addToEdited={addToEdited}
-								label={$_(translationRoute + '.' + key)}
-								inputDef={value}
-								field={key}
+								addToEditedFormData={
+									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+								}
 							/>
 						{/if}
 
-						{#if value.type === "number"}
+						{#if input.type === "number"}
 							<InputWrapperNumber
-								bind:value={formValues[key]}
+								label={input.translation()}
+								value={formValues[input.field]}
+								schema={input.schema}
 								disable={false}
-								addToEdited={addToEdited}
-								field={key}
-								label={$_(translationRoute + '.' + key)}
-								inputDef={value}
-							/>
+								addToEditedFormData={
+									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+								}							/>
 						{/if}
 					{/each}
 				</FormInputSection>
@@ -49,13 +58,18 @@
 
 			{#if row.rowType === "checkbox"}
 				<div class="grid md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-2 mt-2">
-					{#each Object.entries(row.inputs) as [key]}
-						<CheckboxWrapper
-							addToEdited={addToEdited}
-							bind:value={formValues[key]}
-							label={$_(translationRoute + '.' + key)}
-							field={key}
-						/>
+					{#each row.rowInputs as input}
+						{#if input.type === "checkbox"}
+							<CheckboxWrapper
+								label={input.translation()}
+								schema={input.schema}
+								value={formValues[input.field]}
+								disable={false}
+								addToEditedFormData={
+									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+								}
+							/>
+						{/if}
 					{/each}
 				</div>
 			{/if}

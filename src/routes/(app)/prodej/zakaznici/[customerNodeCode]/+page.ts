@@ -1,7 +1,7 @@
 import type { PageLoad } from "./$types";
 
 
-export const load: PageLoad = async ({ fetch, params }) => {
+export const load: PageLoad = async ({ params, fetch}) => {
 	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}`)
 
 	if (res.ok) {
@@ -25,52 +25,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
 
 	return {
 		response: {
-			item: {
-				customerNodeCode: null,
-				name: "",
-				companyName: "",
-				street: "",
-				city: "",
-				postalCode: "",
-				countryCode: "",
-				ico: "",
-				dic: "",
-				icDph: "",
-				paymentTypeCode: "",
-				dueDays: null,
-				invoiceCopies: null,
-				deliveryNoteCopies: null,
-				customerStoreCode: null,
-				consignmentSaleEnabled: false,
-				isReturnAllowed: false,
-				useAssortedEanCodes: false,
-				customerAlbiCode: null,
-				keyCustomerTypeId: null,
-				creditLimit: null,
-				unpaidAmount: null,
-				lastPaymentDate: null,
-				email: "",
-				ediInboxEanCode: null,
-				ediInboxEanCodeForInvoice: null,
-				customerStoreEan: null,
-				sendDeliveryNoteViaEdi: false,
-				sendInvoiceViaEdi: false,
-				sendCreditNoteViaEdi: false,
-				useDiacriticalMarksInEdiDocuments: false,
-				consignmentOutputCheck: false,
-				isChargedWithoutVat: false,
-				claimNotificationDisabled: false,
-				isBadPayer: false,
-				tradeLicenseReceived: false,
-				printPricesOnDeliveryNote: false,
-				allwaysAllowOrdering: false,
-				b2BeshopEnabled: false,
-				isApproved: false,
-				sendInvoiceAfterApproval: false,
-				invoiceConfirmationNotRequired: false,
-				isBlocked: false,
-				contractReceived: false
-			},
+			item: getObject(),
 			contacts: [],
 		},
 		state: {
@@ -79,3 +34,42 @@ export const load: PageLoad = async ({ fetch, params }) => {
 		}
 	};
 };
+
+
+function getObject() {
+	return {
+		id: null,
+		customerNodeCode: "",
+		customerName: "",
+		name: "",
+		dic: "",
+		customerAlbiCode: null,
+		icDph: "",
+		email: "",
+		customerAddressCode: null,
+		companyName: null,
+		street: "",
+		city: "",
+		postalCode: "",
+		countryCode: "",
+		note: null,
+		paymentTypeCode: "",
+		dueDays: null,
+		invoiceCopies: null,
+		deliveryNoteCopies: null,
+		customerRank: "",
+		retailStoreTypeId: null,
+		customerStoreCode: null,
+		customerStoreEan: "",
+		packingNote: null,
+		consignmentSaleEnabled: false,
+		isReturnAllowed: false,
+		isForConsignmentReturn: false,
+		useAssortedEanCodes: false,
+		pickingBoxPacking: false,
+		splitOrderByFood: false,
+		dealerCode: null,
+		areaCode: null,
+		areaId: null
+	}
+}

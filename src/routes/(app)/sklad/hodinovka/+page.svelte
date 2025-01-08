@@ -1,5 +1,4 @@
-<script lang="ts">
-</script>
+// hodinovka
 
 <svelte:head>
 	<title>Albiline | Hodinovka</title>

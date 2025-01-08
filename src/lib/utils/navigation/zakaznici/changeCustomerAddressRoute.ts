@@ -1,9 +1,10 @@
-import { activeSelectedRowIndexStore } from '$lib/stores/tableStore';
-import { goto } from '$app/navigation';
+import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
 import { processRoute } from '$lib/utils/navigation/processRoute';
+import { goto } from '$app/navigation';
+
 
 export function changeCustomerAddressRoute(
-	selectedRows: Record<string, string|number|Date|boolean>[],
+	selectedRows: Record<string, any>[],
 	direction: "left" | "right",
 	activeId: Record<string, number>,
 	routeId: string = "",
@@ -18,14 +19,14 @@ export function changeCustomerAddressRoute(
 
 	if (direction === "right") {
 		const nextIndex = currentIndex + 1;
-		activeSelectedRowIndexStore.set(nextIndex)
+		activeSelectedRowIndex.value = nextIndex;
 
 		const newRoute = processRoute(routeId, {
 			customerNodeCode: selectedRows[nextIndex].customerNodeCode || "",
 			customerAddressCode: selectedRows[nextIndex].customerAddressCode || ""
 		})
 
-		goto(newRoute)
+		goto(newRoute);
 
 		if (!selectedRows[currentIndex + 2]) {
 			return {
@@ -42,14 +43,14 @@ export function changeCustomerAddressRoute(
 
 	if (direction === "left") {
 		const prevIndex = currentIndex - 1;
-		activeSelectedRowIndexStore.set(prevIndex)
+		activeSelectedRowIndex.value = prevIndex;
 
 		const newRoute = processRoute(routeId, {
 			customerNodeCode: selectedRows[prevIndex].customerNodeCode,
 			customerAddressCode: selectedRows[prevIndex].customerAddressCode
 		})
 
-		goto(newRoute)
+		goto(newRoute);
 
 		if (!selectedRows[currentIndex - 2]) {
 			return {
