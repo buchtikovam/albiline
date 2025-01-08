@@ -107,7 +107,6 @@ export const customerAddressesAgGridDef = [
 		headerName: "Bonita",
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
-			console.log(params);
 			if (
 				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
 				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)

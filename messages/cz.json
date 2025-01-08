@@ -93,7 +93,7 @@
 	"routes_prodej_zakaznici_customer_detail_form_input_credit_limit" : "Úvěrový rámec",
 	"routes_prodej_zakaznici_customer_detail_form_input_unpaid_amount" : "Nesplaceno",
 	"routes_prodej_zakaznici_customer_detail_form_input_last_payment_date" : "Poslední platba",
-	"routes_prodej_zakaznici_customer_detail_form_input_email" : "Reg. e-mail do e-shopu",
+	"routes_prodej_zakaznici_customer_detail_form_input_email" : "Reg. email do eshopu",
 	"routes_prodej_zakaznici_customer_detail_form_input_edi_inbox_ean_code" : "EAN schránky",
 	"routes_prodej_zakaznici_customer_detail_form_input_edi_inbox_ean_code_for_invoice" : "EAN centrály",
 	"routes_prodej_zakaznici_customer_detail_form_input_customer_store_ean" : "EAN zákazníka",

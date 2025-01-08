@@ -3,10 +3,8 @@
 	import FormInputSection from '$lib/components/form/containers/FormInputSection.svelte';
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
 	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
-	import FormCheckboxSection from '$lib/components/form/containers/FormCheckboxSection.svelte';
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
-	import type { CustomerContactType } from '$lib/types/page/customers';
-	import type { Writable } from 'svelte/store';
+
 
 	interface Props {
 		autoform: AutoFormSimpleType;
@@ -57,7 +55,7 @@
 			{/if}
 
 			{#if row.rowType === "checkbox"}
-				<div class="grid md:grid-cols-2 grid-cols-1 gap-x-4 gap-y-2 mt-2">
+				<div class="grid lg:grid-cols-2 sm:grid-cols-1 gap-y-2 gap-x-4 mt-1.5">
 					{#each row.rowInputs as input}
 						{#if input.type === "checkbox"}
 							<CheckboxWrapper

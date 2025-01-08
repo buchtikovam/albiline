@@ -12,7 +12,7 @@
 <DialogPrimitive.Overlay
 	bind:ref
 	class={cn(
-		"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:blufr fixed inset-0 z-50 backdrop-blur-md bg-white/20 ",
+		"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:blufr fixed inset-0 z-50 backdrop-blur-md bg-black/5 ",
 		className
 	)}
 	{...restProps}

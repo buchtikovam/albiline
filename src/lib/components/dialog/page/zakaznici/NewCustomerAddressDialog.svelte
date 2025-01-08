@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
+	import type { CustomerAddressType } from '$lib/types/page/customers';
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	interface Props {
-		dialogOpen?: boolean;
-		label?: string;
+		dialogOpen: boolean;
+		label: string;
 		formDef: AutoFormSimpleType;
 	}
 
 	let {
 		dialogOpen = $bindable(false),
-		label = "Nový kontakt",
+		label,
 		formDef,
 	}: Props = $props();
 
@@ -59,16 +59,15 @@
 <Dialog.Root
 	bind:open={dialogOpen}
 >
-	<Dialog.Content class="">
+	<Dialog.Content class="h-auto w-[90%] sm:w-auto">
 		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2">
+			<Dialog.Title>
 				{ label }
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<div class="mb-4 h-full">
+		<div class="h-full">
 			<AutoFormSimple
-				addToEdited={false}
 				bind:formValues={address}
 				autoform={formDef}
 			/>
@@ -77,7 +76,7 @@
 		<Dialog.Footer>
 			<Button
 				class="w-full bg-albi-500 text-background font-bolder"
-				on:click={addAddress}
+				onclick={addAddress}
 			>
 				Uložit
 			</Button>

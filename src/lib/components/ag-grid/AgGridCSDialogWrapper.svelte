@@ -1,12 +1,8 @@
 <script lang="ts">
-	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
-	import {
-			createGrid,
-			type GridApi,
-			type GridOptions,
-	} from "ag-grid-enterprise";
-	import 'ag-grid-community/styles/ag-grid.css'
-	import '$lib/ag-grid-theme-builder.pcss'
+	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
+	import { createGrid, type GridApi, type GridOptions } from 'ag-grid-enterprise';
+	import 'ag-grid-community/styles/ag-grid.css';
+	import '$lib/ag-grid-theme-builder.pcss';
 
 	interface Props {
 		colDef: any[];
@@ -35,37 +31,36 @@
 
 		rowData: [],
 		columnDefs: colDef,
-		// domLayout: "autoHeight",
+
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		suppressRowClickSelection: true,
 		ensureDomOrder: true,
-		rowSelection: "single",
-	}
+		rowSelection: 'single'
+	};
 
 
 	$effect(() => {
 		gridApi = createGrid(gridContainer, gridOptions);
 
-	})
+	});
 
 
 	$effect(() => {
 		if (rowData) {
 			if (rowData.length > 0 && gridApi) {
-				gridApi.setGridOption("rowData", rowData);
+				gridApi.setGridOption('rowData', rowData);
 			}
 		}
-	})
+	});
 </script>
 
 
-
-<div class="flex flex-column h-full">
+<div class="flex flex-column h-full overflow-auto">
 	<div
-		id="datagrid"
-		class="ag-theme-custom "
-		style="flex: 1 1 auto"
 		bind:this={gridContainer}
+		class="ag-theme-custom "
+		id="datagrid"
+		style="flex: 1 1 auto"
 	></div>
 </div>

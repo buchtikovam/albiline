@@ -31,6 +31,8 @@
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import { getPageMetaData } from '$lib/utils/getPageMetaData';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		data: {
@@ -47,13 +49,14 @@
 	activeTabIndex.value = 1;
 
 	let initialFormValues: CustomerAddressType = $derived(data.response.item);
-	let editedFormValues: Record<string, any> = $state({});
+	let editedFormValues: Record<string, any> = $state({ id: initialFormValues.id });
 
 	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
 
 	let pageLayout = $state(customerAddressPageLayout);
+	let pageMetaData = $state();
 
 	let openNewContactDialog: boolean = $state(false);
 	let openAgGridDialog: boolean = $state(false);
@@ -69,10 +72,19 @@
 		customerAddressCode: Number($page.params.customerAddressCode)
 	});
 
+	$inspect(initialFormValues)
+
+	onMount(async () => {
+		if (!pageMetaData) {
+			pageMetaData = await getPageMetaData();
+			console.log(pageMetaData);
+		}
+	})
+
 
 	// disable navigation if there are unsaved changes in form
 	$effect(() => {
-		if (Object.keys(editedFormValues).length > 0) {
+		if (Object.keys(editedFormValues).length > 1) {
 			disableNavigation.value = true;
 			disableLeft = true;
 			disableRight = true;
@@ -151,27 +163,20 @@
 	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.SAVE) {
 			if (
-				Object.keys(editedFormValues).length > 0 ||
+				Object.keys(editedFormValues).length > 1 ||
 				createdContacts.length > 0 ||
 				editedContactValues.length > 0
 			) {
-				const saveObj = {
-					item: editedFormValues,
+				let editedFormValuesArr = [];
+				editedFormValuesArr.push(editedFormValues)
 
-					contacts: {
-						insert: createdContacts,
-						update: editedContactValues,
-						delete: []
-					},
+				const saveObj = {
+					insert: [...createdContacts],
+					update: [...editedContactValues, ...editedFormValuesArr],
+					delete: []
 				}
 
 				console.log(JSON.stringify(saveObj, null, 1));
-
-				if (Object.keys(saveObj.item).length > 0) {
-					saveObj.item.customerAddressCode = Number($page.params.customerAddressCode)
-					saveObj.item.customerNodeCode = Number($page.params.customerNodeCode)
-				}
-
 				updateAndReload(saveObj);
 			} else {
 				customToast(

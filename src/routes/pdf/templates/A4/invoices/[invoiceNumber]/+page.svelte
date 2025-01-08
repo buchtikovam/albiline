@@ -142,13 +142,13 @@
 
 			<table class="w-full">
 				<thead class="text-[10px] font-bold text-center text-slate-950 border-b-2 border-albi-500">
-					<td class="">Název</td>
-					<td class="w-24">EAN</td>
-					<td class="w-16">Počet</td>
-					<td class="w-20">Recykl. přísp.</td>
-					<td class="w-16">Jedn. cena</td>
-					<td class="w-16">DPH</td>
-					<td class="w-24">Celkem bez DPH</td>
+<!--					<td class="">Název</td>-->
+<!--					<td class="w-24">EAN</td>-->
+<!--					<td class="w-16">Počet</td>-->
+<!--					<td class="w-20">Recykl. přísp.</td>-->
+<!--					<td class="w-16">Jedn. cena</td>-->
+<!--					<td class="w-16">DPH</td>-->
+<!--					<td class="w-24">Celkem bez DPH</td>-->
 				</thead>
 			</table>
 		</div>
@@ -196,10 +196,10 @@
 			<div class="w-1/2">
 				<table class="w-full">
 					<thead class="text-[10px] text-center font-bold border-b-2 border-albi-500 text-slate-950">
-						<td>Sazba DPH</td>
-						<td>Bez DPH</td>
-						<td>DPH</td>
-						<td>Celkem</td>
+<!--						<td>Sazba DPH</td>-->
+<!--						<td>Bez DPH</td>-->
+<!--						<td>DPH</td>-->
+<!--						<td>Celkem</td>-->
 					</thead>
 					<tbody>
 						{#if vatArr !== undefined}

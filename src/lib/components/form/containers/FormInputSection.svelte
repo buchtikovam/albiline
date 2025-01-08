@@ -5,6 +5,6 @@
 
 
 
-<div class="flex flex-col gap-2 md:flex-row md:gap-4">
+<div class="flex flex-col gap-2 sm:flex-row md:gap-4">
 	{@render children?.()}
 </div>

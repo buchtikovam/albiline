@@ -12,6 +12,7 @@
 	} from 'ag-grid-enterprise';
 	import { onNavigate } from '$app/navigation';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
+	import { languageTag } from '$lib/paraglide/runtime';
 
 	interface Props {
 		rowData: any[];
@@ -99,6 +100,7 @@
 			})
 		}
 	})
+
 
 	$effect(() => {
 		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });

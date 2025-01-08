@@ -13,11 +13,11 @@
 
 	let { colDef, rowData , open = $bindable() }: Props = $props();
 
-	let openNewContactDialog: boolean = $state(false);
+	let openNewAddressDialog: boolean = $state(false);
 
 	function newCustomerAddressDialog() {
 		open = false;
-		openNewContactDialog = true;
+		openNewAddressDialog = true;
 	}
 </script>
 
@@ -27,10 +27,10 @@
 	bind:open
 >
 	<Dialog.Content
-		class="h-[94%] lg:h-[80%] lg:!w-[70%] max-w-[1400px] flex flex-col"
+		class="h-[70%] w-[90%] md:w-[700px] lg:w-[900px] xl:w-[1200px] max-w-[1200px] flex flex-col"
 	>
 		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2 flex items-center gap-2">
+			<Dialog.Title class="flex items-center gap-2">
 				Výběr prodejny
 
 				<button
@@ -53,7 +53,7 @@
 
 
 <NewCustomerAddressDialog
-	bind:dialogOpen={openNewContactDialog}
+	bind:dialogOpen={openNewAddressDialog}
 	label="Nová prodejna"
 	formDef={newCustomerAddressFormDef}
 />

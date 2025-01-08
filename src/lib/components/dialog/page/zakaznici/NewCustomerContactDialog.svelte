@@ -71,16 +71,14 @@
 <Dialog.Root
 	bind:open={dialogOpen}
 >
-	<Dialog.Content
-		interactOutsideBehavior="ignore"
-	>
+	<Dialog.Content class="h-[70%] sm:h-auto w-[90%] sm:w-auto">
 		<Dialog.Header>
-			<Dialog.Title class="">
+			<Dialog.Title class="h-5">
 				{ label }
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<div class="h-full">
+		<div class="h-full overflow-auto">
 			<AutoFormSimple
 				bind:formValues={contact}
 				autoform={formDef}
