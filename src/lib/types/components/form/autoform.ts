@@ -1,4 +1,4 @@
-import { type Icon as IconType } from 'lucide-svelte';
+import type { Icon as IconType } from 'lucide-svelte';
 import { z } from 'zod';
 import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 

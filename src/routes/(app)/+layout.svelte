@@ -67,7 +67,7 @@
 	class="h-52 overflow-visible md:flex md:justify-end"
 />
 
-<ParaglideJS {i18n}>
+<div>
 	<Tooltip.Provider delayDuration={300}>
 		<div class="h-dvh w-dvh bg-albi-50">
 			<div class="flex h-dvh flex-col">
@@ -92,6 +92,6 @@
 	</Tooltip.Provider>
 
 	<MainDialog/>
-</ParaglideJS>
+</div>
 
 

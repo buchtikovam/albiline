@@ -9,6 +9,7 @@
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex } from '$lib/runes/page.svelte';
 	import { page } from '$app/stores';
+	import * as m from '$lib/paraglide/messages.js'
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
 	import { flipItems } from '$lib/utils/flipItems';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
@@ -23,7 +24,6 @@
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import * as m from '$lib/paraglide/messages.js';
 
 
 	interface Props {
