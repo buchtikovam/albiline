@@ -12,7 +12,10 @@ declare global {
 			paraglide: ParaglideLocals<AvailableLanguageTag>
 		}
 
-		// interface Error {}
+		interface Error {
+			message: string,
+		}
+
 		// interface Locals {}
 		// interface PageData {}
 		// interface PageState {}

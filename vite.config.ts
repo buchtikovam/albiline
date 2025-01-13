@@ -39,7 +39,7 @@ export default defineConfig({
 				maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB or set to something else
 			},
 			devOptions: {
-				enabled: false,
+				enabled: true,
 				suppressWarnings: false,
 				type: 'module',
 				navigateFallback: '/',
@@ -47,7 +47,7 @@ export default defineConfig({
 			kit: {
 				includeVersionFile: true,
 			}
-		})
+		}),
 	],
 	build: {
 		chunkSizeWarningLimit: 3000,

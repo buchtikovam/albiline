@@ -16,6 +16,9 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
+	import { PUBLIC_ENVIRONMENT, PUBLIC_ORIGIN } from '$env/static/public';
+	console.log(PUBLIC_ENVIRONMENT, PUBLIC_ORIGIN);
+
 	let { children }: { children?: Snippet } = $props();
 
 	let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
