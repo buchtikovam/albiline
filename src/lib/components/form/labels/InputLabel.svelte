@@ -7,9 +7,9 @@
 </script>
 
 
-
-<label
+<div
 	class="text-sm mx-auto line-clamp-1 w-full text-slate-500 "
 >
 	{@html label}
-</label>
+</div>
+

@@ -9,7 +9,7 @@
 	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
 	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
-	import { onDestroy, onMount, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import { scrollGridToTop } from '$lib/utils/components/ag-grid/scrollGridToTop';
 	import { customToast } from '$lib/utils/customToast';
@@ -29,6 +29,7 @@
 	import { disablePageTabs } from '$lib/runes/navigation.svelte';
 	import { isEditAllowed, ribbonAction } from '$lib/runes/ribbon.svelte';
 	import type { ColDef } from 'ag-grid-community';
+
 
 
 	interface Props {
@@ -191,6 +192,8 @@
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
 				params.success({ rowData: response.items });
+
+				console.log(response.items);
 				lastRow = response.items.slice(-1)[0].rowNumber || null;
 			})
 			.catch(error => {

@@ -23,9 +23,7 @@
 
 
 	$effect(() => {
-		console.log("effect");
 		getInvoiceAddresses();
-
 	});
 
 

@@ -4,11 +4,12 @@
 	import { cn } from "$lib/utils.js";
 
 	let {
+		hideChevron,
 		ref = $bindable(null),
 		class: className,
 		children,
 		...restProps
-	}: WithoutChild<SelectPrimitive.TriggerProps> = $props();
+	}: WithoutChild<SelectPrimitive.TriggerProps> & { hideChevron?: boolean } = $props();
 </script>
 
 <SelectPrimitive.Trigger
@@ -20,5 +21,8 @@
 	{...restProps}
 >
 	{@render children?.()}
-	<ChevronDown class="size-4 opacity-50" />
+
+	{#if !hideChevron}
+		<ChevronDown class="size-4 opacity-50" />
+	{/if}
 </SelectPrimitive.Trigger>

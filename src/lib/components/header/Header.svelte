@@ -42,7 +42,7 @@
             <Tabs.Trigger
                 value="/"
 				disabled={disabled}
-                onclick={() => goto("/")}
+                onclick={() => goto(i18n.resolveRoute("/"))}
 			>
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
@@ -60,7 +60,7 @@
 						value={tab.url}
 						disabled={disabled && tab.url !== pathName}
 						onclick={() => {
-							goto(tab.url)
+							goto(i18n.resolveRoute(tab.url));
 						}}
 						onauxclick={(ev) => {
 							console.log("aux");
@@ -86,25 +86,6 @@
 			{/each}
 		</Tabs.List>
 	</Tabs.Root>
-
-
-	<div class="gap-2 hidden md:flex">
-		<a
-			href={i18n.route($page.url.pathname)}
-			hreflang={"en"}
-			aria-current={"en" === languageTag() ? "page" : undefined}
-		>
-			{"en"}
-		</a>
-
-		<a
-			href={i18n.route($page.url.pathname)}
-			hreflang={"cz"}
-			aria-current={"cz" === languageTag() ? "page" : undefined}
-		>
-			{"cz"}
-		</a>
-	</div>
 
 
 	<div

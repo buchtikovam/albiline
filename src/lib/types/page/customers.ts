@@ -80,6 +80,8 @@ export type CustomerAddressType = {
 
 
 export type CustomerContactType = {
+	createdRowId?: number,
+	customerPersonCode: number|null,
 	isDefault: boolean,
 	enabled: boolean,
 	name: string|null,

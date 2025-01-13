@@ -22,6 +22,7 @@
 
 	let contact: CustomerContactType = $state({
 		createdRowId: createdContacts.length, // only for frontend, irrelevant for backend
+		customerPersonCode: null,
 		isDefault: false,
 		enabled: false,
 		name: null,
@@ -45,6 +46,7 @@
 
 		contact = {
 			createdRowId: createdContacts.length,
+			customerPersonCode: null,
 			isDefault: false,
 			enabled: false,
 			name: null,

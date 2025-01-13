@@ -49,7 +49,7 @@
 	activeTabIndex.value = 1;
 
 	let initialFormValues: CustomerAddressType = $derived(data.response.item);
-	let editedFormValues: Record<string, any> = $state({ id: initialFormValues.id });
+	let editedFormValues: Record<string, any> = $state({ id: data.response.item.id });
 
 	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
 	let editedContactValues: any[] = $state([]);
@@ -77,7 +77,6 @@
 	onMount(async () => {
 		if (!pageMetaData) {
 			pageMetaData = await getPageMetaData();
-			console.log(pageMetaData);
 		}
 	})
 
@@ -177,7 +176,7 @@
 				}
 
 				console.log(JSON.stringify(saveObj, null, 1));
-				updateAndReload(saveObj);
+				// updateAndReload(saveObj);
 			} else {
 				customToast(
 					"InfoToast",

@@ -4,6 +4,7 @@
 	import { disableNavigation, disablePageTabs } from '$lib/runes/navigation.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { goto } from '$app/navigation';
+	import { i18n } from '$lib/i18n.js'
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Tabs from '$lib/components/ui/tabs';
@@ -38,7 +39,7 @@
 				class="font-bold"
 				disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
 				value={"0"}
-				onclick={() => goto("/prodej/zakaznici")}
+				onclick={() => goto(i18n.resolveRoute("/prodej/zakaznici"))}
 			>
 				{m.routes_prodej_zakaznici_tabs_list()}
 			</Tabs.Trigger>
@@ -48,7 +49,7 @@
 				class="font-bold"
 				disabled={activeTab !== "1" && (disableNavigation.value || disablePageTabs.value)}
 				value={"1"}
-				onclick={() => goto(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`)}
+				onclick={() => goto(i18n.resolveRoute(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`))}
 			>
 				{m.routes_prodej_zakaznici_tabs_address_detail()}
 			</Tabs.Trigger>
@@ -58,7 +59,7 @@
 				class="font-bold"
 				disabled={activeTab !== "2" && (disableNavigation.value || disablePageTabs.value)}
 				value={"2"}
-				onclick={() => goto(`/prodej/zakaznici/${customerNodeCode}`)}
+				onclick={() => goto(i18n.resolveRoute(`/prodej/zakaznici/${customerNodeCode}`))}
 			>
 				{m.routes_prodej_zakaznici_tabs_customer_detail()}
 			</Tabs.Trigger>

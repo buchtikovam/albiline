@@ -9,6 +9,7 @@
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
+	import { i18n } from '$lib/i18n';
 
 
 	let pageMetaData: PageMetaDataType;
@@ -30,11 +31,11 @@
 			}]
 
 			if (event.column.getColId() === "customerAddressCode") {
-				goto(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`);
+				goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`));
 			}
 
 			if (event.column.getColId() === "customerNodeCode") {
-				goto(`/prodej/zakaznici/${event.data.customerNodeCode}`);
+				goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}`));
 			}
 		},
 

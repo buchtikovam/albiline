@@ -35,7 +35,8 @@ export default defineConfig({
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
+				maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB or set to something else
 			},
 			devOptions: {
 				enabled: false,
@@ -48,4 +49,7 @@ export default defineConfig({
 			}
 		})
 	],
+	build: {
+		chunkSizeWarningLimit: 3000,
+	}
 });

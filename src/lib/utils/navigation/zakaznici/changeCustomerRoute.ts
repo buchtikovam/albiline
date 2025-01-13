@@ -1,6 +1,7 @@
 import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 import { goto } from '$app/navigation';
+import { i18n } from '$lib/i18n.js'
 
 
 export function changeCustomerRoute(
@@ -36,19 +37,19 @@ export function changeCustomerRoute(
 			{ customerNodeCode: uniqueSelectedRows[nextIndex].customerNodeCode, }
 		)
 
-		goto(newRoute)
-
-		if (!uniqueSelectedRows[activeRowIndex + 2]) {
-			return {
-				right: true,
-				left: false
+		goto(i18n.resolveRoute(newRoute)).then(() => {
+			if (!uniqueSelectedRows[activeRowIndex + 2]) {
+				return {
+					right: true,
+					left: false
+				}
 			}
-		}
 
-		return {
-			right: false,
-			left: false,
-		}
+			return {
+				right: false,
+				left: false,
+			}
+		})
 	}
 
 
@@ -64,14 +65,20 @@ export function changeCustomerRoute(
 			{ customerNodeCode: selectedRows[prevIndex].customerNodeCode, }
 		)
 
-		goto(newRoute)
 
-		if (!selectedRows[activeRowIndex - 2]) {
+		goto(i18n.resolveRoute(newRoute)).then(() => {
+			if (!selectedRows[activeRowIndex - 2]) {
+				return {
+					right: false,
+					left: true
+				}
+			}
+
 			return {
 				right: false,
-				left: true
+				left: false
 			}
-		}
+		})
 	}
 
 

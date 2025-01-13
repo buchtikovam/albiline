@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
 	import { createGrid, type GridApi, type GridOptions } from 'ag-grid-enterprise';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import '$lib/ag-grid-theme-builder.pcss';
+	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
 
 	interface Props {
 		colDef: any[];
@@ -34,7 +34,6 @@
 
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
-		suppressRowClickSelection: true,
 		ensureDomOrder: true,
 		rowSelection: 'single'
 	};

@@ -2,17 +2,13 @@
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import 'ag-grid-community/styles/ag-grid.css'
 	import '$lib/ag-grid-theme-builder.pcss'
-	import { onMount } from 'svelte';
-	import { get, type Writable, writable } from 'svelte/store';
 	import {
 		type CellValueChangedEvent,
 		createGrid,
 		type GridApi,
-		type GridOptions, type IRowNode
+		type GridOptions
 	} from 'ag-grid-enterprise';
-	import { onNavigate } from '$app/navigation';
-	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
-	import { languageTag } from '$lib/paraglide/runtime';
+	import { addToEditedTableData } from '../../utils/addToEditedTableData';
 
 	interface Props {
 		rowData: any[];
@@ -57,7 +53,7 @@
 		// checks created x edited by unique field, that only existing records have
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
 			let isInitialColumn = requiredFields.every((field) => {
-				return event.data[field] !== undefined;
+				return event.data[field] !== null;
 			})
 
 			if (event.oldValue !== event.newValue) {
@@ -80,9 +76,7 @@
 		domLayout: "autoHeight",
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
-		suppressRowClickSelection: true,
 		ensureDomOrder: true,
-		rowSelection: "single",
 	}
 
 
