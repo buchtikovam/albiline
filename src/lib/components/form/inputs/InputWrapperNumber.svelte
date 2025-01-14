@@ -2,7 +2,6 @@
 	import { z } from "zod";
   	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
 
-
 	interface Props {
 		value: number;
 		label: any;
@@ -66,3 +65,19 @@
 		<p class="text-xs text-red-700 w-full">{errorMessage}</p>
 	</div>
 </div>  
+
+
+
+<style>
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type=number] {
+		-moz-appearance: textfield;
+	}
+</style>
