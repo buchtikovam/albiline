@@ -7,7 +7,9 @@
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
 	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
+	import { isEditAllowed, ribbonAction } from '$lib/runes/ribbon.svelte';
 	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
+	import { disablePageTabs } from '$lib/runes/navigation.svelte';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 	import { tick } from 'svelte';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
@@ -19,17 +21,17 @@
 		type FilterModel,
 		type GetRowIdParams,
 		type GridApi,
-		type GridOptions,
+		type GridOptions, type IRowNode,
 		type IServerSideDatasource,
 		type IServerSideGetRowsParams
 	} from 'ag-grid-enterprise';
 	import type { ColumnOrder, TableRowRequest } from '$lib/types/components/table/table';
+	import type { ColDef } from 'ag-grid-community';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import '$lib/ag-grid-theme-builder.pcss';
-	import { disablePageTabs } from '$lib/runes/navigation.svelte';
-	import { isEditAllowed, ribbonAction } from '$lib/runes/ribbon.svelte';
-	import type { ColDef } from 'ag-grid-community';
-
+	import { lastVisibleRowIndex } from '$lib/runes/table.svelte.js';
+	import type { Preset } from '$lib/types/components/table/presets';
+	import { compareObjectsByFields } from '$lib/utils/general/compareObjectsByFields';
 
 
 	interface Props {
@@ -109,23 +111,31 @@
 				})
 
 				rowArr.push(rowObj);
-			})
+			});
 
 			storedSelectedRows.value = rowArr;
 		},
+
+		serverSideInitialRowCount: 10000,
+		cacheBlockSize: 1000,
 	}
 
 
-	const rowBatchSize = 100;
+	const rowBatchSize = 1000;
 	let recentFilters: FilterModel[] = [];
 	let currentSort: ("asc" | "desc" | null | undefined)[] = []
 	let previousSort: ("asc" | "desc" | null | undefined)[] = []
 	let lastRow: number|null = null;
 	let lastRowAndPositions: { lastRow: number|null, startRow: number|undefined, endRow: number|undefined }[] = []
+	let isInitialGridLoad = $state(true);
+	let isLoaded = $state(false);
+
 
 
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
+			console.time("load");
+			isLoaded = false;
 			const currentFilter = gridApi.getFilterModel();
 			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
 			const updatedParamsRequest: TableRowRequest = params.request
@@ -192,9 +202,9 @@
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
 				params.success({ rowData: response.items });
-
-				console.log(response.items);
+				console.timeEnd("load")
 				lastRow = response.items.slice(-1)[0].rowNumber || null;
+				isLoaded = true;
 			})
 			.catch(error => {
 				console.log(error);
@@ -205,7 +215,7 @@
 
 
 	// listening to fulltext filter changes from layout, refresh grid with delay
-	let isInitial = true;
+	let isInitialFilterValue = true; // prevent double page load
 	let timer: NodeJS.Timeout;
 
 	function debounceFulltext() {
@@ -217,15 +227,13 @@
 			gridApi.onFilterChanged()
 		}, 1000)
 	}
-
 	$effect(() => {
 		if (fulltextFilterValue.value) {
-			isInitial = false;
+			isInitialFilterValue = false;
 			debounceFulltext();
 		}
 
-		if (fulltextFilterValue.value === "" && !isInitial) {
-			clearTimeout(timer)
+		if (fulltextFilterValue.value === "" && !isInitialFilterValue) {
 			debounceFulltext();
 		}
 	})
@@ -234,16 +242,59 @@
 	const columnDefaultEditable = new Map();
 
 
+	// if user has unsaved filters / preset / selected rows and navigated between page tabs, display them
+	$effect(() => {
+		if (isInitialGridLoad && isLoaded) {
+			if (presetToSave.value.length > 0) {
+				let columnOrder: ColumnOrder = []
+
+				presetToSave.value.forEach((obj: Preset) => {
+					// @ts-ignore
+					columnOrder.push({ colId: obj.colId })
+				})
+
+				gridApi.setGridOption("columnDefs", presetToSave.value)
+
+				gridApi.applyColumnState({
+					state: columnOrder,
+					applyOrder: true
+				});
+			}
+
+
+			if (storedSelectedRows.value.length > 0) {
+				setTimeout(() => {
+					gridApi.forEachNode((node: IRowNode) => {
+						storedSelectedRows.value.forEach((storedRow) => {
+							if (compareObjectsByFields(node.data, storedRow, requiredFields)) {
+								console.log("yay", node.data.customerAddressCode);
+								node.setSelected(true);
+							}
+						})
+					})
+				}, 1500)
+			}
+
+			setTimeout(() => {
+				gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
+				gridApi.setGridOption("loading", false);
+				isInitialGridLoad = false;
+			}, 1500)
+		}
+	})
+
+
+
 	// runs when component is mounted only
 	$effect(() => {
 		gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		gridApi.setGridOption('serverSideDatasource', datasource);
+		gridApi.setGridOption("loading", true);
 		defaultColDef.value = gridApi.getColumnDefs() || [];
 
-		// set background color of editable columns on page load, map initial column editable state
 		const initialColDef = gridApi.getColumnDefs();
 		const canEdit = isEditAllowed.value;
-
+		// set background color of editable columns on page load, map initial column editable state
 		initialColDef?.map((column: ColDef) => {
 			columnDefaultEditable.set(column.field, column.editable)
 
@@ -265,32 +316,20 @@
 			}
 		})
 
-		// // if routing between list and details, restore column order, visibility
-		// if (get(presetStore)?.length > 0) {
-		// 	let columnOrder: ColumnOrder = []
-		//
-		// 	get(presetStore).forEach((obj: Preset) => {
-		// 		columnOrder.push({ colId: obj.colId})
-		// 	})
-		//
-		// 	gridApi.setGridOption("columnDefs", get(presetStore))
-		//
-		// 	gridApi.applyColumnState({
-		// 		state: columnOrder,
-		// 		applyOrder: true
-		// 	});
-		// }
-		//
-		//
-		// // if routing from details to list, restore filters
-		// if (Object.keys(get(filtersStore)).length > 0) {
-		// 	gridApi.setFilterModel(get(filtersStore))
-		// }
-		//
-		//
+
+		setTimeout(() => {
+			if (Object.keys(filtersToSave.value).length > 0) {
+				console.log("loadfilters");
+				gridApi.setFilterModel(filtersToSave.value);
+			}
+		}, 200);
 
 		return () => {
 			fulltextFilterValue.value = "";
+
+			lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex() < 10
+				? gridApi.getFirstDisplayedRowIndex()
+				: gridApi.getFirstDisplayedRowIndex() + 10
 		}
 	})
 
@@ -352,9 +391,7 @@
 
 	// disable page tabs if no row is selected
 	$effect(() => {
-		if (storedSelectedRows.value) {
-			disablePageTabs.value = gridApi.getSelectedRows().length === 0;
-		}
+		disablePageTabs.value = storedSelectedRows.value.length === 0;
 	})
 
 

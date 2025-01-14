@@ -29,3 +29,5 @@ export const selectedPreset: { value: Preset[] } = $state({ value: [] });
 export const storedSelectedRows: { value: Record<string, string|number|boolean|Date>[] }  = $state({ value: [] });
 
 export const activeSelectedRowIndex: { value: number } = $state({ value: 0 });
+
+export const lastVisibleRowIndex: { value: number } = $state({ value: 0 });

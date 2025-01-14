@@ -55,7 +55,7 @@
 								</div>
 							</Popover.Trigger>
 
-							<Popover.Content class="flex flex-col px-1 py-1 ml-12 -mt-10 text-sm w-fit ">
+							<Popover.Content side="right" class="flex flex-col p-1 text-sm w-fit">
 								{#each item.children as child}
 									<a
 										href={child.href}
