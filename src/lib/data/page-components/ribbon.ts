@@ -1,6 +1,5 @@
 import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-import type { RibbonItem, RibbonSeparator } from '$lib/types/components/ribbon/ribbon';
 import FilePlus from 'lucide-svelte/icons/file-plus';
 import FileX2 from 'lucide-svelte/icons/file-x-2';
 import Pencil from 'lucide-svelte/icons/pencil';
@@ -18,12 +17,10 @@ import ListPlus from 'lucide-svelte/icons/list-plus';
 import Columns3 from 'lucide-svelte/icons/columns-3';
 import Save from 'lucide-svelte/icons/save';
 import RefreshCcw from 'lucide-svelte/icons/refresh-ccw';
+import type { RibbonType } from '$lib/types/components/ribbon/ribbon';
 
 
-type RibbonItems = RibbonItem[] | RibbonItem | RibbonSeparator;
-
-
-export const ribbonItems: RibbonItems[] = [
+export const ribbonItems: RibbonType = [
 	{
 		field: "new",
 		type: RibbonTypeEnum.ITEM,

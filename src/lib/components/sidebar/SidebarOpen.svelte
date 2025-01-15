@@ -9,6 +9,7 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 
+
 	interface Props {
 		searchTerm: string;
 		filteredItems: SidebarItem[];
@@ -33,25 +34,21 @@
 				<!-- accordiony první vrstvy (item má children položky) -->
 				{#if item.children.length > 0 }
 					<ContextMenu.Root>
-
 						<Accordion.Item value={item.field}>
 							<ContextMenu.Trigger>
 								<Accordion.Trigger class="hover:bg-muted/50 rounded-md flex-1">
 									{@const Icon = item.icon}
-									<div
-										class="flex text-sm font-bold w-full items-center gap-3 rounded-lg text-albi-950 hover:text-black">
-										<Icon />
-										<a
-											href={"#"}
-											onclick={() => handleTabClick(item, 0)}
-										>
-											{ item.translation() }
-										</a>
-									</div>
+<!--									<button-->
+<!--										class="flex text-sm font-bold w-fit items-center gap-3 rounded-lg text-albi-950 hover:text-black"-->
+<!--										onclick={() => handleTabClick(item, 0)}-->
+<!--									>-->
+<!--										<Icon />-->
+<!--										{ item.translation() }-->
+<!--									</button>-->
 								</Accordion.Trigger>
 							</ContextMenu.Trigger>
 
-							<Accordion.Content class="px-2 ">
+							<Accordion.Content class="px-2">
 								<!-- accordiony druhé vrstvy -->
 								<Accordion.Root
 									type="multiple"

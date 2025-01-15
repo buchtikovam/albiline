@@ -31,3 +31,5 @@ export const storedSelectedRows: { value: Record<string, string|number|boolean|D
 export const activeSelectedRowIndex: { value: number } = $state({ value: 0 });
 
 export const lastVisibleRowIndex: { value: number } = $state({ value: 0 });
+
+export const lastRowAndPositions: { value: { lastRow: number|null, startRow: number|undefined, endRow: number|undefined }[] } = $state({ value: [] });

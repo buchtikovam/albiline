@@ -24,6 +24,12 @@ const config = {
 		},
 		prerender: {
 			origin: process.env.PUBLIC_ORIGIN,
+			crawl: false,
+			// entries: []
+		},
+		paths: {
+			relative: false,
+			base: process.env.PUBLIC_ORIGIN,
 		}
 	},
 }

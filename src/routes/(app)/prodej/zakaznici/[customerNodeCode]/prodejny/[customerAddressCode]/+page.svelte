@@ -10,13 +10,15 @@
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex, isMobile } from '$lib/runes/page.svelte';
 	import { ribbonAction } from '$lib/runes/ribbon.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService';
 	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { getPageMetaData } from '$lib/utils/getPageMetaData';
+	import { invalidateAll } from '$app/navigation';
 	import { customToast } from '$lib/utils/customToast';
 	import { flipItems } from '$lib/utils/flipItems';
+	import { onMount } from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Repeat from 'lucide-svelte/icons/repeat';
 	import Plus from 'lucide-svelte/icons/plus';
@@ -31,8 +33,6 @@
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import { getPageMetaData } from '$lib/utils/getPageMetaData';
-	import { onMount } from 'svelte';
 
 	interface Props {
 		data: {
@@ -68,11 +68,11 @@
 	let disableRight = $state(false);
 
 	let activeRouteId = $derived({
-		customerNodeCode: Number($page.params.customerNodeCode),
-		customerAddressCode: Number($page.params.customerAddressCode)
+		customerNodeCode: Number(page.params.customerNodeCode),
+		customerAddressCode: Number(page.params.customerAddressCode)
 	});
 
-	$inspect(initialFormValues)
+	$inspect(initialFormValues);
 
 	onMount(async () => {
 		if (!pageMetaData) {
@@ -117,7 +117,7 @@
 			selectedRows,
 			direction,
 			activeRouteId,
-			$page.route.id || "/"
+			page.route.id || "/"
 		);
 
 		disableLeft = returnedDisable.left;
@@ -130,7 +130,7 @@
 
 	async function getAddresses() {
 		if (addresses.length === 0) {
-			const res = await apiServiceGET(`customers/${$page.params.customerNodeCode}/addresses`)
+			const res = await apiServiceGET(`customers/${page.params.customerNodeCode}/addresses`)
 
 			if (res.ok) {
 				const responseData = await res.json();
@@ -192,7 +192,7 @@
 	// save data on the api
 	async function updateAndReload(saveObj) {
 		const res = await apiServicePOST(
-			`customers/${$page.params.customerNodeCode}/addresses/${$page.params.customerAddressCode}`,
+			`customers/${page.params.customerNodeCode}/addresses/${page.params.customerAddressCode}`,
 			saveObj
 		)
 

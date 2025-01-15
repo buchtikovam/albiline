@@ -16,8 +16,8 @@ export default defineConfig({
 			mode: 'development',
 			strategies: 'generateSW',
 			filename: undefined,
-			scope: '/',
-			base: '/',
+			scope: process.env.PUBLIC_ORIGIN,
+			base: process.env.PUBLIC_ORIGIN,
 			selfDestroying: false,
 			pwaAssets: {
 				config: true,

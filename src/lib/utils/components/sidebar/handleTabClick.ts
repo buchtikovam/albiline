@@ -13,8 +13,6 @@ export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 			treeDepth: treeDepth
 		};
 
-		console.log(tab);
-
 		let containsObject: boolean = false;
 
 		if (openedTabs.value.length > 0) {

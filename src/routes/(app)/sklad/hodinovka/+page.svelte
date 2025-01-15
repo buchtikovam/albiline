@@ -1,3 +1,7 @@
+<script>
+	import PulsatingCircle from '$lib/components/icons/PulsatingCircle.svelte';
+</script>
+
 // hodinovka
 
 <svelte:head>

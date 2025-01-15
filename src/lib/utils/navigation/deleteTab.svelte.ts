@@ -1,31 +1,28 @@
 import { openedTabs } from '$lib/runes/navigation.svelte';
-import { page } from '$app/stores';
-import { goto } from '$app/navigation';
-import { get } from 'svelte/store';
-import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
+import { page } from '$app/state';
 import { i18n } from '$lib/i18n';
+import { goto } from '$app/navigation';
+import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 
 
 export function deleteTab(tab: HeaderTab) {
-	console.log("remove tab");
-
 	openedTabs.value.forEach((storedTab) => {
 		if (storedTab.field === tab.field) {
 			const index = openedTabs.value.indexOf(tab);
 			openedTabs.value.splice(openedTabs.value.indexOf(tab), 1);
 
 			// after tab was removed, redirect on available tab
-			if (get(page).url.pathname === tab.url) {
+			if (page.url.pathname === tab.url) {
 				if (openedTabs.value.length === 0) {
-					goto(i18n.resolveRoute("/"));
+					goto(i18n.resolveRoute("/")).then((r) => r);
 				}
 
 				if (openedTabs.value[index]) { // was spliced, so no need to increment index
-					goto(i18n.resolveRoute(openedTabs.value[index].url));
+					goto(i18n.resolveRoute(openedTabs.value[index].url)).then((r) => r);
 				}
 
 				if (openedTabs.value[index - 1]) {
-					goto(i18n.resolveRoute(openedTabs.value[index - 1].url));
+					goto(i18n.resolveRoute(openedTabs.value[index - 1].url)).then((r) => r);
 				}
 			}
 		}

@@ -2,8 +2,7 @@
 	import { fulltextFilterValue, showFulltextSearch } from '$lib/runes/page.svelte';
 	import { disableNavigation, openedTabs } from '$lib/runes/navigation.svelte.js';
 	import { i18n } from '$lib/i18n.js'
-	import { page } from '$app/stores';
-	import { languageTag } from "$lib/paraglide/runtime.js"
+	import { page } from '$app/state';
 	import { getTabValue } from '$lib/utils/navigation/getTabValue';
 	import { deleteTab } from '$lib/utils/navigation/deleteTab.svelte';
 	import { slide } from 'svelte/transition';
@@ -18,12 +17,8 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 
 
-	let pathName = $state("");
+	let pathName = $derived(getTabValue(page.url.pathname, openedTabs.value));
 	let disabled = $derived(disableNavigation.value);
-
-	$effect(() => {
-		pathName = getTabValue($page.url.pathname, openedTabs.value);
-	});
 
 	let openMobileSidebar: boolean = $state(false);
 </script>
@@ -38,7 +33,6 @@
 		value={pathName}
 	>
         <Tabs.List>
-            <!-- default tabs ,-->
             <Tabs.Trigger
                 value="/"
 				disabled={disabled}
@@ -47,42 +41,39 @@
                 <Home class="w-4 h-4" />
             </Tabs.Trigger>
 
-            <!-- tabs opened by user -->
             {#each openedTabs.value as tab}
 				<TabSeparator/>
-				<!--onmouseenter={() => preloadData(tab.url)}-->
-				<button
-					class="flex items-center h-8"
+
+				<Tabs.Trigger
+					value={tab.url}
+					disabled={disabled && tab.url !== pathName}
 					onmouseenter={() => tab.closingState = 'block'}
 					onmouseleave={() => tab.closingState = 'hidden'}
+					onclick={() => {
+					goto(i18n.resolveRoute(tab.url));
+				}}
+					onauxclick={(ev) => {
+					ev.preventDefault();
+					if (ev.button === 1) {
+						deleteTab(tab);
+					}
+				}}
+					class="flex h-6 items-center font-bold"
 				>
-					<Tabs.Trigger
-						value={tab.url}
-						disabled={disabled && tab.url !== pathName}
-						onclick={() => {
-							goto(i18n.resolveRoute(tab.url));
-						}}
-						onauxclick={(ev) => {
-							console.log("aux");
-							ev.preventDefault();
-							if (ev.button === 1) {
-								deleteTab(tab);
-							}
-						}}
-						class="flex h-6 items-center font-bold"
-					>
-						{ tab.field }
-						{#if (tab.closingState === 'block')}
-							<span transition:slide={{ axis: "x" }}>
-								<X
-									strokeWidth={3}
-									onclick={() => deleteTab(tab)}
-									class={`${tab.closingState} ml-1 text-red-500 size-3.5`}
-								/>
-							</span>
-						{/if}
-					</Tabs.Trigger>
-				</button>
+					{ tab.field }
+					{#if (tab.closingState === 'block')}
+						<button transition:slide={{ axis: "x" }}>
+							<X
+								strokeWidth={3}
+								onclick={(e) => {
+									e.preventDefault();
+									deleteTab(tab);
+								}}
+								class={`${tab.closingState} ml-1 text-red-600 size-3.5`}
+							/>
+						</button>
+					{/if}
+				</Tabs.Trigger>
 			{/each}
 		</Tabs.List>
 	</Tabs.Root>

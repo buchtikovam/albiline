@@ -13,6 +13,6 @@
 
 
 
-<div class="h-full bg-white rounded-lg border border-albi-200">
+<div class="h-full bg-white rounded-lg border-albi-200">
 	{@render children?.()}
 </div>
