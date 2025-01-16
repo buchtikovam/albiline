@@ -38,13 +38,14 @@
 							<ContextMenu.Trigger>
 								<Accordion.Trigger class="hover:bg-muted/50 rounded-md flex-1">
 									{@const Icon = item.icon}
-<!--									<button-->
-<!--										class="flex text-sm font-bold w-fit items-center gap-3 rounded-lg text-albi-950 hover:text-black"-->
-<!--										onclick={() => handleTabClick(item, 0)}-->
-<!--									>-->
-<!--										<Icon />-->
-<!--										{ item.translation() }-->
-<!--									</button>-->
+									<!--										onclick={() => handleTabClick(item, 0)}
+-->
+									<div
+										class="flex text-sm font-bold w-fit items-center gap-3 rounded-lg text-albi-950 hover:text-black"
+									>
+										<Icon />
+										{ item.translation() }
+									</div>
 								</Accordion.Trigger>
 							</ContextMenu.Trigger>
 
