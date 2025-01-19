@@ -2,6 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { paraglide } from '@inlang/paraglide-sveltekit/vite';
+const env = process.env;
 
 export default defineConfig({
 	plugins: [
@@ -16,15 +17,13 @@ export default defineConfig({
 			mode: 'development',
 			strategies: 'generateSW',
 			filename: undefined,
-			scope: process.env.PUBLIC_ORIGIN,
-			base: process.env.PUBLIC_ORIGIN,
-			selfDestroying: false,
+			selfDestroying: env.ENVIRONMENT === 'develop',
 			pwaAssets: {
 				config: true,
 			},
 			manifest: {
-				short_name: 'Albiline 2',
-				name: 'Albiline 2',
+				short_name: 'Albiline',
+				name: 'Albiline',
 				start_url: '/',
 				scope: '/',
 				display: 'standalone',
@@ -32,11 +31,15 @@ export default defineConfig({
 				background_color: "#073545",
 			},
 			injectManifest: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: env.ENVIRONMENT === 'develop'
+					? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+					: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
-				maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB or set to something else
+				globPatterns: env.ENVIRONMENT === 'develop'
+					? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+					: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
+				maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB
 			},
 			devOptions: {
 				enabled: true,

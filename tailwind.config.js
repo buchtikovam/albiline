@@ -1,5 +1,5 @@
-import { fontFamily } from 'tailwindcss/defaultTheme';
 import tailwindcssAnimate from 'tailwindcss-animate';
+import env from './env.js'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -16,6 +16,7 @@ const config = {
 		},
 		extend: {
 			colors: {
+				environment: env.COLOR ?? '',
 				border: 'hsl(var(--border) / <alpha-value>)',
 				input: 'hsl(var(--input) / <alpha-value>)',
 				ring: 'hsl(var(--ring) / <alpha-value>)',

@@ -64,19 +64,19 @@
 <div
 	class={
 		(sidebarOpen.value
-			? 'w-[280px] p-4 '
+			? 'w-[280px] p-4 pt-3 '
 			: 'w-[60px] p-2 ')
-			+ 'flex flex-col h-full overflow-auto bg-white rounded-lg transition-all duration-300'
+			+ 'flex flex-col gap-2 h-full overflow-auto bg-white rounded-lg transition-all duration-300'
 	}
 >
 	{#if sidebarOpen.value}
-		<div class="flex justify-center text-sm mb-4">
-			<CategoryButton color="secondary" />
+		<div class="flex justify-center text-sm">
+			<CategoryButton />
 		</div>
 
 		<div class="flex-1 flex flex-col">
 			<Input
-				class="mb-4 focus-visible:ring-0 border-border"
+				class="h-8 mb-2 focus-visible:ring-0 border-border"
 				placeholder={m.components_sidebar_search_placeholder()}
 				type="search"
 				bind:value={searchTerm}

@@ -27,7 +27,7 @@
 			<button onclick={() => isSidebarCommandOpen = !isSidebarCommandOpen}>
 				<Tooltip.Trigger>
 					<span class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
-						<Search />
+						<Search class="size-5"/>
 					</span>
 				</Tooltip.Trigger>
 			</button>
@@ -51,7 +51,7 @@
 								{@const Icon = item.icon}
 								<div
 									class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50">
-									<Icon />
+									<Icon class="size-5" />
 								</div>
 							</Popover.Trigger>
 
@@ -96,7 +96,7 @@
 							class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50"
 							onclick={() => handleTabClick(item, 0)}
 						>
-							<Icon />
+							<Icon class="size-5"/>
 						</a>
 					</Tooltip.Trigger>
 
@@ -109,6 +109,6 @@
 	</nav>
 </div>
 
-<div class="flex justify-center pb-2">
+<div class="flex justify-center">
 	<SidebarToggleButton />
 </div>

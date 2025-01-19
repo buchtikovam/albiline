@@ -314,7 +314,7 @@
 	$effect(() => {
 		gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		gridApi.setGridOption('serverSideDatasource', datasource);
-		gridApi.setGridOption("loading", true);
+		// gridApi.setGridOption("loading", true);
 		defaultColDef.value = gridApi.getColumnDefs() || [];
 
 		const initialColDef = gridApi.getColumnDefs();

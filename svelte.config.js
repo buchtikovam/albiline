@@ -1,6 +1,6 @@
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import IISAdapter from 'sveltekit-adapter-iis';
-import * as process from 'node:process';
+import env from './env.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -14,7 +14,7 @@ const config = {
 			iisNodeOptions: {
 				nodeProcessCommandLine: 'C:\\Program Files\\nodejs\\node.exe',
 			},
-			origin: process.env.PUBLIC_ORIGIN,
+			origin: env.ORIGIN,
 		}),
 		serviceWorker: {
 			register: false,
@@ -23,14 +23,8 @@ const config = {
 			serviceWorker: undefined,
 		},
 		prerender: {
-			origin: process.env.PUBLIC_ORIGIN,
-			crawl: false,
-			// entries: []
+			origin: env.ORIGIN,
 		},
-		paths: {
-			relative: false,
-			base: process.env.PUBLIC_ORIGIN,
-		}
 	},
 }
 

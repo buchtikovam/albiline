@@ -9,8 +9,8 @@
 <Button
 	variant="ghost"
 	size="icon"
-	class="size-6 p-4 hover:bg-muted/50 text-albi-950 hover:text-black"
+	class="hover:bg-muted/50 text-albi-950 hover:text-black"
 	onclick={() => sidebarOpen.value = !sidebarOpen.value}
 >
-	<Menu class="size-6" />
+	<Menu class="!size-5" />
 </Button>

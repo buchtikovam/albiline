@@ -16,8 +16,8 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
-	import { PUBLIC_ENVIRONMENT, PUBLIC_ORIGIN } from '$env/static/public';
-	console.log(PUBLIC_ENVIRONMENT, PUBLIC_ORIGIN);
+	import { PUBLIC_FOO, PUBLIC_ENVIRONMENT } from '$env/static/public';
+	console.log(PUBLIC_FOO, PUBLIC_ENVIRONMENT);
 
 	let { children }: { children?: Snippet } = $props();
 

@@ -8,6 +8,9 @@
 	import ContextMenuFavorite from '$lib/components/sidebar/ContextMenuFavorite.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
+	import { goto } from '$app/navigation';
+
+	import { Accordion as AccordionPrimitive } from "bits-ui";
 
 
 	interface Props {
@@ -19,6 +22,10 @@
 		searchTerm,
 		filteredItems = $bindable(),
 	}: Props = $props();
+
+	let disableTab = $state(false);
+
+	let div = $state<HTMLDivElement>();
 </script>
 
 
@@ -36,16 +43,25 @@
 					<ContextMenu.Root>
 						<Accordion.Item value={item.field}>
 							<ContextMenu.Trigger>
-								<Accordion.Trigger class="hover:bg-muted/50 rounded-md flex-1">
+								<Accordion.Trigger
+									disabled={disableTab}
+									class="hover:bg-muted/50 rounded-md flex-1"
+									onclick={() =>  {console.log('clicked')} }
+								>
 									{@const Icon = item.icon}
-									<!--										onclick={() => handleTabClick(item, 0)}
--->
-									<div
-										class="flex text-sm font-bold w-fit items-center gap-3 rounded-lg text-albi-950 hover:text-black"
+									<a
+										class="flex text-sm font-bold w-fit pl-0.5 items-center gap-3 text-albi-950 hover:text-black"
+										onclick={() => {
+											console.log("click");
+											handleTabClick(item, 0);
+										}}
+										href={item.href}
+										onmouseenter={() => disableTab = true}
+										onmouseleave={() => disableTab = false}
 									>
-										<Icon />
+										<Icon class="size-5"/>
 										{ item.translation() }
-									</div>
+									</a>
 								</Accordion.Trigger>
 							</ContextMenu.Trigger>
 

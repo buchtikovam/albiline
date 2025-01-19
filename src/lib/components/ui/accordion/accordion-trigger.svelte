@@ -23,7 +23,14 @@
 		)}
 		{...restProps}
 	>
-		{@render children?.()}
-		<ChevronDown class="size-4 shrink-0 transition-transform duration-200" />
+		{#snippet child({ props })}
+			<div {...props}>
+				{@render children?.()}
+				<ChevronDown class="size-4 shrink-0 transition-transform duration-200" />
+			</div>
+		{/snippet}
+
+		<!--{@render children?.()}-->
+<!--		<ChevronDown class="size-4 shrink-0 transition-transform duration-200" />-->
 	</AccordionPrimitive.Trigger>
 </AccordionPrimitive.Header>

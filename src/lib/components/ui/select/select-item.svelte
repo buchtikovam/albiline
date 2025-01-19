@@ -8,9 +8,13 @@
 		class: className,
 		value,
 		label,
+		hideCheck = false,
 		children: childrenProp,
 		...restProps
-	}: WithoutChild<SelectPrimitive.ItemProps> = $props();
+	}: WithoutChild<SelectPrimitive.ItemProps> &
+	{
+		hideCheck: boolean;
+	} = $props();
 </script>
 
 <SelectPrimitive.Item
@@ -23,11 +27,15 @@
 	{...restProps}
 >
 	{#snippet children({ selected, highlighted })}
-		<span class="absolute left-2 flex size-3.5 items-center justify-center">
-			{#if selected}
-				<Check class="size-4" />
-			{/if}
-		</span>
+		{#if !hideCheck}
+			<span class="absolute left-2 flex size-3.5 items-center justify-center">
+				{#if selected}
+					<Check class="size-4" />
+				{/if}
+			</span>
+		{/if}
+
+
 		{#if childrenProp}
 			{@render childrenProp({ selected, highlighted })}
 		{:else}

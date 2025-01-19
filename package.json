@@ -3,16 +3,17 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "svelte-kit sync && vite dev --host --port=5173 --mode develop",
-		"build:develop": "svelte-kit sync && vite build --mode develop",
-		"build:production": "svelte-kit sync && vite build --mode production",
-		"preview": "vite preview",
+		"dev": "cross-env NODE_ENV=development svelte-kit sync && cross-env NODE_ENV=development vite dev --host --port=3001 --mode development",
+		"build:development": "cross-env NODE_ENV=development svelte-kit sync && cross-env NODE_ENV=development vite build --mode development",
+		"build:staging": "cross-env NODE_ENV=staging svelte-kit sync && cross-env NODE_ENV=staging vite build --mode staging",
+		"build:production": "cross-env NODE_ENV=production svelte-kit sync && cross-env NODE_ENV=production vite build --mode production",
+		"preview": "vite preview --port=3001",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"server": "json-server src/lib/db.json",
-		"prepare": "svelte-kit sync"
+		"prepare": ""
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.9.0",
@@ -67,7 +68,9 @@
 		"ag-grid-community": "^32.0.2",
 		"ag-grid-enterprise": "^32.0.2",
 		"clsx": "^2.1.1",
+		"cross-env": "^7.0.3",
 		"deepcopy": "^2.1.0",
+		"dotenv": "^16.4.7",
 		"html2pdf": "^0.0.11",
 		"html2pdf.js": "^0.10.2",
 		"json-server": "^1.0.0-beta.0",
