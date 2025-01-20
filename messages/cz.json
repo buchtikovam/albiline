@@ -61,6 +61,11 @@
 	"components_ribbon_item_save_preset": "Uložit aktuální šablonu",
 	"components_ribbon_item_my_presets": "Vybrat u uložených šablon",
 
+	"routes_login_form_label": "Přihlaste se ke svému účtu",
+	"routes_login_form_user_code": "Uživatelský kód",
+	"routes_login_form_password": "Heslo",
+	"routes_login_form_submit_button": "Přihlásit se",
+
 	"routes_prodej_zakaznici_tabs_list" : "Seznam",
 	"routes_prodej_zakaznici_tabs_customer_detail" : "Zákazník",
 	"routes_prodej_zakaznici_tabs_address_detail" : "Prodejna",

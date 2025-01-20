@@ -1,10 +1,8 @@
 import { sessionKey } from '$lib/runes/page.svelte';
-
-const apiRoute = 'http://10.2.2.10/albiline.test/api/v1/';
-
+import { PUBLIC_API_ROUTE } from "$env/static/public";
 
 export async function apiServiceGET(endpoint: string): Promise<Response> {
-	const url = apiRoute + endpoint;
+	const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url, {
 		method: 'GET',
@@ -17,7 +15,7 @@ export async function apiServiceGET(endpoint: string): Promise<Response> {
 
 
 export async function apiServicePOST(endpoint: string, body = {}): Promise<Response> {
-	const url = apiRoute + endpoint;
+	const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url, {
 		method: 'POST',
@@ -31,7 +29,7 @@ export async function apiServicePOST(endpoint: string, body = {}): Promise<Respo
 
 
 export async function apiServicePUT(endpoint: string, id: number, body = {}): Promise<Response> {
-	const url = apiRoute + endpoint;
+	const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url, {
 		method: 'PUT',
@@ -45,7 +43,7 @@ export async function apiServicePUT(endpoint: string, id: number, body = {}): Pr
 
 
 export async function apiServicePATCH(endpoint: string, id: number, body = {}): Promise<Response> {
-	const url = apiRoute + endpoint;
+	const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url, {
 		method: 'PATCH',
@@ -59,7 +57,7 @@ export async function apiServicePATCH(endpoint: string, id: number, body = {}): 
 
 
 export async function apiServiceDELETE(endpoint: string, id: number): Promise<Response> {
-	const url = apiRoute + endpoint;
+	const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url, {
 		method: 'DELETE',

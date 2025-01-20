@@ -5,6 +5,8 @@
 	import * as m from "$lib/paraglide/messages.js"
 	import * as Tabs from "$lib/components/ui/tabs";
 	import * as Select from "$lib/components/ui/select/index.js";
+
+	let open = $state(false);
 </script>
 
 
@@ -12,10 +14,15 @@
 <div class="h-5  w-full">
 	<Select.Root
 		type="single"
+		bind:open={open}
+
 		bind:value={sidebarCategory.value}
 		allowDeselect={false}
 	>
-		<Select.Trigger class="h-5 border-none w-fit p-0 flex gap-1 text-albi-500 hover:text-albi-700">
+		<Select.Trigger
+			onmouseover={() => { open = true }}
+			class="h-5 border-none w-fit p-0 flex gap-1 text-albi-500 hover:text-albi-700"
+		>
 			{#if sidebarCategory.value === "all"}
 				<p class="text-xs font-bold">
 					{ m.components_sidebar_category_all() }
@@ -37,7 +44,7 @@
 			{/if}
 		</Select.Trigger>
 
-		<Select.Content class="min-w-2 pr-0">
+		<Select.Content onmouseout={() => open = false} class="min-w-2 pr-0">
 			<Select.Item
 				value="all"
 				hideCheck={true}
