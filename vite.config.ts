@@ -17,7 +17,7 @@ export default defineConfig({
 			mode: 'development',
 			strategies: 'generateSW',
 			filename: undefined,
-			selfDestroying: env.ENVIRONMENT === 'develop',
+			selfDestroying: env.ENVIRONMENT === 'development',
 			pwaAssets: {
 				config: true,
 			},
@@ -31,12 +31,12 @@ export default defineConfig({
 				background_color: "#073545",
 			},
 			injectManifest: {
-				globPatterns: env.ENVIRONMENT === 'develop'
+				globPatterns: env.ENVIRONMENT === 'development'
 					? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 					: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: env.ENVIRONMENT === 'develop'
+				globPatterns: env.ENVIRONMENT === 'development'
 					? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 					: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
 				maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB
