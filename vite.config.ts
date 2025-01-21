@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import { SvelteKitPWA } from '@vite-pwa/sveltekit'
+// import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { paraglide } from '@inlang/paraglide-sveltekit/vite';
 const env = process.env;
 
@@ -12,45 +12,45 @@ export default defineConfig({
 			outdir: "./src/lib/paraglide",
 		}),
 		sveltekit(),
-		SvelteKitPWA({
-			srcDir: './src',
-			mode: 'development',
-			strategies: 'generateSW',
-			filename: undefined,
-			selfDestroying: env.ENVIRONMENT === 'development',
-			pwaAssets: {
-				config: true,
-			},
-			manifest: {
-				short_name: 'Albiline',
-				name: 'Albiline',
-				start_url: '/',
-				scope: '/',
-				display: 'standalone',
-				theme_color: "#073545",
-				background_color: "#073545",
-			},
-			injectManifest: {
-				globPatterns: env.ENVIRONMENT === 'development'
-					? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
-					: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
-			},
-			workbox: {
-				globPatterns: env.ENVIRONMENT === 'development'
-					? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
-					: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
-				maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB
-			},
-			devOptions: {
-				enabled: true,
-				suppressWarnings: false,
-				type: 'module',
-				navigateFallback: '/',
-			},
-			kit: {
-				includeVersionFile: true,
-			}
-		}),
+		// SvelteKitPWA({
+		// 	srcDir: './src',
+		// 	mode: 'development',
+		// 	strategies: 'generateSW',
+		// 	filename: undefined,
+		// 	selfDestroying: env.ENVIRONMENT === 'development',
+		// 	pwaAssets: {
+		// 		config: true,
+		// 	},
+		// 	manifest: {
+		// 		short_name: 'Albiline',
+		// 		name: 'Albiline',
+		// 		start_url: '/',
+		// 		scope: '/',
+		// 		display: 'standalone',
+		// 		theme_color: "#073545",
+		// 		background_color: "#073545",
+		// 	},
+		// 	injectManifest: {
+		// 		globPatterns: env.ENVIRONMENT === 'development'
+		// 			? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+		// 			: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+		// 	},
+		// 	workbox: {
+		// 		globPatterns: env.ENVIRONMENT === 'development'
+		// 			? ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+		// 			: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
+		// 		maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB
+		// 	},
+		// 	devOptions: {
+		// 		enabled: true,
+		// 		suppressWarnings: false,
+		// 		type: 'module',
+		// 		navigateFallback: '/',
+		// 	},
+		// 	kit: {
+		// 		includeVersionFile: true,
+		// 	}
+		// }),
 	],
 	build: {
 		chunkSizeWarningLimit: 3000,

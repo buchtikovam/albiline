@@ -2,36 +2,36 @@
 <script lang="ts">
     import { ParaglideJS } from "@inlang/paraglide-sveltekit"
     import { i18n } from "$lib/i18n"
-	import { pwaAssetsHead } from "virtual:pwa-assets/head";
-	import { pwaInfo } from "virtual:pwa-info";
+	// import { pwaAssetsHead } from "virtual:pwa-assets/head";
+	// import { pwaInfo } from "virtual:pwa-info";
 	import { type Snippet } from 'svelte';
 	import {isMobile} from "$lib/runes/page.svelte";
 	import {Toaster} from "svelte-sonner";
 
-	let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
+	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
 
 	let { children }: { children?: Snippet } = $props();
 </script>
 
 
 
-<svelte:head>
-	{#if pwaAssetsHead.themeColor}
-		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />
-	{/if}
+<!--<svelte:head>-->
+<!--	{#if pwaAssetsHead.themeColor}-->
+<!--		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />-->
+<!--	{/if}-->
 
-	{#each pwaAssetsHead.links as link}
-		<link {...link} />
-	{/each}
+<!--	{#each pwaAssetsHead.links as link}-->
+<!--		<link {...link} />-->
+<!--	{/each}-->
 
-	{@html webManifest}
-</svelte:head>
+<!--	{@html webManifest}-->
+<!--</svelte:head>-->
 
 
 
-{#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}
-	<ReloadPrompt />
-{/await}
+<!--{#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}-->
+<!--	<ReloadPrompt />-->
+<!--{/await}-->
 
 
 
