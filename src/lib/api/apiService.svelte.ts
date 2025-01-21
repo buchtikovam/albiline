@@ -1,27 +1,27 @@
-import { sessionKey } from '$lib/runes/page.svelte';
+import {authDetails, sessionKey} from '$lib/runes/page.svelte';
 import { PUBLIC_API_ROUTE } from "$env/static/public";
 
-export async function apiServiceGET(endpoint: string): Promise<Response> {
-	const url = PUBLIC_API_ROUTE + endpoint;
+const url = PUBLIC_API_ROUTE;
+const sessionCode = $derived(authDetails.sessionCode);
 
-	return await fetch(url, {
+
+export async function apiServiceGET(endpoint: string): Promise<Response> {
+	return await fetch(url + endpoint, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': sessionKey.value
+			'Session-Key': sessionCode || ""
 		}
 	});
 }
 
 
 export async function apiServicePOST(endpoint: string, body = {}): Promise<Response> {
-	const url = PUBLIC_API_ROUTE + endpoint;
-
-	return await fetch(url, {
+	return await fetch(url + endpoint, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': sessionKey.value
+			'Session-Key': sessionCode || ""
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
@@ -31,11 +31,11 @@ export async function apiServicePOST(endpoint: string, body = {}): Promise<Respo
 export async function apiServicePUT(endpoint: string, id: number, body = {}): Promise<Response> {
 	const url = PUBLIC_API_ROUTE + endpoint;
 
-	return await fetch(url, {
+	return await fetch(url + endpoint, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': sessionKey.value
+			'Session-Key': sessionCode || ""
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
@@ -45,11 +45,11 @@ export async function apiServicePUT(endpoint: string, id: number, body = {}): Pr
 export async function apiServicePATCH(endpoint: string, id: number, body = {}): Promise<Response> {
 	const url = PUBLIC_API_ROUTE + endpoint;
 
-	return await fetch(url, {
+	return await fetch(url + endpoint, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': sessionKey.value
+			'Session-Key': sessionCode || ""
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
@@ -59,11 +59,11 @@ export async function apiServicePATCH(endpoint: string, id: number, body = {}): 
 export async function apiServiceDELETE(endpoint: string, id: number): Promise<Response> {
 	const url = PUBLIC_API_ROUTE + endpoint;
 
-	return await fetch(url, {
+	return await fetch(url + endpoint, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': sessionKey.value
+			'Session-Key': sessionCode || ""
 		}
 	});
 }

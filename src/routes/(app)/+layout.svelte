@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { editedTableData } from '$lib/runes/table.svelte';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import { isMobile } from '$lib/runes/page.svelte';
+	import { authDetails } from "$lib/runes/page.svelte";
 	import { beforeNavigate } from '$app/navigation';
-	import { ParaglideJS } from '@inlang/paraglide-sveltekit'
-	import './../../app.pcss';
+	import type { LayoutData } from './$types';
 	import { type Snippet } from 'svelte';
+	import './../../app.pcss';
 	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Header from '$lib/components/header/Header.svelte';
@@ -15,13 +15,10 @@
 	// import { PUBLIC_FOO, PUBLIC_ENVIRONMENT } from '$env/static/public';
 	// console.log(PUBLIC_FOO, PUBLIC_ENVIRONMENT);
 
-	let { children }: { children?: Snippet } = $props();
+	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
-	let innerWidth: number = $state(0);
-
-    $effect(() => {
-		isMobile.value = innerWidth < 768;
-	});
+	authDetails.userName = data.auth.userName;
+	authDetails.sessionCode = data.auth.sessionCode;
 
 	beforeNavigate(({ cancel }) => {
 		if (editedTableData.value.length > 0) {
@@ -34,11 +31,6 @@
 		}
 	})
 </script>
-
-
-
-<svelte:window bind:innerWidth/>
-
 
 
 

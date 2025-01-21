@@ -14,4 +14,6 @@ export const showFulltextSearch: { value: boolean } = $state({ value: false });
 
 export const fulltextFilterValue: { value: string } = $state({ value: "" });
 
-export const activeTabIndex: { value: number } = $state({ value: 0 })
+export const activeTabIndex: { value: number } = $state({ value: 0 });
+
+export const authDetails: { sessionCode: string|null, userName: string|null } = $state({ sessionCode: null, userName: null });

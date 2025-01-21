@@ -1,5 +1,5 @@
 import { page } from '$app/stores';
-import { apiServiceGET } from '$lib/api/apiService';
+import { apiServiceGET } from '$lib/api/apiService.svelte';
 import { get } from 'svelte/store';
 import type { PageMetaDataType } from '$lib/types/page/pageSettings';
 

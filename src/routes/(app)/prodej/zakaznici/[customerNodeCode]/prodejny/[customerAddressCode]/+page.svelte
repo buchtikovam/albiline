@@ -11,7 +11,7 @@
 	import { activeTabIndex, isMobile } from '$lib/runes/page.svelte';
 	import { ribbonAction } from '$lib/runes/ribbon.svelte';
 	import { page } from '$app/state';
-	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService';
+	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService.svelte';
 	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
 	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
 	import { getPageMetaData } from '$lib/utils/getPageMetaData';

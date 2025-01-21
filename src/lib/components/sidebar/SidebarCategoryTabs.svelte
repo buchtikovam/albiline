@@ -15,7 +15,6 @@
 	<Select.Root
 		type="single"
 		bind:open={open}
-
 		bind:value={sidebarCategory.value}
 		allowDeselect={false}
 	>
@@ -44,7 +43,7 @@
 			{/if}
 		</Select.Trigger>
 
-		<Select.Content onmouseout={() => open = false} class="min-w-2 pr-0">
+		<Select.Content class="min-w-2 pr-0">
 			<Select.Item
 				value="all"
 				hideCheck={true}

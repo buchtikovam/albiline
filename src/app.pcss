@@ -3,15 +3,26 @@
 @tailwind base;
 @tailwind components;
 @layer base {
+	* {
+		font-family: Inter, sans-serif;
+	}
+
 	img {
 		@apply inline-block;
 	}
+
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus,
+	input:-webkit-autofill:active{
+		-webkit-box-shadow: 0 0 0 30px #dbfeff inset !important;
+		-webkit-text-fill-color: #073545 !important;
+	}
 }
+
 @tailwind utilities;
 
-html {
-	font-family: Inter;
-}
+
 
 @layer base {
 	:root {

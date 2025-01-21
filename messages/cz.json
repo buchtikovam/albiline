@@ -1,8 +1,6 @@
 {
     "$schema": "https://inlang.com/schema/inlang-message-format",
 
-
-	"components_avatar_welcome": "Vítejte, ",
 	"components_avatar_profile": "Profil",
 	"components_avatar_settings": "Nastavení",
 	"components_avatar_view": "Zobrazení",
