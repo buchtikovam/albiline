@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';
-	import { openedDialog } from '$lib/runes/ribbon.svelte';
+	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
 	import { page } from '$app/stores';
-	import { apiServiceGET } from '$lib/api/apiService.svelte';
+	import { apiServiceGET } from '$lib/api/apiService.svelte.js';
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 

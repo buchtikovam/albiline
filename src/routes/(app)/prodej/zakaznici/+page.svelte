@@ -10,6 +10,7 @@
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import { i18n } from '$lib/i18n';
+	import InputDialog from "$lib/components/dialog/input/InputDialog.svelte";
 
 
 	let pageMetaData: PageMetaDataType;
@@ -55,6 +56,7 @@
 <svelte:head>
 	<title>Zákazníci | Albiline</title>
 </svelte:head>
+
 
 
 

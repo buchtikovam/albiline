@@ -4,9 +4,9 @@
 	"private": true,
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development svelte-kit sync && cross-env NODE_ENV=development vite dev --host --port=3001 --mode development",
-		"build:development": "cross-env NODE_ENV=development svelte-kit sync && cross-env NODE_ENV=development vite build --mode development",
-		"build:staging": "cross-env NODE_ENV=staging svelte-kit sync && cross-env NODE_ENV=staging vite build --mode staging",
-		"build:production": "cross-env NODE_ENV=production svelte-kit sync && cross-env NODE_ENV=production vite build --mode production",
+		"build:development": "cross-env NODE_ENV=development svelte-kit sync && cross-env NODE_ENV=development vite build -- --mode development",
+		"build:staging": "cross-env NODE_ENV=staging svelte-kit sync && cross-env NODE_ENV=staging vite build -- --mode staging",
+		"build:production": "cross-env NODE_ENV=production svelte-kit sync && cross-env NODE_ENV=production vite build -- --mode production",
 		"preview": "vite preview --port=3001",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

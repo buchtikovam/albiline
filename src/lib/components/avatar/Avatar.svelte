@@ -94,10 +94,7 @@
 			<DropdownMenu.Item
 				class="flex items-center"
 				onclick={() => {
-					setTimeout(() => {
-						pageCompact.value = false;
-					}, 300)
-
+					pageCompact.value = false;
 					window.location.reload();
 				}}
 			>
@@ -107,10 +104,7 @@
 
 			<DropdownMenu.Item
 				onclick={() => {
-					setTimeout(() => {
-						pageCompact.value = true;
-					}, 300)
-
+					pageCompact.value = true;
 					window.location.reload();
 				}}
 				class="flex items-center"

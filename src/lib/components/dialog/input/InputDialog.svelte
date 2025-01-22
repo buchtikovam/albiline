@@ -1,166 +1,108 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { page } from '$app/stores';
-	import type { InputDialog, InputDialogItem } from '$lib/types/components/form/inputDialog';
-	import { onMount } from 'svelte';
-	import { customToast } from '$lib/utils/customToast';
-	import DatePicker from '$lib/components/date/DatePicker.svelte';
-	import InputStringNumber from '$lib/components/dialog/input/dialog-components/InputStringNumber.svelte';
-	import DateRange from '$lib/components/dialog/input/dialog-components/DateRange.svelte';
-	import RadioGroup from '$lib/components/dialog/input/dialog-components/RadioGroup.svelte';
-	import CheckboxGroup from '$lib/components/dialog/input/dialog-components/CheckboxGroup.svelte';
+	import { Input } from "$lib/components/ui/input";
+	import type {InputDialogFields, InputDialogRequest} from "$lib/types/components/dialog/inputDialog";
+	import InputDialogSelectWrapper from "$lib/components/form/select/InputDialogSelectWrapper.svelte";
+	import InputWrapperText from "$lib/components/form/inputs/InputWrapperText.svelte";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import LastYearButton from '$lib/components/date/range-buttons/LastYearButton.svelte';
+	import {Separator} from "$lib/components/ui/separator";
+	import Plus from "lucide-svelte/icons/plus";
 
-	/*
-		Vstupní parametry pro získávání dat jednotlivých stránek.
+	let { open = $bindable() }: { open: boolean } = $props();
 
-		Komponent očekává, že se v $lib/data/inputDialogs nachází soubor, který se jmenuje stejně
-		jako poslední část routy stránky (později se předělá na fetch z db) a v tomto souboru má být
-		nadefinovaný obsah input dialogu v podobě objektu.
+	let fieldOptions: InputDialogFields = [
+		{
+			field: "name",
+			label: "Prodejna",
+			type: "string",
+		},
+		{
+			field: "customerAddressCode",
+			label: "Id prodejny",
+			type: "number",
+		},
+	]
 
-		Po vyplnění všech inputů +page.svelte získává data
-	*/
+	let inputs: InputDialogRequest = $state({
+		fulltext: null,
+		filters: [
+			{
+				field: null,
+				conditions: [
+					{
+						type: null,
+						value: null
+					}
+				],
+				operators: null,
+			}
+		]
+	})
 
-	interface Props {
-		inputDialogObjects: Record<string, any>;
+
+	function addInput() {
+		inputs.filters.push({
+			field: null,
+			conditions: [
+				{
+					type: null,
+					value: null
+				}
+			],
+			operators: null,
+		})
 	}
 
-	let { inputDialogObjects = $bindable() }: Props = $props();
-
-	let dialogOpen: boolean = $state(false);
-	let dialogContent: InputDialog = $state();
-	let pathLength = $page.url.pathname.split('/').length;
-	let fileName = $page.url.pathname.split('/')[pathLength - 1];
-
-
-	async function getInputDialogData() {
-		let response = await import((`$lib/data/inputDialogs/${fileName}.ts`));
-		dialogContent = response.params;
-	}
-
-
-	/*
-		funkce do jednoho objektu namapuje item values ze všech komponent
-		a kontroluje, zda byla všechna pole vyplněna (později validace přes Zod)
-	*/
-	function handleDialogSubmitButton(event: Event) {
-		event.preventDefault();
-		inputDialogObjects = {};
-
-		dialogContent.forEach((item: InputDialogItem) => {
-			if (item.type === 'string' || item.type === 'number' || item.type === 'date') {
-				if (item.value) {
-					inputDialogObjects[item.name] = item.value;
-				}
-			}
-
-			if (item.type === 'date-range') {
-				if (item.startDateValue && item.endDateValue) {
-					inputDialogObjects[item.name] = {
-						startDateValue: item.startDateValue,
-						endDateValue: item.endDateValue
-					};
-				}
-			}
-
-			if (item.type === "radio-group") {
-				inputDialogObjects[item.name] = item.checkedValue
-			}
-
-			if (item.type === "checkbox-group") {
-				inputDialogObjects[item.name] = item.children
-					.filter((child) => child.checked === true)
-					.map((child) => child.id)
-			}
-
-			if (item.type === "date-range-button") {
-				if (item.startDateValue && item.endDateValue) {
-					inputDialogObjects[item.name] = {
-						startDateValue: item.startDateValue,
-						endDateValue: item.endDateValue
-					};
-				}
-			}
-		});
-
-		if (Object.entries(inputDialogObjects).length === dialogContent.length) {
-			dialogOpen = false;
-		} else {
-			customToast('Warning', 'Prosím vyplňte všechna pole');
-		}
-	}
-
-
-	onMount(() => {
-		getInputDialogData();
-		dialogOpen = true;
-	});
+	$inspect(inputs.fulltext);
+	$inspect(inputs.filters);
 </script>
 
 
 
-<Dialog.Root bind:open={dialogOpen}>
-	<Dialog.Content class="!w-fit overflow-visible">
-		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2">
+<Dialog.Root bind:open={open}>
+	<Dialog.Content class="w-[600px] max-w-[600px] max-h-[70%] overflow-auto">
+		<Dialog.Header class="">
+			<Dialog.Title class="">
 				Vstupní parametry
 			</Dialog.Title>
 		</Dialog.Header>
 
-		<form onsubmit={handleDialogSubmitButton}>
-			{#if dialogContent}
-				<div class="flex flex-col gap-2.5 mb-4">
-					{#each dialogContent as item}
-						{#if item.type === "string" || item.type === "number"}
-							<InputStringNumber
-								item={item}
-								bind:value={item.value}
-							/>
-						{/if}
 
-						{#if item.type === "date"}
-							<DatePicker
-								label={item.label}
-								bind:dateValue={item.value}
-							/>
-						{/if}
+		<form method="POST" class="overflow-auto h-full flex flex-col">
+			<Input
+				type="text"
+				bind:value={inputs.fulltext}
+				placeholder="Id, Název, Město, ..."
+				class="border-border mb-4"
+			/>
 
-						{#if item.type === "date-range"}
-							<DateRange
-								item={item}
-								bind:startDateValue={item.startDateValue}
-								bind:endDateValue={item.endDateValue}
-							/>
-						{/if}
+<!--			<Separator class="my-2 h-[1px]"/>-->
 
-						{#if item.type === "checkbox-group"}
-							<CheckboxGroup bind:items={item.children} />
-						{/if}
-
-						{#if item.type === "radio-group"}
-							<RadioGroup bind:item={item}/>
-						{/if}
-
-						{#if item.type === "date-range-button"}
-							{#if item.buttonType === "lastYear"}
-								<LastYearButton
-									bind:startDateValue={item.startDateValue}
-									bind:endDateValue={item.endDateValue}
-								/>
-							{/if}
-						{/if}
-					{/each}
+			{#each inputs.filters as input, i (i)}
+				<div class="w-full mb-2">
+					<InputDialogSelectWrapper
+						options={fieldOptions}
+						bind:activeItem={inputs.filters[i]}
+					/>
 				</div>
-			{/if}
+			{/each}
 
-			<Dialog.Footer>
-				<Button
-					type="submit"
-					class="w-full bg-albi-500 text-background font-bolder"
-				>
-					Potvrdit
-				</Button>
+
+			<Dialog.Footer class="w-full mt-2">
+				<div class="w-full flex justify-between">
+					<Button
+						onclick={() => open = false}
+					>
+						Načíst
+					</Button>
+
+					<Button
+						onclick={() => addInput()}
+						class="size-10"
+					>
+						<Plus strokeWidth={3} class="text-white"/>
+					</Button>
+				</div>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

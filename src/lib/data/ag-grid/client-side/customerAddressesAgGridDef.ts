@@ -1,5 +1,5 @@
 import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-import { page } from '$app/stores';
+import { page } from '$app/state';
 import { get } from 'svelte/store';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
 
@@ -12,8 +12,8 @@ export const customerAddressesAgGridDef = [
 		width: 115,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -28,8 +28,8 @@ export const customerAddressesAgGridDef = [
 		width: 280,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -44,8 +44,8 @@ export const customerAddressesAgGridDef = [
 		width: 200,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -60,8 +60,8 @@ export const customerAddressesAgGridDef = [
 		width: 200,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -76,8 +76,8 @@ export const customerAddressesAgGridDef = [
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -92,8 +92,8 @@ export const customerAddressesAgGridDef = [
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -108,8 +108,8 @@ export const customerAddressesAgGridDef = [
 		width: 90,
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -132,8 +132,8 @@ export const customerAddressesAgGridDef = [
 		cellRenderer: (params: ICellRendererParams) => selectBtn(params),
 		cellStyle: (params: CellClassParams) => {
 			if (
-				params.data.customerNodeCode === Number(get(page).params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(get(page).params.customerAddressCode)
+				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+				params.data.customerAddressCode === Number(page.params.customerAddressCode)
 			) {
 				return {
 					backgroundColor: bgHEX
@@ -143,6 +143,8 @@ export const customerAddressesAgGridDef = [
 		},
 	}
 ]
+
+
 
 function selectBtn(params: ICellRendererParams) {
 	const div = document.createElement('div');
@@ -175,11 +177,15 @@ function selectBtn(params: ICellRendererParams) {
 			}
 		})
 
+		console.log(match)
+
 		if (!match) {
-			storedRows.concat(selectedRow);
+			storedRows.push(selectedRow);
 		}
 
 		storedSelectedRows.value = storedRows;
+
+		console.log(storedSelectedRows.value)
 
 		activeSelectedRowIndex.value = storedSelectedRows.value.findIndex((id) =>
 			id.customerNodeCode === selectedRow.customerNodeCode &&
@@ -187,6 +193,6 @@ function selectBtn(params: ICellRendererParams) {
 		);
 	})
 
-	div.appendChild(link)
+	div.appendChild(link);
 	return div;
 }

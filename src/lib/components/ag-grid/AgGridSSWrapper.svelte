@@ -2,7 +2,7 @@
 	import {
 		activeSelectedRowIndex, defaultColDef,
 		editedTableData,
-		filtersToSave, lastRowAndPositions,
+		filtersToSave,
 		presetToSave, selectedFilters, selectedPreset, setColDefToDefault,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
@@ -122,97 +122,27 @@
 	}
 
 
-	const rowBatchSize = 100;
 	let recentFilters: FilterModel[] = [];
-	let currentSort: ("asc" | "desc" | null | undefined)[] = []
-	let previousSort: ("asc" | "desc" | null | undefined)[] = []
-	let lastRow: number|null = null;
 	let isInitialGridLoad = $state(true);
 	let isLoaded = $state(false);
 
+	$inspect(isLoaded)
 
-	$inspect(lastRowAndPositions.value);
-	$inspect(lastVisibleRowIndex.value);
 
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
-			console.time("load");
 			isLoaded = false;
 			const currentFilter = gridApi.getFilterModel();
 			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
 			const updatedParamsRequest: TableRowRequest = params.request
+			updatedParamsRequest.fulltext = fulltextFilterValue.value;
 
 			// storing recents to navigate to previous filters if needed
 			if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
 				recentFilters.push(currentFilter);
 			}
 
-			// if filter has changed, set lastRow to null
-			if (JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-				console.log("filter changed");
-				updatedParamsRequest.startRow = 0;
-				updatedParamsRequest.endRow = rowBatchSize;
-				lastRow = null;
-				lastRowAndPositions.value = [];
-				scrollGridToTop();
-			}
-
-			// // if sort has changed, set lastRow to null
 			// currentSort = gridApi.getColumnState().map((state) => state.sort)
-			// if (JSON.stringify(currentSort) !== JSON.stringify(previousSort)) {
-			// 	console.log("sort changed");
-			// 	updatedParamsRequest.startRow = 0;
-			// 	updatedParamsRequest.endRow = rowBatchSize;
-			// 	lastRow = null;
-			// 	lastRowAndPositions.value = [];
-			// 	scrollGridToTop();
-			// }
-
-			// previousSort = currentSort;
-
-			// custom request model
-			updatedParamsRequest.fulltext = fulltextFilterValue.value;
-			updatedParamsRequest.lastRow = lastRow;
-			updatedParamsRequest.rowBatchSize = rowBatchSize;
-			// updatedParamsRequest.endRow = (updatedParamsRequest.startRow === 0 ? 50 : updatedParamsRequest.startRow) * 2;
-
-			// check if requested block is already in lastRowAndPositions
-			// (solves refresh issue - not providing correct lastRow)
-			let match = false;
-			lastRowAndPositions.value.forEach((obj) => {
-				if (obj.startRow === updatedParamsRequest.startRow && obj.endRow === updatedParamsRequest.endRow) {
-					match = true;
-					updatedParamsRequest.lastRow = obj.lastRow;
-				}
-			})
-
-			if (!match) {
-				console.log("no match");
-				const lastIndex = lastVisibleRowIndex.value;
-
-				if (lastIndex > 0) {
-					console.log("index higher");
-					console.log("row positions", lastRowAndPositions.value);
-
-					lastRowAndPositions.value.forEach((value) => {
-						if (lastIndex > value.startRow && lastIndex < value.endRow) {
-							console.log("index found between", value.startRow, value.endRow);
-							updatedParamsRequest.startRow = value.startRow;
-							updatedParamsRequest.endRow = value.endRow;
-							updatedParamsRequest.lastRow = value.lastRow;
-
-							lastVisibleRowIndex.value = 0;
-						}
-					})
-				} else {
-					console.log("index lower");
-					lastRowAndPositions.value.push({
-						startRow: updatedParamsRequest.startRow,
-						endRow: updatedParamsRequest.endRow,
-						lastRow: updatedParamsRequest.lastRow
-					})
-				}
-			}
 
 			fetch(url
 				,{
@@ -227,8 +157,8 @@
 				.then(httpResponse => httpResponse.json())
 				.then(response => {
 					params.success({ rowData: response.items });
-					console.timeEnd("load")
-					lastRow = response.items.slice(-1)[0].rowNumber || null;
+				})
+				.then(() => {
 					isLoaded = true;
 				})
 				.catch(error => {
@@ -248,10 +178,10 @@
 
 		timer = setTimeout(async () => {
 			await tick();
-			lastRow = null;
 			gridApi.onFilterChanged()
 		}, 1000)
 	}
+
 	$effect(() => {
 		if (fulltextFilterValue.value) {
 			isInitialFilterValue = false;
@@ -297,14 +227,14 @@
 							}
 						})
 					})
-				}, 1500)
+				}, 200)
 			}
 
-			setTimeout(() => {
+			// setTimeout(() => {
 				gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
 				gridApi.setGridOption("loading", false);
 				isInitialGridLoad = false;
-			}, 1500)
+			// }, 100)
 		}
 	})
 
@@ -455,8 +385,6 @@
 	})
 
 
-
-
 	// if (action === RibbonActionEnum.SAVE) {
 	// 	console.log(get(editedTableDataStore));
 	// }
@@ -528,6 +456,7 @@
 </script>
 
 
+
 <div class="flex flex-column h-full">
 	<div
 		id="datagrid"
@@ -540,8 +469,6 @@
 
 
 <style>
-
-
 	.compact {
 		--ag-grid-size: 3px;
 	}

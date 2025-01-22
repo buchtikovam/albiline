@@ -26,8 +26,8 @@
 	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/NewCustomerContactDialog.svelte';
-	import CustomerAddressesDialog from '$lib/components/dialog/page/zakaznici/CustomerAddressesDialog.svelte';
+	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
+	import CustomerAddressesDialog from '$lib/components/dialog/page/zakaznici/dialog-get/CustomerAddressesDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
@@ -247,13 +247,18 @@
 	const contactsGridOptions: GridOptions = {
 		columnDefs: customerAndAddressContactsAgGridDef,
 	}
+
+
 </script>
 
 
 
 <svelte:head>
-	<title>Prodejna {initialFormValues.customerAddressCode || ""} | Albiline</title>
+	<title>
+		Prodejna {initialFormValues.customerAddressCode || ""} | Albiline
+	</title>
 </svelte:head>
+
 
 
 

@@ -1,8 +1,8 @@
 import {authDetails, sessionKey} from '$lib/runes/page.svelte';
-import { PUBLIC_API_ROUTE } from "$env/static/public";
 
-const url = PUBLIC_API_ROUTE;
-const sessionCode = $derived(authDetails.sessionCode);
+const url = "http://10.2.2.10/albiline.test/api/v1/";
+// const sessionCode = $derived(authDetails.sessionCode);
+const sessionCode = $derived(sessionKey.value);
 
 
 export async function apiServiceGET(endpoint: string): Promise<Response> {
