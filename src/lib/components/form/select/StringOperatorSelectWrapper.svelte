@@ -1,11 +1,5 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
-	import type {
-		InputConditionTypeString,
-		InputDialogFields,
-		InputDialogItem,
-		InputDialogType
-	} from "$lib/types/components/dialog/inputDialog";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import Check from "lucide-svelte/icons/check";
 	import { tick } from "svelte";
@@ -17,22 +11,35 @@
 	import Scan from "lucide-svelte/icons/scan";
 	import ArrowRightFromLine from "lucide-svelte/icons/arrow-right-from-line";
 	import ArrowLeftFromLine from "lucide-svelte/icons/arrow-left-from-line";
+	import type {
+		ColumnFilterModelCondition,
+		ColumnFilterModelConditionTypesString, InputDialogSelectOption
+	} from "$lib/types/components/dialog/inputDialog";
 
 	interface Props {
-		item: InputDialogItem,
+		disabled: boolean;
+		condition: ColumnFilterModelCondition,
 	}
 
 	let {
-		item = $bindable(),
+		disabled = true,
+		condition = $bindable(),
 	}: Props = $props();
 
 
 	let open = $state(false);
+
+	let activeOperator: OperatorOption = $state({
+		field: null,
+		label: null,
+	})
+
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	type OperatorOption = {
-		field: InputConditionTypeString,
-		label: string,
+		field: ColumnFilterModelConditionTypesString|null,
+		label: string|null,
+		icon?: IconType
 	}
 
 	const options: OperatorOption[] = [
@@ -77,68 +84,75 @@
 		});
 	}
 
-	let activeLabel = $derived.by(() => {
-		options.forEach(option => {
-			if (option.field === item.field) {
-				return option.label;
-			}
-		})
-
-		return "...";
+	$effect(() => {
+		if (condition.type) {
+			options.forEach((option) => {
+				if (option.field === condition.type) {
+					activeOperator = option;
+				}
+			})
+		}
 	})
+
+	function updateItem(option: OperatorOption) {
+		condition.type = option.field;
+	}
 </script>
 
 
 
-<div class="flex gap-2">
-	<Popover.Root bind:open>
-		<Popover.Trigger bind:ref={triggerRef}>
-			{#snippet child({ props })}
-				<Button
-					variant="outline"
-					class="w-[200px] font-normal hover:bg-muted/50"
-					{...props}
-					role="combobox"
-					aria-expanded={open}
-				>
-					<!--{@const Icon = activeOperator.icon}-->
-					{activeLabel}
+<Popover.Root bind:open>
+	<Popover.Trigger bind:ref={triggerRef}>
+		{#snippet child({ props })}
+			<Button
+				variant="outline"
+				class="min-w-[80px] font-normal hover:bg-muted/50 disabled:opacity-100 disabled:cursor-not-allowed"
+				disabled={disabled}
+				{...props}
+				role="combobox"
+				aria-expanded={open}
+			>
+				<!--{@const Icon = activeOperator.icon}-->
+				{ activeOperator.label }
+
+				{#if activeOperator.label === null}
+					<p class="text-slate-300">Akce</p>
+				{/if}
 <!--					<Icon/>-->
-				</Button>
-			{/snippet}
-		</Popover.Trigger>
+			</Button>
+		{/snippet}
+	</Popover.Trigger>
 
 
-		<Popover.Content class="p-0 w-[120px]">
-			<Command.Root>
-				<Command.Input placeholder="..." />
+	<Popover.Content side="bottom" class="p-0 w-[120px] max-h-60">
+		<Command.Root>
+			<Command.Input placeholder="..." />
 
-				<Command.List>
-					<Command.Empty>
-						Zde nic není.
-					</Command.Empty>
+			<Command.List>
+				<Command.Empty>
+					Zde nic není.
+				</Command.Empty>
 
 
-					<Command.Group>
-						{#each options as option}
-							<Command.Item
-								value={option.label}
-								onSelect={() => {
-
-									closeAndFocusTrigger();
-								}}
-							>
-								<!--{@const Icon = option.icon}-->
+				<Command.Group>
+					{#each options as option}
+						<Command.Item
+							value={option.label}
+							onSelect={() => {
+								updateItem(option);
+								closeAndFocusTrigger();
+							}}
+						>
+							<!--{@const Icon = option.icon}-->
 
 <!--								<Icon />-->
 
+							{option.label}
+						</Command.Item>
+					{/each}
+				</Command.Group>
+			</Command.List>
+		</Command.Root>
+	</Popover.Content>
+</Popover.Root>
 
-								{option.label}
-							</Command.Item>
-						{/each}
-					</Command.Group>
-				</Command.List>
-			</Command.Root>
-		</Popover.Content>
-	</Popover.Root>
-</div>

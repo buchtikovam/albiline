@@ -1,59 +1,67 @@
-export type InputDialogFields = InputDialogField[];
-
-export type InputDialogField = {
+// SELECT OPTIONS
+export type InputDialogSelectOption = {
 	field: string;
-	label: string;
-	type: InputDialogType;
-}
-
-export type InputDialogType = string|number;
-
-
-export type InputDialogRequest = {
-	fulltext: string|null;
-	filters: InputDialogItem[];
+	label: () => {};
+	type: ColumnFilterType;
 }
 
 
-export type InputDialogItem = {
-	field: string|null;
-	type: InputDialogType;
-	filter: InputDialogCondition;
+// INPUT DIALOG
+export type InputDialogType = {
+	fulltext?: string|null;
+	inputs?: InputDialogInput[];
+	columnFilters?: ColumnFilter[];
 }
 
 
-type InputDialogCondition = InputConditionString | InputConditionNumber;
-
-type InputConditionString = {
-	operator: InputConditionTypeString|null,
-	value: string|null|string[];
-}
-
-type InputConditionNumber = {
-	operator: InputConditionTypeNumber|null,
-	value: number|null|number[];
+// INPUTS
+type InputDialogInput = {
+	name: string;
+	value: any
 }
 
 
-export type InputConditionTypeString =
-	"contains" |
-	"not-contains" |
-	"equals" |
-	"not-equals" |
-	"starts-with" |
-	"ends-with" |
-	"empty" |
-	"not-empty";
+// COLUMN FILTERS
+export type ColumnFilter = {
+	columnName: string|null;
+	type: ColumnFilterType;
+	filterModel: ColumnFilterModelType;
+}
+
+type ColumnFilterType = "text" | "number" | "boolean" | "enum" | "date";
 
 
-export type InputConditionTypeNumber =
-	"equals" |
-	"not-equals" |
-	"more" |
-	"more-or-equal" |
-	"less" |
-	"less-or-equal" |
-	"one-of" |
-	"between" |
-	"empty" |
-	"not-empty";
+
+type ColumnFilterModelType = {
+	operator: "OR" | "AND" | null;
+	conditions: ColumnFilterModelCondition[];
+};
+
+
+
+export type ColumnFilterModelCondition = ColumnFilterModelConditionString | ColumnFilterModelConditionNumber;
+
+type ColumnFilterModelConditionString = {
+	type: ColumnFilterModelConditionTypesString|null,
+	value: string|null;
+}
+
+type ColumnFilterModelConditionNumber = {
+	type: ColumnFilterModelConditionTypesNumber,
+	value: number|null;
+}
+
+
+
+export type ColumnFilterModelConditionTypesString =
+	"contains" | "not-contains" |
+	"equals" | "not-equals" |
+	"starts-with" | "ends-with" |
+	"empty" | "not-empty";
+
+
+export type ColumnFilterModelConditionTypesNumber =
+	"equals" | "not-equals" |
+	"more" | "more-or-equal" |
+	"less" | "less-or-equal" |
+	"between" | "empty" | "not-empty";

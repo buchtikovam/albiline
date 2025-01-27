@@ -23,14 +23,14 @@ export const customerAgGridDef: ColDef[] = [
 		editable: false,
 		hide: false,
 		width: 68,
-		filter: 'agMultiColumnFilter',
-		filterParams: {
-			filters: [
-				{
-					filter: 'agNumberColumnFilter',
-				},
-			],
-		},
+		filter: 'agNumberColumnFilter',
+		// filterParams: {
+		// 	filters: [
+		// 		{
+		// 			filter: 'agNumberColumnFilter',
+		// 		},
+		// 	],
+		// },
 	},
 	{
 		field: "name",

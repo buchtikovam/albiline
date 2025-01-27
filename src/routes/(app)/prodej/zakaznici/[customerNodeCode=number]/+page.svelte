@@ -3,9 +3,9 @@
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
 	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
-	import { customerDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerDetailFormDef';
-	import { customerPageLayout } from '$lib/data/detail-page-swappable-layout/customerPageLayout';
+	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
+	import { customerDetailFormDef } from '$lib/data/autoform/zakaznici/customerDetailFormDef';
+	import { customerPageLayout } from '$lib/data/detail-page-layout/customerPageLayout';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex } from '$lib/runes/page.svelte';
 	import { page } from '$app/stores';

@@ -3,7 +3,7 @@
 		field: "customerAddressCode",
 		label: "Id prodejny",
 		type: "number"
-	}
+	},
 	{
 		field: "name",
 		label: "Prodejna",
@@ -15,34 +15,33 @@
 
 
 {
-	"fulltext": "Jan Praha",
+	"fulltext": "Fulltext 123456",
 
-	"filters" : [
+	"inputs" : [
 		{
-			"field" : "customerAddressCode",
-			"conditions" : [
-				{
-					"type" : "equals",
-					"value" : "123"
-				},
-				{
-					"type" : "equals",
-					"value" : "456"
-				}
-
-			],
-			"operators" : ["or"]
-		},
-		{
-			field: "name",
-			conditions: [
-				{
-					"type" : "contains",
-					"value" : "jan"
-				},
-			],
-			operators: null | []
+			"name" : "",
+			"value" : "abc",
 		}
+	],
+
+	"columnFilters" : [
+		{
+			"columnName" : "customerAddressCode",
+			"type" : "number",
+			"filterModel" : {
+				"operator" : "OR",
+				"conditions" : [
+    				{
+    					"type" : "equals",
+    					"value" : "123"
+    				},
+    				{
+    					"type" : "equals",
+    					"value" : "456"
+    				}
+				]
+			}
+		},
 	]
 }
 

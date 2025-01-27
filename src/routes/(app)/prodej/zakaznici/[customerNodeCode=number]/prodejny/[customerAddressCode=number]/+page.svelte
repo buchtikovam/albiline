@@ -3,10 +3,10 @@
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
 	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-	import { customerAddressDetailFormDef } from '$lib/data/autoform-def/zakaznici/customerAddressFormDef';
+	import { customerAddressDetailFormDef } from '$lib/data/autoform/zakaznici/customerAddressFormDef';
 	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
-	import { customerAddressPageLayout } from '$lib/data/detail-page-swappable-layout/customerAddressPageLayout';
-	import { newCustomerContactFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerContactFormDef';
+	import { customerAddressPageLayout } from '$lib/data/detail-page-layout/customerAddressPageLayout';
+	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex, isMobile } from '$lib/runes/page.svelte';
 	import { ribbonAction } from '$lib/runes/ribbon.svelte';

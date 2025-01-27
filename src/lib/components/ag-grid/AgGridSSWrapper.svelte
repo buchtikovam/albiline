@@ -127,7 +127,7 @@
 	let isLoaded = $state(false);
 
 
-	$inspect(isLoaded)
+	$inspect(isLoaded);
 
 
 	const datasource: IServerSideDatasource = {
@@ -144,6 +144,9 @@
 			}
 
 			// currentSort = gridApi.getColumnState().map((state) => state.sort)
+
+			console.log(JSON.stringify(updatedParamsRequest, null, 1))
+
 
 			fetch(url
 				,{

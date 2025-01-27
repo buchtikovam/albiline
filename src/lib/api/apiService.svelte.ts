@@ -29,7 +29,7 @@ export async function apiServicePOST(endpoint: string, body = {}): Promise<Respo
 
 
 export async function apiServicePUT(endpoint: string, id: number, body = {}): Promise<Response> {
-	const url = PUBLIC_API_ROUTE + endpoint;
+	// const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url + endpoint, {
 		method: 'PUT',
@@ -43,7 +43,7 @@ export async function apiServicePUT(endpoint: string, id: number, body = {}): Pr
 
 
 export async function apiServicePATCH(endpoint: string, id: number, body = {}): Promise<Response> {
-	const url = PUBLIC_API_ROUTE + endpoint;
+	// const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url + endpoint, {
 		method: 'PATCH',
@@ -57,7 +57,7 @@ export async function apiServicePATCH(endpoint: string, id: number, body = {}): 
 
 
 export async function apiServiceDELETE(endpoint: string, id: number): Promise<Response> {
-	const url = PUBLIC_API_ROUTE + endpoint;
+	// const url = PUBLIC_API_ROUTE + endpoint;
 
 	return await fetch(url + endpoint, {
 		method: 'DELETE',
