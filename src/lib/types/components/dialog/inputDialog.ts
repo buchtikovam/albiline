@@ -1,10 +1,12 @@
 export type InputDialogFields = InputDialogField[];
 
-type InputDialogField = {
+export type InputDialogField = {
 	field: string;
 	label: string;
-	type: string|number;
+	type: InputDialogType;
 }
+
+export type InputDialogType = string|number;
 
 
 export type InputDialogRequest = {
@@ -15,22 +17,43 @@ export type InputDialogRequest = {
 
 export type InputDialogItem = {
 	field: string|null;
-	conditions: (InputConditionString | InputConditionNumber)[];
-	operators: ("and" | "or")[]|null;
+	type: InputDialogType;
+	filter: InputDialogCondition;
 }
 
 
+type InputDialogCondition = InputConditionString | InputConditionNumber;
+
 type InputConditionString = {
-	type: InputConditionTypeString|null,
-	value: string|null;
+	operator: InputConditionTypeString|null,
+	value: string|null|string[];
 }
 
 type InputConditionNumber = {
-	type: InputConditionTyoeNumber|null,
-	value: number|null;
+	operator: InputConditionTypeNumber|null,
+	value: number|null|number[];
 }
 
 
-type InputConditionTypeString = "starts-with" | "end-with" | "contains";
+export type InputConditionTypeString =
+	"contains" |
+	"not-contains" |
+	"equals" |
+	"not-equals" |
+	"starts-with" |
+	"ends-with" |
+	"empty" |
+	"not-empty";
 
-type InputConditionTyoeNumber = "higher" | "lower" | "equals";
+
+export type InputConditionTypeNumber =
+	"equals" |
+	"not-equals" |
+	"more" |
+	"more-or-equal" |
+	"less" |
+	"less-or-equal" |
+	"one-of" |
+	"between" |
+	"empty" |
+	"not-empty";

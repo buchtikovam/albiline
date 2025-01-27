@@ -1,43 +1,61 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
-	import type {InputDialogFields, InputDialogItem} from "$lib/types/components/dialog/inputDialog";
-	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-	import Check from "lucide-svelte/icons/check";
+	import { Input } from "$lib/components/ui/input";
 	import { tick } from "svelte";
+	import Check from "lucide-svelte/icons/check";
+	import type {InputDialogField, InputDialogFields, InputDialogItem} from "$lib/types/components/dialog/inputDialog";
 	import * as Command from "$lib/components/ui/command/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import { cn } from "$lib/utils.js";
-	import {Input} from "$lib/components/ui/input";
-	// import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import StringOperatorSelectWrapper from "$lib/components/form/select/StringOperatorSelectWrapper.svelte";
+	import NumberOperatorSelectWrapper from "$lib/components/form/select/NumberOperatorSelectWrapper.svelte";
+	import MoveRight from "lucide-svelte/icons/move-right";
+
 
 	interface Props {
 		options: InputDialogFields,
-		activeItem: InputDialogItem,
+		item: InputDialogItem,
 	}
 
 	let {
 		options,
-		activeItem = $bindable()
+		item = $bindable()
 	}: Props = $props();
 
 
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-
-
-
-
-	const selectedLabel = $derived(
-		options.find((f) => f.field === activeItem.field)?.label
-	);
-
-
 	function closeAndFocusTrigger() {
 		open = false;
 		tick().then(() => {
 			triggerRef.focus();
 		});
+	}
+
+	let inputValue = $state("");
+	let activeLabel: string = $state("");
+
+	$effect(() => {
+		item.filter.value = inputValue;
+		activeLabel = getLabel();
+	})
+
+
+	function getLabel() {
+		let label = "...";
+
+		options.forEach(option => {
+			if (option.field === item.field) {
+				label = option.label;
+			}
+		})
+
+		return label;
+	}
+
+	function updateItem(option: InputDialogField) {
+		item.field = option.field;
+		item.type = option.type;
 	}
 </script>
 
@@ -49,23 +67,22 @@
 			{#snippet child({ props })}
 				<Button
 					variant="outline"
-					class="w-[300px] justify-between font-normal"
+					class="w-[320px] justify-between font-normal"
 					{...props}
 					role="combobox"
 					aria-expanded={open}
 				>
-					<!--{selectedValue || "Select a framework..."}-->
-					{"Id prodejny"}
+					{activeLabel || "Sloupec"}
 				</Button>
 			{/snippet}
 		</Popover.Trigger>
 
 
-		<Popover.Content class="p-0">
+		<Popover.Content class="p-0 !w-[160px]">
 			<Command.Root>
-				<Command.Input placeholder="Search framework..." />
+				<Command.Input placeholder="..." />
 
-				<Command.List>
+				<Command.List class="">
 					<Command.Empty>
 						No framework found.
 					</Command.Empty>
@@ -75,10 +92,11 @@
 						{#each options as option}
 							<Command.Item
 								value={option.label}
-
+								onSelect={() => {
+									updateItem(option);
+									closeAndFocusTrigger();
+								}}
 							>
-								<Check/>
-
 								{ option.label }
 							</Command.Item>
 						{/each}
@@ -88,7 +106,23 @@
 		</Popover.Content>
 	</Popover.Root>
 
-<!--	<ChevronRight class="text-albi-500 p-0 m-0"/>-->
+	<MoveRight strokeWidth={4} class="text-albi-500"/>
 
-	<Input class="w-full border-border"/>
+
+	{#if item.type === "string"}
+		<StringOperatorSelectWrapper bind:item={item}/>
+	{/if}
+
+
+	{#if item.type === "number"}
+		<NumberOperatorSelectWrapper bind:item/>
+	{/if}
+
+	<MoveRight strokeWidth={4} class="text-albi-500"/>
+
+	<Input
+		bind:value={inputValue}
+		class="w-full border-border"
+	/>
 </div>
+

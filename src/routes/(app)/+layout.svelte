@@ -12,9 +12,6 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
-	// import { PUBLIC_FOO, PUBLIC_ENVIRONMENT } from '$env/static/public';
-	// console.log(PUBLIC_FOO, PUBLIC_ENVIRONMENT);
-
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
 	authDetails.userName = data.auth.userName;

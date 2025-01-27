@@ -1,7 +1,18 @@
-import type {Actions} from "../../../../.svelte-kit/types/src/routes/(app)/$types";
+import { authenticateUserLogin } from "$lib/api/userService";
+import { apiServicePOST } from "$lib/api/apiService.svelte";
 import { redirect } from "@sveltejs/kit";
-import {apiServicePOST} from "$lib/api/apiService.svelte";
-import {customToast} from "$lib/utils/customToast";
+import type { PageServerLoad } from './$types';
+import type { Actions } from "../../../../.svelte-kit/types/src/routes/(app)/$types";
+
+
+export const load: PageServerLoad = ({ cookies }) => {
+	if (cookies.get('auth')) {
+		if (authenticateUserLogin(cookies.get('auth'))) {
+			redirect(303, "/");
+		}
+	}
+};
+
 
 export const actions: Actions = {
 	default: async ({ cookies, request }) => {

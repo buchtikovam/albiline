@@ -7,6 +7,7 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import {Separator} from "$lib/components/ui/separator";
 	import Plus from "lucide-svelte/icons/plus";
+	import X from "lucide-svelte/icons/x";
 
 	let { open = $bindable() }: { open: boolean } = $props();
 
@@ -24,17 +25,15 @@
 	]
 
 	let inputs: InputDialogRequest = $state({
-		fulltext: null,
+		fulltext: "Hledání test 123",
 		filters: [
 			{
-				field: null,
-				conditions: [
-					{
-						type: null,
-						value: null
-					}
-				],
-				operators: null,
+				field: "name",
+				type: "string",
+				filter: {
+					operator: "starts-with",
+					value: "Albert"
+				}
 			}
 		]
 	})
@@ -42,16 +41,15 @@
 
 	function addInput() {
 		inputs.filters.push({
-			field: null,
-			conditions: [
-				{
-					type: null,
-					value: null
-				}
-			],
-			operators: null,
+			field: "",
+			type: "string",
+			filter: {
+				operator: null,
+				value: null
+			}
 		})
 	}
+
 
 	$inspect(inputs.fulltext);
 	$inspect(inputs.filters);
@@ -60,7 +58,7 @@
 
 
 <Dialog.Root bind:open={open}>
-	<Dialog.Content class="w-[600px] max-w-[600px] max-h-[70%] overflow-auto">
+	<Dialog.Content class="w-[90%] md:w-[600px] max-w-[800px] max-h-[70%] overflow-auto">
 		<Dialog.Header class="">
 			<Dialog.Title class="">
 				Vstupní parametry
@@ -69,26 +67,48 @@
 
 
 		<form method="POST" class="overflow-auto h-full flex flex-col">
+			<p
+				class="mb-2 text-albi-500 text-sm font-bold"
+			>
+				Hledat všude
+			</p>
+
 			<Input
 				type="text"
 				bind:value={inputs.fulltext}
 				placeholder="Id, Název, Město, ..."
-				class="border-border mb-4"
+				class="border-border "
 			/>
 
-<!--			<Separator class="my-2 h-[1px]"/>-->
+
+			<p
+				class="mb-2 mt-4 text-albi-500 text-sm font-bold"
+			>
+				Hledat podle sloupce
+			</p>
 
 			{#each inputs.filters as input, i (i)}
-				<div class="w-full mb-2">
-					<InputDialogSelectWrapper
-						options={fieldOptions}
-						bind:activeItem={inputs.filters[i]}
-					/>
+				<div class="flex gap-2">
+					<div class="w-full flex pb-2">
+						<InputDialogSelectWrapper
+							options={fieldOptions}
+							bind:item={inputs.filters[i]}
+						/>
+					</div>
+
+<!--					<button-->
+<!--						onclick={() => addInput()}-->
+<!--						class="h-10 w-11 bg-white flex justify-center items-center"-->
+<!--					>-->
+<!--						<X strokeWidth={3} class="size-4 text-albi-500"/>-->
+<!--					</button>-->
 				</div>
+
+
 			{/each}
 
 
-			<Dialog.Footer class="w-full mt-2">
+			<Dialog.Footer class="w-full mt-4">
 				<div class="w-full flex justify-between">
 					<Button
 						onclick={() => open = false}

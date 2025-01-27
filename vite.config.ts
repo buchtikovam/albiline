@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-// import { SvelteKitPWA } from '@vite-pwa/sveltekit'
+import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { paraglide } from '@inlang/paraglide-sveltekit/vite';
 const env = process.env;
 
@@ -12,11 +12,14 @@ export default defineConfig({
 			outdir: "./src/lib/paraglide",
 		}),
 		sveltekit(),
+
 		// SvelteKitPWA({
 		// 	srcDir: './src',
 		// 	mode: 'development',
 		// 	strategies: 'generateSW',
 		// 	filename: undefined,
+		// 	base: '/',
+		// 	scope: '/',
 		// 	selfDestroying: env.ENVIRONMENT === 'development',
 		// 	pwaAssets: {
 		// 		config: true,
@@ -42,7 +45,7 @@ export default defineConfig({
 		// 		maximumFileSizeToCacheInBytes: 5 * 1024 ** 2, // 5 MB
 		// 	},
 		// 	devOptions: {
-		// 		enabled: true,
+		// 		enabled: env.ENVIRONMENT === 'development',
 		// 		suppressWarnings: false,
 		// 		type: 'module',
 		// 		navigateFallback: '/',
@@ -51,6 +54,7 @@ export default defineConfig({
 		// 		includeVersionFile: true,
 		// 	}
 		// }),
+
 	],
 	build: {
 		chunkSizeWarningLimit: 3000,

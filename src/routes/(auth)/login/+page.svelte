@@ -10,7 +10,6 @@
 
 	let { form }: { form: ActionData } = $props();
 
-
 	$effect(() => {
 		if (form) {
 			if (form.data.messages) {

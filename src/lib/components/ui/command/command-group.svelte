@@ -14,7 +14,7 @@
 </script>
 
 <CommandPrimitive.Group
-	class={cn("text-albi-950 overflow-hidden p-2", className)}
+	class={cn("text-albi-950 overflow-hidden p-1", className)}
 	bind:ref
 	{...restProps}
 >

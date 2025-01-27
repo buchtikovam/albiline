@@ -126,6 +126,7 @@
 	let isInitialGridLoad = $state(true);
 	let isLoaded = $state(false);
 
+
 	$inspect(isLoaded)
 
 
@@ -227,7 +228,7 @@
 							}
 						})
 					})
-				}, 200)
+				}, 200);
 			}
 
 			// setTimeout(() => {
