@@ -5,7 +5,7 @@ import * as m from '$lib/paraglide/messages.js'
 export const InputDialogZakaznici: InputDialogType = {
 	fulltext: "",
 
-	inputs : [],
+	// inputs : [],
 
 	columnFilters : [{
 		columnName: null,

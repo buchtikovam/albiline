@@ -11,6 +11,7 @@
 	import Header from '$lib/components/header/Header.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+	import ResponseDialog from "$lib/components/dialog/response/ResponseDialog.svelte";
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
@@ -56,6 +57,7 @@
 	</Tooltip.Provider>
 
 	<MainDialog/>
+	<ResponseDialog/>
 </div>
 
 

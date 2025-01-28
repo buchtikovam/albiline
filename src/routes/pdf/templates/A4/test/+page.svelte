@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-    const id = $page.params.id;
+    import { page } from '$app/state';
+    const id = page.params.id;
 
 	let url = `https://picsum.photos/400/800`;
 </script>

@@ -1,5 +1,5 @@
 import { toast } from 'svelte-sonner';
-import type { ToastVariant } from '$lib/types/components/toast';
+import type { ToastVariant } from '$lib/types/components/response';
 import Toast from '$lib/components/toast/Toast.svelte';
 
 

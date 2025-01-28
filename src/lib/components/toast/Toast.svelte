@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { ToastVariant } from '$lib/types/components/toast';
+	import type {ResponseVariant} from '$lib/types/components/response';
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import CircleCheck from 'lucide-svelte/icons/circle-check';
 	import CircleX from 'lucide-svelte/icons/circle-x';
 	import Info from 'lucide-svelte/icons/info';
 
 	interface Props {
-		type: ToastVariant;
+		type: ResponseVariant;
 		content: string;
 	}
 

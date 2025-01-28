@@ -17,6 +17,8 @@ export async function apiServiceGET(endpoint: string): Promise<Response> {
 
 
 export async function apiServicePOST(endpoint: string, body = {}): Promise<Response> {
+	console.log(JSON.stringify(body));
+
 	return await fetch(url + endpoint, {
 		method: 'POST',
 		headers: {

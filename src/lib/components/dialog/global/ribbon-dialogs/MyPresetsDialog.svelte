@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes/table.svelte';
 	import { openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte';
 	import { Input } from '$lib/components/ui/input';
@@ -37,7 +37,7 @@
 			presets = await response.json();
 
 			presets = presets?.filter((filter: FetchedPreset) => {
-				return filter.pageOrigin === $page.url.pathname;
+				return filter.pageOrigin === page.url.pathname;
 			});
 		} catch (error) {
 			console.error('Error fetching input-filters:', error);
