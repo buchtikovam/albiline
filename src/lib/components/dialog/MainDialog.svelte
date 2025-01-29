@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CustomerDetailInvoiceAdressesDialog from '$lib/components/dialog/page/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte';
 	import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
-	import { openedDialog } from '$lib/runes/ribbon.svelte';
+	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
 	// import MyFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/MyFiltersDialog.svelte';
 	// import SaveFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/SaveFiltersDialog.svelte';
 	// import SavePresetDialog from '$lib/components/dialog/global/ribbon-dialogs/SavePresetDialog.svelte';

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { newCustomerAddressFormDef } from '$lib/data/autoform-def/zakaznici/newCustomerAddressFormDef.js';
 	import Plus from 'lucide-svelte/icons/plus';
 	import NewCustomerAddressDialog from '$lib/components/dialog/page/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 	import * as Dialog from "$lib/components/ui/dialog";
+	import {newCustomerAddressFormDef} from "$lib/data/autoform/zakaznici/newCustomerAddressFormDef";
 
 	interface Props {
 		colDef: any;

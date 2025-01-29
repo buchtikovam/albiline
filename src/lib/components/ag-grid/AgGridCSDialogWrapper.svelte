@@ -35,7 +35,6 @@
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
-		rowSelection: 'single'
 	};
 
 

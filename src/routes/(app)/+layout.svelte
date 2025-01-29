@@ -6,7 +6,7 @@
 	import type { LayoutData } from './$types';
 	import { type Snippet } from 'svelte';
 	import './../../app.pcss';
-	import MainDialog from '$lib/components/dialog/global/MainDialog.svelte';
+	import MainDialog from '$lib/components/dialog/MainDialog.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';

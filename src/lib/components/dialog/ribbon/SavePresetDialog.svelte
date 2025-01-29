@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { openedDialog } from '$lib/runes/ribbon.svelte';
+	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';

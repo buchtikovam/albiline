@@ -71,7 +71,8 @@
 			<DropdownMenu.Item>
 				<div class="flex items-center">
 					<User class="size-5 mr-2" />
-					{m.components_avatar_profile()}
+					<a href={i18n.resolveRoute("profil")}>{m.components_avatar_profile()}</a>
+
 				</div>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item>
@@ -94,8 +95,10 @@
 			<DropdownMenu.Item
 				class="flex items-center"
 				onclick={() => {
-					pageCompact.value = false;
-					window.location.reload();
+					if (pageCompact.value) {
+						pageCompact.value = false;
+						window.location.reload();
+					}
 				}}
 			>
 				<UnfoldVertical class="size-5" />
@@ -104,13 +107,16 @@
 
 			<DropdownMenu.Item
 				onclick={() => {
-					pageCompact.value = true;
-					window.location.reload();
+					if (!pageCompact.value) {
+						pageCompact.value = true;
+						window.location.reload();
+					}
 				}}
 				class="flex items-center"
 			>
 				<FoldVertical class="size-5" />
 				{m.components_avatar_view_compact()}
+
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 

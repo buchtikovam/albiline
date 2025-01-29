@@ -1,36 +1,24 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 
 export const customerAgGridDef: ColDef[] = [
-	{ 
-		field: "rowNumber",
-		headerName: "Číslo řádku",
-		headerClass: 'ag-header-checkbox',
-		cellClass: 'ag-cell-class',
-		editable: false,
-		filter: false,
-		resizable: false, 
-		pinned: true,
-		suppressHeaderMenuButton: true,
-		suppressHeaderFilterButton: true, 
-		suppressMovable: true,
-		checkboxSelection: true,
-		maxWidth: 34,
-	},
-	{ 
+	{
 		field: "customerAddressCode",
 		headerName: "ID prodejny",
 		cellDataType: "number",
 		editable: false,
 		hide: false,
 		width: 68,
-		filter: 'agNumberColumnFilter',
-		// filterParams: {
-		// 	filters: [
-		// 		{
-		// 			filter: 'agNumberColumnFilter',
-		// 		},
-		// 	],
-		// },
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agNumberColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
+				},
+			],
+		},
 	},
 	{
 		field: "name",
@@ -43,6 +31,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		},
@@ -58,6 +49,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agNumberColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -73,6 +67,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -88,6 +85,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -103,6 +103,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -118,6 +121,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -133,6 +139,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -148,6 +157,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -162,7 +174,10 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter', // custom boolean filter
+					filter: 'agBooleanColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}// custom boolean filter
 				},
 			]
 		}
@@ -178,6 +193,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agNumberColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -193,6 +211,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -208,6 +229,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -223,6 +247,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -238,6 +265,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -254,6 +284,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -269,6 +302,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -285,6 +321,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agNumberColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -300,6 +339,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agBooleanColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -316,6 +358,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -331,6 +376,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agNumberColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -346,7 +394,10 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter', // make custom
+					filter: 'agBooleanColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}// make custom
 				},
 			]
 		}
@@ -361,7 +412,10 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter', // make custom
+					filter: 'agBooleanColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}// make custom
 				},
 			]
 		}
@@ -377,6 +431,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -392,6 +449,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -407,6 +467,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -422,6 +485,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -437,6 +503,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -456,6 +525,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agDateColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -474,6 +546,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agDateColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -492,15 +567,13 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agDateColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
 	},
-
-
-
-
-
 	{
 		field: "companyName",
 		headerName: "Název společnosti",
@@ -512,6 +585,9 @@ export const customerAgGridDef: ColDef[] = [
 			filters: [
 				{
 					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
 				},
 			]
 		}
@@ -521,8 +597,20 @@ export const customerAgGridDef: ColDef[] = [
 		field: "isReturnAllowed",
 		headerName: "Vratka povolena",
 		cellDataType: "boolean",
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agBooleanColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
+				},
+			]
+		},
 		hide: true,
 		editable: false,
+
 	},
 
 	{
@@ -530,17 +618,50 @@ export const customerAgGridDef: ColDef[] = [
 		hide: true,
 		headerName: "ID zákazníka dle zákazníka",
 		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agNumberColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
+				},
+			]
+		}
 	},
 	{
 		field: "customerStoreEan",
 		headerName: "EAN zákazníka",
 		hide: true,
 		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agTextColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
+				},
+			]
+		}
 	},
 	{
 		field: "splitOrderByFood",
 		headerName: "Food / NonFood",
 		hide: true,
 		editable: false,
+		filter: 'agMultiColumnFilter',
+		filterParams: {
+			filters: [
+				{
+					filter: 'agBooleanColumnFilter',
+					filterParams: {
+						buttons: ["apply", "reset"],
+					}
+				},
+			]
+		}
 	},
 ]

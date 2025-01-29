@@ -1,9 +1,9 @@
 import { authenticateUserLogin } from "$lib/api/userService";
 import {apiServiceGET, apiServicePOST} from "$lib/api/apiService.svelte";
+import type { Actions, PageServerLoad } from './$types';
+import { sha512 } from 'js-sha512';
 import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from './$types';
-import type { Actions } from "../../../../.svelte-kit/types/src/routes/(app)/$types";
-import {sha512} from "js-sha512";
+
 
 
 export const load: PageServerLoad = ({ cookies }) => {
@@ -15,68 +15,75 @@ export const load: PageServerLoad = ({ cookies }) => {
 };
 
 
-export const actions: Actions = {
+
+export const actions = {
 	default: async ({ cookies, request }) => {
 		const data = await request.formData();
 		const userCode = data.get("userCode");
 		const password = data.get("password");
 
-		const getSalt = await apiServiceGET(`login/${userCode}/salt`);
-		const saltResp = await getSalt.json();
+		if (password !== null) {
+			console.log("password not null")
+			const getSalt = await apiServiceGET(`login/${userCode}/salt`);
+			const saltResp = await getSalt.json();
+			// @ts-ignore
+			const passwordHash = sha512(saltResp.passwordSalt + "|" + sha512(password).toUpperCase() + "|" + userCode).toUpperCase();
 
-		console.log("usercode", userCode);
-		console.log("password", password);
-		console.log("salt", saltResp.passwordSalt);
-		console.log("hashed pass", sha512(password).toUpperCase());
-		console.log("pass w salt", saltResp.passwordSalt + "|" + sha512(password).toUpperCase() + "|" + userCode)
-
-		const upperCasedHashedPassword = sha512(password).toUpperCase();
-
-		const passwordHash = sha512(saltResp.passwordSalt + "|" + sha512(password).toUpperCase() + "|" + userCode);
-		const passwordHash2 = sha512(saltResp.passwordSalt + "|" + upperCasedHashedPassword + "|" + userCode);
-
-		console.log("passwordHash", passwordHash);
-		console.log("passwordHash2", passwordHash2);
+			console.log("SALT ", saltResp.passwordSalt)
+			console.log("USER CODE", userCode);
+			// @ts-ignore
+			console.log("hashed pass", sha512(password).toUpperCase())
+			console.log("PASSWORD", password);
 
 
+			if (getSalt.ok) {
+				console.log("salt ok");
 
+				const resp = await apiServicePOST("login", {
+					userCode: userCode,
+					passwordHash: passwordHash
+				});
 
-		// if (saltResp.ok) {
+				const responseData = await resp.json();
 
+				if (resp.ok) {
+					console.log("resp ok");
+					cookies.set(
+						"auth",
+						JSON.stringify(
+							{
+								sessionKey: responseData.sessionKey,
+								userName: responseData.userName
+							}
+						),
+						{
+							path: "/",
+							httpOnly: true,
+							sameSite: "strict",
+							secure: process.env.NODE_ENV === "production",
+							maxAge: 60 * 60 * 24 * 7, // 1 week
+						}
+					);
 
-			// const resp = await apiServicePOST("login", {
-			// 	userCode: userCode,
-			// 	passwordHash: passwordHash
-			// });
+					throw redirect(303, "/");
+				} else {
+					console.log("resp not ok")
 
-			//
-			// const responseData = await resp.json();
-			//
-			// if (resp.status === 200) {
-			// 	cookies.set(
-			// 		"auth",
-			// 		JSON.stringify(
-			// 			{
-			// 				sessionCode: responseData.sessionCode,
-			// 				userName: responseData.userName
-			// 			}
-			// 		),
-			// 		{
-			// 			path: "/",
-			// 			httpOnly: true,
-			// 			sameSite: "strict",
-			// 			secure: process.env.NODE_ENV === "production",
-			// 			maxAge: 60 * 60 * 24 * 7, // 1 week
-			// 		}
-			// 	);
-			//
-			// 	throw redirect(303, "/");
-			// } else {
-			// 	return {
-			// 		status: resp.status,
-			// 		data: responseData,
-			// 	}
-			// }
-		// }
-	},
+					console.log(resp)
+
+					return {
+						status: resp.status,
+						data: responseData,
+					}
+				}
+			} else {
+				console.log("salt not ok")
+
+				return {
+					status: getSalt.status,
+					data: saltResp,
+				}
+			}
+		}
+	}
 } satisfies Actions;

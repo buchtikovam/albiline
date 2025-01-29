@@ -45,9 +45,11 @@
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		rowModelType: "serverSide",
-		rowSelection: "multiple",
 		cacheBlockSize: 100,
 		columnDefs: customerAgGridDef,
+		rowSelection: {
+			mode: 'multiRow',
+		},
 	}
 </script>
 
@@ -56,7 +58,6 @@
 <svelte:head>
 	<title>Zákazníci | Albiline</title>
 </svelte:head>
-
 
 
 

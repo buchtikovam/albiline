@@ -64,6 +64,12 @@
 	"routes_login_form_password": "Heslo",
 	"routes_login_form_submit_button": "Přihlásit se",
 
+	"routes_zmena_hesla_label" : "Změna hesla",
+	"routes_zmena_hesla_form_user_code" : "Uživatelský kód",
+	"routes_zmena_hesla_form_old_password" : "Staré heslo",
+	"routes_zmena_hesla_form_new_password" : "Nové heslo",
+	"routes_zmena_hesla_form_sumbmit_button" : "Potvrdit změnu",
+
 	"routes_prodej_zakaznici_tabs_list" : "Seznam",
 	"routes_prodej_zakaznici_tabs_customer_detail" : "Zákazník",
 	"routes_prodej_zakaznici_tabs_address_detail" : "Prodejna",

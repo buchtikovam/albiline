@@ -8,7 +8,7 @@
 	import { customerPageLayout } from '$lib/data/detail-page-layout/customerPageLayout';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex } from '$lib/runes/page.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import * as m from '$lib/paraglide/messages.js'
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
 	import { flipItems } from '$lib/utils/flipItems';
@@ -85,7 +85,7 @@
 	let disableRight = $state(false);
 
 	let activeRouteId = $derived({
-		customerNodeCode: Number($page.params.customerNodeCode),
+		customerNodeCode: Number(page.params.customerNodeCode),
 	})
 
 
@@ -96,7 +96,7 @@
 			uniqueSelectedRows,
 			direction,
 			activeRouteId,
-			$page.route.id || "/"
+			page.route.id || "/"
 		);
 
 		disableLeft = returnedDisable.left;

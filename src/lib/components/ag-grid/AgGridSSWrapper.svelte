@@ -53,6 +53,10 @@
 
 
 	const gridOptions: GridOptions = { // return from grid options
+		rowSelection: {
+			mode: 'singleRow',
+		},
+
 		localeText: AG_GRID_LOCALE_CZ,
 
 		defaultColDef: {

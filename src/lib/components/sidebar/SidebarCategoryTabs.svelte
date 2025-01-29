@@ -19,7 +19,6 @@
 		allowDeselect={false}
 	>
 		<Select.Trigger
-			onmouseover={() => { open = true }}
 			class="h-5 border-none w-fit p-0 flex gap-1 text-albi-500 hover:text-albi-700"
 		>
 			{#if sidebarCategory.value === "all"}

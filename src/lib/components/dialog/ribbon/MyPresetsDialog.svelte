@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes/table.svelte';
-	import { openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte';
+	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes/table.svelte.js';
+	import { openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte.js';
 	import { Input } from '$lib/components/ui/input';
-	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+	import { Skeleton } from "$lib/components/ui/skeleton";
 	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';
 	// import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
 	import { customToast } from '$lib/utils/customToast';
