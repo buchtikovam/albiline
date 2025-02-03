@@ -15,7 +15,7 @@
 	let { isOpen = $bindable() }: Props = $props();
 
 	let disableSubmit = $state(false);
-	const passwordSchema = z.string().regex(new RegExp(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{10,}$/));
+	// const passwordSchema = z.string().regex(new RegExp(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{10,}$/));
 
 </script>
 
@@ -45,8 +45,9 @@
 				placeholder="•••••"
 			/>
 
+<!--							schema={passwordSchema}
+-->
 			<AuthPasswordInput
-				schema={passwordSchema}
 				bind:disableSubmit={disableSubmit}
 				label={m.routes_zmena_hesla_form_new_password}
 				name="new-password"

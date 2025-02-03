@@ -71,11 +71,28 @@ export const actions = {
 
 					console.log(resp)
 
+					// cookies.set(
+					// 	"auth",
+					// 	JSON.stringify(
+					// 		{
+					// 			sessionKey: responseData.sessionKey,
+					// 			userName: responseData.userName
+					// 		}
+					// 	),
+					// 	{
+					// 		path: "/",
+					// 		httpOnly: true,
+					// 		sameSite: "strict",
+					// 		secure: process.env.NODE_ENV === "production",
+					// 		maxAge: 60 * 60 * 24 * 7, // 1 week
+					// 	}
+					// )
+
 					return {
 						status: resp.status,
 						data: responseData,
 					}
-				}
+			}
 			} else {
 				console.log("salt not ok")
 

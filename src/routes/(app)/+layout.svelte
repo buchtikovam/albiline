@@ -16,7 +16,7 @@
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
 	authDetails.userName = data.auth.userName;
-	authDetails.sessionCode = data.auth.sessionCode;
+	authDetails.sessionKey= data.auth.sessionKey;
 
 	beforeNavigate(({ cancel }) => {
 		if (editedTableData.value.length > 0) {

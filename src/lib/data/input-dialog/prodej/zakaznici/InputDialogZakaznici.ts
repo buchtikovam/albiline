@@ -8,6 +8,7 @@ export const InputDialogZakaznici: InputDialogType = {
 	// inputs : [],
 
 	columnFilters : [{
+		id: 0,
 		columnName: null,
 		type: "text",
 		filterModel: {

@@ -1,7 +1,7 @@
 // SELECT OPTIONS
 export type InputDialogSelectOption = {
 	field: string;
-	label: () => {};
+	label: () => string;
 	type: ColumnFilterType;
 }
 
@@ -23,6 +23,7 @@ type InputDialogInput = {
 
 // COLUMN FILTERS
 export type ColumnFilter = {
+	id: number;
 	columnName: string|null;
 	type: ColumnFilterType;
 	filterModel: ColumnFilterModelType;

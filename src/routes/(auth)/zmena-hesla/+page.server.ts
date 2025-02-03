@@ -46,7 +46,7 @@ export const actions: Actions = {
 			if (resp.ok) {
 				console.log("RESP OK");
 				console.log(respData);
-				console.log(respData.messages)
+				console.log(respData.messages);
 				redirect(303, '/profil');
 			}
 		}

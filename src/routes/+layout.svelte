@@ -21,6 +21,11 @@
 
 </script>
 
+<svelte:head>
+	<meta name="theme-color" content="#dbfeff" />
+</svelte:head>
+
+
 <!--<svelte:head>-->
 <!--	{#if pwaAssetsHead.themeColor}-->
 <!--		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />-->
