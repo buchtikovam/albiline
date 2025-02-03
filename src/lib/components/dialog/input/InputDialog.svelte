@@ -1,22 +1,16 @@
 <script lang="ts">
 	import {Button} from '$lib/components/ui/button';
 	import {Input} from "$lib/components/ui/input";
-	import InputDialogSelectWrapper from "$lib/components/form/select/InputDialogSelectWrapper.svelte";
-	import InputWrapperText from "$lib/components/form/inputs/InputWrapperText.svelte";
-	import {Separator} from "$lib/components/ui/separator";
 	import Plus from "lucide-svelte/icons/plus";
-	import X from "lucide-svelte/icons/x";
+	import * as Popover from "$lib/components/ui/popover/index.js";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import type {
-		ColumnFilter,
 		InputDialogSelectOption,
 		InputDialogType
 	} from "$lib/types/components/dialog/inputDialog";
-	import StringOperatorSelectWrapper from "$lib/components/form/select/StringOperatorSelectWrapper.svelte";
-	import Trash2 from "lucide-svelte/icons/trash-2";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
-	import ChevronRight from "lucide-svelte/icons/chevron-right";
-	import MoveRight from "lucide-svelte/icons/move-right";
+	import InputDialogTableColumnRowWrapper from "$lib/components/dialog/input/InputDialogTableColumnRowWrapper.svelte";
+	import WarningDialog from "$lib/components/dialog/warning/WarningDialog.svelte";
+
 
 	interface Props {
 		open: boolean,
@@ -32,17 +26,18 @@
 
 
 	let inputDialog: InputDialogType = $state(defaultInputDialog);
+	let fulltext: string|null|undefined = $state(inputDialog.fulltext);
 	let columnFilters = $state(inputDialog.columnFilters);
-	// $effect(() => {
-	// 	columnFilters = inputDialog.columnFilters;
-	// })
-	
-
-	// $inspect(inputDialog.fulltext)
+	let openWarningDialog = $state(false);
+	let warningConsent = $state(false);
 
 	function addInput() {
 		if (columnFilters) {
-			let lastIndex = columnFilters[columnFilters.length - 1].id;
+			let lastIndex = 0;
+
+			columnFilters.length > 0
+				? lastIndex = columnFilters[columnFilters.length - 1].id
+				: lastIndex = 0;
 
 			columnFilters.push({
 				id: lastIndex + 1,
@@ -59,22 +54,50 @@
 		}
 	}
 
-	// $effect(() => {
-	// 	if (columnFilters) {
-	// 		columnFilters.forEach((columnFilter) => {
-	// 			if (columnFilter.filterModel.conditions.length === 0) {
-	// 				columnFilters.splice(columnFilter.id, 1);
-	// 			}
-	// 		})
-	// 	}
-	// })
+	$effect(() => {
+		if (columnFilters) {
+			console.log("effect if")
+
+			// TODO: remove operator + input value if columnName changed
+			// console.log(columnFilters)
+
+			columnFilters.filter((columnFilter) => {
+				if (columnFilter.filterModel.conditions.length > 0) {
+					return columnFilter;
+				}
+			})
+
+			// console.log(columnFilters.filter((columnFilter) => {
+			// 	if (columnFilter.filterModel.conditions.length > 0) {
+			// 		return columnFilter;
+			// 	}
+			// }))
+
+			// console.log(columnFilters)
+		}
+	})
 
 	$inspect(columnFilters);
+
+	function parseInputDialog() {
+		if (!fulltext || fulltext.length === 0) {
+			openWarningDialog = true;
+		}
+	}
+
+	$effect(() => {
+		if (warningConsent === true) {
+			openWarningDialog = false;
+			setTimeout(() => {
+				open = false;
+			}, 200)
+		}
+	})
 </script>
 
 
 <Dialog.Root bind:open={open}>
-	<Dialog.Content class="w-[90%] md:w-[600px] max-w-[800px] max-h-[70%] overflow-auto">
+	<Dialog.Content class="w-[90%] md:w-[640px] max-w-[640px] max-h-[70%] overflow-auto">
 		<Dialog.Header class="">
 			<Dialog.Title class="">
 				Vstupní parametry
@@ -91,7 +114,7 @@
 
 				<Input
 					type="text"
-					bind:value={inputDialog.fulltext}
+					bind:value={fulltext}
 					placeholder="Id, Název, Město, ..."
 					class="border-border mb-4"
 				/>
@@ -100,7 +123,7 @@
 
 			{#if columnFilters !== undefined}
 				<p
-					class="text-albi-500 text-sm font-bold pb-2"
+					class="text-albi-500 text-sm font-bold "
 				>
 					Hledat podle sloupce
 				</p>
@@ -108,10 +131,10 @@
 				{#each columnFilters as columnFilter, i (columnFilter.id)}
 					<div
 						class={
-								columnFilter.filterModel.conditions.length > 1
-									? "rounded-lg border bg-slate-50 p-2 mt-2 flex flex-col gap-2"
-									: "bg-white p-0"
-							}
+							columnFilter.filterModel.conditions.length > 1
+								? "rounded-lg border bg-slate-50 p-2 flex flex-col mt-2 "
+								: "bg-white p-0"
+						}
 					>
 						{#if columnFilter.filterModel.conditions.length > 1}
 							<p class="text-xs font-bold text-slate-400">
@@ -119,7 +142,7 @@
 							</p>
 						{/if}
 
-						<InputDialogSelectWrapper
+						<InputDialogTableColumnRowWrapper
 							selectOptions={selectOptions}
 							bind:columnFilter={columnFilters[columnFilter.id]}
 						/>
@@ -131,13 +154,15 @@
 			<Dialog.Footer class="w-full mt-4">
 				<div class="w-full flex justify-between">
 					<Button
-						onclick={() => open = false}
+						type="submit"
+						onclick={() => parseInputDialog()}
 					>
 						Načíst
 					</Button>
 
 					{#if columnFilters !== undefined}
 						<Button
+							type="button"
 							onclick={() => addInput()}
 							class="size-10"
 						>
@@ -149,3 +174,14 @@
 		</div>
 	</Dialog.Content>
 </Dialog.Root>
+
+
+
+<WarningDialog
+	bind:open={openWarningDialog}
+	message="Opravdu chceš pokračovat?"
+	desription="Zobrazování velkých dat bez vstupních parametrů může ovlivnit dobu načítání, filtrování a řazení."
+	buttonAllowLabel="Načíst"
+	buttonDenyLabel="Zadat filtry"
+	bind:consent={warningConsent}
+/>

@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button/index.js";
+	import { Button } from "$lib/components/ui/button";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import Check from "lucide-svelte/icons/check";
 	import { tick } from "svelte";
-	import * as Command from "$lib/components/ui/command/index.js";
-	import * as Popover from "$lib/components/ui/popover/index.js";
+	import * as Command from "$lib/components/ui/command";
+	import * as Popover from "$lib/components/ui/popover";
 	import { cn } from "$lib/utils.js";
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import {Input} from "$lib/components/ui/input";
-	import {type Icon as IconType} from 'lucide-svelte';
+	import {ArrowRightToLine, CircleOff, Equal, EqualNot, type Icon as IconType, SearchX} from 'lucide-svelte';
 	import Scan from "lucide-svelte/icons/scan";
 	import ArrowRightFromLine from "lucide-svelte/icons/arrow-right-from-line";
 	import ArrowLeftFromLine from "lucide-svelte/icons/arrow-left-from-line";
@@ -15,67 +16,62 @@
 		ColumnFilterModelCondition,
 		ColumnFilterModelConditionTypesString, InputDialogSelectOption
 	} from "$lib/types/components/dialog/inputDialog";
+	import Search from "lucide-svelte/icons/search";
 
 	interface Props {
 		disabled: boolean;
-		condition: ColumnFilterModelCondition,
+		operator: ColumnFilterModelConditionTypesString|null,
 	}
 
 	let {
 		disabled = true,
-		condition = $bindable(),
+		operator = $bindable(),
 	}: Props = $props();
 
 
 	let open = $state(false);
-
-	let activeOperator: OperatorOption = $state({
-		field: null,
-		label: null,
-	})
 
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	type OperatorOption = {
 		field: ColumnFilterModelConditionTypesString|null,
 		label: string|null,
-		icon?: IconType
+		icon: typeof IconType
 	}
 
 	const options: OperatorOption[] = [
 		{
 			field: "contains",
-			label: "Obsahuje",
+			label: "Obsahuje", // search
+			icon: Search,
 		},
 		{
 			field: "not-contains",
-			label: "Neobsahuje",
+			label: "Neobsahuje", // search-x
+			icon: SearchX,
 		},
 		{
 			field: "equals",
-			label: "Rovná se",
+			label: "Rovná se", // equal
+			icon: Equal,
 		},
 		{
-			field: "not-empty",
-			label: "Nerovná se",
+			field: "not-equals",
+			label: "Nerovná se", // equal-not
+			icon: EqualNot,
 		},
 		{
 			field: "starts-with",
-			label: "Začíná na",
+			label: "Začíná na", // arrow-right-from-line
+			icon: ArrowRightFromLine,
 		},
 		{
 			field: "ends-with",
-			label: "Končí na",
-		},
-		{
-			field: "empty",
-			label: "Prázdný",
-		},
-		{
-			field: "not-empty",
-			label: "Není prázdný",
+			label: "Končí na", // arrow-right-to-line
+			icon: ArrowRightToLine,
 		},
 	]
+
 
 	function closeAndFocusTrigger() {
 		open = false;
@@ -84,47 +80,71 @@
 		});
 	}
 
+
+	let activeItem: OperatorOption|null = $state(null);
+
+
 	$effect(() => {
-		if (condition.type) {
-			options.forEach((option) => {
-				if (option.field === condition.type) {
-					activeOperator = option;
-				}
-			})
-		}
+		activeItem = getItem(operator);
 	})
 
+
+	function getItem(operator: string|null) {
+		if (!operator) {
+			return null;
+		}
+
+		let item = null;
+
+		options.forEach(option => {
+			if (option.field === operator) {
+				item = option;
+			}
+		})
+
+		return item;
+	}
+
+
 	function updateItem(option: OperatorOption) {
-		condition.type = option.field;
+		operator = option.field;
 	}
 </script>
 
 
 
 <Popover.Root bind:open>
-	<Popover.Trigger bind:ref={triggerRef}>
+	<Popover.Trigger bind:ref={triggerRef} class="font-normal hover:bg-muted/70 min-w-[40px] p-0">
 		{#snippet child({ props })}
 			<Button
 				variant="outline"
-				class="min-w-[80px] font-normal hover:bg-muted/50 disabled:opacity-100 disabled:cursor-not-allowed"
-				disabled={disabled}
+				class="min-w-[40px] font-normal hover:bg-muted/50 p-0"
 				{...props}
 				role="combobox"
 				aria-expanded={open}
 			>
-				<!--{@const Icon = activeOperator.icon}-->
-				{ activeOperator.label }
+				{#if activeItem === null}
+					<p class="text-slate-300">
+						...
+					</p>
+				{:else}
+					{@const Icon = activeItem?.icon}
 
-				{#if activeOperator.label === null}
-					<p class="text-slate-300">Akce</p>
+					<Tooltip.Root>
+						<Tooltip.Trigger >
+							<Icon class="!size-4"/>
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							<p>{activeItem?.label}</p>
+						</Tooltip.Content>
+					</Tooltip.Root>
 				{/if}
-<!--					<Icon/>-->
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
 
 
-	<Popover.Content side="bottom" class="p-0 w-[120px] max-h-60">
+	<Popover.Content side="bottom" class="p-0 w-[180px] max-h-60 h-60">
 		<Command.Root>
 			<Command.Input placeholder="..." />
 
@@ -143,9 +163,9 @@
 								closeAndFocusTrigger();
 							}}
 						>
-							<!--{@const Icon = option.icon}-->
+							{@const Icon = option.icon}
 
-<!--								<Icon />-->
+							<Icon />
 
 							{option.label}
 						</Command.Item>

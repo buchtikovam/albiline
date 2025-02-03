@@ -11,7 +11,8 @@
 		label: () => string,
 		name: string,
 		placeholder?: string,
-
+		inputType: "dialog"|"auth",
+		value?: string,
 	}
 
 	let {
@@ -19,7 +20,9 @@
 		label,
 		name,
 		disableSubmit = $bindable(),
-		placeholder
+		placeholder,
+		inputType,
+		value = $bindable(),
 	}: Props = $props();
 
 
@@ -46,6 +49,9 @@
 
 
 
+
+
+
 <div class="flex flex-col items-start w-full">
 	<div class="flex text-sm">
 		<InputLabel
@@ -53,35 +59,73 @@
 		/>
 	</div>
 
-	<div class={`flex w-full border rounded-lg ${isFocused ? "border-albi-500" : "border-border"}`}>
-		<Input
-			oninput={(e) => validatePassword(e)}
-			onfocus={() => isFocused = true}
-			onfocusout={() => isFocused = false}
-			class="h-12 font-bold placeholder:text-slate-300 text-albi-950 border-none"
-			name={name}
-			type={visible ? "text" : "password"}
-			autocomplete="off"
-			required={true}
-			placeholder={placeholder}
-		/>
+	{#if inputType === "auth"}
+		<div class={`flex w-full rounded-lg border bg-albi-50 ${isFocused ? "border-albi-500 " : "border-white "}`}>
+			<Input
+				oninput={(e) => validatePassword(e)}
+				onfocus={() => isFocused = true}
+				bind:value
+				onfocusout={() => isFocused = false}
+				class="bg-albi-50 placeholder:text-albi-300 h-12 font-bold text-albi-950 border-none"
+				name={name}
+				type={visible ? "text" : "password"}
+				autocomplete="off"
+				required={true}
+				placeholder={placeholder}
+			/>
 
-		<button
-			type="button"
-			class="mr-3 w-6"
-			onclick={() => visible = !visible}
+			<button
+				type="button"
+				class="mr-3 w-6"
+				onclick={() => visible = !visible}
+			>
+				{#if visible}
+					<EyeOff class="size-4 text-albi-300"/>
+				{:else }
+					<Eye class="size-4 text-albi-300"/>
+				{/if}
+			</button>
+		</div>
+
+		{#if schema}
+			<p class="text-xs text-left text-red-600 mt-1">
+				{errorMessage}
+			</p>
+		{/if}
+	{:else}
+
+		<div
+			class={`flex w-full rounded-lg border bg-[#faffff]	${isFocused ? "border-albi-500 " : "border-border"}`}
 		>
-			{#if visible}
-				<EyeOff class="size-4 text-albi-300"/>
-			{:else }
-				<Eye class="size-4 text-albi-300"/>
-			{/if}
-		</button>
-	</div>
+			<Input
+				oninput={(e) => validatePassword(e)}
+				onfocus={() => isFocused = true}
+				onfocusout={() => isFocused = false}
+				class="bg-[#faffff] h-12 font-bold placeholder:text-slate-300 text-albi-950 border-none"
+				name={name}
+				type={visible ? "text" : "password"}
+				autocomplete="off"
+				required={true}
+				placeholder={placeholder}
+			/>
 
-	{#if schema}
-		<p class="text-xs text-left text-red-600 mt-1">
-			{errorMessage}
-		</p>
+			<button
+				type="button"
+				class="mr-3 w-6"
+				onclick={() => visible = !visible}
+			>
+				{#if visible}
+					<EyeOff class="size-4 text-albi-300"/>
+				{:else }
+					<Eye class="size-4 text-albi-300"/>
+				{/if}
+			</button>
+		</div>
+
+		{#if schema}
+			<p class="text-xs text-left text-red-600 mt-1">
+				{errorMessage}
+			</p>
+		{/if}
 	{/if}
 </div>

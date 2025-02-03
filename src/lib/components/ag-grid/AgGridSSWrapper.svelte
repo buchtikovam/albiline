@@ -47,14 +47,16 @@
 	}: Props = $props();
 
 
-	// @ts-ignore
-	let gridContainer: HTMLElement = $state();
+	let gridContainer: HTMLElement|undefined = $state(undefined);
 	let gridApi: GridApi<unknown>;
 
 
-	const gridOptions: GridOptions = { // return from grid options
+	const gridOptions: GridOptions = {
 		rowSelection: {
-			mode: 'singleRow',
+			mode: 'multiRow',
+			enableClickSelection: true,
+			headerCheckbox: false,
+			hideDisabledCheckboxes: true,
 		},
 
 		localeText: AG_GRID_LOCALE_CZ,
@@ -123,6 +125,7 @@
 		paginationPageSize: 100,
 		serverSideInitialRowCount: 1000,
 		cacheBlockSize: 100,
+		blockLoadDebounceMillis: 1000,
 	}
 
 
@@ -238,11 +241,9 @@
 				}, 200);
 			}
 
-			// setTimeout(() => {
-				gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
-				gridApi.setGridOption("loading", false);
-				isInitialGridLoad = false;
-			// }, 100)
+			gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
+			gridApi.setGridOption("loading", false);
+			isInitialGridLoad = false;
 		}
 	})
 
@@ -250,7 +251,10 @@
 
 	// runs when component is mounted only
 	$effect(() => {
-		gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
+		if (gridContainer) {
+			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
+		}
+
 		gridApi.setGridOption('serverSideDatasource', datasource);
 		// gridApi.setGridOption("loading", true);
 		defaultColDef.value = gridApi.getColumnDefs() || [];
@@ -271,13 +275,6 @@
 		})
 
 		gridApi.setGridOption("columnDefs", initialColDef);
-
-		// remove selection on shift
-		window.addEventListener("keydown", (e) => {
-			if (e.shiftKey) {
-				document.getSelection()?.removeAllRanges();
-			}
-		})
 
 
 		setTimeout(() => {
@@ -315,7 +312,7 @@
 			let columnOrder: ColumnOrder = []
 
 			selectedPreset.value.forEach(obj => {
-				columnOrder.push({ colId: obj.colId})
+				columnOrder.push({ colId: obj.colId })
 			})
 
 			gridApi.setGridOption("columnDefs", selectedPreset.value)
@@ -391,76 +388,6 @@
 
 		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
-
-
-	// if (action === RibbonActionEnum.SAVE) {
-	// 	console.log(get(editedTableDataStore));
-	// }
-
-	// if (action === RibbonActionEnum.LOAD) {
-	// 	gridApi.refreshServerSide();
-	// }
-	//
-	// if (action === RibbonActionEnum.FILTER_QUICK) {
-	// 	const columnName = gridApi.getFocusedCell()?.column.getColId();
-	// 	const selection = window.getSelection()?.toString().trim();
-	//
-	// 	if (columnName && selection) {
-	// 		const cellType = "text";
-	// 		let currentFilters = gridApi.getFilterModel();
-	//
-	// 		currentFilters[columnName] = {
-	// 			filterType: "multi",
-	// 			filterModels: [{
-	// 				filterType: cellType,
-	// 				type: "contains",
-	// 				filter: selection
-	// 			}, null]
-	// 		}
-	//
-	// 		gridApi.setFilterModel(currentFilters);
-	// 		gridApi.onFilterChanged();
-	// 	}
-	// }
-	//
-	// if (action === RibbonActionEnum.FILTER_UNDO) {
-	// 	recentFilters.pop()
-	// 	if (recentFilters.length > 0) {
-	// 		gridApi.setFilterModel(recentFilters[recentFilters.length - 1]);
-	// 	} else {
-	// 		gridApi.setFilterModel(null);
-	// 	}
-	// }
-	//
-	// if (action === RibbonActionEnum.FILTER_REMOVE) {
-	// 	gridApi.setFilterModel(null);
-	// }
-	//
-	// if (action === RibbonActionEnum.SAVE_FILTERS) {
-	// 	if (Object.keys(gridApi.getFilterModel()).length > 0) {
-	// 		// openedDialogStore.set("ribbon-save-filters")
-	// 		// filtersStore.set(gridApi.getFilterModel())
-	// 		console.log(gridApi.getFilterModel());
-	// 	} else {
-	// 		customToast("InfoToast", "Nemáte žádné filtry k uložení.")
-	// 	}
-	// }
-	//
-	// if (action === RibbonActionEnum.MY_FILTERS) {
-	// 	openedDialogStore.set("ribbon-my-filters")
-	// }
-	//
-	// if(action === RibbonActionEnum.SAVE_PRESET) {
-	// 	openedDialogStore.set("ribbon-save-preset");
-	//
-	// 	console.log(gridApi.getColumnDefs());
-	// 	// presetStore.set(gridApi.getColumnDefs() || [])
-	// }
-	//
-	// if(action === RibbonActionEnum.MY_PRESETS) {
-	// 	openedDialogStore.set("ribbon-my-presets");
-	// }
-	//
 </script>
 
 

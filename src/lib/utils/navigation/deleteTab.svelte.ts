@@ -12,7 +12,9 @@ export function deleteTab(tab: HeaderTab) {
 			openedTabs.value.splice(openedTabs.value.indexOf(tab), 1);
 
 			// after tab was removed, redirect on available tab
-			if (page.url.pathname === tab.url) {
+			if (page.url.pathname === i18n.resolveRoute(tab.url)) {
+
+
 				if (openedTabs.value.length === 0) {
 					goto(i18n.resolveRoute("/")).then((r) => r);
 				}

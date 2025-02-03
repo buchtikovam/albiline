@@ -15,6 +15,7 @@ export type SidebarItem = {
 export type HeaderTab = {
 	field: string;
 	url: string;
+	label: string;
 	closingState: string;
 	treeDepth: number;
 }

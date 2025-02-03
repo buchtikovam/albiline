@@ -75,7 +75,7 @@
 >
 	<Dialog.Content class="h-[70%] sm:h-auto w-[90%] sm:w-auto">
 		<Dialog.Header>
-			<Dialog.Title class="h-5">
+			<Dialog.Title class="">
 				{ label }
 			</Dialog.Title>
 		</Dialog.Header>

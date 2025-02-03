@@ -6,6 +6,7 @@
 	import AuthInput from "$lib/components/form/inputs/auth/AuthInput.svelte";
 	import AlbiLogo from "$lib/icons/AlbiLogo.svelte";
 	import * as m from '$lib/paraglide/messages.js'
+	import type {Snapshot} from "@sveltejs/kit";
 
 
 	let { form }: { form: ActionData } = $props();
@@ -19,6 +20,17 @@
 			}
 		}
 	})
+
+
+	let inputValues = $state({
+		userCode: "",
+		password: ""
+	})
+
+	export const snapshot: Snapshot<{ userCode: string, password: string }> = {
+		capture: () => inputValues,
+		restore: (value) => inputValues = value
+	};
 </script>
 
 
@@ -28,7 +40,7 @@
 		<AlbiLogo />
 	</div>
 
-	<div class="w-full bg-white rounded-2xl shadow max-w-lg">
+	<div class="w-full bg-[#faffff] rounded-2xl shadow max-w-lg">
 		<div class="p-6 sm:p-8">
 			<h1 class="text-xl font-bold ">
 				{ m.routes_login_form_label() }
@@ -40,17 +52,20 @@
 						label={ m.routes_login_form_user_code }
 						name="userCode"
 						placeholder="ABCD"
+						bind:value={inputValues.userCode}
 					/>
 
 					<AuthPasswordInput
 						label={ m.routes_login_form_password }
 						name="password"
 						placeholder="•••••"
+						inputType="auth"
+						bind:value={inputValues.password}
 					/>
 				</div>
 
 				<div>
-					<Button type="submit" class="w-full bg-albi-500 rounded-lg h-12 text-background font-bold">
+					<Button type="submit" class="w-full bg-albi-500 rounded-lg h-12 text-[#faffff] font-bold">
 						{ m.routes_login_form_submit_button() }
 					</Button>
 				</div>
@@ -58,3 +73,5 @@
 		</div>
 	</div>
 </div>
+
+

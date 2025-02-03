@@ -17,6 +17,8 @@
 	}: Props = $props();
 </script>	
 
+
+
 <ContextMenu.Root>
 	<ContextMenu.Trigger>
 		<Accordion.Item
@@ -31,7 +33,7 @@
 						isMobileSidebarOpen = false;
 					}
 				}}
-				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-2 text-albi-950 hover:text-black"
+				class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-1.5 text-albi-950 hover:text-black"
 			>
 				{item.translation() }
 			</a>

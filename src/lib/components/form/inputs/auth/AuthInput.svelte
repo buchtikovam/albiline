@@ -6,12 +6,14 @@
 		label: () => string,
 		name: string,
 		placeholder?: string,
+		value?: string,
 	}
 
 	let {
 		label,
 		name,
-		placeholder
+		placeholder,
+		value = $bindable()
 	}: Props = $props();
 
 </script>
@@ -24,6 +26,7 @@
 	<Input
 		class="bg-albi-50 h-12 font-bold rounded-lg placeholder:text-albi-300 text-albi-900"
 		name={name}
+		bind:value
 		type="text"
 		autocomplete="off"
 		required={true}

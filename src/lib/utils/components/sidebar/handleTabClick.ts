@@ -10,6 +10,7 @@ export function handleTabClick(item: SidebarItem, treeDepth: number): void {
 			field: item.field,
 			url: item.href,
 			closingState: 'hidden',
+			label: item.translation(),
 			treeDepth: treeDepth
 		};
 

@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { getPageMetaData } from '$lib/utils/getPageMetaData';
-	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
-	import { onMount } from 'svelte';
+	import {
+		InputDialogZakaznici,
+		InputDialogZakazniciSelectOptions
+	} from "$lib/data/input-dialog/prodej/zakaznici/InputDialogZakaznici";
 	import { activeTabIndex, showFulltextSearch } from '$lib/runes/page.svelte';
-	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
-	import { goto } from '$app/navigation';
 	import { storedSelectedRows } from '$lib/runes/table.svelte';
+	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
+	import { i18n } from '$lib/i18n';
+	import { getPageMetaData } from '$lib/utils/getPageMetaData';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import { i18n } from '$lib/i18n';
 	import InputDialog from "$lib/components/dialog/input/InputDialog.svelte";
 
 
@@ -47,22 +51,34 @@
 		rowModelType: "serverSide",
 		cacheBlockSize: 100,
 		columnDefs: customerAgGridDef,
-		rowSelection: {
-			mode: 'multiRow',
-		},
 	}
+
+
+	let open = $state(true);
+	let inputDialogFinished = $derived(!open);
 </script>
 
 
 
 <svelte:head>
-	<title>Zákazníci | Albiline</title>
+	<title>
+		Zákazníci | Albiline
+	</title>
 </svelte:head>
 
 
 
-<AgGridSSWrapper
-	gridOptionsCustom={gridOptions}
-	requiredFields={["customerNodeCode", "customerAddressCode"]}
-	url="http://10.2.2.10/albiline.test/api/v1/customers"
-/>
+{#if !inputDialogFinished}
+	<InputDialog
+		bind:open
+		defaultInputDialog={InputDialogZakaznici}
+		selectOptions={InputDialogZakazniciSelectOptions}
+	/>
+{:else}
+	<AgGridSSWrapper
+		gridOptionsCustom={gridOptions}
+		requiredFields={["customerNodeCode", "customerAddressCode"]}
+		url="http://10.2.2.10/albiline.test/api/v1/customers"
+	/>
+{/if}
+

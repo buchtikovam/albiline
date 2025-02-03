@@ -24,8 +24,6 @@
 	}: Props = $props();
 
 	let disableTab = $state(false);
-
-	let div = $state<HTMLDivElement>();
 </script>
 
 
@@ -46,7 +44,7 @@
 								<Accordion.Trigger
 									disabled={disableTab}
 									class="hover:bg-muted/50 rounded-md flex-1"
-									onclick={() =>  {console.log('clicked')} }
+									onclick={() =>  { console.log('clicked') } }
 								>
 									{@const Icon = item.icon}
 									<a
@@ -80,7 +78,7 @@
 														<Accordion.Trigger
 															class="hover:bg-muted/50 rounded-md flex-1">
 															<div
-																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-3 py-2 text-albi-950 hover:text-black">
+																class="flex text-sm font-medium w-full items-center gap-3 rounded-lg px-2 py-1.5 text-albi-950 hover:text-black">
 																<a
 																	href={secondChild.href}
 																	onclick={() => handleTabClick(secondChild, 1)}
@@ -112,19 +110,29 @@
 											</ContextMenu.Root>
 										{:else}
 											<!-- accordiony druhé vrstvy (child item nemá children položky) -->
-											<ItemOpenSecondNoChild item={secondChild} isMobile={false} isMobileSidebarOpen={false} />
+											<ItemOpenSecondNoChild
+												item={secondChild}
+												isMobile={false}
+												isMobileSidebarOpen={false}
+											/>
 										{/if}
 									{/each}
 								</Accordion.Root>
 							</Accordion.Content>
 						</Accordion.Item>
 
-						<ContextMenuFavorite field={item.field} />
+						<ContextMenuFavorite
+							field={item.field}
+						/>
 					</ContextMenu.Root>
 
 				{:else}
 					<!-- accordiony první vrstvy (item nemá children položky) -->
-					<ItemOpenFirstNoChild item={item} isMobile={false} isMobileSidebarOpen={false}/>
+					<ItemOpenFirstNoChild
+						item={item}
+						isMobile={false}
+						isMobileSidebarOpen={false}
+					/>
 				{/if}
 			</div>
 		{/each}

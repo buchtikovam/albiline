@@ -162,7 +162,7 @@
 	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.SAVE) {
 			if (
-				Object.keys(editedFormValues).length > 1 ||
+				Object.keys(editedFormValues).length > 0 ||
 				createdContacts.length > 0 ||
 				editedContactValues.length > 0
 			) {
@@ -247,8 +247,6 @@
 	const contactsGridOptions: GridOptions = {
 		columnDefs: customerAndAddressContactsAgGridDef,
 	}
-
-
 </script>
 
 
@@ -258,7 +256,6 @@
 		Prodejna {initialFormValues.customerAddressCode || ""} | Albiline
 	</title>
 </svelte:head>
-
 
 
 

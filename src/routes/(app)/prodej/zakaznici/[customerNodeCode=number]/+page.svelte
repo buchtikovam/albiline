@@ -24,6 +24,9 @@
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
+	import {ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {customToast} from "$lib/utils/customToast";
 
 
 	interface Props {
@@ -120,6 +123,37 @@
 			disableLeft = true;
 			disableRight = true;
 		}
+	})
+
+
+	// runs when ribbon action changes
+	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.SAVE) {
+			if (
+				Object.keys(editedFormValues).length > 0 ||
+				createdContacts.length > 0 ||
+				editedContactValues.length > 0
+			) {
+				let editedFormValuesArr = [];
+				editedFormValuesArr.push(editedFormValues)
+
+				const saveObj = {
+					insert: [...createdContacts],
+					update: [...editedContactValues, ...editedFormValuesArr],
+					delete: []
+				}
+
+				console.log(JSON.stringify(saveObj, null, 1));
+				// updateAndReload(saveObj);
+			} else {
+				customToast(
+					"InfoToast",
+					"Nemáte nic k uložení. Nejdříve proveďte změny."
+				)
+			}
+		}
+
+		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
 
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { activeTabIndex, fulltextFilterValue, showFulltextSearch } from '$lib/runes/page.svelte';
 	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
-	import { disableNavigation, disablePageTabs } from '$lib/runes/navigation.svelte';
+	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { goto } from '$app/navigation';
 	import { i18n } from '$lib/i18n.js'
@@ -27,6 +27,14 @@
 			customerNodeCode = null;
 			customerAddressCode = null;
 		}
+	})
+
+	$effect(() => {
+		activePageTab.value = "/prodej/zakaznici";
+
+		return (() => {
+			activePageTab.value = "";
+		})
 	})
 </script>
 
