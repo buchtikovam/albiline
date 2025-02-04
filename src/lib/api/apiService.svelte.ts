@@ -1,5 +1,6 @@
 import {authDetails} from '$lib/runes/page.svelte';
 
+
 const url = "http://10.2.2.10/albiline.test/api/v1/";
 const sessionKey = $derived(authDetails.sessionKey);
 
@@ -16,8 +17,6 @@ export async function apiServiceGET(endpoint: string): Promise<Response> {
 
 
 export async function apiServicePOST(endpoint: string, body = {}): Promise<Response> {
-	console.log(JSON.stringify(body));
-
 	return await fetch(url + endpoint, {
 		method: 'POST',
 		headers: {
@@ -30,8 +29,6 @@ export async function apiServicePOST(endpoint: string, body = {}): Promise<Respo
 
 
 export async function apiServicePUT(endpoint: string, id: number, body = {}): Promise<Response> {
-	// const url = PUBLIC_API_ROUTE + endpoint;
-
 	return await fetch(url + endpoint, {
 		method: 'PUT',
 		headers: {
@@ -44,9 +41,6 @@ export async function apiServicePUT(endpoint: string, id: number, body = {}): Pr
 
 
 export async function apiServicePATCH(endpoint: string, body = {}): Promise<Response> {
-	// const url = PUBLIC_API_ROUTE + endpoint;
-	console.log("PATCH")
-
 	return await fetch(url + endpoint, {
 		method: 'PATCH',
 		headers: {
@@ -59,8 +53,6 @@ export async function apiServicePATCH(endpoint: string, body = {}): Promise<Resp
 
 
 export async function apiServiceDELETE(endpoint: string, id: number): Promise<Response> {
-	// const url = PUBLIC_API_ROUTE + endpoint;
-
 	return await fetch(url + endpoint, {
 		method: 'DELETE',
 		headers: {

@@ -28,8 +28,7 @@
 	let inputDialog: InputDialogType = $state(defaultInputDialog);
 	let fulltext: string|null|undefined = $state(inputDialog.fulltext);
 	let columnFilters = $state(inputDialog.columnFilters);
-	let openWarningDialog = $state(false);
-	let warningConsent = $state(false);
+
 
 	function addInput() {
 		if (columnFilters) {
@@ -78,21 +77,6 @@
 	})
 
 	$inspect(columnFilters);
-
-	function parseInputDialog() {
-		if (!fulltext || fulltext.length === 0) {
-			openWarningDialog = true;
-		}
-	}
-
-	$effect(() => {
-		if (warningConsent === true) {
-			openWarningDialog = false;
-			setTimeout(() => {
-				open = false;
-			}, 200)
-		}
-	})
 </script>
 
 
@@ -155,7 +139,6 @@
 				<div class="w-full flex justify-between">
 					<Button
 						type="submit"
-						onclick={() => parseInputDialog()}
 					>
 						Načíst
 					</Button>
@@ -175,13 +158,3 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-
-
-<WarningDialog
-	bind:open={openWarningDialog}
-	message="Opravdu chceš pokračovat?"
-	desription="Zobrazování velkých dat bez vstupních parametrů může ovlivnit dobu načítání, filtrování a řazení."
-	buttonAllowLabel="Načíst"
-	buttonDenyLabel="Zadat filtry"
-	bind:consent={warningConsent}
-/>

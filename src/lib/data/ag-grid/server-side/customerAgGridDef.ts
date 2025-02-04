@@ -1,9 +1,49 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
+import * as m from '$lib/paraglide/messages.js'
+
+export const customerHeaderTranslations = {
+	customerAddressCode: m.routes_prodej_zakaznici_table_column_customer_address_code,
+	name: m.routes_prodej_zakaznici_table_column_name,
+	customerNodeCode: m.routes_prodej_zakaznici_table_column_customer_node_code,
+	i_Name: m.routes_prodej_zakaznici_table_column_i_name,
+	street: m.routes_prodej_zakaznici_table_column_street,
+	city: m.routes_prodej_zakaznici_table_column_city,
+	postalCode: m.routes_prodej_zakaznici_table_column_postal_code,
+	countryCode: m.routes_prodej_zakaznici_table_column_country_code,
+	customerRank: m.routes_prodej_zakaznici_table_column_customer_rank,
+	isBadPayer: m.routes_prodej_zakaznici_table_column_is_bad_payer,
+	dealerCode: m.routes_prodej_zakaznici_table_column_dealer_code,
+	areaCode: m.routes_prodej_zakaznici_table_column_area_code,
+	responsiblePerson: m.routes_prodej_zakaznici_table_column_responsible_person,
+	i_ICO: m.routes_prodej_zakaznici_table_column_i_ico,
+	i_DIC: m.routes_prodej_zakaznici_table_column_i_dic,
+	i_IcDph: m.routes_prodej_zakaznici_table_column_i_icdph,
+	paymentTypeCode: m.routes_prodej_zakaznici_table_column_payment_type_code,
+	dueDays: m.routes_prodej_zakaznici_table_column_due_days,
+	consignmentSaleEnabled: m.routes_prodej_zakaznici_table_column_consignment_sale_enabled,
+	retailStoreTypeName: m.routes_prodej_zakaznici_table_column_retail_store_type_name,
+	areaId: m.routes_prodej_zakaznici_table_column_area_id,
+	useAssortedEanCodes: m.routes_prodej_zakaznici_table_column_use_assorted_ean_codes,
+	b2BeshopEnabled: m.routes_prodej_zakaznici_table_column_b2b_eshop_enabled,
+	i_Street: m.routes_prodej_zakaznici_table_column_i_street,
+	i_City: m.routes_prodej_zakaznici_table_column_i_city,
+	i_PostalCode: m.routes_prodej_zakaznici_table_column_i_postal_code,
+	i_CountryCode: m.routes_prodej_zakaznici_table_column_i_country_code,
+	note: m.routes_prodej_zakaznici_table_column_note,
+	dateCreated: m.routes_prodej_zakaznici_table_column_date_created,
+	firstOrderDate: m.routes_prodej_zakaznici_table_column_first_order_date,
+	lastOrderDate: m.routes_prodej_zakaznici_table_column_last_order_date,
+	companyName: m.routes_prodej_zakaznici_table_column_company_name,
+	isReturnAllowed: m.routes_prodej_zakaznici_table_column_is_return_allowed,
+	customerStoreCode: m.routes_prodej_zakaznici_table_column_customer_store_code,
+	customerStoreEan: m.routes_prodej_zakaznici_table_column_customer_store_ean,
+	splitOrderByFood: m.routes_prodej_zakaznici_table_column_split_order_by_food,
+};
+
 
 export const customerAgGridDef: ColDef[] = [
 	{
 		field: "customerAddressCode",
-		headerName: "ID prodejny",
 		cellDataType: "number",
 		editable: false,
 		hide: false,
@@ -22,7 +62,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "name",
-		headerName: "Prodejna",
 		width: 240,
 		cellDataType: "text",
 		editable: true,
@@ -40,10 +79,9 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "customerNodeCode",
-		headerName: "ID zákazníka",
 		width: 68,
 		cellDataType: "number",
-		editable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -58,10 +96,9 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_Name",
-		headerName: "Zákazník",
 		width: 240,
 		cellDataType: "text",
-		editable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -76,10 +113,9 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "street",
-		headerName: "Ulice",
 		width: 200,
 		cellDataType: "text",
-		editable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -94,10 +130,9 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "city",
-		headerName: "Město",
 		width: 200,
 		cellDataType: "text",
-		editable: false,
+		editable: true,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -112,7 +147,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "postalCode",
-		headerName: "PSČ",
 		width: 66,
 		cellDataType: "text",
 		editable: false,
@@ -130,7 +164,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "countryCode", // select
-		headerName: "Země",
 		width: 68,
 		cellDataType: "text",
 		editable: false,
@@ -148,7 +181,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "customerRank", // select
-		headerName: "Bonita",
 		width: 70,
 		cellDataType: "text",
 		editable: false,
@@ -166,7 +198,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "isBadPayer",
-		headerName: "Neplatič",
 		width: 68,
 		cellDataType: "boolean",
 		editable: false,
@@ -184,7 +215,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{ 
 		field: "dealerCode",
-		headerName: "OZ",
 		width: 60,
 		editable: false,
 		cellDataType: "number",
@@ -202,7 +232,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "areaCode",
-		headerName: "OM",
 		width: 60,
 		editable: false,
 		cellDataType: "text",
@@ -220,7 +249,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "responsiblePerson",
-		headerName: "Zodpovědná osoba",
 		width: 78,
 		editable: false,
 		cellDataType: "text",
@@ -238,7 +266,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_ICO",
-		headerName: "IČO",
 		width: 85,
 		editable: false,
 		cellDataType: "text",
@@ -256,7 +283,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_DIC",
-		headerName: "DIČ",
 		width: 135,
 		editable: false,
 		cellDataType: "text",
@@ -275,7 +301,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_IcDph",
-		headerName: "IčDPH",
 		width: 135,
 		editable: false,
 		cellDataType: "text",
@@ -293,7 +318,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "paymentTypeCode", // select
-		headerName: "Typ platby",
 		width: 68,
 		cellDataType: "text",
 		editable: false,
@@ -312,7 +336,6 @@ export const customerAgGridDef: ColDef[] = [
 
 	{
 		field: "dueDays", 
-		headerName: "Splatnost",
 		width: 68,
 		cellDataType: "number",
 		editable: false,
@@ -330,7 +353,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "consignmentSaleEnabled",
-		headerName: "Komise",
 		width: 70,
 		cellDataType: "boolean",
 		editable: false,
@@ -349,7 +371,6 @@ export const customerAgGridDef: ColDef[] = [
 
 	{
 		field: "retailStoreTypeName", // select
-		headerName: "Typ prodejny",
 		width: 180,
 		editable: false,
 		cellDataType: "text",
@@ -367,7 +388,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "areaId",
-		headerName: "Oblast",
 		width: 76,
 		cellDataType: "number",
 		editable: false,
@@ -386,7 +406,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{ // bool
 		field: "useAssortedEanCodes",
-		headerName: "Asortní EANy",
 		width: 70,
 		cellDataType: "boolean",
 		editable: false,
@@ -404,7 +423,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{ // bool
 		field: "b2BeshopEnabled",
-		headerName: "B2B",
 		width: 70,
 		cellDataType: "boolean",
 		editable: false,
@@ -422,7 +440,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_Street",
-		headerName: "Ulice FA",
 		width: 200,
 		cellDataType: "text",
 		editable: false,
@@ -440,7 +457,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_City",
-		headerName: "Město FA",
 		width: 200,
 		cellDataType: "text",
 		editable: false,
@@ -458,7 +474,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_PostalCode",
-		headerName: "PSČ FA",
 		width: 70,
 		cellDataType: "text",
 		editable: false,
@@ -476,7 +491,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "i_CountryCode", // select
-		headerName: "Země FA",
 		width: 70,
 		cellDataType: "text",
 		editable: false,
@@ -494,7 +508,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "note",
-		headerName: "Poznámka",
 		width: 200,
 		cellDataType: "text",
 		editable: false,
@@ -513,7 +526,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "dateCreated",
-		headerName: "Datum vytvoření",
 		width: 100,
 		cellDataType: "date",
 		valueFormatter: (params: ValueFormatterParams) => {
@@ -534,7 +546,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "firstOrderDate",
-		headerName: "První objednávka",
 		width: 100,
 		cellDataType: "date",
 		valueFormatter: (params: ValueFormatterParams) => {
@@ -555,7 +566,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "lastOrderDate",
-		headerName: "Poslední objednávka",
 		width: 100,
 		cellDataType: "date",
 		valueFormatter: (params: ValueFormatterParams) => {
@@ -576,7 +586,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "companyName",
-		headerName: "Název společnosti",
 		width: 200,
 		cellDataType: "text",
 		editable: false,
@@ -595,7 +604,6 @@ export const customerAgGridDef: ColDef[] = [
 
 	{ // bool
 		field: "isReturnAllowed",
-		headerName: "Vratka povolena",
 		cellDataType: "boolean",
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -616,7 +624,6 @@ export const customerAgGridDef: ColDef[] = [
 	{
 		field: "customerStoreCode",
 		hide: true,
-		headerName: "ID zákazníka dle zákazníka",
 		editable: false,
 		filter: 'agMultiColumnFilter',
 		filterParams: {
@@ -632,7 +639,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "customerStoreEan",
-		headerName: "EAN zákazníka",
 		hide: true,
 		editable: false,
 		filter: 'agMultiColumnFilter',
@@ -649,7 +655,6 @@ export const customerAgGridDef: ColDef[] = [
 	},
 	{
 		field: "splitOrderByFood",
-		headerName: "Food / NonFood",
 		hide: true,
 		editable: false,
 		filter: 'agMultiColumnFilter',
@@ -665,3 +670,7 @@ export const customerAgGridDef: ColDef[] = [
 		}
 	},
 ]
+
+
+
+

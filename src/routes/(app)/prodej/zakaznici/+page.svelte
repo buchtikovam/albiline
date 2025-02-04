@@ -5,23 +5,15 @@
 	} from "$lib/data/input-dialog/prodej/zakaznici/InputDialogZakaznici";
 	import { activeTabIndex, showFulltextSearch } from '$lib/runes/page.svelte';
 	import { storedSelectedRows } from '$lib/runes/table.svelte';
-	import { customerAgGridDef } from '$lib/data/ag-grid/server-side/customerAgGridDef';
+	import {customerAgGridDef, customerHeaderTranslations} from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { i18n } from '$lib/i18n';
 	import { getPageMetaData } from '$lib/utils/getPageMetaData';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import type { PageMetaDataType } from '$lib/types/page/pageSettings';
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputDialog from "$lib/components/dialog/input/InputDialog.svelte";
-
-
-	let pageMetaData: PageMetaDataType;
-
-	onMount(async () => {
-		pageMetaData = await getPageMetaData();
-	})
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
@@ -44,17 +36,12 @@
 			}
 		},
 
-		suppressExcelExport: true,
-		suppressCsvExport: true,
-		maintainColumnOrder: true,
-		enableCellTextSelection: true,
-		rowModelType: "serverSide",
-		cacheBlockSize: 100,
+
 		columnDefs: customerAgGridDef,
 	}
 
 
-	let open = $state(true);
+	let open = $state(false);
 	let inputDialogFinished = $derived(!open);
 </script>
 
@@ -79,6 +66,7 @@
 		gridOptionsCustom={gridOptions}
 		requiredFields={["customerNodeCode", "customerAddressCode"]}
 		url="http://10.2.2.10/albiline.test/api/v1/customers"
+		headerTranslations={customerHeaderTranslations}
 	/>
 {/if}
 

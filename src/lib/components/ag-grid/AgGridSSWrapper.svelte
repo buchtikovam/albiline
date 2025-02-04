@@ -7,18 +7,17 @@
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
 	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
-	import { isEditAllowed, ribbonAction } from '$lib/runes/ribbon.svelte';
-	import { AG_GRID_LOCALE_CZ } from '@ag-grid-community/locale';
+	import { lastVisibleRowIndex } from '$lib/runes/table.svelte.js';
 	import { disablePageTabs } from '$lib/runes/navigation.svelte';
+	import { isEditAllowed } from '$lib/runes/ribbon.svelte';
+	import { compareObjectsByFields } from '$lib/utils/general/compareObjectsByFields';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
+	import { getAgGridLocale } from "$lib/utils/components/ag-grid/getAgGridLocale";
 	import { tick } from 'svelte';
-	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	import { scrollGridToTop } from '$lib/utils/components/ag-grid/scrollGridToTop';
-	import { customToast } from '$lib/utils/customToast';
 	import {
 		type CellValueChangedEvent,
 		createGrid,
-		type FilterModel,
+		type FilterModel, type GetContextMenuItemsParams,
 		type GetRowIdParams,
 		type GridApi,
 		type GridOptions, type IRowNode,
@@ -26,25 +25,27 @@
 		type IServerSideGetRowsParams
 	} from 'ag-grid-enterprise';
 	import type { ColumnOrder, TableRowRequest } from '$lib/types/components/table/table';
-	import type { ColDef } from 'ag-grid-community';
+	import type { ColDef, GetMainMenuItemsParams } from 'ag-grid-community';
+	import type { Preset } from '$lib/types/components/table/presets';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import '$lib/ag-grid-theme-builder.pcss';
-	import { lastVisibleRowIndex } from '$lib/runes/table.svelte.js';
-	import type { Preset } from '$lib/types/components/table/presets';
-	import { compareObjectsByFields } from '$lib/utils/general/compareObjectsByFields';
+
 
 
 	interface Props {
 		url: string;
 		requiredFields: string[];
 		gridOptionsCustom: GridOptions;
+		headerTranslations: Record<string, () => string>
 	}
 
 	let {
 		url,
 		requiredFields,
-		gridOptionsCustom
+		gridOptionsCustom,
+		headerTranslations
 	}: Props = $props();
+
 
 
 	let gridContainer: HTMLElement|undefined = $state(undefined);
@@ -59,7 +60,32 @@
 			hideDisabledCheckboxes: true,
 		},
 
-		localeText: AG_GRID_LOCALE_CZ,
+		localeText: getAgGridLocale(),
+
+		getMainMenuItems: (params: GetMainMenuItemsParams) => {
+			return [
+				'pinSubMenu',
+				'separator',
+				'autoSizeThis',
+				'columnChooser',
+				'resetColumns',
+				'separator',
+				'sortUnSort',
+			];
+		},
+
+		getContextMenuItems: (params: GetContextMenuItemsParams) => {
+			return [
+				'copy',
+				'copyWithHeaders',
+				'cut',
+				'paste',
+			];
+		},
+
+		columnTypes: {
+			formattedDate: {}
+		},
 
 		defaultColDef: {
 			sortable: true,
@@ -69,8 +95,18 @@
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
+			filterParams: {
+				filters: [
+					{
+						filter: 'agTextColumnFilter',
+						filterParams: {
+							buttons: ["apply", "reset"],
+						}
+					},
+				]
+			},
 			autoHeaderHeight: true,
-			suppressHeaderMenuButton: true
+			suppressHeaderMenuButton: true,
 		},
 
 		onCellValueChanged: (event: CellValueChangedEvent<any>) => {
@@ -122,10 +158,16 @@
 			storedSelectedRows.value = rowArr;
 		},
 
-		paginationPageSize: 100,
-		serverSideInitialRowCount: 1000,
+		rowModelType: "serverSide",
+		serverSideInitialRowCount: 10000,
 		cacheBlockSize: 100,
-		blockLoadDebounceMillis: 1000,
+		maxBlocksInCache: 20,
+		blockLoadDebounceMillis: 600,
+		enableCellTextSelection: true,
+		maintainColumnOrder: true,
+		enterNavigatesVerticallyAfterEdit: true,
+		undoRedoCellEditing: true,
+		undoRedoCellEditingLimit: 20,
 	}
 
 
@@ -150,10 +192,7 @@
 				recentFilters.push(currentFilter);
 			}
 
-			// currentSort = gridApi.getColumnState().map((state) => state.sort)
-
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
-
 
 			fetch(url
 				,{
@@ -193,7 +232,7 @@
 		}, 1000)
 	}
 
-	$effect(() => {
+	$effect(() => { // todo ?????
 		if (fulltextFilterValue.value) {
 			isInitialFilterValue = false;
 			debounceFulltext();
@@ -208,14 +247,14 @@
 	const columnDefaultEditable = new Map();
 
 
-	// if user has unsaved filters / preset / selected rows and navigated between page tabs, display them
+	//  TODO if user has unsaved filters / preset / selected rows and navigated between page tabs, display them
 	$effect(() => {
 		if (isInitialGridLoad && isLoaded) {
 			if (presetToSave.value.length > 0) {
 				let columnOrder: ColumnOrder = []
 
 				presetToSave.value.forEach((obj: Preset) => {
-					// @ts-ignore
+					obj.headerName = headerTranslations[obj.field]()
 					columnOrder.push({ colId: obj.colId })
 				})
 
@@ -251,46 +290,43 @@
 
 	// runs when component is mounted only
 	$effect(() => {
+		console.log("_________mount_________")
+
 		if (gridContainer) {
 			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		}
 
 		gridApi.setGridOption('serverSideDatasource', datasource);
-		// gridApi.setGridOption("loading", true);
-		defaultColDef.value = gridApi.getColumnDefs() || [];
 
-		const initialColDef = gridApi.getColumnDefs();
-		const canEdit = isEditAllowed.value;
-		// set background color of editable columns on page load, map initial column editable state
-		initialColDef?.map((column: ColDef) => {
-			columnDefaultEditable.set(column.field, column.editable)
-
-			if (canEdit) {
-				column.cellStyle = {
-					backgroundColor: column.editable ?
-						"rgba(245,198,11,0.05)" :
-						"rgba(0, 0, 0, 0)"
-				};
-			}
+		const colDefs = gridApi.getColumnDefs();
+		colDefs?.forEach((column: ColDef) => {
+			column.headerName = headerTranslations[column.field]();
 		})
 
-		gridApi.setGridOption("columnDefs", initialColDef);
+		defaultColDef.value = colDefs || [];
 
+		// set background color of editable columns on page load, map initial column editable state
+		colDefs?.map((column: ColDef) => {
+			columnDefaultEditable.set(column.field, column.editable)
+		})
 
-		setTimeout(() => {
-			if (Object.keys(filtersToSave.value).length > 0) {
-				console.log("load_filters");
-				gridApi.setFilterModel(filtersToSave.value);
-			}
-		}, 200);
+		gridApi.setGridOption("columnDefs", colDefs);
 
-		return () => {
-			fulltextFilterValue.value = "";
-
-			lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex() < 10
-				? gridApi.getFirstDisplayedRowIndex()
-				: gridApi.getFirstDisplayedRowIndex() + 10
-		}
+		// TODO filtry
+		// setTimeout(() => {
+		// 	if (Object.keys(filtersToSave.value).length > 0) {
+		// 		console.log("load_filters");
+		// 		gridApi.setFilterModel(filtersToSave.value);
+		// 	}
+		// }, 200);
+		//
+		// return () => {
+		// 	fulltextFilterValue.value = "";
+		//
+		// 	lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex() < 10
+		// 		? gridApi.getFirstDisplayedRowIndex()
+		// 		: gridApi.getFirstDisplayedRowIndex() + 10
+		// }
 	})
 
 
@@ -333,7 +369,6 @@
 			let defaultColumnDef = defaultColDef.value;
 
 			defaultColumnDef.forEach(obj => {
-				// @ts-ignore
 				columnOrder.push({ colId: obj.field });
 			});
 
@@ -352,41 +387,6 @@
 	// disable page tabs if no row is selected
 	$effect(() => {
 		disablePageTabs.value = storedSelectedRows.value.length === 0;
-	})
-
-
-	// runs when user clicks ribbon button
-	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.EDIT) {
-			isEditAllowed.value = !isEditAllowed.value;
-
-			const currentColDef = gridApi.getColumnDefs();
-			let isEditable = isEditAllowed.value;
-
-			console.log("edit");
-
-			// if (currentColDef) {
-			// 	currentColDef.map((column: ColDef) => {
-			// 		if (columnDefaultEditable.get(column.field)) {
-			// 			column.editable = isEditable;
-			// 			column.cellStyle = {
-			// 				backgroundColor: isEditable ?
-			// 					"rgba(245,198,11,0.05)" :
-			// 					"rgba(0, 0, 0, 0)"
-			// 			};
-			// 		}
-			// 	})
-			//
-			// 	gridApi.setGridOption("columnDefs", currentColDef);
-			// }
-
-			isEditable === true
-				? customToast("InfoToast", "Editace byla povolena")
-				: customToast("InfoToast", "Editace byla zakázána")
-		}
-
-
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
 </script>
 

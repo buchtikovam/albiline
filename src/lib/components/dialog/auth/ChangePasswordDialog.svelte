@@ -6,8 +6,6 @@
 	import {Button} from "$lib/components/ui/button";
 	import {z} from "zod";
 
-
-
 	interface Props {
 		isOpen: boolean;
 	}
@@ -16,7 +14,6 @@
 
 	let disableSubmit = $state(false);
 	// const passwordSchema = z.string().regex(new RegExp(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{10,}$/));
-
 </script>
 
 
@@ -34,7 +31,7 @@
 	<form
 		method="POST"
 		autocomplete="off"
-		action="/zmena-hesla"
+		action="/profil"
 	>
 		<div
 			class={`flex flex-col gap-2 md:gap-3 ${disableSubmit ? "md:mb-4" : "md:mb-8"}`}
@@ -43,15 +40,16 @@
 				label={m.routes_zmena_hesla_form_old_password}
 				name="old-password"
 				placeholder="•••••"
+				inputType="dialog"
 			/>
 
-<!--							schema={passwordSchema}
--->
+			<!--schema={passwordSchema}-->
 			<AuthPasswordInput
 				bind:disableSubmit={disableSubmit}
 				label={m.routes_zmena_hesla_form_new_password}
 				name="new-password"
 				placeholder="••••••••"
+				inputType="dialog"
 			/>
 		</div>
 

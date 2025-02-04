@@ -19,17 +19,6 @@ export const activeTabIndex: { value: number } = $state({ value: 0 });
 
 export const authDetails: { sessionKey: string|null, userName: string|null } = $state({ sessionKey: null, userName: null });
 
-// export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
-// 	value: [
-// 		{
-// 			"title": "Upozornění",
-// 			"content": "Zadal jsi špatné heslo",
-// 			"type": "Critical"
-// 		}
-// 	]
-// });
-
-
 export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 	value: []
 });

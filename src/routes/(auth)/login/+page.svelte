@@ -1,23 +1,20 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { customToast } from "$lib/utils/customToast";
+	import { responseDialogMessages } from "$lib/runes/page.svelte";
 	import type { ActionData } from "../../../../.svelte-kit/types/src/routes/(auth)/login/$types";
 	import AuthPasswordInput from "$lib/components/form/inputs/auth/AuthPasswordInput.svelte";
 	import AuthInput from "$lib/components/form/inputs/auth/AuthInput.svelte";
 	import AlbiLogo from "$lib/icons/AlbiLogo.svelte";
 	import * as m from '$lib/paraglide/messages.js'
-	import type {Snapshot} from "@sveltejs/kit";
 
 
 	let { form }: { form: ActionData } = $props();
 
+
 	$effect(() => {
 		if (form) {
-			if (form.data.messages) {
-				form.data.messages.forEach((message) => {
-					customToast(message.type, message.content);
-				})
-			}
+			inputValues.userCode = form.userCode || "";
+			responseDialogMessages.value = form.messages;
 		}
 	})
 
@@ -26,11 +23,6 @@
 		userCode: "",
 		password: ""
 	})
-
-	export const snapshot: Snapshot<{ userCode: string, password: string }> = {
-		capture: () => inputValues,
-		restore: (value) => inputValues = value
-	};
 </script>
 
 
@@ -65,7 +57,10 @@
 				</div>
 
 				<div>
-					<Button type="submit" class="w-full bg-albi-500 rounded-lg h-12 text-[#faffff] font-bold">
+					<Button
+						type="submit"
+						class="w-full bg-albi-500 rounded-lg h-12 text-[#faffff] font-bold"
+					>
 						{ m.routes_login_form_submit_button() }
 					</Button>
 				</div>

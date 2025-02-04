@@ -6,6 +6,7 @@
 	import { type Snippet } from 'svelte';
 	import {isMobile} from "$lib/runes/page.svelte";
 	import {Toaster} from "svelte-sonner";
+	import Response from "$lib/components/dialog/response/Response.svelte";
 
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
 
@@ -56,3 +57,5 @@
 <ParaglideJS {i18n}>
 	{@render children?.()}
 </ParaglideJS>
+
+<Response/>
