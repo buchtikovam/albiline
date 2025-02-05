@@ -1,5 +1,6 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 import * as m from '$lib/paraglide/messages.js'
+import {BooleanFilter} from "$lib/utils/components/ag-grid/booleanFilter";
 
 export const customerHeaderTranslations = {
 	customerAddressCode: m.routes_prodej_zakaznici_table_column_customer_address_code,
@@ -205,7 +206,7 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter',
+					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
 					}// custom boolean filter
@@ -360,7 +361,7 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter',
+					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
 					}
@@ -413,7 +414,7 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter',
+					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
 					}// make custom
@@ -430,7 +431,7 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter',
+					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
 					}// make custom
@@ -609,7 +610,7 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter',
+					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
 					}
@@ -618,7 +619,6 @@ export const customerAgGridDef: ColDef[] = [
 		},
 		hide: true,
 		editable: false,
-
 	},
 
 	{
@@ -661,7 +661,7 @@ export const customerAgGridDef: ColDef[] = [
 		filterParams: {
 			filters: [
 				{
-					filter: 'agBooleanColumnFilter',
+					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
 					}

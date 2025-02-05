@@ -1,5 +1,11 @@
 import type { Preset } from '$lib/types/components/table/presets';
-import type { ColDef, ColGroupDef } from 'ag-grid-community';
+import type {
+	ColDef,
+	ColGroupDef,
+	IServerSideGroupSelectionState,
+	IServerSideSelectionState,
+	SortDirection
+} from 'ag-grid-community';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -31,3 +37,7 @@ export const storedSelectedRows: { value: Record<string, string|number|boolean|D
 export const activeSelectedRowIndex: { value: number } = $state({ value: 0 });
 
 export const lastVisibleRowIndex: { value: number } = $state({ value: 0 });
+
+export const selectionState: { value: IServerSideSelectionState  |  IServerSideGroupSelectionState  |  null} = $state({ value: null })
+
+export const sortState: { value: { colId: string, sort: SortDirection|undefined }[] } = $state({ value: [] })

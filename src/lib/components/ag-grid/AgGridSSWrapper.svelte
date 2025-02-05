@@ -2,34 +2,29 @@
 	import {
 		activeSelectedRowIndex, defaultColDef,
 		editedTableData,
-		filtersToSave,
-		presetToSave, selectedFilters, selectedPreset, setColDefToDefault,
+		filtersToSave, lastVisibleRowIndex,
+		presetToSave, selectionState, sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
 	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
-	import { lastVisibleRowIndex } from '$lib/runes/table.svelte.js';
 	import { disablePageTabs } from '$lib/runes/navigation.svelte';
-	import { isEditAllowed } from '$lib/runes/ribbon.svelte';
-	import { compareObjectsByFields } from '$lib/utils/general/compareObjectsByFields';
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
 	import { getAgGridLocale } from "$lib/utils/components/ag-grid/getAgGridLocale";
 	import { tick } from 'svelte';
 	import {
-		type CellValueChangedEvent,
+		type CellValueChangedEvent, type Column,
 		createGrid,
-		type FilterModel, type GetContextMenuItemsParams,
+		type FilterModel,
 		type GetRowIdParams,
 		type GridApi,
-		type GridOptions, type IRowNode,
+		type GridOptions, type GridReadyEvent,
 		type IServerSideDatasource,
-		type IServerSideGetRowsParams
+		type IServerSideGetRowsParams, type SortChangedEvent
 	} from 'ag-grid-enterprise';
-	import type { ColumnOrder, TableRowRequest } from '$lib/types/components/table/table';
-	import type { ColDef, GetMainMenuItemsParams } from 'ag-grid-community';
-	import type { Preset } from '$lib/types/components/table/presets';
+	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
+	import type { ColDef } from 'ag-grid-community';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import '$lib/ag-grid-theme-builder.pcss';
-
 
 
 	interface Props {
@@ -48,43 +43,37 @@
 
 
 
+	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
 	let gridApi: GridApi<unknown>;
 
 
+
+	// grid configuration
 	const gridOptions: GridOptions = {
+		localeText: getAgGridLocale(),
+		rowModelType: "serverSide",
+		maintainColumnOrder: true,
+		serverSideInitialRowCount: 10000,
+		enterNavigatesVerticallyAfterEdit: true,
+		undoRedoCellEditing: true,
+		cacheBlockSize: 1000,
+		maxBlocksInCache: 20,
+		blockLoadDebounceMillis: 600,
+		undoRedoCellEditingLimit: 20,
+
+		cellSelection: {
+			handle: {
+				mode: "fill",
+				direction: "y",
+			},
+		},
+
 		rowSelection: {
 			mode: 'multiRow',
 			enableClickSelection: true,
-			headerCheckbox: false,
+			headerCheckbox: false, // maybe add later ?
 			hideDisabledCheckboxes: true,
-		},
-
-		localeText: getAgGridLocale(),
-
-		getMainMenuItems: (params: GetMainMenuItemsParams) => {
-			return [
-				'pinSubMenu',
-				'separator',
-				'autoSizeThis',
-				'columnChooser',
-				'resetColumns',
-				'separator',
-				'sortUnSort',
-			];
-		},
-
-		getContextMenuItems: (params: GetContextMenuItemsParams) => {
-			return [
-				'copy',
-				'copyWithHeaders',
-				'cut',
-				'paste',
-			];
-		},
-
-		columnTypes: {
-			formattedDate: {}
 		},
 
 		defaultColDef: {
@@ -95,19 +84,34 @@
 			maxWidth: 400,
 			hide: false,
 			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			},
 			autoHeaderHeight: true,
 			suppressHeaderMenuButton: true,
 		},
+
+
+		getMainMenuItems: () => {
+			return [
+				'pinSubMenu',
+				'separator',
+				'valueAggSubMenu',
+				'autoSizeThis',
+				'columnChooser',
+				'resetColumns',
+				'separator',
+				'sortUnSort',
+			];
+		},
+
+
+		getContextMenuItems: () => {
+			return [
+				'copy',
+				'copyWithHeaders',
+				'cut',
+				'paste',
+			];
+		},
+
 
 		onCellValueChanged: (event: CellValueChangedEvent<any>) => {
 			if (event.oldValue !== event.newValue) {
@@ -119,27 +123,49 @@
 			}
 		},
 
-		onColumnResized: () => {
-			presetToSave.value = gridApi.getColumnDefs() || []
+
+		onSortChanged: (event: SortChangedEvent<any>) => {
+			gridApi.setServerSideSelectionState({
+				selectAll: false,
+				toggledNodes: []
+			})
+			if (event.columns) {
+				event.columns.forEach((column: Column) => {
+					let match = false;
+
+					sortState.value.forEach((sort) => {
+						if (sort.colId === column.getId()) {
+							match = true;
+							sort.sort = column.getSort();
+						}
+					})
+
+					if (!match) {
+						sortState.value.push({
+							colId: column.getColId(),
+							sort: column.getSort(),
+						})
+					}
+
+				})
+			}
 		},
 
-		onFilterChanged() {
-			filtersToSave.value = gridApi.getFilterModel();
+
+		onFilterChanged: () =>  {
+			gridApi.setServerSideSelectionState({
+				selectAll: false,
+				toggledNodes: []
+			})
 		},
 
-		onColumnMoved: () => {
-			presetToSave.value = gridApi.getColumnDefs() || [];
-		},
-
-		onColumnVisible: () => {
-			presetToSave.value = gridApi.getColumnDefs() || [];
-		},
 
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data.rowNumber);
 		},
 
-		onRowSelected: () => {
+
+		onRowSelected: () => { // TODO: odstranit
 			const selectedRows: any[] = gridApi.getSelectedRows();
 			let rowArr: {[key: string]: any}[] = []
 
@@ -158,30 +184,33 @@
 			storedSelectedRows.value = rowArr;
 		},
 
-		rowModelType: "serverSide",
-		serverSideInitialRowCount: 10000,
-		cacheBlockSize: 100,
-		maxBlocksInCache: 20,
-		blockLoadDebounceMillis: 600,
-		enableCellTextSelection: true,
-		maintainColumnOrder: true,
-		enterNavigatesVerticallyAfterEdit: true,
-		undoRedoCellEditing: true,
-		undoRedoCellEditingLimit: 20,
+
+		onGridReady(event: GridReadyEvent<any>) {
+			const columnState = {
+				state: sortState.value,
+			}
+
+			event.api.applyColumnState(columnState);
+
+			setTimeout(() => {
+				if (selectionState.value) {
+					event.api.setServerSideSelectionState(selectionState.value)
+				}
+
+				if (lastVisibleRowIndex.value > 20) {
+					event.api.ensureIndexVisible(lastVisibleRowIndex.value + 10, "top");
+				}
+			}, 1000)
+		},
 	}
 
 
+
+	//  datasource configuration
 	let recentFilters: FilterModel[] = [];
-	let isInitialGridLoad = $state(true);
-	let isLoaded = $state(false);
-
-
-	$inspect(isLoaded);
-
 
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
-			isLoaded = false;
 			const currentFilter = gridApi.getFilterModel();
 			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
 			const updatedParamsRequest: TableRowRequest = params.request
@@ -208,9 +237,6 @@
 				.then(response => {
 					params.success({ rowData: response.items });
 				})
-				.then(() => {
-					isLoaded = true;
-				})
 				.catch(error => {
 					console.log(error);
 					params.fail();
@@ -219,8 +245,71 @@
 	};
 
 
+
+	// without inspect infinity loop happens ?
+	$inspect(presetToSave.value)
+
+
+
+	// used when ribbon -> edit button is pressed
+	const columnDefaultEditable = new Map();
+
+	// runs when component is mounted only
+	$effect(() => {
+		if (gridContainer) { // initialize grid
+			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
+		}
+
+		// initiliate datasource
+		gridApi.setGridOption('serverSideDatasource', datasource);
+
+		gridApi.setFilterModel(filtersToSave.value);
+
+		let colDefs = gridApi.getColumnDefs();
+		let columnOrder: ColumnOrder = [];
+		// add header translations + keep track of initial editable state of columns
+		if (presetToSave.value.length > 0) {
+			colDefs = presetToSave.value;
+		}
+
+		colDefs?.forEach(colDef => {
+			columnOrder.push({ colId: colDef.colId })
+		})
+
+		// const colDefs =
+		colDefs?.forEach((column: ColDef) => {
+			columnDefaultEditable.set(column.field, column.editable)
+			column.headerName = headerTranslations[column.field || ""]();
+		})
+
+		// initialize default column definitions for ribbon -> load preset
+		defaultColDef.value = colDefs || [];
+
+		// update grid with updated column defs
+		gridApi.setGridOption("columnDefs", colDefs);
+		gridApi.applyColumnState({
+			state: columnOrder,
+			applyOrder: true
+		});
+
+		return (() => {
+			selectionState.value = gridApi.getServerSideSelectionState();
+			filtersToSave.value = gridApi.getFilterModel();
+			lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex();
+			presetToSave.value = gridApi.getColumnDefs() || [];
+		})
+	})
+
+
+
+	// disable page tabs if no row is selected
+	$effect(() => {
+		disablePageTabs.value = storedSelectedRows.value.length === 0;
+	})
+
+
+
 	// listening to fulltext filter changes from layout, refresh grid with delay
-	let isInitialFilterValue = true; // prevent double page load
 	let timer: NodeJS.Timeout;
 
 	function debounceFulltext() {
@@ -232,163 +321,13 @@
 		}, 1000)
 	}
 
-	$effect(() => { // todo ?????
-		if (fulltextFilterValue.value) {
-			isInitialFilterValue = false;
+	$effect(() => {
+		if (fulltextFilterValue.value.length > 1) {
 			debounceFulltext();
 		}
-
-		if (fulltextFilterValue.value === "" && !isInitialFilterValue) {
-			debounceFulltext();
-		}
-	})
-
-
-	const columnDefaultEditable = new Map();
-
-
-	//  TODO if user has unsaved filters / preset / selected rows and navigated between page tabs, display them
-	$effect(() => {
-		if (isInitialGridLoad && isLoaded) {
-			if (presetToSave.value.length > 0) {
-				let columnOrder: ColumnOrder = []
-
-				presetToSave.value.forEach((obj: Preset) => {
-					obj.headerName = headerTranslations[obj.field]()
-					columnOrder.push({ colId: obj.colId })
-				})
-
-				gridApi.setGridOption("columnDefs", presetToSave.value)
-
-				gridApi.applyColumnState({
-					state: columnOrder,
-					applyOrder: true
-				});
-			}
-
-
-			if (storedSelectedRows.value.length > 0) {
-				setTimeout(() => {
-					gridApi.forEachNode((node: IRowNode) => {
-						storedSelectedRows.value.forEach((storedRow) => {
-							if (compareObjectsByFields(node.data, storedRow, requiredFields)) {
-								console.log("yay", node.data.customerAddressCode);
-								node.setSelected(true);
-							}
-						})
-					})
-				}, 200);
-			}
-
-			gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
-			gridApi.setGridOption("loading", false);
-			isInitialGridLoad = false;
-		}
-	})
-
-
-
-	// runs when component is mounted only
-	$effect(() => {
-		console.log("_________mount_________")
-
-		if (gridContainer) {
-			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
-		}
-
-		gridApi.setGridOption('serverSideDatasource', datasource);
-
-		const colDefs = gridApi.getColumnDefs();
-		colDefs?.forEach((column: ColDef) => {
-			column.headerName = headerTranslations[column.field]();
-		})
-
-		defaultColDef.value = colDefs || [];
-
-		// set background color of editable columns on page load, map initial column editable state
-		colDefs?.map((column: ColDef) => {
-			columnDefaultEditable.set(column.field, column.editable)
-		})
-
-		gridApi.setGridOption("columnDefs", colDefs);
-
-		// TODO filtry
-		// setTimeout(() => {
-		// 	if (Object.keys(filtersToSave.value).length > 0) {
-		// 		console.log("load_filters");
-		// 		gridApi.setFilterModel(filtersToSave.value);
-		// 	}
-		// }, 200);
-		//
-		// return () => {
-		// 	fulltextFilterValue.value = "";
-		//
-		// 	lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex() < 10
-		// 		? gridApi.getFirstDisplayedRowIndex()
-		// 		: gridApi.getFirstDisplayedRowIndex() + 10
-		// }
-	})
-
-
-	// runs when user chooses filter from ribbon
-	$effect(() => {
-		if (Object.keys(selectedFilters.value).length > 0) {
-			console.log("chosen filter");
-			gridApi.setFilterModel(selectedFilters.value)
-			gridApi.onFilterChanged()
-		}
-	})
-
-
-	// runs when user chooses preset from ribbon
-	$effect(() => {
-		if (selectedPreset.value.length > 0) {
-			console.log("chosen preset");
-
-			let columnOrder: ColumnOrder = []
-
-			selectedPreset.value.forEach(obj => {
-				columnOrder.push({ colId: obj.colId })
-			})
-
-			gridApi.setGridOption("columnDefs", selectedPreset.value)
-
-			gridApi.applyColumnState({
-				state: columnOrder,
-				applyOrder: true
-			});
-		}
-	})
-
-
-	// runs from ribbon -> my presets. Restores default column order, widths, visibility
-	$effect(() => {
-		if (setColDefToDefault.value) {
-			console.log("set to default");
-			let columnOrder: ColumnOrder = [];
-			let defaultColumnDef = defaultColDef.value;
-
-			defaultColumnDef.forEach(obj => {
-				columnOrder.push({ colId: obj.field });
-			});
-
-			gridApi.setGridOption("columnDefs", defaultColumnDef);
-
-			gridApi.applyColumnState({
-				state: columnOrder,
-				applyOrder: true
-			});
-
-			setColDefToDefault.value = false;
-		}
-	});
-
-
-	// disable page tabs if no row is selected
-	$effect(() => {
-		disablePageTabs.value = storedSelectedRows.value.length === 0;
 	})
 </script>
+
 
 
 
@@ -400,6 +339,7 @@
 		bind:this={gridContainer}
 	></div>
 </div>
+
 
 
 

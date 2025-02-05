@@ -32,24 +32,28 @@ export function changeCustomerRoute(
 			return item === uniqueSelectedRows[nextIndex];
 		})
 
+		console.log(routeId)
+
 		const newRoute = processRoute(
 			routeId,
 			{ customerNodeCode: uniqueSelectedRows[nextIndex].customerNodeCode, }
 		)
 
-		goto(i18n.resolveRoute(newRoute)).then(() => {
-			if (!uniqueSelectedRows[activeRowIndex + 2]) {
-				return {
-					right: true,
-					left: false
-				}
-			}
+		console.log(newRoute)
 
-			return {
-				right: false,
-				left: false,
-			}
-		})
+		// goto(i18n.resolveRoute(newRoute)).then(() => {
+		// 	if (!uniqueSelectedRows[activeRowIndex + 2]) {
+		// 		return {
+		// 			right: true,
+		// 			left: false
+		// 		}
+		// 	}
+		//
+		// 	return {
+		// 		right: false,
+		// 		left: false,
+		// 	}
+		// })
 	}
 
 
