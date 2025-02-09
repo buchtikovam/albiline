@@ -3,12 +3,10 @@
 		InputDialogZakaznici,
 		InputDialogZakazniciSelectOptions
 	} from "$lib/data/input-dialog/prodej/zakaznici/InputDialogZakaznici";
+	import { customerAgGridDef, customerHeaderTranslations } from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { activeTabIndex, showFulltextSearch } from '$lib/runes/page.svelte';
 	import { storedSelectedRows } from '$lib/runes/table.svelte';
-	import {customerAgGridDef, customerHeaderTranslations} from '$lib/data/ag-grid/server-side/customerAgGridDef';
 	import { i18n } from '$lib/i18n';
-	import { getPageMetaData } from '$lib/utils/getPageMetaData';
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
 	import type { GridOptions } from 'ag-grid-enterprise';

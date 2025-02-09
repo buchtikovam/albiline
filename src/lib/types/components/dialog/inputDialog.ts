@@ -1,4 +1,6 @@
 // SELECT OPTIONS
+import type {Icon as IconType} from "lucide-svelte";
+
 export type InputDialogSelectOption = {
 	field: string;
 	label: () => string;
@@ -48,7 +50,7 @@ type ColumnFilterModelConditionString = {
 }
 
 type ColumnFilterModelConditionNumber = {
-	type: ColumnFilterModelConditionTypesNumber,
+	type: ColumnFilterModelConditionTypesNumber|null,
 	value: number|null;
 }
 
@@ -57,12 +59,21 @@ type ColumnFilterModelConditionNumber = {
 export type ColumnFilterModelConditionTypesString =
 	"contains" | "not-contains" |
 	"equals" | "not-equals" |
-	"starts-with" | "ends-with" |
-	"empty" | "not-empty";
+	"starts-with" | "ends-with";
 
 
 export type ColumnFilterModelConditionTypesNumber =
 	"equals" | "not-equals" |
 	"more" | "more-or-equal" |
 	"less" | "less-or-equal" |
-	"between" | "empty" | "not-empty";
+	"between";
+
+
+export type InputDialogOperator = {
+	field: ColumnFilterModelConditionTypesString
+		| ColumnFilterModelConditionTypesNumber
+		| null,
+	label: string|null,
+	icon: typeof IconType
+}
+

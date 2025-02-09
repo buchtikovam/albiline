@@ -65,9 +65,9 @@
 		class="overflow-visible"
 	>
 		{#if ribbonOpen.value}
-			<ChevronDown class="size-4 bg-background text-albi-500" />
-		{:else}
 			<ChevronUp class="size-4 bg-background text-albi-500" />
+		{:else}
+			<ChevronDown class="size-4 bg-background text-albi-500" />
 		{/if}
 	</button>
 </div>

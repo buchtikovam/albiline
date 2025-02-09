@@ -1,77 +1,29 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-	import Check from "lucide-svelte/icons/check";
 	import { tick } from "svelte";
+	import type {
+		ColumnFilterModelConditionTypesString, InputDialogOperator
+	} from "$lib/types/components/dialog/inputDialog";
 	import * as Command from "$lib/components/ui/command";
 	import * as Popover from "$lib/components/ui/popover";
-	import { cn } from "$lib/utils.js";
-	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import {Input} from "$lib/components/ui/input";
-	import {ArrowRightToLine, CircleOff, Equal, EqualNot, type Icon as IconType, SearchX} from 'lucide-svelte';
-	import Scan from "lucide-svelte/icons/scan";
-	import ArrowRightFromLine from "lucide-svelte/icons/arrow-right-from-line";
-	import ArrowLeftFromLine from "lucide-svelte/icons/arrow-left-from-line";
-	import type {
-		ColumnFilterModelCondition,
-		ColumnFilterModelConditionTypesString, InputDialogSelectOption
-	} from "$lib/types/components/dialog/inputDialog";
-	import Search from "lucide-svelte/icons/search";
+	import * as Tooltip from "$lib/components/ui/tooltip";
 
 	interface Props {
-		disabled: boolean;
+		disabled?: boolean;
 		operator: ColumnFilterModelConditionTypesString|null,
+		operators: InputDialogOperator[],
 	}
 
 	let {
 		disabled = true,
 		operator = $bindable(),
+		operators,
 	}: Props = $props();
 
 
 	let open = $state(false);
 
 	let triggerRef = $state<HTMLButtonElement>(null!);
-
-	type OperatorOption = {
-		field: ColumnFilterModelConditionTypesString|null,
-		label: string|null,
-		icon: typeof IconType
-	}
-
-	const options: OperatorOption[] = [
-		{
-			field: "contains",
-			label: "Obsahuje", // search
-			icon: Search,
-		},
-		{
-			field: "not-contains",
-			label: "Neobsahuje", // search-x
-			icon: SearchX,
-		},
-		{
-			field: "equals",
-			label: "Rovná se", // equal
-			icon: Equal,
-		},
-		{
-			field: "not-equals",
-			label: "Nerovná se", // equal-not
-			icon: EqualNot,
-		},
-		{
-			field: "starts-with",
-			label: "Začíná na", // arrow-right-from-line
-			icon: ArrowRightFromLine,
-		},
-		{
-			field: "ends-with",
-			label: "Končí na", // arrow-right-to-line
-			icon: ArrowRightToLine,
-		},
-	]
-
 
 	function closeAndFocusTrigger() {
 		open = false;
@@ -81,7 +33,7 @@
 	}
 
 
-	let activeItem: OperatorOption|null = $state(null);
+	let activeItem: InputDialogOperator|null = $state(null);
 
 
 	$effect(() => {
@@ -96,9 +48,9 @@
 
 		let item = null;
 
-		options.forEach(option => {
-			if (option.field === operator) {
-				item = option;
+		operators.forEach(op => {
+			if (op.field === operator) {
+				item = op;
 			}
 		})
 
@@ -106,7 +58,7 @@
 	}
 
 
-	function updateItem(option: OperatorOption) {
+	function updateItem(option: InputDialogOperator) {
 		operator = option.field;
 	}
 </script>
@@ -155,19 +107,19 @@
 
 
 				<Command.Group>
-					{#each options as option}
+					{#each operators as operator}
 						<Command.Item
-							value={option.label}
+							value={operator.label}
 							onSelect={() => {
-								updateItem(option);
+								updateItem(operator);
 								closeAndFocusTrigger();
 							}}
 						>
-							{@const Icon = option.icon}
+							{@const Icon = operator.icon}
 
 							<Icon />
 
-							{option.label}
+							{operator.label}
 						</Command.Item>
 					{/each}
 				</Command.Group>

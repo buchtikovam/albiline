@@ -57,7 +57,7 @@
 		serverSideInitialRowCount: 10000,
 		enterNavigatesVerticallyAfterEdit: true,
 		undoRedoCellEditing: true,
-		cacheBlockSize: 1000,
+		cacheBlockSize: 100,
 		maxBlocksInCache: 20,
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,

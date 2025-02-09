@@ -2,14 +2,13 @@
 	import {Button} from '$lib/components/ui/button';
 	import {Input} from "$lib/components/ui/input";
 	import Plus from "lucide-svelte/icons/plus";
-	import * as Popover from "$lib/components/ui/popover/index.js";
-	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import type {
-		InputDialogSelectOption,
-		InputDialogType
+		InputDialogType,
+		InputDialogSelectOption
 	} from "$lib/types/components/dialog/inputDialog";
 	import InputDialogTableColumnRowWrapper from "$lib/components/dialog/input/InputDialogTableColumnRowWrapper.svelte";
-	import WarningDialog from "$lib/components/dialog/warning/WarningDialog.svelte";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import * as Popover from "$lib/components/ui/popover/index.js";
 
 
 	interface Props {
@@ -52,6 +51,7 @@
 			})
 		}
 	}
+
 
 	$effect(() => {
 		if (columnFilters) {

@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { Input } from "$lib/components/ui/input";
+	import { stringOperators } from "$lib/data/input-dialog/operators/stringOperators";
+	import { numberOperators } from "$lib/data/input-dialog/operators/numberOperators";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
 	import type {
 		ColumnFilter,
 		InputDialogSelectOption
 	} from "$lib/types/components/dialog/inputDialog";
-	import ChevronRight from "lucide-svelte/icons/chevron-right";
-	import InputDialogTableColumnFieldSelect
-		from "$lib/components/dialog/input/InputDialogTableColumnFieldSelect.svelte";
-	import StringOperatorSelect from "$lib/components/dialog/input/operators/StringOperatorSelect.svelte";
 	import InputDialogTableColumnActionButtons
 		from "$lib/components/dialog/input/InputDialogTableColumnActionButtons.svelte";
+	import InputDialogTableColumnFieldSelect
+		from "$lib/components/dialog/input/InputDialogTableColumnFieldSelect.svelte";
+	import InputDialogOperatorSelect from "$lib/components/dialog/input/InputDialogOperatorSelect.svelte";
 
 
 	interface Props {
@@ -41,8 +43,9 @@
 
 
 		{#if columnFilter.type === "text"}
-			<StringOperatorSelect
+			<InputDialogOperatorSelect
 				disabled={columnFilter.columnName === null}
+				operators={stringOperators}
 				bind:operator={condition.type}
 			/>
 
@@ -60,19 +63,20 @@
 
 
 		{#if columnFilter.type === "number"}
-<!--			<StringOperatorSelectWrapper-->
-<!--				disabled={columnFilter.columnName === null}-->
-<!--				bind:condition={condition.type}-->
-<!--			/>-->
+			<InputDialogOperatorSelect
+				disabled={columnFilter.columnName === null}
+				operators={numberOperators}
+				bind:condition={condition.type}
+			/>
 
-<!--			<ChevronRight class="hidden sm:block min-w-3 max-w-3 text-albi-500 my-auto"/>-->
+			<ChevronRight class="hidden sm:block min-w-3 max-w-3 text-albi-500 my-auto"/>
 
-<!--			<Input-->
-<!--				disabled={columnFilter.columnName === null}-->
-<!--				bind:value={condition.value}-->
-<!--				type="text"-->
-<!--				class="border border-border w-full"-->
-<!--			/>-->
+			<Input
+				disabled={columnFilter.columnName === null}
+				bind:value={condition.value}
+				type="number"
+				class="border border-border w-full"
+			/>
 		{/if}
 
 		{#if columnFilter.type === "boolean"}
@@ -94,4 +98,6 @@
 		/>
 	</div>
 {/each}
+
+
 
