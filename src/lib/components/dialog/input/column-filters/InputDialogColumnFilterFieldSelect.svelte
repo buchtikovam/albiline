@@ -1,10 +1,9 @@
 <script lang="ts">
-	import {Button} from "$lib/components/ui/button/index.js";
+	import { Button } from "$lib/components/ui/button";
+	import type { ColumnFilter, InputDialogSelectOption } from "$lib/types/components/dialog/inputDialog";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
-	import type {ColumnFilter, InputDialogSelectOption} from "$lib/types/components/dialog/inputDialog";
 
-	let activeLabel: string = $state("");
 
 	interface Props {
 		columnFilter: ColumnFilter;
@@ -17,6 +16,9 @@
 	}: Props = $props();
 
 
+	let open = $state(false);
+	let activeLabel: string = $state("");
+
 
 	$effect(() => {
 		if (columnFilter.columnName) {
@@ -24,7 +26,6 @@
 		}
 	})
 
-	let open = $state(false);
 
 	function getLabel() {
 		let label = "...";
@@ -42,6 +43,15 @@
 	function updateItem(option: InputDialogSelectOption) {
 		open = false;
 		columnFilter.columnName = option.field;
+
+		// if type of column filter has changed, clear all conditions
+		if (columnFilter.type !== option.type) {
+			columnFilter.filterModel.conditions.forEach(condition => {
+				condition.type = null;
+				condition.value = null;
+			})
+		}
+
 		columnFilter.type = option.type;
 	}
 </script>
@@ -72,7 +82,10 @@
 	</Popover.Trigger>
 
 
-	<Popover.Content side="bottom"  class="p-0 max-h-60 h-60 w-[200px]">
+	<Popover.Content
+		side="bottom"
+		class="p-0 max-h-60 h-60 w-[200px]"
+	>
 		<Command.Root>
 			<Command.Input placeholder="..." />
 

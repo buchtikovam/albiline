@@ -2,9 +2,10 @@
 	import Plus from "lucide-svelte/icons/plus";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import Trash2 from "lucide-svelte/icons/trash-2";
+	import type { ColumnFilter } from "$lib/types/components/dialog/inputDialog";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
-	import type {ColumnFilter} from "$lib/types/components/dialog/inputDialog";
+	import ActionButton from "$lib/components/dialog/input/column-filters/ActionButton.svelte";
 
 	interface Props {
 		columnFilter: ColumnFilter;
@@ -37,10 +38,13 @@
 
 
 	function removeCondition() {
-		console.log("INDEX:", index)
-
 		open = false;
+
 		columnFilter.filterModel.conditions.splice(index, 1);
+
+		if (columnFilter.filterModel.conditions.length < 2) {
+			columnFilter.filterModel.operator = null;
+		}
 	}
 </script>
 
@@ -50,7 +54,7 @@
 	bind:open
 >
 	<Popover.Trigger
-		class="hidden sm:flex min-w-10 ml-1 items-center justify-center border rounded-md bg-white p-0 "
+		class="hidden sm:flex min-w-10 ml-1 items-center justify-center border rounded-md bg-white p-0"
 	>
 		<ChevronDown
 			strokeWidth={3}
@@ -60,45 +64,46 @@
 
 	<Popover.Content class="p-1 w-fit ">
 		{#if columnFilter.filterModel.conditions.length < 2}
-			<button
-				class="w-full flex items-center gap-2 px-2 py-1 hover:text-black hover:bg-muted/50 text-sm"
-				onclick={() => removeCondition()}
+			<ActionButton
+				onclickFn={() => removeCondition()}
 			>
 				<Trash2 class="text-red-500 size-4 hover:text-red-700"/>
 				Smazat
-			</button>
+			</ActionButton>
 
-			<button
-				class="w-full flex items-center gap-2 px-2 py-1 hover:text-black hover:bg-muted/50 text-sm"
-				onclick={() => addConditionWithOperator("AND")}
-			>
-				<Plus class="text-albi-500 size-4 hover:text-albi-700"/>
-				Přidat: A
-			</button>
+			<!-- boolean doesnt need "AND" "OR" conditions -->
+			{#if columnFilter.type !== "boolean"}
+				<ActionButton
+					onclickFn={() => addConditionWithOperator("AND")}
+				>
+					<Plus class="text-albi-500 size-4 hover:text-albi-700"/>
+					Přidat: A
+				</ActionButton>
 
-			<button
-				class="w-full flex items-center gap-2 px-2 py-1 hover:text-black hover:bg-muted/50 text-sm"
-				onclick={() => addConditionWithOperator("OR")}
-			>
-				<Plus class="text-albi-500 size-4 hover:text-albi-700"/>
-				Přidat: NEBO
-			</button>
+				<ActionButton
+					onclickFn={() => addConditionWithOperator("OR")}
+				>
+					<Plus class="text-albi-500 size-4 hover:text-albi-700"/>
+					Přidat: NEBO
+				</ActionButton>
+			{/if}
 		{:else}
-			<button
-				class="w-full flex items-center gap-2 px-2 py-1 hover:text-black hover:bg-muted/50 text-sm"
-				onclick={() => removeCondition()}
+			<ActionButton
+				onclickFn={() => removeCondition()}
 			>
 				<Trash2 class="text-red-500 size-4 hover:text-red-700"/>
 				Smazat
-			</button>
+			</ActionButton>
 
-			<button
-				class="w-full flex items-center gap-2 px-2 py-1 hover:text-black hover:bg-muted/50 text-sm"
-				onclick={() => addCondition()}
-			>
-				<Plus class="text-albi-500 size-4 hover:text-albi-700"/>
-				Přidat další
-			</button>
+			<!-- boolean doesnt need "AND" "OR" conditions -->
+			{#if columnFilter.type !== "boolean"}
+				<ActionButton
+					onclickFn={() => addCondition()}
+				>
+					<Plus class="text-albi-500 size-4 hover:text-albi-700"/>
+					Přidat další
+				</ActionButton>
+			{/if}
 		{/if}
 	</Popover.Content>
 </Popover.Root>

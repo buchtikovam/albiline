@@ -2,7 +2,7 @@
 	import {
 		activeSelectedRowIndex, defaultColDef,
 		editedTableData,
-		filtersToSave, lastVisibleRowIndex,
+		filtersToSave, lastVisibleRowIndex, latestRowCount,
 		presetToSave, selectionState, sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
@@ -46,6 +46,8 @@
 	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
 	let gridApi: GridApi<unknown>;
+	let rowBufferSize = 100;
+	let isInitial = $state(true);
 
 
 
@@ -54,13 +56,15 @@
 		localeText: getAgGridLocale(),
 		rowModelType: "serverSide",
 		maintainColumnOrder: true,
-		serverSideInitialRowCount: 10000,
+		serverSideInitialRowCount: latestRowCount.value,
 		enterNavigatesVerticallyAfterEdit: true,
 		undoRedoCellEditing: true,
-		cacheBlockSize: 100,
+		cacheBlockSize: 1000,
 		maxBlocksInCache: 20,
+		rowBuffer: rowBufferSize,
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,
+		sideBar: true,
 
 		cellSelection: {
 			handle: {
@@ -79,6 +83,7 @@
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
+			enableRowGroup: true,
 			editable: true,
 			minWidth: 60,
 			maxWidth: 400,
@@ -184,26 +189,10 @@
 			storedSelectedRows.value = rowArr;
 		},
 
-
-		onGridReady(event: GridReadyEvent<any>) {
-			const columnState = {
-				state: sortState.value,
-			}
-
-			event.api.applyColumnState(columnState);
-
-			setTimeout(() => {
-				if (selectionState.value) {
-					event.api.setServerSideSelectionState(selectionState.value)
-				}
-
-				if (lastVisibleRowIndex.value > 20) {
-					event.api.ensureIndexVisible(lastVisibleRowIndex.value + 10, "top");
-				}
-			}, 1000)
-		},
 	}
 
+
+	$inspect(latestRowCount.value);
 
 
 	//  datasource configuration
@@ -236,6 +225,30 @@
 				.then(httpResponse => httpResponse.json())
 				.then(response => {
 					params.success({ rowData: response.items });
+					latestRowCount.value = response.totalRows;
+					gridApi.setRowCount(response.totalRows);
+
+					if (isInitial) {
+						console.log("INITIAL")
+
+						const columnState = {
+							state: sortState.value,
+						}
+
+						gridApi.applyColumnState(columnState);
+
+						if (lastVisibleRowIndex.value > rowBufferSize) {
+							gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
+						} else {
+							gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
+						}
+
+						if (selectionState.value) {
+							gridApi.setServerSideSelectionState(selectionState.value)
+						}
+					}
+
+					isInitial = false;
 				})
 				.catch(error => {
 					console.log(error);

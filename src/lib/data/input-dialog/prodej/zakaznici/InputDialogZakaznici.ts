@@ -9,13 +9,13 @@ export const InputDialogZakaznici: InputDialogType = {
 
 	columnFilters : [{
 		id: 0,
-		columnName: null,
-		type: "text",
+		columnName: "dateCreated",
+		type: "date",
 		filterModel: {
 			operator: null,
 			conditions: [
 				{
-					type: null,
+					type: "equals",
 					value: null,
 				},
 			]

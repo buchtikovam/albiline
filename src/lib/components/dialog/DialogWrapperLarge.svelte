@@ -5,9 +5,14 @@
 	interface Props {
 		isOpen: boolean;
 		children: Snippet
+		size?: "sm" | "md" | "lg";
 	}
 
-	let { isOpen = $bindable(), children }: Props = $props();
+	let {
+		isOpen = $bindable(),
+		children,
+		size
+	}: Props = $props();
 </script>
 
 

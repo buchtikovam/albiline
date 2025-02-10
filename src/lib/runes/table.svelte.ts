@@ -41,3 +41,5 @@ export const lastVisibleRowIndex: { value: number } = $state({ value: 0 });
 export const selectionState: { value: IServerSideSelectionState  |  IServerSideGroupSelectionState  |  null} = $state({ value: null })
 
 export const sortState: { value: { colId: string, sort: SortDirection|undefined }[] } = $state({ value: [] })
+
+export const latestRowCount: { value: number } = $state({ value: 1000 });

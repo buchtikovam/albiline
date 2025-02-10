@@ -1,12 +1,14 @@
 <script lang="ts">
-	import {Button} from '$lib/components/ui/button';
-	import {Input} from "$lib/components/ui/input";
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from "$lib/components/ui/input";
 	import Plus from "lucide-svelte/icons/plus";
 	import type {
 		InputDialogType,
-		InputDialogSelectOption
+		InputDialogSelectOption,
+		ColumnFilter,
+		ColumnFilterModelCondition
 	} from "$lib/types/components/dialog/inputDialog";
-	import InputDialogTableColumnRowWrapper from "$lib/components/dialog/input/InputDialogTableColumnRowWrapper.svelte";
+	import InputDialogColumnFilterRowWrapper from "$lib/components/dialog/input/column-filters/InputDialogColumnFilterWrapper.svelte";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
 
@@ -25,7 +27,7 @@
 
 
 	let inputDialog: InputDialogType = $state(defaultInputDialog);
-	let fulltext: string|null|undefined = $state(inputDialog.fulltext);
+	let fulltextFilter: string|null|undefined = $state(inputDialog.fulltext);
 	let columnFilters = $state(inputDialog.columnFilters);
 
 
@@ -53,40 +55,102 @@
 	}
 
 
-	$effect(() => {
-		if (columnFilters) {
-			console.log("effect if")
+	function getColumnFilters() {
+		const cleanedColumnFilters: ColumnFilter[] = [];
 
-			// TODO: remove operator + input value if columnName changed
-			// console.log(columnFilters)
+		columnFilters?.forEach((columnFilter) => {
+			if (
+				columnFilter.filterModel.conditions.length > 0 &&
+				columnFilter.columnName !== null
+			) {
+				let cleanedConditions: ColumnFilterModelCondition[] = [];
 
-			columnFilters.filter((columnFilter) => {
-				if (columnFilter.filterModel.conditions.length > 0) {
-					return columnFilter;
+				if (columnFilter.type === "text") {
+					columnFilter.filterModel.conditions.forEach((condition) => {
+						if (
+							condition.type !== null &&
+							condition.value !== null &&
+							condition.value !== ""
+						) {
+							cleanedConditions.push(condition);
+						}
+					})
 				}
-			})
 
-			// console.log(columnFilters.filter((columnFilter) => {
-			// 	if (columnFilter.filterModel.conditions.length > 0) {
-			// 		return columnFilter;
-			// 	}
-			// }))
+				if (columnFilter.type === "number") {
+					columnFilter.filterModel.conditions.forEach((condition) => {
+						if (
+							condition.type !== null &&
+							condition.type !== "between" &&
+							condition.value !== null
+						) {
+							cleanedConditions.push(condition);
+						}
 
-			// console.log(columnFilters)
+						if (condition.type === "between" && condition.endValue) {
+							cleanedConditions.push(condition);
+						}
+					})
+				}
+
+				if (columnFilter.type === "boolean") {
+					columnFilter.filterModel.conditions.forEach((condition) => {
+						if (condition.type !== null) {
+							const cleanCondition = condition;
+							cleanCondition.value = condition.type === "true";
+							cleanedConditions.push(cleanCondition);
+						}
+					})
+				}
+
+				if (columnFilter.type === "date") {
+					columnFilter.filterModel.conditions.forEach((condition) => {
+						if (condition.type !== null && condition.value) {
+							cleanedConditions.push(condition);
+						}
+					})
+				}
+
+				if (cleanedConditions.length > 0) {
+					let cleanedColumnFilter = columnFilter;
+
+					if (cleanedConditions.length === 1) {
+						cleanedColumnFilter.filterModel.operator = null;
+					}
+
+					cleanedColumnFilter.filterModel.conditions = cleanedConditions;
+					cleanedColumnFilters.push(cleanedColumnFilter);
+				}
+			}
+		})
+
+		return cleanedColumnFilters;
+	}
+
+
+	function postInputParams() {
+		let inputParamObj: InputDialogType = {
+			fulltext: fulltextFilter,
+			inputs: [],
+			columnFilters: getColumnFilters(),
 		}
-	})
 
-	$inspect(columnFilters);
+		console.log(JSON.stringify(inputParamObj, null, 2));
+	}
+
+	$inspect(JSON.stringify(columnFilters, null, 2));
 </script>
 
 
+
 <Dialog.Root bind:open={open}>
-	<Dialog.Content class="w-[90%] md:w-[640px] max-w-[640px] max-h-[70%] overflow-auto">
+	<Dialog.Content class="w-[90%] md:w-[720px] max-w-[720px] max-h-[70%] overflow-auto z-50">
 		<Dialog.Header class="">
 			<Dialog.Title class="">
 				Vstupní parametry
 			</Dialog.Title>
 		</Dialog.Header>
+
 
 		<div>
 			{#if inputDialog.fulltext !== undefined}
@@ -98,7 +162,7 @@
 
 				<Input
 					type="text"
-					bind:value={fulltext}
+					bind:value={fulltextFilter}
 					placeholder="Id, Název, Město, ..."
 					class="border-border mb-4"
 				/>
@@ -126,7 +190,7 @@
 							</p>
 						{/if}
 
-						<InputDialogTableColumnRowWrapper
+						<InputDialogColumnFilterRowWrapper
 							selectOptions={selectOptions}
 							bind:columnFilter={columnFilters[columnFilter.id]}
 						/>
@@ -138,7 +202,8 @@
 			<Dialog.Footer class="w-full mt-4">
 				<div class="w-full flex justify-between">
 					<Button
-						type="submit"
+						type="button"
+						onclick={postInputParams}
 					>
 						Načíst
 					</Button>

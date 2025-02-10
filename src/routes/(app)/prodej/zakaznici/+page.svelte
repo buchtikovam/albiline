@@ -39,7 +39,7 @@
 	}
 
 
-	let open = $state(false);
+	let open = $state(true);
 	let inputDialogFinished = $derived(!open);
 </script>
 
