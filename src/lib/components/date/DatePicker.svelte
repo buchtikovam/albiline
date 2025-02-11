@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DateValue } from '@internationalized/date';
+	import {type DateValue, parseDate} from '@internationalized/date';
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
@@ -21,9 +21,13 @@
 
 	let value: DateValue = $state();
 
+	if (dateValue) {
+		value = parseDate(dateValue.toISOString().split('T')[0]);
+	}
+
 	$effect(() => {
 		if (value) {
-			dateValue = new Date(value.year, value.month, value.day)
+			dateValue = new Date(value.year, value.month - 1, value.day + 1);
 		}
 	});
 </script>

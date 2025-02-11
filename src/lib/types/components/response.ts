@@ -1,10 +1,12 @@
 export type ResponseVariant =
-	'InfoToast' |
-	'WarningToast' |
 	'InfoBox' |
 	'Warning' |
 	'Critical' |
-	'Success';
+	'Success' |
+	'InfoToast' |
+	'WarningToast' |
+	'CriticalToast' |
+	'SuccessToast';
 
 
 export type ResponseDialogMessage = {

@@ -1,27 +1,52 @@
 <script lang="ts">
-	import { type DateRange, DateRangePicker } from "bits-ui";
+	import { languageTag } from "$lib/paraglide/runtime";
+	import { cn } from "$lib/utils";
 	import ChevronLeft from "lucide-svelte/icons/chevron-left";
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
 	import CalendarRange from "lucide-svelte/icons/calendar-range";
-	import {cn} from "$lib/utils";
-	import {languageTag} from "$lib/paraglide/runtime";
 	import Portal from "svelte-portal";
+	import {type DateValue, parseDate} from "@internationalized/date";
+	import { type DateRange, DateRangePicker } from "bits-ui";
 
 	interface Props {
-		dateValue?: Date|undefined|null;
+		startValue: Date|null;
+		endValue: Date|null;
 		hasError?: boolean;
 		label?: string;
 	}
 
 	let {
-		dateValue = $bindable(),
+		startValue = $bindable(),
+		endValue = $bindable(),
 		hasError,
 		label,
 	}: Props = $props();
 
 
-	let value: DateRange = $state({ start: undefined, end: undefined });
+	let value: DateRange = $state({
+		start: undefined,
+		end: undefined,
+	})
+
+
+	if (startValue) {
+		value.start = parseDate(startValue.toISOString().split('T')[0])
+	}
+
+	if (endValue) {
+		value.end = parseDate(endValue.toISOString().split('T')[0])
+	}
+
+
+	$effect(() => {
+		if (value.start && value.end) {
+			startValue = new Date(value.start.year, value.start.month - 1, value.start.day + 1);
+			endValue = new Date(value.end.year, value.end.month - 1, value.end.day + 1);
+		}
+	});
 </script>
+
+
 
 <DateRangePicker.Root
 	bind:value
@@ -152,11 +177,11 @@
 															whitespace-nowrap rounded-sm border border-transparent bg-background bg-transparent
 															 p-0 text-sm font-normal text-foreground transition-all hover:bg-muted/70
 															 focus-visible:!ring-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none
-															 data-[highlighted]:rounded-none data-[selection-end]:rounded-9px data-[selection-start]:rounded-9px
-															 data-[highlighted]:bg-muted data-[selected]:bg-muted data-[selection-end]:bg-foreground
-															 data-[selection-start]:bg-foreground data-[selected]:font-medium data-[selection-end]:font-medium
-															 data-[selection-start]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-foreground
-															 data-[selection-end]:text-background data-[selection-start]:text-background data-[unavailable]:text-muted-foreground
+															 data-[highlighted]:rounded-none data-[selection-end]:rounded-sm data-[selection-start]:rounded-sm
+															 data-[highlighted]:bg-muted/70 data-[selected]:bg-muted data-[selection-end]:bg-albi-500
+															 data-[selection-start]:bg-albi-500 data-[selected]:font-medium data-[selection-end]:font-bold
+															 data-[selection-start]:font-bold data-[disabled]:text-foreground/30 data-[selected]:text-foreground
+															 data-[selection-end]:text-white data-[selection-start]:text-white data-[unavailable]:text-muted-foreground
 															 data-[unavailable]:line-through data-[selection-start]:focus-visible:ring-2 data-[selection-start]:focus-visible:!ring-offset-2
 															 data-[selected]:[&:not([data-selection-start])]:[&:not([data-selection-end])]:rounded-none
 															 data-[selected]:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:border-foreground

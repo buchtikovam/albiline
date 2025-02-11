@@ -11,7 +11,7 @@
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import InputDialog from "$lib/components/dialog/input/InputDialog.svelte";
+	import InputDialog from "$lib/components/input-params/InputDialog.svelte";
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
@@ -39,7 +39,7 @@
 	}
 
 
-	let open = $state(true);
+	let open = $state(false);
 	let inputDialogFinished = $derived(!open);
 </script>
 

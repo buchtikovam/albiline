@@ -2,24 +2,30 @@
 	import { Button } from "$lib/components/ui/button";
 	import { stringOperators } from "$lib/data/input-dialog/operators/stringOperators";
 	import { numberOperators } from "$lib/data/input-dialog/operators/numberOperators";
+	import { booleanOperators } from "$lib/data/input-dialog/operators/booleanOperators";
+	import { dateOperators } from "$lib/data/input-dialog/operators/dateOperators";
 	import { tick } from "svelte";
 	import type {
-		ColumnFilterModelConditionTypeNumber,
-		ColumnFilterModelConditionTypeString, ColumnFilterType, InputDialogOperator
+		ConditionTypesBoolean,
+		ConditionTypesDate,
+		ConditionTypesNumber,
+		ConditionTypesText,
+		ColumnFilterType,
+		InputDialogOperator
 	} from "$lib/types/components/dialog/inputDialog";
 	import Fa from 'svelte-fa'
 	import * as Command from "$lib/components/ui/command";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Tooltip from "$lib/components/ui/tooltip";
-	import {booleanOperators} from "$lib/data/input-dialog/operators/booleanOperators";
-	import {dateOperators} from "$lib/data/input-dialog/operators/dateOperators";
 
 	interface Props {
 		disabled?: boolean;
 		type: ColumnFilterType;
 		operator: (
-			ColumnFilterModelConditionTypeString |
-			ColumnFilterModelConditionTypeNumber |
+			ConditionTypesText |
+			ConditionTypesNumber |
+			ConditionTypesBoolean |
+			ConditionTypesDate |
 			null
 		);
 	}

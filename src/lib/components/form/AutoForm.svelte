@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AutoFormType } from '$lib/types/components/form/autoform';
-	import DndColumnNew from '$lib/components/form/DndColumn.svelte';
+	import DndColumn from '$lib/components/form/DndColumn.svelte';
 
 	interface Props {
 		formDef: AutoFormType;
@@ -18,10 +18,11 @@
 </script>
 
 
+
 <form method="POST" autocomplete="off">
 	<div class="w-full gap-4 xl:flex ">
 		{#each Object.entries(formDef) as [key]}
-			<DndColumnNew
+			<DndColumn
 				bind:formDef={formDef}
 				colName={key}
 				allowCrossColumnDND={allowCrossColumnDND}

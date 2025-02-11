@@ -18,7 +18,7 @@
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import type { AutoFormType } from '$lib/types/components/form/autoform';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-	import NewCustomerContactDialog from '$lib/components/dialog/page/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
+	import NewCustomerContactDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';

@@ -6,13 +6,13 @@
 		InputDialogSelectOption
 	} from "$lib/types/components/dialog/inputDialog";
 	import InputDialogColumnFilterActionButtons
-		from "$lib/components/dialog/input/column-filters/InputDialogColumnFilterActionButtons.svelte";
+		from "$lib/components/input-params/column-filters/InputDialogColumnFilterActionButtons.svelte";
 	import InputDialogColumnFilterFieldSelect
-		from "$lib/components/dialog/input/column-filters/InputDialogColumnFilterFieldSelect.svelte";
-	import InputDialogOperatorSelect from "$lib/components/dialog/input/column-filters/InputDialogOperatorSelect.svelte";
+		from "$lib/components/input-params/column-filters/InputDialogColumnFilterFieldSelect.svelte";
+	import InputDialogOperatorSelect from "$lib/components/input-params/column-filters/InputDialogOperatorSelect.svelte";
 	import DatePicker from "$lib/components/date/DatePicker.svelte";
-	import {DateRangeField} from "bits-ui";
 	import DateRangePicker from "$lib/components/date/DateRangePicker.svelte";
+	import ColumnFilterTypeNumber from "$lib/components/input-params/column-filters/ColumnFilterTypeNumber.svelte";
 
 
 	interface Props {
@@ -61,6 +61,7 @@
 			bind:operator={condition.type}
 		/>
 
+
 		<ChevronRight
 			strokeWidth={3}
 			class="hidden sm:block min-w-3 max-w-3 text-albi-500 my-auto"
@@ -73,64 +74,48 @@
 					bind:value={condition.value}
 					type="text"
 					required
-					class="border border-border w-full"
 				/>
 			</div>
 		{/if}
 
 
-		{#if columnFilter.type === "number"}
-			{#if condition.type !== "between"}
-				<div class="w-full">
-					<Input
-						disabled={columnFilter.columnName === null}
-						bind:value={condition.value}
-						type="number"
-						required
-						class="border border-border w-full"
-					/>
-				</div>
-			{:else}
-				<div class="w-full flex gap-2">
-					<Input
-						disabled={columnFilter.columnName === null}
-						bind:value={condition.value}
-						type="number"
-						required
-						class="border border-border w-full"
-					/>
-					<Input
-						disabled={columnFilter.columnName === null}
-						bind:value={condition.endValue}
-						required
-						type="number"
-						class="border border-border w-full"
-					/>
-				</div>
 
-			{/if}
+		{#if columnFilter.type === "number"}
+			<div class="w-full">
+				<ColumnFilterTypeNumber
+					bind:condition={columnFilter.filterModel.conditions[i]}
+					columnFilter={columnFilter}
+				/>
+			</div>
 		{/if}
+
+
 
 		{#if columnFilter.type === "boolean"}
 			<div class="w-full">
 				<Input
-					class="border border-border w-full rounded-md hover:cursor-not-allowed"
+					class="hover:cursor-not-allowed"
 					disabled
 				/>
 			</div>
 		{/if}
 
+
+
 		{#if columnFilter.type === "date"}
 			{#if condition.type !== "between"}
 				<div class="w-full">
-					<DatePicker bind:dateValue={condition.value} />
+					<DatePicker
+						bind:dateValue={condition.value}
+					/>
 				</div>
 			{:else}
 				<div class="w-full">
-					<DateRangePicker />
+					<DateRangePicker bind:startValue={condition.value} bind:endValue={condition.endValue}/>
 				</div>
 			{/if}
 		{/if}
+
 
 
 		{#if columnFilter.type === "enum"}

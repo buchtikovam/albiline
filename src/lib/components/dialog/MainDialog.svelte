@@ -1,15 +1,12 @@
 <script lang="ts">
-	import CustomerDetailInvoiceAdressesDialog from '$lib/components/dialog/page/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte';
+	import CustomerDetailInvoiceAdressesDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte';
 	import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
-	// import MyFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/MyFiltersDialog.svelte';
+	import MyFiltersDialog from "$lib/components/dialog/ribbon/MyFiltersDialog.svelte";
 	// import SaveFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/SaveFiltersDialog.svelte';
 	// import SavePresetDialog from '$lib/components/dialog/global/ribbon-dialogs/SavePresetDialog.svelte';
 	// import MyPresetsDialog from '$lib/components/dialog/global/ribbon-dialogs/MyPresetsDialog.svelte';
 
-	/*
-		Rozcestník pro otvírání různých dialogů skrz ribbon tlačítka
-	*/
 
 	let currentDialog: GlobalDialogOptions = $derived(openedDialog.value);
 </script>
@@ -23,9 +20,9 @@
 
 <!-- RIBBON DIALOGY -->
 
-<!--{#if currentDialog === "ribbon-my-filters"}-->
-<!--	<MyFiltersDialog />-->
-<!--{/if}-->
+{#if currentDialog === "ribbon-my-filters"}
+	<MyFiltersDialog />
+{/if}
 
 <!--{#if currentDialog === "ribbon-save-filters"}-->
 <!--	<SaveFiltersDialog />-->

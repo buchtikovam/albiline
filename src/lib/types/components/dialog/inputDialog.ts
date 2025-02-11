@@ -1,4 +1,4 @@
-import type {Icon as IconType} from "lucide-svelte";
+import type { Icon as IconType } from "lucide-svelte";
 
 
 
@@ -30,7 +30,7 @@ type InputDialogInput = {
 
 // Input dialog -- COLUMN FILTERS
 export type ColumnFilter = {
-	id: number;
+	id?: number;
 	columnName: string|null;
 	type: ColumnFilterType;
 	filterModel: ColumnFilterModel;
@@ -53,58 +53,58 @@ type ColumnFilterModel = {
 
 
 export type ColumnFilterModelCondition = (
-	ColumnFilterModelConditionString |
-	ColumnFilterModelConditionNumber |
-	ColumnFilterModelConditionBoolean |
-	ColumnFilterModelConditionDate
+	FilterModelConditionText |
+	FilterModelConditionNumber |
+	FilterModelConditionBoolean |
+	FilterModelConditionDate
 )
 
 
 // --- conditions ---
-type ColumnFilterModelConditionString = {
-	type: ColumnFilterModelConditionTypeString|null,
+type FilterModelConditionText = {
+	type: ConditionTypesText|null,
 	value: string|null;
 }
 
-type ColumnFilterModelConditionNumber = {
-	type: ColumnFilterModelConditionTypeNumber|null,
+export type FilterModelConditionNumber = {
+	type: ConditionTypesNumber|null,
 	value: number|null;
 	endValue?: number|null;
 }
 
-type ColumnFilterModelConditionBoolean = {
-	type: ColumnFilterModelConditionTypeBoolean|null,
+type FilterModelConditionBoolean = {
+	type: ConditionTypesBoolean|null,
 	value: boolean|null,
 }
 
-type ColumnFilterModelConditionDate = {
-	type: ColumnFilterModelConditionTypeDate|null,
+type FilterModelConditionDate = {
+	type: ConditionTypesDate|null,
 	value: Date|null;
 	endValue?: Date|null;
 }
 // --- conditions end ---
 
 
-export type ColumnFilterModelConditionTypeString = (
+export type ConditionTypesText = (
 	"contains" | "not-contains" |
 	"equals" | "not-equals" |
 	"starts-with" | "ends-with"
 )
 
 
-export type ColumnFilterModelConditionTypeNumber = (
+export type ConditionTypesNumber = (
 	"equals" | "not-equals" |
 	"more-than" | "more-or-equal" |
 	"less-than" | "less-or-equal" |
 	"between"
 )
 
-export type ColumnFilterModelConditionTypeBoolean = (
+export type ConditionTypesBoolean = (
 	"true" |
 	"false"
 )
 
-export type ColumnFilterModelConditionTypeDate = (
+export type ConditionTypesDate = (
 	"equals" |
 	"not-equals" |
 	"before" |
@@ -113,13 +113,16 @@ export type ColumnFilterModelConditionTypeDate = (
 )
 
 
+
+
+
 // OPERATOR SELECT
 export type InputDialogOperator = {
 	field: (
-		ColumnFilterModelConditionTypeString |
-		ColumnFilterModelConditionTypeNumber |
-		ColumnFilterModelConditionTypeBoolean |
-		ColumnFilterModelConditionTypeDate |
+		ConditionTypesText |
+		ConditionTypesNumber |
+		ConditionTypesBoolean |
+		ConditionTypesDate |
 		null
 	),
 	label: () => string,

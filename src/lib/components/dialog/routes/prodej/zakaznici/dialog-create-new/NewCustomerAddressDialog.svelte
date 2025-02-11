@@ -4,6 +4,7 @@
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 
 	interface Props {
 		dialogOpen: boolean;
@@ -56,30 +57,35 @@
 
 
 
-<Dialog.Root
-	bind:open={dialogOpen}
->
-	<Dialog.Content class="h-auto w-[90%] sm:w-auto">
-		<Dialog.Header>
-			<Dialog.Title>
-				{ label }
-			</Dialog.Title>
-		</Dialog.Header>
+<DialogWrapper
+	bind:isOpen={dialogOpen}
+	size="sm"
+	fixedHeight={false}
+	{header}
+	{content}
+/>
 
-		<div class="h-full">
-			<AutoFormSimple
-				bind:formValues={address}
-				autoform={formDef}
-			/>
-		</div>
+{#snippet header()}
+	<Dialog.Title>
+		{ label }
+	</Dialog.Title>
+{/snippet}
 
-		<Dialog.Footer>
-			<Button
-				class="w-full bg-albi-500 text-background font-bolder"
-				onclick={addAddress}
-			>
-				Uložit
-			</Button>
-		</Dialog.Footer>
-	</Dialog.Content>
-</Dialog.Root>
+{#snippet content()}
+	<div class="h-full">
+		<AutoFormSimple
+			bind:formValues={address}
+			autoform={formDef}
+		/>
+	</div>
+
+	<Dialog.Footer>
+		<Button
+			class="w-full bg-albi-500 text-background font-bolder"
+			onclick={addAddress}
+		>
+			Uložit
+		</Button>
+	</Dialog.Footer>
+{/snippet}
+

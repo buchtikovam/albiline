@@ -4,6 +4,7 @@
 	import type { CustomerContactType } from '$lib/types/page/customers';
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 
 	interface Props {
 		dialogOpen: boolean;
@@ -70,30 +71,33 @@
 
 
 
-<Dialog.Root
-	bind:open={dialogOpen}
->
-	<Dialog.Content class="h-[70%] sm:h-auto w-[90%] sm:w-auto">
-		<Dialog.Header>
-			<Dialog.Title class="">
-				{ label }
-			</Dialog.Title>
-		</Dialog.Header>
+<DialogWrapper
+	isOpen={dialogOpen}
+	{header}
+	{content}
+	size="sm"
+	fixedHeight={false}
+/>
 
-		<div class="h-full overflow-auto">
-			<AutoFormSimple
-				bind:formValues={contact}
-				autoform={formDef}
-			/>
-		</div>
 
-		<Dialog.Footer>
-			<Button
-				class="w-full bg-albi-500 font-bold text-background font-bolder"
-				onclick={addContact}
-			>
-				Uložit
-			</Button>
-		</Dialog.Footer>
-	</Dialog.Content>
-</Dialog.Root>
+{#snippet header()}
+	<Dialog.Title class="h-6 sm:h-auto">
+		{ label }
+	</Dialog.Title>
+{/snippet}
+
+{#snippet content()}
+	<AutoFormSimple
+		bind:formValues={contact}
+		autoform={formDef}
+	/>
+
+	<Dialog.Footer>
+		<Button
+			class="w-full bg-albi-500 font-bold text-background font-bolder"
+			onclick={addContact}
+		>
+			Uložit
+		</Button>
+	</Dialog.Footer>
+{/snippet}

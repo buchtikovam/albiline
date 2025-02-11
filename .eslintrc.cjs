@@ -1,4 +1,6 @@
 /** @type { import("eslint").Linter.Config } */
+import ts from 'typescript-eslint';
+
 module.exports = {
 	root: true,
 	extends: [
@@ -12,7 +14,10 @@ module.exports = {
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,
-		extraFileExtensions: ['.svelte']
+		extraFileExtensions: ['.svelte'],
+		svelteFeatures: {
+			experimentalGenerics: true,
+		},
 	},
 	env: {
 		browser: true,
@@ -24,12 +29,15 @@ module.exports = {
 			files: ['*.svelte'],
 			parser: 'svelte-eslint-parser',
 			parserOptions: {
-				parser: '@typescript-eslint/parser'
+				parser: '@typescript-eslint/parser',
+				svelteFeatures: {
+					experimentalGenerics: true,
+				},
 			}
 		}
 	],
 	rules: {
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-any": "off"
-	}
+	},
 };

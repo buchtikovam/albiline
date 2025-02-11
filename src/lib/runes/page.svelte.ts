@@ -22,3 +22,48 @@ export const authDetails: { sessionKey: string|null, userName: string|null } = $
 export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 	value: []
 });
+
+// export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
+// 	value: [
+// 		// {
+// 		// 	"title": "Informace",
+// 		// 	"content": "Tohle je moc hezký testovací infobox",
+// 		// 	"type": "InfoBox"
+// 		// },
+// 		// {
+// 		// 	"title": "Upozornění",
+// 		// 	"content": "Tohle se fakt nepovedlo",
+// 		// 	"type": "Critical"
+// 		// },
+// 		// {
+// 		// 	"title": "Varování",
+// 		// 	"content": "Tohle se určitě nepovede",
+// 		// 	"type": "Warning"
+// 		// },
+// 		// {
+// 		// 	"title": "Úspěch",
+// 		// 	"content": "Tohle se opravdu povedlo",
+// 		// 	"type": "Success"
+// 		// },
+// 		// {
+// 		// 	"title": "Informace",
+// 		// 	"content": "Tohle je testovací infobox",
+// 		// 	"type": "InfoToast"
+// 		// },
+// 		// {
+// 		// 	"title": "Upozornění",
+// 		// 	"content": "Tohle se fakt nepovedlo",
+// 		// 	"type": "CriticalToast"
+// 		// },
+// 		// {
+// 		// 	"title": "Varování",
+// 		// 	"content": "Tohle se určitě nepovede",
+// 		// 	"type": "WarningToast"
+// 		// },
+// 		// {
+// 		// 	"title": "Úspěch",
+// 		// 	"content": "Tohle se opravdu povedlo",
+// 		// 	"type": "SuccessToast"
+// 		// },
+// 	]
+// });

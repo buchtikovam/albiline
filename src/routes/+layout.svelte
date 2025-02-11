@@ -6,7 +6,7 @@
 	import { type Snippet } from 'svelte';
 	import {isMobile} from "$lib/runes/page.svelte";
 	import {Toaster} from "svelte-sonner";
-	import Response from "$lib/components/dialog/response/Response.svelte";
+	import Response from "$lib/components/response/Response.svelte";
 
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
 
@@ -17,7 +17,6 @@
 
 	$effect(() => {
 		isMobile.value = innerWidth < 768;
-		console.log(isMobile.value)
 	});
 
 </script>

@@ -9,13 +9,13 @@ export const InputDialogZakaznici: InputDialogType = {
 
 	columnFilters : [{
 		id: 0,
-		columnName: "dateCreated",
-		type: "date",
+		columnName: null,
+		type: "text",
 		filterModel: {
 			operator: null,
 			conditions: [
 				{
-					type: "equals",
+					type: null,
 					value: null,
 				},
 			]
@@ -69,7 +69,7 @@ export const InputDialogZakazniciSelectOptions: InputDialogSelectOption[] = [
 	{
 		field: "customerRank",
 		label: m.routes_prodej_zakaznici_table_column_customer_rank,
-		type: "enum",
+		type: "text",
 	},
 	{
 		field: "isBadPayer",
@@ -159,7 +159,7 @@ export const InputDialogZakazniciSelectOptions: InputDialogSelectOption[] = [
 	{
 		field: "i_CountryCode",
 		label: m.routes_prodej_zakaznici_table_column_i_country_code,
-		type: "enum",
+		type: "text",
 	},
 	{
 		field: "note",

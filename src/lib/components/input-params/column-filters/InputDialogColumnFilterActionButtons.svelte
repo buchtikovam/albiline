@@ -5,14 +5,17 @@
 	import type { ColumnFilter } from "$lib/types/components/dialog/inputDialog";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
-	import ActionButton from "$lib/components/dialog/input/column-filters/ActionButton.svelte";
+	import ActionButton from "$lib/components/input-params/column-filters/ActionButton.svelte";
 
 	interface Props {
 		columnFilter: ColumnFilter;
 		index: number;
 	}
 
-	let { columnFilter = $bindable(), index }: Props = $props();
+	let {
+		columnFilter = $bindable(),
+		index
+	}: Props = $props();
 
 
 	let open = $state(false);

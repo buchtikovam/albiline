@@ -1,13 +1,17 @@
 <script lang="ts">
-	import { activeTabIndex, fulltextFilterValue, showFulltextSearch } from '$lib/runes/page.svelte';
-	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
+	import {activeTabIndex, fulltextFilterValue, showFulltextSearch} from '$lib/runes/page.svelte';
+	import {activeSelectedRowIndex, storedSelectedRows} from '$lib/runes/table.svelte';
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import { goto } from '$app/navigation';
-	import { i18n } from '$lib/i18n.js'
+	import {Input} from '$lib/components/ui/input';
+	import {goto} from '$app/navigation';
+	import {i18n} from '$lib/i18n.js'
+	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import * as Tabs from '$lib/components/ui/tabs';
+	import {ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import {Button} from "$lib/components/ui/button";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -90,3 +94,6 @@
 <div class="h-full bg-white rounded-lg">
 	{@render children?.()}
 </div>
+
+
+

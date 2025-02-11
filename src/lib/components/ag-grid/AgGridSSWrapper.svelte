@@ -1,9 +1,14 @@
 <script lang="ts">
 	import {
-		activeSelectedRowIndex, defaultColDef,
+		activeSelectedRowIndex,
+		defaultColDef,
 		editedTableData,
-		filtersToSave, lastVisibleRowIndex, latestRowCount,
-		presetToSave, selectionState, sortState,
+		filtersToSave,
+		lastVisibleRowIndex,
+		latestRowCount,
+		presetToSave,
+		selectionState,
+		sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
 	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
@@ -12,20 +17,28 @@
 	import { getAgGridLocale } from "$lib/utils/components/ag-grid/getAgGridLocale";
 	import { tick } from 'svelte';
 	import {
-		type CellValueChangedEvent, type Column,
+		type CellValueChangedEvent,
+		type Column,
 		createGrid,
 		type FilterModel,
 		type GetRowIdParams,
 		type GridApi,
-		type GridOptions, type GridReadyEvent,
+		type GridOptions,
 		type IServerSideDatasource,
-		type IServerSideGetRowsParams, type SortChangedEvent
+		type IServerSideGetRowsParams,
+		type SortChangedEvent
 	} from 'ag-grid-enterprise';
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
-	import type { ColDef } from 'ag-grid-community';
+	import type {ColDef} from 'ag-grid-community';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import '$lib/ag-grid-theme-builder.pcss';
-
+	import {openedDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import {Button} from "$lib/components/ui/button";
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import UserPlus from "lucide-svelte/icons/user-plus";
+	import MapPinHouse from "lucide-svelte/icons/map-pin-house"
 
 	interface Props {
 		url: string;
@@ -64,7 +77,7 @@
 		rowBuffer: rowBufferSize,
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,
-		sideBar: true,
+		// sideBar: true,
 
 		cellSelection: {
 			handle: {
@@ -228,22 +241,27 @@
 					latestRowCount.value = response.totalRows;
 					gridApi.setRowCount(response.totalRows);
 
-					if (isInitial) {
-						console.log("INITIAL")
-
+					if (isInitial) { // TODO: use session storage with route as a key to save and update
 						const columnState = {
 							state: sortState.value,
 						}
 
 						gridApi.applyColumnState(columnState);
 
+						// setting scroll position
 						if (lastVisibleRowIndex.value > rowBufferSize) {
 							gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
 						} else {
-							gridApi.ensureIndexVisible(lastVisibleRowIndex.value, "top");
+							if (selectionState.value) {
+								if (selectionState.value.toggledNodes) {
+									gridApi.ensureIndexVisible(Number(selectionState.value.toggledNodes[0]) - 1 , "top");
+								}
+							}
 						}
 
+						// setting selectedRows
 						if (selectionState.value) {
+							console.log(selectionState.value)
 							gridApi.setServerSideSelectionState(selectionState.value)
 						}
 					}
@@ -286,6 +304,7 @@
 		}
 
 		colDefs?.forEach(colDef => {
+			// @ts-ignore
 			columnOrder.push({ colId: colDef.colId })
 		})
 
@@ -339,6 +358,22 @@
 			debounceFulltext();
 		}
 	})
+
+
+
+	let createNewCustomerAddress = $state(false);
+
+	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.NEW) {
+			createNewCustomerAddress = true;
+		}
+
+		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
+			openedDialog.value = "ribbon-my-filters"
+		}
+
+		ribbonAction.value = RibbonActionEnum.UNKNOWN;
+	})
 </script>
 
 
@@ -353,6 +388,33 @@
 	></div>
 </div>
 
+
+<DialogWrapper
+	bind:isOpen={createNewCustomerAddress}
+	{header}
+	{content}
+	size="sm"
+	fixedHeight={false}
+/>
+
+{#snippet header()}
+	<Dialog.Title>
+		Co si přeješ vytvořit?
+	</Dialog.Title>
+{/snippet}
+{#snippet content()}
+	<div class="flex flex-col gap-4 mt-2  w-[320px]">
+		<Button>
+			<UserPlus strokeWidth={2.5}/>
+			Nový zákazník
+		</Button>
+
+		<Button>
+			<MapPinHouse strokeWidth={2.5}/>
+			Nová prodejna
+		</Button>
+	</div>
+{/snippet}
 
 
 

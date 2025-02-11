@@ -5,6 +5,7 @@
 	import { apiServiceGET } from '$lib/api/apiService.svelte.js';
 	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 
 
 	let dialogOpen: boolean = $state(true)
@@ -38,23 +39,26 @@
 
 
 
-<Dialog.Root
-	bind:open={dialogOpen}
->
-	<Dialog.Content
-		class="h-[70%] w-[90%] md:w-[700px] lg:w-[900px] xl:w-[1200px] max-w-[1200px] flex flex-col"
-	>
-		<Dialog.Header>
-			<Dialog.Title
-				class="h-6"
-			>
-				Výběr fakturační adresy
-			</Dialog.Title>
-		</Dialog.Header>
+<DialogWrapper
+	isOpen={dialogOpen}
+	{header}
+	{content}
+	size="lg"
+	fixedHeight={true}
+/>
 
-		<AgGridCSDialogWrapper
-			colDef={customerInvoiceAddressesAgGridDef}
-			rowData={invoiceAddresses}
-		/>
-	</Dialog.Content>
-</Dialog.Root>
+
+{#snippet header()}
+	<Dialog.Title
+		class="h-6"
+	>
+		Výběr fakturační adresy
+	</Dialog.Title>
+{/snippet}
+
+{#snippet content()}
+	<AgGridCSDialogWrapper
+		colDef={customerInvoiceAddressesAgGridDef}
+		rowData={invoiceAddresses}
+	/>
+{/snippet}

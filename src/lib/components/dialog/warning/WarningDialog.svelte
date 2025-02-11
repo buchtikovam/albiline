@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 
 
 	interface Props {
@@ -36,33 +37,39 @@
 
 
 
-<Dialog.Root bind:open={open}>
-	<Dialog.Content class="!w-[360px] overflow-visible">
-		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-1">
-				{message}
-			</Dialog.Title>
-
-			<Dialog.Description>
-				{desription}
-			</Dialog.Description>
-		</Dialog.Header>
+<DialogWrapper
+	bind:isOpen={open}
+	{header}
+	{content}
+	size="sm"
+	fixedHeight={false}
+/>
 
 
-		<Dialog.Footer class="mt-4">
-			<Button
-				class="w-full bg-albi-500 text-background font-bolder"
-				onclick={consentAllow}
-			>
-				{buttonAllowLabel}
-			</Button>
+{#snippet header()}
+	<Dialog.Title class="h-6 mb-1">
+		{message}
+	</Dialog.Title>
 
-			<Button
-				class="w-full bg-red-500 text-background font-bolder"
-				onclick={consentDenied}
-			>
-				{buttonDenyLabel}
-			</Button>
-		</Dialog.Footer>
-	</Dialog.Content>
-</Dialog.Root>
+	<Dialog.Description>
+		{desription}
+	</Dialog.Description>
+{/snippet}
+
+{#snippet content()}
+	<Dialog.Footer class="mt-4">
+		<Button
+			class="w-full bg-albi-500 text-background font-bolder"
+			onclick={consentAllow}
+		>
+			{buttonAllowLabel}
+		</Button>
+
+		<Button
+			class="w-full bg-red-500 text-background font-bolder"
+			onclick={consentDenied}
+		>
+			{buttonDenyLabel}
+		</Button>
+	</Dialog.Footer>
+{/snippet}

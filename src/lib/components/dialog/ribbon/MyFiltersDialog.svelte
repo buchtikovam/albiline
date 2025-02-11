@@ -1,84 +1,81 @@
 <script lang="ts">
-	/*import { page } from '$app/stores';
-	import { selectedFilters } from '$lib/runes/table.svelte';
-	import { openedDialog, ribbonAction } from '$lib/runes/ribbon.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	import { customToast } from '$lib/utils/customToast';
-	import { onMount } from 'svelte';
-	import Pencil from 'lucide-svelte/icons/pencil';
-	import X from 'lucide-svelte/icons/x';
-	import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
-	import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-
-	/!*
-		Dialog zobrazující uložené column filtry pro danou tabulku,
-		možnost řazení, editace a mazání filtrů
-	*!/
-
-	let dialogOpen: boolean = $state(false);
-	let warningDialogOpen: boolean = $state(false);	
-
-	let currentFilterId: number = $state();
-	let filters: FetchedFilter[] = $state();
-	let deleteFilterConsent: boolean = $state(false);
-
-	let isEditing: boolean = $state(false);
-	let currentEditedId: number | undefined = $state(undefined);
+	// import { page } from '$app/stores';
+	// import { selectedFilters } from '$lib/runes/table.svelte';
+	// import { openedDialog, ribbonAction } from '$lib/runes/ribbon.svelte';
+	// import { Input } from '$lib/components/ui/input';
+	// import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+	// import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
+	// import { customToast } from '$lib/utils/customToast';
+	// import { onMount } from 'svelte';
+	// import Pencil from 'lucide-svelte/icons/pencil';
+	// import X from 'lucide-svelte/icons/x';
+	// // import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
+	// import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
+	// import * as Dialog from '$lib/components/ui/dialog';
 
 
-	async function fetchFilters() {
-		try {
-			// fetch only filters based on page name, avoid filtering on FE
-			const response = await fetch('http://localhost:3000/filters');
-			filters = await response.json();
-
-			filters = filters?.filter((filter: FetchedFilter) => {
-				return filter.pageOrigin === $page.url.pathname;
-			});
-		} catch (error) {
-			console.error('Error fetching input-filters:', error);
-			customToast("Warning", "Nepovedlo se získat filtery.")
-		}
-	}
-
-
-	// Drag and drop pro řazení filtrů
-	let hovering: number | null = $state();
-	let start: number;
-
-	function dragFilter(e: DragEvent, index: number) {
-		if (e.dataTransfer) {
-			e.dataTransfer.setData('text', String(index));
-			start = index;
-		}
-	}
-
-	function setHoveringFilter(index: number) {
-		hovering = index;
-	}
-
-	function dropFilter(e: DragEvent, target: number | null) {
-		if (e.dataTransfer && target !== null) {
-			if (start < target) {
-				filters.splice(target + 1, 0, filters[start]);
-				filters.splice(start, 1);
-			} else {
-				filters.splice(target, 0, filters[start]);
-				filters.splice(start + 1, 1);
-			}
-			hovering = null;
-		}
-	}
+	//
+	// let dialogOpen: boolean = $state(false);
+	// let warningDialogOpen: boolean = $state(false);
+	//
+	// let currentFilterId: number = $state();
+	// let filters: FetchedFilter[] = $state();
+	// let deleteFilterConsent: boolean = $state(false);
+	//
+	// let isEditing: boolean = $state(false);
+	// let currentEditedId: number | undefined = $state(undefined);
+	//
+	//
+	// async function fetchFilters() {
+	// 	try {
+	// 		// fetch only filters based on page name, avoid filtering on FE
+	// 		const response = await fetch('http://localhost:3000/filters');
+	// 		filters = await response.json();
+	//
+	// 		filters = filters?.filter((filter: FetchedFilter) => {
+	// 			return filter.pageOrigin === $page.url.pathname;
+	// 		});
+	// 	} catch (error) {
+	// 		console.error('Error fetching input-filters:', error);
+	// 		customToast("Warning", "Nepovedlo se získat filtery.")
+	// 	}
+	// }
+	//
+	//
+	// // Drag and drop pro řazení filtrů
+	// let hovering: number | null = $state();
+	// let start: number;
+	//
+	// function dragFilter(e: DragEvent, index: number) {
+	// 	if (e.dataTransfer) {
+	// 		e.dataTransfer.setData('text', String(index));
+	// 		start = index;
+	// 	}
+	// }
+	//
+	// function setHoveringFilter(index: number) {
+	// 	hovering = index;
+	// }
+	//
+	// function dropFilter(e: DragEvent, target: number | null) {
+	// 	if (e.dataTransfer && target !== null) {
+	// 		if (start < target) {
+	// 			filters.splice(target + 1, 0, filters[start]);
+	// 			filters.splice(start, 1);
+	// 		} else {
+	// 			filters.splice(target, 0, filters[start]);
+	// 			filters.splice(start + 1, 1);
+	// 		}
+	// 		hovering = null;
+	// 	}
+	// }
 
 
 	// Smazání filtru po souhlasu ve warning dialogu
-	async function deleteFilter(filterId: number | undefined) {
-		if (!filterId) return;
-
-		console.log("delete filter");
+	// async function deleteFilter(filterId: number | undefined) {
+	// 	if (!filterId) return;
+	//
+	// 	console.log("delete filter");
 		//
 		// try {
 		// 	const response = await apiServiceDELETE('filters', filterId);
@@ -102,21 +99,21 @@
 		// 		'Nastala chyba při mazání filtru.'
 		// 	);
 		// }
-	}
+	// }
 
 
-	function loadFiltersInTable(filters: ColumnFilters) {
-		selectedFilters.value = filters;
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		dialogOpen = false;
-		setTimeout(() => {
-			openedDialog.value = "empty";
-		}, 250);
-	}
-
-
-	async function updateFilter(filter: FetchedFilter) {
-		console.log("update filter");
+	// function loadFiltersInTable(filters: ColumnFilters) {
+	// 	selectedFilters.value = filters;
+	// 	ribbonAction.value = RibbonActionEnum.UNKNOWN;
+	// 	dialogOpen = false;
+	// 	setTimeout(() => {
+	// 		openedDialog.value = "empty";
+	// 	}, 250);
+	// }
+	//
+	//
+	// async function updateFilter(filter: FetchedFilter) {
+	// 	console.log("update filter");
 
 		// try {
 		// 	const response = await apiServicePUT(
@@ -137,7 +134,7 @@
 		// 	customToast('Critical','Nastala chyba při editaci filtru.');
 		// 	console.error('Error deleting filter:', error);
 		// }
-	}
+	// }
 
 
 	// Nastavuje se ve warning dialogu. Pokud je true, zvolený filtr se smaže

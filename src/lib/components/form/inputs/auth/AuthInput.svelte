@@ -24,7 +24,7 @@
 	/>
 
 	<Input
-		class="bg-albi-50 h-12 font-bold rounded-lg placeholder:text-albi-300 text-albi-900"
+		class="bg-albi-50 h-12 font-bold rounded-lg placeholder:text-albi-300 text-albi-900 border-transparent"
 		name={name}
 		bind:value
 		type="text"

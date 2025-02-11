@@ -38,7 +38,7 @@
 			{content}
 		</div>
 	</div>
-{:else if type === 'Warning'}
+{:else if type === 'WarningToast'}
 	<div
 		id="toast"
 		class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-3 md:p-4 text-amber-950 bg-white rounded-lg border-2 border-amber-500 dark:text-amber-50 dark:bg-amber-800"
@@ -48,11 +48,11 @@
 			<CircleAlert class="size-5 md:size-6" />
 		</div>
 
-		<div class="ml-3 text-sm md:text-base font-semibold">
+		<div class="ml-3 text-sm md:text-sm font-semibold">
 			{content}
 		</div>
 	</div>
-{:else if type === 'Success'}
+{:else if type === 'SuccessToast'}
 	<div
 		id="toast"
 		class="mx-auto md:m-0 flex items-center w-fit max-w-[300px] p-3 md:p-4 text-green-950 bg-white rounded-lg shadow border-2 border-green-500 dark:text-green-50 dark:bg-green-800"
