@@ -6,6 +6,7 @@ import type {
 	IServerSideSelectionState,
 	SortDirection
 } from 'ag-grid-community';
+import type { FilterModel } from "ag-grid-enterprise";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -20,7 +21,7 @@ export const defaultColDef: { value: (ColDef<unknown, any> | ColGroupDef<unknown
 export const setColDefToDefault: { value: boolean } = $state({ value: false })
 
 // store pro uchovávání filtrů v tabulce, důležité pro ukládání nové sady filtrů
-export const filtersToSave: { value: Record<string, any> } = $state({ value: {} });
+export const filtersToSave: { value: FilterModel } = $state({ value: {} });
 
 // po vybrání sady filtrů z ribbonu se nastaví do této proměnné, po jejíž změně se načtou filtry do tabulky
 export const selectedFilters: { value: Record<string, any> } = $state({ value: {} });

@@ -1,11 +1,12 @@
-import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
+import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte.js';
 import { page } from '$app/state';
 import { get } from 'svelte/store';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
+import type {ColDef} from "ag-grid-enterprise";
 
 const bgHEX = "#fff7df";
 
-export const customerAddressesAgGridDef = [
+export const customerAddressesAgGridDef: ColDef<any, any>[] = [
 	{
 		field: "customerAddressCode",
 		headerName: "ID prodejny",
@@ -123,9 +124,7 @@ export const customerAddressesAgGridDef = [
 		headerName: "",
 		filter: false,
 		resizable: false,
-		movable: false,
 		sortable: false,
-		suppressMovable: true,
 		pinned: "left",
 		minWidth: 40,
 		width: 40,

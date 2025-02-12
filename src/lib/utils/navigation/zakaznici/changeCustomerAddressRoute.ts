@@ -27,6 +27,9 @@ export function changeCustomerAddressRoute(
 			customerAddressCode: selectedRows[nextIndex].customerAddressCode || ""
 		})
 
+		console.log(newRoute)
+		console.log(i18n.resolveRoute(newRoute))
+
 		goto(i18n.resolveRoute(newRoute)).then(() => {
 			if (!selectedRows[currentIndex + 2]) {
 				return {
@@ -50,6 +53,9 @@ export function changeCustomerAddressRoute(
 			customerNodeCode: selectedRows[prevIndex].customerNodeCode,
 			customerAddressCode: selectedRows[prevIndex].customerAddressCode
 		})
+
+		console.log(newRoute)
+		console.log(i18n.resolveRoute(newRoute))
 
 		goto(i18n.resolveRoute(newRoute)).then(() => {
 			if (!selectedRows[currentIndex - 2]) {

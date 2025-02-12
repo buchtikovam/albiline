@@ -1,20 +1,22 @@
 <script lang="ts">
 	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
-	import 'ag-grid-community/styles/ag-grid.css'
-	import '$lib/ag-grid-theme-builder.pcss'
+	import { themeAlbiBlueParams } from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import { pageCompact } from "$lib/runes/page.svelte";
+	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
 	import {
 		type CellValueChangedEvent,
 		createGrid,
 		type GridApi,
-		type GridOptions
+		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
-	import { addToEditedTableData } from '../../utils/addToEditedTableData';
 
 	interface Props {
 		rowData: any[];
-		editedRowData:	any[];
-		createdRowData: any[];
-		requiredFields: string[];
+		editedRowData?:	any[];
+		createdRowData?: any[];
+		requiredFields?: string[];
+		hiddenHeader?: boolean;
+		fullHeight?: boolean;
 		gridOptionsCustom: GridOptions;
 	}
 
@@ -23,26 +25,34 @@
 		editedRowData = $bindable(),
 		createdRowData = $bindable(),
 		requiredFields,
+		fullHeight,
+		hiddenHeader,
 		gridOptionsCustom
 	}: Props = $props();
 
 
-	let gridContainer: HTMLElement = $state();
+	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
+	let themeParams = $state(themeAlbiBlueParams);
 
+
+	if (hiddenHeader) {
+		themeParams.headerHeight = 0;
+	}
 
 	const gridOptions: GridOptions = {
+		theme: themeQuartz.withParams(themeParams),
 		localeText: AG_GRID_LOCALE_CZ,
 
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
-			editable: true,
+			editable: editedRowData !== undefined,
 			minWidth: 50,
 			maxWidth: 400,
 			hide: false,
 			filter: false,
-			suppressHeaderMenuButton: true
+			suppressHeaderMenuButton: true,
 		},
 
 		rowData: [],
@@ -52,28 +62,32 @@
 		// if record was created during runtime, has not been saved and is being edited, gets added to createdRowData
 		// checks created x edited by unique field, that only existing records have
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
-			let isInitialColumn = requiredFields.every((field) => {
-				return event.data[field] !== null;
-			})
+			if (requiredFields) {
+				let isInitialColumn = requiredFields.every((field) => {
+					return event.data[field] !== null;
+				})
 
-			if (event.oldValue !== event.newValue) {
-				if (isInitialColumn) {
-					addToEditedTableData(
-						event,
-						requiredFields,
-						editedRowData,
-					)
-				} else {
-					addToEditedTableData(
-						event,
-						["createdRowId"],
-						createdRowData,
-					)
+				if (event.oldValue !== event.newValue) {
+					if (editedRowData && createdRowData) {
+						if (isInitialColumn) {
+							addToEditedTableData(
+								event,
+								requiredFields,
+								editedRowData,
+							)
+						} else {
+							addToEditedTableData(
+								event,
+								["createdRowId"],
+								createdRowData,
+							)
+						}
+					}
 				}
 			}
 		},
 
-		domLayout: "autoHeight",
+		domLayout: fullHeight ? "normal" : "autoHeight",
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
@@ -83,15 +97,15 @@
 	let createdRowAmount: number = $state(0);
 
 	$effect(() => {
-		console.log("effect");
-		if (createdRowData.length > 0 && createdRowAmount < createdRowData.length) {
-			console.log("effect if");
-			createdRowAmount++;
+		if (createdRowData) {
+			if (createdRowData.length > 0 && createdRowAmount < createdRowData.length) {
+				createdRowAmount++;
 
-			gridApi.applyTransaction({
-				add: [createdRowData[createdRowData.length - 1]],
-				addIndex: 0,
-			})
+				gridApi.applyTransaction({
+					add: [createdRowData[createdRowData.length - 1]],
+					addIndex: 0,
+				})
+			}
 		}
 	})
 
@@ -111,12 +125,19 @@
 
 
 <div
-	class="flex flex-column"
+	class="flex flex-column h-full"
 >
 	<div
 		id="datagrid"
-		class="ag-theme-custom "
+		class=""
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>
 </div>
+
+
+<style>
+	.ag-header {
+		visibility: hidden;
+	}
+</style>

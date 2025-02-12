@@ -1,250 +1,103 @@
 <script lang="ts">
-	// import { page } from '$app/stores';
-	// import { selectedFilters } from '$lib/runes/table.svelte';
-	// import { openedDialog, ribbonAction } from '$lib/runes/ribbon.svelte';
-	// import { Input } from '$lib/components/ui/input';
-	// import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	// import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	// import { customToast } from '$lib/utils/customToast';
-	// import { onMount } from 'svelte';
-	// import Pencil from 'lucide-svelte/icons/pencil';
-	// import X from 'lucide-svelte/icons/x';
-	// // import type { FetchedFilter, ColumnFilters } from '$lib/types/components/table/columnFilter';
-	// import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
-	// import * as Dialog from '$lib/components/ui/dialog';
+	import { openedDialog } from "$lib/runes/ribbon.svelte";
+	import type { ColDef, GridOptions } from "ag-grid-enterprise";
+	import type { StoredFilters } from "$lib/types/components/table/filters";
+	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as Dialog from '$lib/components/ui/dialog';
+
+	let dialogOpen: boolean = $state(true);
+
+	let storedFilters: StoredFilters[] = $state([ // will come from api
+		{
+			id: 0,
+			label: 'Filtr na jméno',
+			filters: {
+				name: {
+					filterType: "multi",
+					filterModels: [
+						{
+							filterType: "text",
+							operator: "OR",
+							conditions: [
+								{
+									filterType: "text",
+									type: "contains",
+									filter: "pepa"
+								},
+								{
+									filterType: "text",
+									type: "contains",
+									filter: "jan"
+								}
+							]
+						}
+					]
+				},
+				i_Name: {
+					filterType: "multi",
+					filterModels: [
+						{
+							filterType: "text",
+							type: "contains",
+							filter: "jan"
+						}
+					]
+				}
+			}
+		},
+	]);
 
 
-	//
-	// let dialogOpen: boolean = $state(false);
-	// let warningDialogOpen: boolean = $state(false);
-	//
-	// let currentFilterId: number = $state();
-	// let filters: FetchedFilter[] = $state();
-	// let deleteFilterConsent: boolean = $state(false);
-	//
-	// let isEditing: boolean = $state(false);
-	// let currentEditedId: number | undefined = $state(undefined);
-	//
-	//
-	// async function fetchFilters() {
-	// 	try {
-	// 		// fetch only filters based on page name, avoid filtering on FE
-	// 		const response = await fetch('http://localhost:3000/filters');
-	// 		filters = await response.json();
-	//
-	// 		filters = filters?.filter((filter: FetchedFilter) => {
-	// 			return filter.pageOrigin === $page.url.pathname;
-	// 		});
-	// 	} catch (error) {
-	// 		console.error('Error fetching input-filters:', error);
-	// 		customToast("Warning", "Nepovedlo se získat filtery.")
-	// 	}
-	// }
-	//
-	//
-	// // Drag and drop pro řazení filtrů
-	// let hovering: number | null = $state();
-	// let start: number;
-	//
-	// function dragFilter(e: DragEvent, index: number) {
-	// 	if (e.dataTransfer) {
-	// 		e.dataTransfer.setData('text', String(index));
-	// 		start = index;
-	// 	}
-	// }
-	//
-	// function setHoveringFilter(index: number) {
-	// 	hovering = index;
-	// }
-	//
-	// function dropFilter(e: DragEvent, target: number | null) {
-	// 	if (e.dataTransfer && target !== null) {
-	// 		if (start < target) {
-	// 			filters.splice(target + 1, 0, filters[start]);
-	// 			filters.splice(start, 1);
-	// 		} else {
-	// 			filters.splice(target, 0, filters[start]);
-	// 			filters.splice(start + 1, 1);
-	// 		}
-	// 		hovering = null;
-	// 	}
-	// }
+	export const ribbonFiltersAgGridDef: ColDef<any, any>[] = [
+		{
+			field: "label",
+			width: 240,
+		},
+		{
+			field: "deleteBtn",
+			width: 40,
+		},
+	]
 
 
-	// Smazání filtru po souhlasu ve warning dialogu
-	// async function deleteFilter(filterId: number | undefined) {
-	// 	if (!filterId) return;
-	//
-	// 	console.log("delete filter");
-		//
-		// try {
-		// 	const response = await apiServiceDELETE('filters', filterId);
-		//
-		// 	if (!response.ok) {
-		// 		customToast(
-		// 			'Critical',
-		// 			'Nastala chyba při mazání filtru.'
-		// 		);
-		// 	}
-		// 	// frontendové smazání filtru, aby se nemuselo znovu fetchovat
-		// 	filters = filters?.filter(filter => filter.id !== filterId);
-		// 	customToast(
-		// 		'Success',
-		// 		'Filtr byl úspěšně smazán'
-		// 	);
-		// } catch (error) {
-		// 	console.error('Error deleting filter:', error);
-		// 	customToast(
-		// 		'Critical',
-		// 		'Nastala chyba při mazání filtru.'
-		// 	);
-		// }
-	// }
-
-
-	// function loadFiltersInTable(filters: ColumnFilters) {
-	// 	selectedFilters.value = filters;
-	// 	ribbonAction.value = RibbonActionEnum.UNKNOWN;
-	// 	dialogOpen = false;
-	// 	setTimeout(() => {
-	// 		openedDialog.value = "empty";
-	// 	}, 250);
-	// }
-	//
-	//
-	// async function updateFilter(filter: FetchedFilter) {
-	// 	console.log("update filter");
-
-		// try {
-		// 	const response = await apiServicePUT(
-		// 		"filters",
-		// 		filter.id,
-		// 		filter
-		// 	)
-		//
-		// 	if (response.ok) {
-		// 		customToast('Success','Filtr byl úspěšně upraven.');
-		// 		isEditing = false;
-		// 	} else {
-		// 		customToast('Critical','Nastala chyba při editaci filtru.');
-		// 		isEditing = false;
-		// 	}
-		//
-		// } catch (error) {
-		// 	customToast('Critical','Nastala chyba při editaci filtru.');
-		// 	console.error('Error deleting filter:', error);
-		// }
-	// }
-
-
-	// Nastavuje se ve warning dialogu. Pokud je true, zvolený filtr se smaže
-	// deleteFilterConsent.subscribe((consent) => {
-	// 	if (consent) {
-	// 		deleteFilter(currentFilterId);
-	// 	}
-	//
-	// 	deleteFilterConsent.set(false);
-	// });
-
-	//
-	// onMount(() => {
-	// 	dialogOpen = true;
-	// 	fetchFilters()
-	// });*/
+	const customGridOptions: GridOptions = {
+		columnDefs: ribbonFiltersAgGridDef,
+	}
 </script>
 
 
 
-<!--
-<Dialog.Root
-	bind:open={dialogOpen}
->
-	<Dialog.Content class="!w-[400px]">
-		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2">
-				Moje filtry
-			</Dialog.Title>
-		</Dialog.Header>
-
-
-		{#if filters !== undefined}
-			{#if filters.length === 0}
-				<p class="mt-2">
-					Nemáte uložené žádné filtry.
-				</p>
-			{/if}
-
-			<div>
-				{#each filters as filter, index (filter.id)}
-					<div
-						role="listitem"
-						class="flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
-					>
-						{#if isEditing && currentEditedId === filter.id}
-							<form
-								onsubmit={() => updateFilter(filter)}
-								onfocusout={() => updateFilter(filter)}
-								class="w-full">
-								<Input
-									class="w-fit h-7 m-1"
-									bind:value={filter.filterName}
-								/>
-							</form>
-						{:else}
-&lt;!&ndash;							<button&ndash;&gt;
-&lt;!&ndash;								draggable="true"&ndash;&gt;
-&lt;!&ndash;								onclick={() => loadFiltersInTable(filter.filters)}&ndash;&gt;
-&lt;!&ndash;								ondragstart={(e) => dragFilter(e, index)}&ndash;&gt;
-&lt;!&ndash;								ondragover={() => setHoveringFilter(index)}&ndash;&gt;
-&lt;!&ndash;								ondragend={(e) => dropFilter(e, hovering)}&ndash;&gt;
-&lt;!&ndash;								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"&ndash;&gt;
-&lt;!&ndash;							>&ndash;&gt;
-&lt;!&ndash;								{filter.filterName}&ndash;&gt;
-&lt;!&ndash;							</button>&ndash;&gt;
-						{/if}
-
-						<div class="flex gap-2 ml-4">
-&lt;!&ndash;							<button&ndash;&gt;
-&lt;!&ndash;								onclick={() => {&ndash;&gt;
-&lt;!&ndash;									isEditing = !isEditing&ndash;&gt;
-&lt;!&ndash;									currentEditedId = filter.id&ndash;&gt;
-&lt;!&ndash;								}}&ndash;&gt;
-&lt;!&ndash;								class="size-5"&ndash;&gt;
-&lt;!&ndash;							>&ndash;&gt;
-&lt;!&ndash;								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />&ndash;&gt;
-&lt;!&ndash;							</button>&ndash;&gt;
-
-&lt;!&ndash;							<button&ndash;&gt;
-&lt;!&ndash;								onclick={() => {&ndash;&gt;
-&lt;!&ndash;									warningDialogOpen = true&ndash;&gt;
-&lt;!&ndash;									if (filter.id) currentFilterId = filter.id&ndash;&gt;
-&lt;!&ndash;								}}&ndash;&gt;
-&lt;!&ndash;								class="size-5"&ndash;&gt;
-&lt;!&ndash;							>&ndash;&gt;
-&lt;!&ndash;								<X class="size-4 text-albi-600 hover:text-albi-900" />&ndash;&gt;
-&lt;!&ndash;							</button>&ndash;&gt;
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else}
-			&lt;!&ndash; Placeholdery během toho, co se filtry fetchují.
-			Ukáže se jen při pomalém internetu &ndash;&gt;
-			<div class="space-y-3 mt-2">
-				<Skeleton class="h-4 w-[250px]" />
-				<Skeleton class="h-4 w-[180px]" />
-				<Skeleton class="h-4 w-[220px]" />
-			</div>
-		{/if}
-	</Dialog.Content>
-</Dialog.Root>
-
-<WarningDialog
-	bind:open={warningDialogOpen}
-	bind:consent={deleteFilterConsent}
-	message="Opravdu chcete pokračovat?"
-	desription="Tuhle akci nelze vrátit."
-	buttonAllowLabel="Smazat filtr"
-	buttonDenyLabel="Zrušit"
+<DialogWrapper
+	bind:isOpen={dialogOpen}
+	{header}
+	{content}
+	onChange={() => {
+		dialogOpen = false;
+		setTimeout(() => {
+			openedDialog.value = 'empty';
+		}, 200)
+	}}
+	fixedHeight={false}
+	size="sm"
+	customCss="!h-[360px] !w-[500px]"
 />
--->
+
+{#snippet header()}
+	<Dialog.Title class="h-6">
+		Moje filtry
+	</Dialog.Title>
+{/snippet}
+
+{#snippet content()}
+	<div class="h-full">
+		{#if storedFilters.length > 0}
+			<AgGridCSWrapper
+				rowData={storedFilters}
+				gridOptionsCustom={customGridOptions}
+				fullHeight={true}
+				hiddenHeader={true}
+			/>
+		{/if}
+	</div>
+{/snippet}

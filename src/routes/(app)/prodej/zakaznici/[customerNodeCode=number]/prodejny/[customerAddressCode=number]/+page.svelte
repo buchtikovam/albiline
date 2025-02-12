@@ -1,10 +1,10 @@
 <script lang="ts">
 	import {
 		customerAndAddressContactsAgGridDef
-	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
 	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { customerAddressDetailFormDef } from '$lib/data/autoform/zakaznici/customerAddressFormDef';
-	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerAddressesAgGridDef';
+	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAddressesAgGridDef';
 	import { customerAddressPageLayout } from '$lib/data/detail-page-layout/customerAddressPageLayout';
 	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
@@ -23,7 +23,7 @@
 	import Repeat from 'lucide-svelte/icons/repeat';
 	import Plus from 'lucide-svelte/icons/plus';
 	import * as m from '$lib/paraglide/messages.js';
-	import type { CustomerAddressType, CustomerContactType } from '$lib/types/page/customers';
+	import type {CustomerAddressType, CustomerContactType, CustomerType} from '$lib/types/page/customers';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 
@@ -51,7 +51,15 @@
 
 	activeTabIndex.value = 1;
 
-	let initialFormValues: CustomerAddressType = $derived(data.response.item);
+	let initialFormValues: CustomerType = $derived.by(() => {
+		if (data.response) {
+			return data.response.item
+		}
+
+		return {}
+	});
+
+
 	let editedFormValues: Record<string, any> = $state({ id: data.response.item.id });
 
 	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
@@ -332,8 +340,8 @@
 
 			<!-- address contacts table: display all, add new, move table up/down -->
 			{#if item.type === "contacts"}
-				<div class={(item.isLast ? "" : "mb-4")}>
-					<div class="flex gap-2">
+				<div class={(item.isLast ? "mb-2" : "mb-4")}>
+					<div class="flex gap-2 pb-2">
 						<SectionLabel label={m.routes_prodej_zakaznici_detail_contacts_label()}/>
 
 						<button
@@ -354,6 +362,8 @@
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}
 						rowData={contactValues}
+						fullHeight={false}
+						hiddenHeader={false}
 						gridOptionsCustom={contactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}

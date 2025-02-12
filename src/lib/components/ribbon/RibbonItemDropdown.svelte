@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { ribbonAction, ribbonOpen } from '$lib/runes/ribbon.svelte';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import type { RibbonItem, RibbonSubItem } from '$lib/types/components/ribbon/ribbon';
+	import type { RibbonItemType, RibbonSubItemType } from '$lib/types/components/ribbon/ribbon';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	let { ribbonItem }: {
-		ribbonItem: RibbonItem;
+		ribbonItem: RibbonItemType;
 	} = $props();
 
-	let children: RibbonSubItem[] = ribbonItem.children || [];
+	let children: RibbonSubItemType[] = $derived(ribbonItem.children || []);
 </script>
 
 
@@ -37,7 +37,8 @@
 			{#each children as ribbonChild}
 				<DropdownMenu.Item class="w-full">
 					<button onclick={() => {
-						ribbonAction.value = ribbonItem.action;
+						console.log("click")
+						ribbonAction.value = ribbonChild.action;
 					}}>
 						{ ribbonChild.translation() }
 					</button>

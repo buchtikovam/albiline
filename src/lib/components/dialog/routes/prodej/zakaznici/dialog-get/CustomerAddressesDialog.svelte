@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Plus from 'lucide-svelte/icons/plus';
 	import NewCustomerAddressDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
-	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
 	import * as Dialog from "$lib/components/ui/dialog";
 	import {newCustomerAddressFormDef} from "$lib/data/autoform/zakaznici/newCustomerAddressFormDef";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import type {GridOptions} from "ag-grid-enterprise";
 
 	interface Props {
 		colDef: any;
@@ -23,6 +24,10 @@
 	function newCustomerAddressDialog() {
 		open = false;
 		openNewAddressDialog = true;
+	}
+
+	const customGridOptions: GridOptions = {
+		columnDefs: colDef,
 	}
 </script>
 
@@ -54,9 +59,10 @@
 {/snippet}
 
 {#snippet content()}
-	<AgGridCSDialogWrapper
+	<AgGridCSWrapper
 		rowData={rowData}
-		colDef={colDef}
+		gridOptionsCustom={customGridOptions}
+		fullHeight={true}
 	/>
 {/snippet}
 

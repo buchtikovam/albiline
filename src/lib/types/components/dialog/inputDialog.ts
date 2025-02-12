@@ -6,7 +6,7 @@ import type { Icon as IconType } from "lucide-svelte";
 export type InputDialogSelectOption = {
 	field: string;
 	label: () => string;
-	type: "text" | "number" | "boolean" | "enum" | "date";
+	type: ColumnFilterType;
 }
 
 
@@ -22,7 +22,8 @@ export type InputDialogType = {
 
 // Input dialog -- INPUTS
 type InputDialogInput = {
-	name: string;
+	field: string;
+	type: ColumnFilterType;
 	value: any
 }
 
@@ -111,7 +112,6 @@ export type ConditionTypesDate = (
 	"after" |
 	"between"
 )
-
 
 
 

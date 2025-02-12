@@ -1,6 +1,8 @@
 // import * as m from '$lib/paraglide/messages.js'
 
-export const customerAndAddressContactsAgGridDef = [
+import type {ColDef} from "ag-grid-enterprise";
+
+export const customerAndAddressContactsAgGridDef: ColDef<any, any>[] = [
 	{
 		field: "isDefault",
 		headerName: "Výchozí",

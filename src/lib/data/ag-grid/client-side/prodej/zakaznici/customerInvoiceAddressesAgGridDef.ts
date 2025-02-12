@@ -1,6 +1,7 @@
 import type { ValueFormatterParams } from 'ag-grid-community';
+import type {ColDef} from "ag-grid-enterprise";
 
-export const customerInvoiceAddressesAgGridDef = [
+export const customerInvoiceAddressesAgGridDef: ColDef<any, any>[] = [
 	{
 		field: "validFrom",
 		headerName: "Platnost od",

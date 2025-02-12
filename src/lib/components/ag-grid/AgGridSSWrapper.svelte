@@ -11,10 +11,14 @@
 		sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
-	import { fulltextFilterValue, pageCompact, sessionKey } from '$lib/runes/page.svelte';
+	import { fulltextFilterValue, sessionKey } from '$lib/runes/page.svelte';
+	import { openedDialog, ribbonAction } from "$lib/runes/ribbon.svelte";
 	import { disablePageTabs } from '$lib/runes/navigation.svelte';
+	import { themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
+	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
 	import { getAgGridLocale } from "$lib/utils/components/ag-grid/getAgGridLocale";
+
 	import { tick } from 'svelte';
 	import {
 		type CellValueChangedEvent,
@@ -26,19 +30,11 @@
 		type GridOptions,
 		type IServerSideDatasource,
 		type IServerSideGetRowsParams,
-		type SortChangedEvent
+		type SortChangedEvent, themeQuartz
 	} from 'ag-grid-enterprise';
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
-	import 'ag-grid-community/styles/ag-grid.css';
-	import '$lib/ag-grid-theme-builder.pcss';
-	import {openedDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import {Button} from "$lib/components/ui/button";
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import UserPlus from "lucide-svelte/icons/user-plus";
-	import MapPinHouse from "lucide-svelte/icons/map-pin-house"
+
 
 	interface Props {
 		url: string;
@@ -61,11 +57,12 @@
 	let gridApi: GridApi<unknown>;
 	let rowBufferSize = 100;
 	let isInitial = $state(true);
-
+	let themeParams = $state(themeAlbiBlueParams)
 
 
 	// grid configuration
 	const gridOptions: GridOptions = {
+		theme: themeQuartz.withParams(themeParams),
 		localeText: getAgGridLocale(),
 		rowModelType: "serverSide",
 		maintainColumnOrder: true,
@@ -77,7 +74,7 @@
 		rowBuffer: rowBufferSize,
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,
-		// sideBar: true,
+		sideBar: true,
 
 		cellSelection: {
 			handle: {
@@ -88,7 +85,7 @@
 
 		rowSelection: {
 			mode: 'multiRow',
-			enableClickSelection: true,
+			// enableClickSelection: true,
 			headerCheckbox: false, // maybe add later ?
 			hideDisabledCheckboxes: true,
 		},
@@ -241,7 +238,7 @@
 					latestRowCount.value = response.totalRows;
 					gridApi.setRowCount(response.totalRows);
 
-					if (isInitial) { // TODO: use session storage with route as a key to save and update
+					if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
 						const columnState = {
 							state: sortState.value,
 						}
@@ -261,7 +258,6 @@
 
 						// setting selectedRows
 						if (selectionState.value) {
-							console.log(selectionState.value)
 							gridApi.setServerSideSelectionState(selectionState.value)
 						}
 					}
@@ -280,8 +276,6 @@
 	// without inspect infinity loop happens ?
 	$inspect(presetToSave.value)
 
-
-
 	// used when ribbon -> edit button is pressed
 	const columnDefaultEditable = new Map();
 
@@ -294,7 +288,11 @@
 		// initiliate datasource
 		gridApi.setGridOption('serverSideDatasource', datasource);
 
-		gridApi.setFilterModel(filtersToSave.value);
+		if (gridApi) {
+			gridApi.setFilterModel(filtersToSave.value);
+
+			console.log(JSON.stringify(filtersToSave.value, null, 1))
+		}
 
 		let colDefs = gridApi.getColumnDefs();
 		let columnOrder: ColumnOrder = [];
@@ -361,69 +359,22 @@
 
 
 
-	let createNewCustomerAddress = $state(false);
 
 	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.NEW) {
-			createNewCustomerAddress = true;
-		}
-
 		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
 			openedDialog.value = "ribbon-my-filters"
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
-
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
 </script>
-
-
 
 
 <div class="flex flex-column h-full">
 	<div
 		id="datagrid"
-		class={(pageCompact.value ? "compact" : "normal") + " ag-theme-custom"}
+		class=""
 		style="flex: 1 1 auto"
 		bind:this={gridContainer}
 	></div>
 </div>
 
-
-<DialogWrapper
-	bind:isOpen={createNewCustomerAddress}
-	{header}
-	{content}
-	size="sm"
-	fixedHeight={false}
-/>
-
-{#snippet header()}
-	<Dialog.Title>
-		Co si přeješ vytvořit?
-	</Dialog.Title>
-{/snippet}
-{#snippet content()}
-	<div class="flex flex-col gap-4 mt-2  w-[320px]">
-		<Button>
-			<UserPlus strokeWidth={2.5}/>
-			Nový zákazník
-		</Button>
-
-		<Button>
-			<MapPinHouse strokeWidth={2.5}/>
-			Nová prodejna
-		</Button>
-	</div>
-{/snippet}
-
-
-
-<style>
-	.compact {
-		--ag-grid-size: 3px;
-	}
-
-	.normal {
-		--ag-grid-size: 5px;
-	}
-</style>

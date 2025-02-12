@@ -1,22 +1,26 @@
 <script lang="ts">
 	import {
 		customerAndAddressContactsAgGridDef
-	} from '$lib/data/ag-grid/client-side/customerAndAddressContactsAgGridDef';
+	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
 	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
+	import {openedDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import { customerDetailFormDef } from '$lib/data/autoform/zakaznici/customerDetailFormDef';
 	import { customerPageLayout } from '$lib/data/detail-page-layout/customerPageLayout';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { activeTabIndex } from '$lib/runes/page.svelte';
 	import { page } from '$app/state';
-	import * as m from '$lib/paraglide/messages.js'
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
+	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
+	import { customToast } from "$lib/utils/customToast";
 	import { flipItems } from '$lib/utils/flipItems';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type { CustomerContactType, CustomerType } from '$lib/types/page/customers';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import type { AutoFormType } from '$lib/types/components/form/autoform';
+	import CustomerDetailInvoiceAdressesDialog
+		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import NewCustomerContactDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
@@ -24,9 +28,7 @@
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {customToast} from "$lib/utils/customToast";
+	import * as m from '$lib/paraglide/messages.js'
 
 
 	interface Props {
@@ -41,9 +43,17 @@
 
 	let { data }: Props = $props();
 
+
 	activeTabIndex.value = 2;
 
-	let initialFormValues: CustomerType = $derived(data.response.item);
+	let initialFormValues: CustomerType = $derived.by(() => {
+		if (data.response) {
+			return data.response.item
+		}
+
+		return {}
+	});
+
 	let editedFormValues: Record<string, any> = $state({ })
 
 	let contactValues: CustomerContactType[] = $derived(data.response.contacts)
@@ -55,7 +65,6 @@
 	let openNewContactDialog: boolean = $state(false);
 
 
-	$inspect(editedFormValues);
 	$effect(() => {
 		if (Object.keys(editedFormValues).length > 0) {
 			disableNavigation.value = true;
@@ -84,9 +93,9 @@
 		}, [])
 	})
 
+
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
-
 	let activeRouteId = $derived({
 		customerNodeCode: Number(page.params.customerNodeCode),
 	})
@@ -151,38 +160,37 @@
 					"Nemáte nic k uložení. Nejdříve proveďte změny."
 				)
 			}
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
-
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
 
 
 	const contactsGridOptions: GridOptions = {
 		columnDefs: customerAndAddressContactsAgGridDef,
 	}
-
-	$inspect(editedContactValues);
-	$inspect(createdContacts)
 </script>
 
 
 
+
 <svelte:head>
-	<title>Zákazník {initialFormValues.customerNodeCode || ""} | Albiline</title>
+	<title>
+		Zákazník {initialFormValues.customerNodeCode || ""} | Albiline
+	</title>
 </svelte:head>
 
 
 
+
+<!-- autoform + contacts -->
 <MaxWidthScrollableDetailContainer>
 	<div class="mb-3">
 		<!-- header -->
 		<div class="flex justify-between">
-			<!-- page label -->
 			<DetailPageLabel
 				label={m.routes_prodej_zakaznici_customer_detail_label() + " " + initialFormValues.customerNodeCode}
 			/>
 
-			<!-- page navigation buttons -->
 			<div class={uniqueSelectedRows.length > 1 ? "flex gap-3" : "hidden"}>
 				<DetailNavButton
 					direction="left"
@@ -236,6 +244,7 @@
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}
 						rowData={contactValues}
+						fullHeight={false}
 						gridOptionsCustom={contactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
@@ -247,10 +256,18 @@
 </MaxWidthScrollableDetailContainer>
 
 
-<!-- new customer form -->
+
+<!-- opened from contacts section -->
 <NewCustomerContactDialog
 	formDef={newCustomerContactFormDef}
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
 	label="Nový kontakt zákazníka"
 />
+
+
+
+<!-- opened from autoform -->
+{#if openedDialog.value === "customer-detail-invoice-addresses"}
+	<CustomerDetailInvoiceAdressesDialog />
+{/if}

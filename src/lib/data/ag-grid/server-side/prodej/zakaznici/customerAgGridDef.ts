@@ -42,7 +42,7 @@ export const customerHeaderTranslations = {
 };
 
 
-export const customerAgGridDef: ColDef[] = [
+export const customerAgGridDef: ColDef<any, any>[] = [
 	{
 		field: "customerAddressCode",
 		cellDataType: "number",

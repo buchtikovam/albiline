@@ -137,6 +137,7 @@
 	"routes_prodej_zakaznici_customer_detail_form_section_dalsi_udaje" : "Další údaje",
 	"routes_prodej_zakaznici_customer_detail_form_section_edi" : "EDI",
 	"routes_prodej_zakaznici_customer_detail_form_section_nastaveni" : "Nastavení",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_selection" : "Fakturační adresy",
 
 	"routes_prodej_zakaznici_customer_detail_form_input_name" : "Jméno",
 	"routes_prodej_zakaznici_customer_detail_form_input_street" : "Ulice",

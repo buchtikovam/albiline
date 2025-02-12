@@ -1,51 +1,67 @@
-[
-	{
-		field: "customerAddressCode",
-		label: "Id prodejny",
-		type: "number"
-	},
-	{
-		field: "name",
-		label: "Prodejna",
-		type: "string",
-	}
-]
+pink
+
+'cerise-red': {
+    '50': '#fef1f7',
+    '100': '#fee5f1',
+    '200': '#ffcae5',
+    '300': '#ff9fcf',
+    '400': '#ff64ad',
+    '500': '#fd378c',
+    '600': '#ed1164',
+    '700': '#d0064c',
+    '800': '#ab093f',
+    '900': '#8e0d38',
+    '950': '#58001c',
+},
 
 
+yellow
+
+'candlelight': {
+    '50': '#feffe7',
+    '100': '#fcffc1',
+    '200': '#feff86',
+    '300': '#fff941',
+    '400': '#ffec0d',
+    '500': '#ffdd00',
+    '600': '#d1a300',
+    '700': '#a67502',
+    '800': '#895b0a',
+    '900': '#744a0f',
+    '950': '#442704',
+},
 
 
-{
-	"fulltext": "Fulltext 123456",
+blue
 
-	"inputs" : [
-		{
-			"name" : "",
-			"value" : "abc",
-		}
-	],
-
-	"columnFilters" : [
-		{
-			"columnName" : "customerAddressCode",
-			"type" : "number",
-			"filterModel" : {
-				"operator" : "OR",
-				"conditions" : [
-    				{
-    					"type" : "equals",
-    					"value" : "123"
-    				},
-    				{
-    					"type" : "equals",
-    					"value" : "456"
-    				}
-				]
-			}
-		},
-	]
-}
+'scooter': {
+    '50': '#ecffff',
+    '100': '#cefcff',
+    '200': '#a4f6fd',
+    '300': '#65eefb',
+    '400': '#1fdbf1',
+    '500': '#03bed7',
+    '600': '#0698b4',
+    '700': '#0c7992',
+    '800': '#146276',
+    '900': '#155164',
+    '950': '#073545',
+},
 
 
+green
 
-
+'palm-green': {
+    '50': '#f5fee7',
+    '100': '#e7fdca',
+    '200': '#d0fa9c',
+    '300': '#b1f462',
+    '400': '#92e932',
+    '500': '#73cf13',
+    '600': '#56a50b',
+    '700': '#427e0d',
+    '800': '#376311',
+    '900': '#305413',
+    '950': '#0f2003',
+},
 

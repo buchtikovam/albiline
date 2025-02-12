@@ -8,7 +8,6 @@
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import {Button} from "$lib/components/ui/button";
@@ -21,7 +20,7 @@
 
 	let customerAddressCode: any = $state(null);
 	let customerNodeCode: any = $state(null);
-	let activeTab = $derived(activeTabIndex.value.toString())
+	let activeTab = $derived(activeTabIndex.value.toString());
 
 	$effect(() => {
 		if (storedSelectedRows.value.length > 0) {
@@ -40,6 +39,8 @@
 			activePageTab.value = "";
 		})
 	})
+
+
 </script>
 
 

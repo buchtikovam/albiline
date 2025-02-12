@@ -1,46 +1,48 @@
 <script lang="ts">
-	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/customerInvoiceAddressesAgGridDef';
+	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerInvoiceAddressesAgGridDef';
 	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { apiServiceGET } from '$lib/api/apiService.svelte.js';
-	import AgGridCSDialogWrapper from '$lib/components/ag-grid/AgGridCSDialogWrapper.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
+	import * as Dialog from '$lib/components/ui/dialog';
+	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import type {GridOptions} from "ag-grid-enterprise";
 
 
+	const activeRow = page.params.customerNodeCode;
 	let dialogOpen: boolean = $state(true)
-	let invoiceAddresses = $state();
-	const activeRow = $page.params.customerNodeCode;
+	let invoiceAddresses = $state([]);
 
 
 	async function getInvoiceAddresses() {
 		const res = await apiServiceGET(`customers/${activeRow}/invoice-addresses`);
 
 		if (res.ok) {
-			const data = await res.json();
-			invoiceAddresses = data.items;
+			const resData = await res.json();
+			invoiceAddresses = resData.items;
 		}
 	}
 
 
 	$effect(() => {
 		getInvoiceAddresses();
-	});
-
-
-	$effect(() => {
-		if (!dialogOpen) {
-			setTimeout(() => {
-				openedDialog.value = 'empty';
-			}, 200)
-		}
 	})
+
+	const customGridOptions: GridOptions = {
+		columnDefs: customerInvoiceAddressesAgGridDef,
+	}
 </script>
 
 
 
 <DialogWrapper
 	isOpen={dialogOpen}
+	onChange={() => {
+		setTimeout(() => {
+			openedDialog.value = 'empty';
+		}, 200)
+	}}
 	{header}
 	{content}
 	size="lg"
@@ -52,13 +54,14 @@
 	<Dialog.Title
 		class="h-6"
 	>
-		Výběr fakturační adresy
+		{m.routes_prodej_zakaznici_customer_detail_invoice_address_selection()}
 	</Dialog.Title>
 {/snippet}
 
 {#snippet content()}
-	<AgGridCSDialogWrapper
-		colDef={customerInvoiceAddressesAgGridDef}
+	<AgGridCSWrapper
+		fullHeight={true}
 		rowData={invoiceAddresses}
+		gridOptionsCustom={customGridOptions}
 	/>
 {/snippet}

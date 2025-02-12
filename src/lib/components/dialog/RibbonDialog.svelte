@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CustomerDetailInvoiceAdressesDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte';
 	import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
-	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
+	import {openedDialog, ribbonAction} from '$lib/runes/ribbon.svelte.js';
 	import MyFiltersDialog from "$lib/components/dialog/ribbon/MyFiltersDialog.svelte";
 	// import SaveFiltersDialog from '$lib/components/dialog/global/ribbon-dialogs/SaveFiltersDialog.svelte';
 	// import SavePresetDialog from '$lib/components/dialog/global/ribbon-dialogs/SavePresetDialog.svelte';
@@ -9,16 +9,11 @@
 
 
 	let currentDialog: GlobalDialogOptions = $derived(openedDialog.value);
+
+	$inspect(currentDialog)
+	$inspect(ribbonAction.value)
 </script>
 
-
-<!-- DETAIL DIALOGY -->
-{#if currentDialog === "customer-detail-invoice-addresses"}
-	<CustomerDetailInvoiceAdressesDialog />
-{/if}
-
-
-<!-- RIBBON DIALOGY -->
 
 {#if currentDialog === "ribbon-my-filters"}
 	<MyFiltersDialog />
