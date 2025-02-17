@@ -21,13 +21,38 @@ export type InputDialogType = {
 
 
 // Input dialog -- INPUTS
-type InputDialogInput = {
+type InputDialogInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange;
+
+type InputString = {
 	field: string;
-	type: ColumnFilterType;
-	value: any
+	type: "text";
+	value: string,
 }
 
+type InputNumber = {
+	field: string;
+	type: "number";
+	value: number,
+}
 
+type InputBoolean = {
+	field: string;
+	type: "boolean";
+	value: boolean,
+}
+
+type InputDate = {
+	field: string;
+	type: "date";
+	value: string, // v domluveném datumovém formátu
+}
+
+type InputDateRange = {
+	field: string;
+	type: "date";
+	value: string, // v domluveném datumovém formátu
+	endValue: string, // v domluveném datumovém formátu
+}
 
 // Input dialog -- COLUMN FILTERS
 export type ColumnFilter = {
@@ -80,8 +105,8 @@ type FilterModelConditionBoolean = {
 
 type FilterModelConditionDate = {
 	type: ConditionTypesDate|null,
-	value: Date|null;
-	endValue?: Date|null;
+	value: string|null;
+	endValue?: string|null;
 }
 // --- conditions end ---
 

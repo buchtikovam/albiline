@@ -11,7 +11,7 @@
 				destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
 				outline:
 					"border-input bg-background hover:bg-accent hover:text-accent-foreground border",
-				secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+				secondary: "bg-white text-albi-500 border hover:bg-albi-500 hover:text-white",
 				ghost: "hover:bg-accent hover:text-accent-foreground",
 				link: "text-primary underline-offset-4 hover:underline",
 			},

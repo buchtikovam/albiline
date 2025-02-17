@@ -7,19 +7,20 @@
 		lastVisibleRowIndex,
 		latestRowCount,
 		presetToSave,
+		selectedFilters,
 		selectionState,
 		sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
-	import { fulltextFilterValue, sessionKey } from '$lib/runes/page.svelte';
-	import { openedDialog, ribbonAction } from "$lib/runes/ribbon.svelte";
-	import { disablePageTabs } from '$lib/runes/navigation.svelte';
-	import { themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
-	import { addToEditedTableData } from '$lib/utils/addToEditedTableData';
-	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
-	import { getAgGridLocale } from "$lib/utils/components/ag-grid/getAgGridLocale";
+	import {fulltextFilterValue, sessionKey} from '$lib/runes/page.svelte';
+	import {openedDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {disablePageTabs} from '$lib/runes/navigation.svelte';
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {getAgGridLocale} from "$lib/utils/components/ag-grid/getAgGridLocale";
 
-	import { tick } from 'svelte';
+	import {tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
 		type Column,
@@ -30,7 +31,9 @@
 		type GridOptions,
 		type IServerSideDatasource,
 		type IServerSideGetRowsParams,
-		type SortChangedEvent, themeQuartz
+		type SelectionChangedEvent,
+		type SortChangedEvent,
+		themeQuartz
 	} from 'ag-grid-enterprise';
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
@@ -60,6 +63,7 @@
 	let themeParams = $state(themeAlbiBlueParams)
 
 
+
 	// grid configuration
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
@@ -74,7 +78,8 @@
 		rowBuffer: rowBufferSize,
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,
-		sideBar: true,
+		enableCellTextSelection: true,
+		// sideBar: true,
 
 		cellSelection: {
 			handle: {
@@ -180,33 +185,39 @@
 		},
 
 
-		onRowSelected: () => { // TODO: odstranit
-			const selectedRows: any[] = gridApi.getSelectedRows();
-			let rowArr: {[key: string]: any}[] = []
+		onSelectionChanged: (event: SelectionChangedEvent) => {
+			selectionState.value = gridApi.getServerSideSelectionState();
 
-			disablePageTabs.value = selectedRows.length > 0;
-			activeSelectedRowIndex.value = 0
+			if (selectionState.value) {
+				if (selectionState.value.toggledNodes) {
+					const selectedNodes: any[] = [];
 
-			selectedRows.forEach((row) => {
-				let rowObj: {[key: string]: any} = {}
-				requiredFields.forEach((field) => {
-					rowObj[field] = row[field]
-				})
+					selectionState.value.toggledNodes.forEach((selectedRowNumber) => {
+						selectedNodes.push(event.api.getDisplayedRowAtIndex(Number(selectedRowNumber)))
+					})
 
-				rowArr.push(rowObj);
-			});
+					const rowArr = [];
+					activeSelectedRowIndex.value = 0
 
-			storedSelectedRows.value = rowArr;
+					selectedNodes.forEach((node) => {
+						let rowObj: {[key: string]: any} = {}
+						requiredFields.forEach((field) => {
+							rowObj[field] = node.data[field]
+						})
+
+						rowArr.push(rowObj);
+					});
+
+					storedSelectedRows.value = rowArr;
+				}
+			}
 		},
-
 	}
 
 
-	$inspect(latestRowCount.value);
-
 
 	//  datasource configuration
-	let recentFilters: FilterModel[] = [];
+	let recentFilters: FilterModel[] = $state([]);
 
 	const datasource: IServerSideDatasource = {
 		getRows: (params: IServerSideGetRowsParams) => {
@@ -232,42 +243,44 @@
 					}
 				}
 			)
-				.then(httpResponse => httpResponse.json())
-				.then(response => {
-					params.success({ rowData: response.items });
-					latestRowCount.value = response.totalRows;
-					gridApi.setRowCount(response.totalRows);
+			.then(httpResponse => httpResponse.json())
+			.then(response => {
+				params.success({ rowData: response.items });
+				latestRowCount.value = response.totalRows;
+				gridApi.setRowCount(response.totalRows);
 
-					if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
-						const columnState = {
-							state: sortState.value,
-						}
+				if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
+					const columnState = {
+						state: sortState.value,
+					}
 
-						gridApi.applyColumnState(columnState);
+					gridApi.applyColumnState(columnState);
 
-						// setting scroll position
-						if (lastVisibleRowIndex.value > rowBufferSize) {
-							gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
-						} else {
-							if (selectionState.value) {
-								if (selectionState.value.toggledNodes) {
+					// setting scroll position
+					if (lastVisibleRowIndex.value > rowBufferSize) {
+						gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
+					} else {
+						if (selectionState.value) {
+							if (selectionState.value.toggledNodes) {
+								if (Number(selectionState.value.toggledNodes[0])) {
 									gridApi.ensureIndexVisible(Number(selectionState.value.toggledNodes[0]) - 1 , "top");
 								}
 							}
 						}
-
-						// setting selectedRows
-						if (selectionState.value) {
-							gridApi.setServerSideSelectionState(selectionState.value)
-						}
 					}
 
-					isInitial = false;
-				})
-				.catch(error => {
-					console.log(error);
-					params.fail();
-				});
+					// setting selectedRows
+					if (selectionState.value) {
+						gridApi.setServerSideSelectionState(selectionState.value)
+					}
+				}
+
+				isInitial = false;
+			})
+			.catch(error => {
+				console.log(error);
+				params.fail();
+			});
 		}
 	};
 
@@ -275,6 +288,8 @@
 
 	// without inspect infinity loop happens ?
 	$inspect(presetToSave.value)
+
+	$inspect(recentFilters)
 
 	// used when ribbon -> edit button is pressed
 	const columnDefaultEditable = new Map();
@@ -290,8 +305,6 @@
 
 		if (gridApi) {
 			gridApi.setFilterModel(filtersToSave.value);
-
-			console.log(JSON.stringify(filtersToSave.value, null, 1))
 		}
 
 		let colDefs = gridApi.getColumnDefs();
@@ -327,6 +340,7 @@
 			filtersToSave.value = gridApi.getFilterModel();
 			lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex();
 			presetToSave.value = gridApi.getColumnDefs() || [];
+			gridApi.destroy();
 		})
 	})
 
@@ -337,7 +351,7 @@
 		disablePageTabs.value = storedSelectedRows.value.length === 0;
 	})
 
-
+	$inspect(latestRowCount.value)
 
 	// listening to fulltext filter changes from layout, refresh grid with delay
 	let timer: NodeJS.Timeout;
@@ -358,13 +372,54 @@
 	})
 
 
+	$effect(() => {
+		if (Object.keys(selectedFilters.value).length > 0) {
+			gridApi.setFilterModel(selectedFilters.value);
+			selectedFilters.value = {};
+		}
+	})
 
 
 	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
+			const columnName = gridApi.getFocusedCell()?.column.getColId();
+			const selection = window.getSelection()?.toString().trim();
+
+			if (columnName && selection) {
+				const cellType = "text"; // TODO: get cell type
+				let currentFilters = gridApi.getFilterModel();
+
+				currentFilters[columnName] = {
+					filterType: "multi",
+					filterModels: [{
+						filterType: cellType,
+						type: "contains",
+						filter: selection
+					}, null]
+				}
+
+				gridApi.setFilterModel(currentFilters);
+				gridApi.onFilterChanged();
+			}
+		}
+
+		if (ribbonAction.value === RibbonActionEnum.FILTER_UNDO) {
+			recentFilters.pop();
+
+			recentFilters[recentFilters.length - 1]
+				? gridApi.setFilterModel(recentFilters[recentFilters.length - 1])
+				: gridApi.setFilterModel(null);
+		}
+
+		if (ribbonAction.value === RibbonActionEnum.FILTER_REMOVE) {
+			gridApi.setFilterModel(null)
+		}
+
 		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
 			openedDialog.value = "ribbon-my-filters"
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
+
+		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	})
 </script>
 

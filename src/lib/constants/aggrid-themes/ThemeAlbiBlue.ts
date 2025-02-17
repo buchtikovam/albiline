@@ -24,7 +24,6 @@ export const themeAlbiBlueParams = {
 	headerFontSize: 12,
 	headerHeight: 32,
 	headerFontWeight: 700,
-	headerRowBorder: true,
 	headerVerticalPaddingScale: 1,
 	checkboxBorderRadius: 4,
 	checkboxBorderWidth: 1,
@@ -52,5 +51,5 @@ export const themeAlbiBlueParams = {
 	tabHoverBackgroundColor: "#00000000",
 	toolPanelSeparatorBorder: true,
 	wrapperBorder: false,
-	wrapperBorderRadius: 8
+	wrapperBorderRadius: 0
 }

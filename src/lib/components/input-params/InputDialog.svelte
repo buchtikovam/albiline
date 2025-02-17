@@ -14,6 +14,9 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
+	import {formatDateLong} from "$lib/utils/formatting/formatDateLong.js";
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import Save from "lucide-svelte/icons/save";
 
 
 	interface Props {
@@ -118,6 +121,7 @@
 							condition.type !== "between" &&
 							condition.value
 						) {
+							condition.value = formatDateLong(condition.value);
 							cleanedConditions.push(condition);
 						}
 
@@ -126,6 +130,8 @@
 							condition.value &&
 							condition.endValue
 						) {
+							condition.value = formatDateLong(condition.value);
+							condition.endValue = formatDateLong(condition.endValue);
 							cleanedConditions.push(condition);
 						}
 					})
@@ -174,7 +180,7 @@
 />
 
 {#snippet header()}
-	<Dialog.Title class="">
+	<Dialog.Title class="h-6">
 		Vstupní parametry
 	</Dialog.Title>
 {/snippet}
@@ -207,10 +213,10 @@
 			{#each columnFilters as columnFilter, i (columnFilter.id)}
 				<div
 					class={
-							columnFilter.filterModel.conditions.length > 1
-								? "rounded-lg border bg-slate-50 p-2 flex flex-col mt-2 "
-								: "bg-white p-0"
-						}
+						columnFilter.filterModel.conditions.length > 1
+							? "rounded-lg border bg-slate-50 p-2 flex flex-col mt-2 "
+							: "bg-white p-0"
+					}
 				>
 					{#if columnFilter.filterModel.conditions.length > 1}
 						<p class="text-xs font-bold text-slate-400">
@@ -227,24 +233,45 @@
 		{/if}
 
 
-		<Dialog.Footer class="w-full mt-4">
+		<Dialog.Footer class="w-full mt-8">
 			<div class="w-full flex justify-between">
-				<Button
-					type="button"
-					onclick={postInputParams}
-				>
-					Načíst
-				</Button>
-
-				{#if columnFilters !== undefined}
+				<div class="flex gap-2">
 					<Button
 						type="button"
-						onclick={() => addInput()}
 						class="size-10"
+						variant="secondary"
 					>
-						<Plus strokeWidth={3} class="text-white"/>
+						<Save strokeWidth="2.5" class="!size-[18px]"/>
 					</Button>
-				{/if}
+
+					<Button
+						type="button"
+						class="bg-white"
+						variant="secondary"
+					>
+						Načíst
+					</Button>
+				</div>
+
+				<div class="flex items-center gap-2">
+					<Button
+						type="button"
+						onclick={postInputParams}
+					>
+						Filtrovat
+					</Button>
+
+					{#if columnFilters !== undefined}
+						<Button
+							type="button"
+							onclick={() => addInput()}
+							class="size-10"
+							variant="secondary"
+						>
+							<Plus strokeWidth={3} />
+						</Button>
+					{/if}
+				</div>
 			</div>
 		</Dialog.Footer>
 	</div>

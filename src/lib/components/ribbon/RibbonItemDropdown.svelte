@@ -65,7 +65,7 @@
 					{#each children as ribbonChild}
 						<DropdownMenu.Item class="w-full">
 							<button onclick={() => {
-								ribbonAction.value = ribbonItem.action;
+								ribbonAction.value = ribbonChild.action;
 							}}>
 								{ ribbonChild.translation() }
 							</button>

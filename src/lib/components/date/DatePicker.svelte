@@ -22,7 +22,7 @@
 	let value: DateValue = $state();
 
 	if (dateValue) {
-		value = parseDate(dateValue.toISOString().split('T')[0]);
+		value = parseDate(new Date(dateValue).toISOString().split('T')[0]);
 	}
 
 	$effect(() => {

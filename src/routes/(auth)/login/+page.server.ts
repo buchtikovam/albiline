@@ -17,9 +17,11 @@ export const actions = {
 			const userCode = data.get("userCode")?.toString().trim();
 			const password = data.get("password")?.toString();
 
+			console.log(userCode, password)
 
 			// Input validation
 			if (!userCode || !password) {
+				console.log("input validation fail")
 				return fail(400, {
 					messages: [{
 						title: "Chybějící údaje",
@@ -36,6 +38,8 @@ export const actions = {
 			const saltResp = await getSalt.json().catch(() => null);
 
 			if (!getSalt.ok || !saltResp?.passwordSalt) {
+				console.log("salt fail")
+
 				return fail(getSalt.status, {
 					messages: saltResp?.messages,
 					userCode: userCode,
@@ -58,6 +62,7 @@ export const actions = {
 			const responseData = await resp.json().catch(() => null);
 
 			if (!resp.ok) {
+				console.log("login fail")
 				return fail(resp.status, {
 					messages: responseData?.messages,
 					userCode: userCode,

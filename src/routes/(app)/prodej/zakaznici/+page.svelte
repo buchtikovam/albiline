@@ -8,17 +8,12 @@
 	import { storedSelectedRows } from '$lib/runes/table.svelte';
 	import { i18n } from '$lib/i18n';
 	import { goto } from '$app/navigation';
-	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputDialog from "$lib/components/input-params/InputDialog.svelte";
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import {Button} from "$lib/components/ui/button";
-	import MapPinHouse from "lucide-svelte/icons/map-pin-house";
-	import UserPlus from "lucide-svelte/icons/user-plus";
+	import NewCustomerOrAddressDecisionDialog
+		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
 
 
 	activeTabIndex.value = 0;
@@ -47,15 +42,22 @@
 	}
 
 
+
 	let open = $state(false);
 	let inputDialogFinished = $derived(!open);
-	let createNewCustomerAddress = $state(false);
 
+
+	const handleKeyDown = (event) => {
+		if (event.ctrlKey && event.key.toUpperCase() === 'I') {
+			open = true;
+		}
+	};
 
 	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.NEW) {
-			createNewCustomerAddress = true;
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
 		}
 	})
 </script>
@@ -86,33 +88,4 @@
 {/if}
 
 
-
-<DialogWrapper
-	bind:isOpen={createNewCustomerAddress}
-	{header}
-	{content}
-	size="sm"
-	fixedHeight={false}
-/>
-
-{#snippet header()}
-	<Dialog.Title>
-		Co si přeješ vytvořit?
-	</Dialog.Title>
-{/snippet}
-
-{#snippet content()}
-	<div class="flex flex-col gap-4 mt-2  w-[320px]">
-		<Button>
-			<UserPlus strokeWidth={2.5}/>
-			Nový zákazník
-		</Button>
-
-		<Button>
-			<MapPinHouse strokeWidth={2.5}/>
-			Nová prodejna
-		</Button>
-	</div>
-{/snippet}
-
-
+<NewCustomerOrAddressDecisionDialog />

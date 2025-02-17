@@ -73,6 +73,11 @@
 
 <DialogWrapper
 	isOpen={dialogOpen}
+	onChange={() => {
+		setTimeout(() => {
+			dialogOpen = false;
+		})
+	}}
 	{header}
 	{content}
 	size="sm"

@@ -41,19 +41,19 @@ export function changeCustomerRoute(
 
 		console.log(newRoute)
 
-		// goto(i18n.resolveRoute(newRoute)).then(() => {
-		// 	if (!uniqueSelectedRows[activeRowIndex + 2]) {
-		// 		return {
-		// 			right: true,
-		// 			left: false
-		// 		}
-		// 	}
-		//
-		// 	return {
-		// 		right: false,
-		// 		left: false,
-		// 	}
-		// })
+		goto(i18n.resolveRoute(newRoute)).then(() => {
+			if (!uniqueSelectedRows[activeRowIndex + 2]) {
+				return {
+					right: true,
+					left: false
+				}
+			}
+
+			return {
+				right: false,
+				left: false,
+			}
+		})
 	}
 
 

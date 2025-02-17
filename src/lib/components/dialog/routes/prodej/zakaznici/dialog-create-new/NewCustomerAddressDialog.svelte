@@ -1,4 +1,4 @@
-<script lang="ts">
+comp<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import type { CustomerAddressType } from '$lib/types/page/customers';
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";

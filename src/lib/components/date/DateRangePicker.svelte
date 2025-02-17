@@ -30,11 +30,11 @@
 
 
 	if (startValue) {
-		value.start = parseDate(startValue.toISOString().split('T')[0])
+		value.start = parseDate(new Date(startValue).toISOString().split('T')[0])
 	}
 
 	if (endValue) {
-		value.end = parseDate(endValue.toISOString().split('T')[0])
+		value.end = parseDate(new Date(endValue).toISOString().split('T')[0])
 	}
 
 
