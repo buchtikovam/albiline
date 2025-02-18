@@ -342,7 +342,9 @@
 			{#if item.type === "contacts"}
 				<div class={(item.isLast ? "mb-2" : "mb-4")}>
 					<div class="flex gap-2 pb-2">
-						<SectionLabel label={m.routes_prodej_zakaznici_detail_contacts_label()}/>
+						<SectionLabel
+							label={m.routes_prodej_zakaznici_detail_contacts_label()}
+						/>
 
 						<button
 							id="contacts"
@@ -354,7 +356,10 @@
 						<button
 							onclick={() => openNewContactDialog = true}
 						>
-							<Plus strokeWidth={2.5} class="text-albi-500 size-4"/>
+							<Plus
+								strokeWidth={2.5}
+								class="text-albi-500 size-4"
+							/>
 						</button>
 					</div>
 

@@ -1,70 +1,78 @@
 <script lang="ts">
-	import { openedDialog } from '$lib/runes/ribbon.svelte.js';
+	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
+	import { filtersToSave } from "$lib/runes/table.svelte";
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
-	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	/*
-		Dialog pro uložení nové šablony,
-		po vložení názvu se provede savePresets funkce
-	*/
 
-	let dialogOpen: boolean = $state(false);
+	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
 
 
-	function handleSavePresets(event: Event) {
-		event.preventDefault();
-		// savePresets(inputValue, $page.url.pathname);
+	$effect(() => {
+		isOpen = true;
 
-		setTimeout(() => {
-			openedDialog.value = "empty";
-		}, 250)
+		return (() => {
+			isOpen = false;
+			openedRibbonDialog.value = "empty";
+		})
+	})
 
-		dialogOpen = false
+
+	function savePreset() {
+		console.log(inputValue, filtersToSave.value)
 	}
-
- 
-	onMount(() => {
-		dialogOpen = true;
-	});
 </script>
 
 
 
-<Dialog.Root
-	bind:open={dialogOpen}
->
-	<Dialog.Content class="!w-fit">
-		<Dialog.Header>
-			<Dialog.Title class="h-4 mb-4">
-				Uložení šablony
-			</Dialog.Title>
-		</Dialog.Header>
+<DialogWrapper
+	bind:isOpen
+	onChange={() => {
+		isOpen = false;
+		openedRibbonDialog.value = "empty";
+	}}
+	{header}
+	{content}
+	fixedHeight={false}
+	size="sm"
+/>
 
-		<form onsubmit={handleSavePresets} class="p-0.5">
-			<Label for="test" class="text-right">
-				Název nové šablony
-			</Label>
+{#snippet header()}
+	<Dialog.Title>
+		Uložit šablonu
+	</Dialog.Title>
+{/snippet}
 
-			<Input
-				id="test"
-				bind:value={inputValue}
-				required
-				class="w-[220px] "
-			/>
+{#snippet content()}
+	<form
+		onsubmit={savePreset}
+		class="p-0.5 pt-0 -mt-1"
+	>
+		<Label
+			for="name"
+			class="text-right"
+		>
+			Název
+		</Label>
 
-			<Dialog.Footer>
-				<Button
-					type="submit"
-					class="mt-4 w-full bg-albi-500 text-background font-bolder"
-				>
-					Potvrdit
-				</Button>
-			</Dialog.Footer>
-		</form>
-	</Dialog.Content>
-</Dialog.Root>
+		<Input
+			id="name"
+			bind:value={inputValue}
+			required
+			class=""
+		/>
+
+		<Dialog.Footer>
+			<Button
+				type="submit"
+				class="mt-6 w-full"
+			>
+				Potvrdit
+			</Button>
+		</Dialog.Footer>
+	</form>
+{/snippet}

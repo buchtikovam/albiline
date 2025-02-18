@@ -47,7 +47,7 @@
 
 
 {#snippet header()}
-	<Dialog.Title class="h-6 mb-1">
+	<Dialog.Title class="h-6 mb-1 mr-4">
 		{message}
 	</Dialog.Title>
 

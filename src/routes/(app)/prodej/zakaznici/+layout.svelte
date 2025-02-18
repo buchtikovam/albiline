@@ -83,7 +83,7 @@
 	{#if showFulltextSearch.value === true}
 		<div class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible">
 			<Input
-				class="xl:w-80 lg:w-60 w-40 h-[30px] "
+				class="xl:w-80 lg:w-60 w-40 h-[30px] border-none "
 				placeholder={"Hledat..."}
 				type="search"
 				bind:value={fulltextFilterValue.value}

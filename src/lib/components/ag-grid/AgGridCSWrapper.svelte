@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { AG_GRID_LOCALE_CZ } from "@ag-grid-community/locale";
 	import { themeAlbiBlueParams } from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import { pageCompact } from "$lib/runes/page.svelte";
 	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
@@ -9,6 +8,7 @@
 		type GridApi,
 		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
+	import {AG_GRID_LOCALE_CZ} from "@ag-grid-community/locale";
 
 	interface Props {
 		rowData: any[];
@@ -134,10 +134,3 @@
 		bind:this={gridContainer}
 	></div>
 </div>
-
-
-<style>
-	.ag-header {
-		visibility: hidden;
-	}
-</style>

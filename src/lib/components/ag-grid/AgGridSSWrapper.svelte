@@ -12,15 +12,15 @@
 		sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
-	import {fulltextFilterValue, sessionKey} from '$lib/runes/page.svelte';
-	import {openedDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {authDetails, fulltextFilterValue, sessionKey} from '$lib/runes/page.svelte';
+	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/getAgGridLocale";
 
-	import {tick} from 'svelte';
+	import {onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
 		type Column,
@@ -60,7 +60,7 @@
 	let gridApi: GridApi<unknown>;
 	let rowBufferSize = 100;
 	let isInitial = $state(true);
-	let themeParams = $state(themeAlbiBlueParams)
+	let themeParams = $state(themeAlbiBlueParams);
 
 
 
@@ -145,10 +145,15 @@
 
 
 		onSortChanged: (event: SortChangedEvent<any>) => {
-			gridApi.setServerSideSelectionState({
-				selectAll: false,
-				toggledNodes: []
-			})
+			if (!isInitial) {
+				gridApi.setServerSideSelectionState({
+					selectAll: false,
+					toggledNodes: []
+				})
+
+				storedSelectedRows.value = [];
+			}
+
 			if (event.columns) {
 				event.columns.forEach((column: Column) => {
 					let match = false;
@@ -173,10 +178,14 @@
 
 
 		onFilterChanged: () =>  {
-			gridApi.setServerSideSelectionState({
-				selectAll: false,
-				toggledNodes: []
-			})
+			if (!isInitial) {
+				gridApi.setServerSideSelectionState({
+					selectAll: false,
+					toggledNodes: []
+				})
+
+				storedSelectedRows.value = [];
+			}
 		},
 
 
@@ -186,29 +195,39 @@
 
 
 		onSelectionChanged: (event: SelectionChangedEvent) => {
-			selectionState.value = gridApi.getServerSideSelectionState();
+			selectionState.value = event.api.getServerSideSelectionState();
+			activeSelectedRowIndex.value = 0
 
 			if (selectionState.value) {
 				if (selectionState.value.toggledNodes) {
-					const selectedNodes: any[] = [];
+					const selectedRows: any[] = [];
 
-					selectionState.value.toggledNodes.forEach((selectedRowNumber) => {
-						selectedNodes.push(event.api.getDisplayedRowAtIndex(Number(selectedRowNumber)))
+					selectionState.value.toggledNodes.forEach((rowNumber) => {
+						selectedRows.push(event.api.getDisplayedRowAtIndex(Number(rowNumber) - 1));
 					})
 
-					const rowArr = [];
-					activeSelectedRowIndex.value = 0
+					if (selectedRows.length > 0) {
+						const rowArr: Record<string, number>[] = [];
 
-					selectedNodes.forEach((node) => {
-						let rowObj: {[key: string]: any} = {}
-						requiredFields.forEach((field) => {
-							rowObj[field] = node.data[field]
-						})
+						try {
+							selectedRows.forEach((row) => {
+								let rowObj: {[key: string]: any} = {}
+								requiredFields.forEach((field) => {
+									rowObj[field] = row.data[field]
+								})
 
-						rowArr.push(rowObj);
-					});
+								rowArr.push(rowObj);
+							});
+						} catch (e) {
 
-					storedSelectedRows.value = rowArr;
+						}
+
+						storedSelectedRows.value = rowArr;
+						disablePageTabs.value = false;
+					} else {
+						disablePageTabs.value = true;
+						storedSelectedRows.value = [];
+					}
 				}
 			}
 		},
@@ -231,6 +250,7 @@
 				recentFilters.push(currentFilter);
 			}
 
+
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
 			fetch(url
@@ -246,8 +266,8 @@
 			.then(httpResponse => httpResponse.json())
 			.then(response => {
 				params.success({ rowData: response.items });
-				latestRowCount.value = response.totalRows;
-				gridApi.setRowCount(response.totalRows);
+				latestRowCount.value = response.totalRows === -1 ? 0 : response.totalRows;
+				gridApi.setRowCount(latestRowCount.value);
 
 				if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
 					const columnState = {
@@ -271,7 +291,10 @@
 
 					// setting selectedRows
 					if (selectionState.value) {
-						gridApi.setServerSideSelectionState(selectionState.value)
+						setTimeout(() => {
+							disablePageTabs.value = selectionState.value.toggledNodes.length === 0;
+							gridApi.setServerSideSelectionState(selectionState.value)
+						}, 200)
 					}
 				}
 
@@ -286,26 +309,21 @@
 
 
 
-	// without inspect infinity loop happens ?
-	$inspect(presetToSave.value)
-
-	$inspect(recentFilters)
-
 	// used when ribbon -> edit button is pressed
 	const columnDefaultEditable = new Map();
 
+
+
 	// runs when component is mounted only
-	$effect(() => {
+	onMount(() => {
+		console.log("!!! ---- MOUNTED ---- !!!")
+
 		if (gridContainer) { // initialize grid
 			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		}
 
-		// initiliate datasource
+		gridApi.setFilterModel(filtersToSave.value);
 		gridApi.setGridOption('serverSideDatasource', datasource);
-
-		if (gridApi) {
-			gridApi.setFilterModel(filtersToSave.value);
-		}
 
 		let colDefs = gridApi.getColumnDefs();
 		let columnOrder: ColumnOrder = [];
@@ -315,7 +333,6 @@
 		}
 
 		colDefs?.forEach(colDef => {
-			// @ts-ignore
 			columnOrder.push({ colId: colDef.colId })
 		})
 
@@ -336,6 +353,7 @@
 		});
 
 		return (() => {
+			console.log("!!! ---- RETURN ---- !!!")
 			selectionState.value = gridApi.getServerSideSelectionState();
 			filtersToSave.value = gridApi.getFilterModel();
 			lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex();
@@ -345,13 +363,6 @@
 	})
 
 
-
-	// disable page tabs if no row is selected
-	$effect(() => {
-		disablePageTabs.value = storedSelectedRows.value.length === 0;
-	})
-
-	$inspect(latestRowCount.value)
 
 	// listening to fulltext filter changes from layout, refresh grid with delay
 	let timer: NodeJS.Timeout;
@@ -372,6 +383,7 @@
 	})
 
 
+
 	$effect(() => {
 		if (Object.keys(selectedFilters.value).length > 0) {
 			gridApi.setFilterModel(selectedFilters.value);
@@ -380,20 +392,71 @@
 	})
 
 
+
 	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_HEADERS) {
+			const allColumns = gridApi.getColumns();
+
+			// Exclude the first column
+			let columnKeys = allColumns?.map(col => col.getColId());
+
+			gridApi.exportDataAsExcel({
+				columnKeys: columnKeys,
+				skipColumnGroupHeaders: false,
+				skipColumnHeaders: false,
+				onlySelected: false,
+				allColumns: true, // whether or not render hidden columns
+				processRowGroupCallback: () => "",
+				processCellCallback: () => "",
+				author: authDetails.userName || "AG Grid",
+			});
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_DATA) {
+			const allColumns = gridApi.getColumns();
+
+			// Exclude the first column
+			let columnKeys = allColumns?.map(col => col.getColId());
+
+			gridApi.exportDataAsExcel({
+				columnKeys: columnKeys,
+				skipColumnGroupHeaders: false,
+				skipColumnHeaders: false,
+				allColumns: true, // whether or not render hidden columns
+				author: authDetails.userName || "AG Grid",
+				exportedRows: "all", // determines if export has un/sorted and un/filtered rows
+				freezeRows: "headers", // sticky header row
+				onlySelected: false,
+			});
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
 		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
-			const columnName = gridApi.getFocusedCell()?.column.getColId();
+			const column = gridApi.getFocusedCell()?.column;
 			const selection = window.getSelection()?.toString().trim();
 
-			if (columnName && selection) {
-				const cellType = "text"; // TODO: get cell type
+			if (column && selection) {
+				const cellType = column.getColDef().cellDataType;
 				let currentFilters = gridApi.getFilterModel();
+				let filterModelType;
 
-				currentFilters[columnName] = {
+				if (cellType === "text") filterModelType = "contains";
+
+				if (cellType === "number") filterModelType = "equals";
+
+				if (cellType === "date") filterModelType = "equals";
+
+
+				currentFilters[column.getColId()] = {
 					filterType: "multi",
 					filterModels: [{
 						filterType: cellType,
-						type: "contains",
+						type: filterModelType,
 						filter: selection
 					}, null]
 				}
@@ -401,7 +464,10 @@
 				gridApi.setFilterModel(currentFilters);
 				gridApi.onFilterChanged();
 			}
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
+
 
 		if (ribbonAction.value === RibbonActionEnum.FILTER_UNDO) {
 			recentFilters.pop();
@@ -409,19 +475,43 @@
 			recentFilters[recentFilters.length - 1]
 				? gridApi.setFilterModel(recentFilters[recentFilters.length - 1])
 				: gridApi.setFilterModel(null);
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
+
 
 		if (ribbonAction.value === RibbonActionEnum.FILTER_REMOVE) {
-			gridApi.setFilterModel(null)
+			gridApi.setFilterModel(null);
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
+
 
 		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
-			openedDialog.value = "ribbon-my-filters"
+			openedRibbonDialog.value = "ribbon-my-filters";
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
+
+		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
+			openedRibbonDialog.value = "ribbon-save-filters";
+			filtersToSave.value = gridApi.getFilterModel();
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
+			openedRibbonDialog.value = "ribbon-save-preset";
+			filtersToSave.value = gridApi.getFilterModel();
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
 	})
+
+
+	$inspect("action", ribbonAction.value);
+	$inspect("ribbon dialog", openedRibbonDialog.value);
 </script>
+
+
 
 
 <div class="flex flex-column h-full">

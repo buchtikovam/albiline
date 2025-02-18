@@ -99,19 +99,14 @@ export const ribbonItems: RibbonType = [
 		action: RibbonActionEnum.EXPORT_CHOICE,
 		children: [
 			{
-				field: "export_excel",
-				action: RibbonActionEnum.EXPORT_EXCEL,
-				translation: m.components_ribbon_item_export_excel
+				field: "export_excel_headers",
+				action: RibbonActionEnum.EXPORT_EXCEL_HEADERS,
+				translation: m.components_ribbon_item_export_excel_headers,
 			},
 			{
-				field: "export_csv",
-				action: RibbonActionEnum.EXPORT_CSV,
-				translation: m.components_ribbon_item_export_csv
-			},
-			{
-				field: "export_pdf",
-				action: RibbonActionEnum.EXPORT_PDF,
-				translation: m.components_ribbon_item_export_pdf
+				field: "export_excel_data",
+				action: RibbonActionEnum.EXPORT_EXCEL_DATA,
+				translation: m.components_ribbon_item_export_excel_data,
 			},
 		]
 	},

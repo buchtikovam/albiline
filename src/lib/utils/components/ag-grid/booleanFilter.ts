@@ -1,4 +1,11 @@
-import type { IDoesFilterPassParams, IFilterComp, IFilterParams, IAfterGuiAttachedParams } from 'ag-grid-community';
+import type {
+	IDoesFilterPassParams,
+	IFilterComp,
+	IFilterParams,
+	IAfterGuiAttachedParams
+} from 'ag-grid-community';
+
+
 
 export class BooleanFilter implements IFilterComp {
 	private filterParams!: IFilterParams;
@@ -14,11 +21,27 @@ export class BooleanFilter implements IFilterComp {
 	private setupGui() {
 		this.gui = document.createElement('div');
 		this.gui.innerHTML = `
-            <div class="boolean-filter" style="padding: 10px;">
-                <select class="ag-select border w-full" >
-                    <option value="">Všechno</option>
-                    <option value="true">Pravda</option>
-                    <option value="false">Nepravda</option>
+            <div class="boolean-filter p-2">
+                <select 
+					class="ag-select border w-full rounded-none"
+				>
+                    <option 
+						value=""
+					>
+						Všechno
+					</option>
+					
+                    <option 
+						value="true"
+					>
+						Pravda
+					</option>
+					
+                    <option 
+						value="false"
+					>
+						Nepravda
+					</option>
                 </select>
             </div>
         `;

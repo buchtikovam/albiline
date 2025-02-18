@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { disableInputs } from '$lib/runes/page.svelte';
-	import { openedDialog } from '$lib/runes/ribbon.svelte';
+	import { openedRibbonDialog } from '$lib/runes/ribbon.svelte';
 	import { dragHandleZone, dragHandle, dndzone } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import Grip from 'lucide-svelte/icons/grip';
@@ -90,7 +90,7 @@
 
 					   <button
 						   type="button"
-						   onclick={() => openedDialog.value = section.dialogId || "empty"}
+						   onclick={() => openedRibbonDialog.value = section.dialogId || "empty"}
 					   >
 						   <Icon class="size-4 text-albi-500"/>
 						   {section.dialogTitle || ""}

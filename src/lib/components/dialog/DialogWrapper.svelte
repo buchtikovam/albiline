@@ -31,10 +31,11 @@
 >
 	{#if size === "sm"}
 		<Dialog.Content
+			interactOutsideBehavior="ignore"
 			class={`
 				${fixedHeight ? "!h-[70%]" : "h-auto"}
 				${customCss}
-				sm:h-auto w-[90%] sm:w-auto max-h-[70%] overflow-auto flex flex-col`
+				sm:h-auto md:min-w-[320px] w-[90%] sm:w-auto max-h-[70%] overflow-auto flex flex-col`
 			}>
 			<Dialog.Header>
 				{@render header()}
@@ -47,6 +48,7 @@
 
 	{#if size === "md"}
 		<Dialog.Content
+			interactOutsideBehavior="ignore"
 			class={`
 				${fixedHeight ? "!h-[70%]" : "h-auto"}
 				${customCss}
@@ -63,6 +65,7 @@
 
 	{#if size === "lg"}
 		<Dialog.Content
+			interactOutsideBehavior="ignore"
 			class={`
 				${fixedHeight ? "!h-[70%]" : "h-auto"}
 				${customCss}

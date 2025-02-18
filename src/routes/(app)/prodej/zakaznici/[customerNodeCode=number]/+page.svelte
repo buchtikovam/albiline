@@ -4,7 +4,7 @@
 	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
 	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
-	import {openedDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import { customerDetailFormDef } from '$lib/data/autoform/zakaznici/customerDetailFormDef';
 	import { customerPageLayout } from '$lib/data/detail-page-layout/customerPageLayout';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
@@ -268,6 +268,6 @@
 
 
 <!-- opened from autoform -->
-{#if openedDialog.value === "customer-detail-invoice-addresses"}
+{#if openedRibbonDialog.value === "customer-detail-invoice-addresses"}
 	<CustomerDetailInvoiceAdressesDialog />
 {/if}

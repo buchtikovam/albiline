@@ -5,13 +5,12 @@
 	import MapPinHouse from "lucide-svelte/icons/map-pin-house";
 	import UserPlus from "lucide-svelte/icons/user-plus";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import * as Dialog from '$lib/components/ui/dialog';
+
 
 	let isOpen = $state(false);
 
 	$effect(() => {
-		console.log(ribbonAction.value)
-
 		if (ribbonAction.value === RibbonActionEnum.NEW) {
 			isOpen = true;
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
