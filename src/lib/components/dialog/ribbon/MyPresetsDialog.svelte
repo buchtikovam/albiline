@@ -1,270 +1,666 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { defaultColDef, selectedFilterStore, selectedPresetStore, setColDefToDefault } from '$lib/runes/table.svelte.js';
-	import { openedDialogStore, ribbonActionStore } from '$lib/runes/ribbon.svelte.js';
-	import { Input } from '$lib/components/ui/input';
-	import { Skeleton } from "$lib/components/ui/skeleton";
-	import type { FetchedPreset, Preset } from '$lib/types/components/table/presets';
-	// import { apiServiceDELETE, apiServicePUT } from '$lib/api/apiService';
-	import { customToast } from '$lib/utils/customToast';
-	import { get, writable, type Writable } from 'svelte/store';
-	import { onMount } from 'svelte';
-	import Pencil from 'lucide-svelte/icons/pencil';
-	import X from 'lucide-svelte/icons/x';
-	import WarningDialog from '$lib/components/dialog/warning/WarningDialog.svelte';
+	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
+	import {defaultColDef, selectedPreset} from "$lib/runes/table.svelte";
+	import { pageCompact } from "$lib/runes/page.svelte";
+	import { customToast } from "$lib/utils/customToast";
+	import deepcopy from "deepcopy";
+	import Save from "lucide-svelte/icons/save";
+	import type {
+		ICellRendererParams
+	} from "ag-grid-community";
+	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
+	import type {StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
+	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	/*
-		Dialog zobrazující uložené šablony pro danou tabulku,
-		možnost řazení, editace a mazání šablon
-	*/
+	let isOpen: boolean = $state(false);
+	let hasUnsavedData = $state(false);
 
-	let dialogOpen: boolean = $state(false);
-	let warningDialogOpen: boolean = $state(false);	
-
-	let currentPresetId: number = $state();
-	let presets: FetchedPreset[] = $state();
-	let deleteConsent: Writable<boolean> = $state(writable(false));
-
-	let isEditing: boolean = $state(false);
-	let currentEditedId: number | undefined = $state(undefined);
-
-
-	async function fetchPresets() {
-		try {
-			// fetch only filters based on page name, avoid filtering on FE
-			const response = await fetch('http://localhost:3000/presets');
-			presets = await response.json();
-
-			presets = presets?.filter((filter: FetchedPreset) => {
-				return filter.pageOrigin === page.url.pathname;
-			});
-		} catch (error) {
-			console.error('Error fetching input-filters:', error);
-			customToast("Warning", "Nepovedlo se fetchnout filtery.")
+	let storedPresets: StoredPresets[] = $state([ // will come from api
+		{
+			id: 0,
+			label: 'Testovací šablonka',
+			presets: [
+				{
+					field: "isBadPayer",
+					width: 103,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "customerAddressCode",
+					width: 108,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "name",
+					width: 240,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "customerNodeCode",
+					width: 120,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "i_Name",
+					width: 240,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "street",
+					width: 200,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "city",
+					width: 315,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "postalCode",
+					width: 66,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "countryCode",
+					width: 68,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "customerRank",
+					width: 70,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "dealerCode",
+					width: 60,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "areaCode",
+					width: 60,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "responsiblePerson",
+					width: 78,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "i_ICO",
+					width: 85,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "i_DIC",
+					width: 135,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "i_IcDph",
+					width: 135,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "paymentTypeCode",
+					width: 68,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "dueDays",
+					width: 68,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "consignmentSaleEnabled",
+					width: 70,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null,
+				},
+				{
+					field: "retailStoreTypeName",
+					width: 180,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "areaId",
+					width: 76,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "useAssortedEanCodes",
+					width: 70,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "b2BeshopEnabled",
+					width: 70,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "i_Street",
+					width: 200,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "i_City",
+					width: 200,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "i_PostalCode",
+					width: 70,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "i_CountryCode",
+					width: 70,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "note",
+					width: 200,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "dateCreated",
+					width: 100,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "firstOrderDate",
+					width: 100,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "lastOrderDate",
+					width: 100,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "companyName",
+					width: 200,
+					hide: false,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "isReturnAllowed",
+					width: 200,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "customerStoreCode",
+					width: 200,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "customerStoreEan",
+					width: 200,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				},
+				{
+					field: "splitOrderByFood",
+					width: 200,
+					hide: true,
+					rowGroup: false,
+					rowGroupIndex: null,
+					pivot: false,
+					pivotIndex: null,
+					aggFunc: null,
+					pinned: null,
+					sort: null,
+					sortIndex: null
+				}
+			]
 		}
+	]);
+
+
+	$effect(() => {
+		isOpen = true;
+
+		return (() => {
+			isOpen = false;
+			openedRibbonDialog.value = "empty";
+		})
+	})
+
+
+	export const ribbonPresetsAgGridDef: ColDef<any, any>[] = [
+		{
+			field: "label",
+			editable: true,
+			flex: 1,
+		},
+		{
+			field: "select",
+			pinned: "right",
+			width: pageCompact.value ? 28 : 36,
+			minWidth: pageCompact.value ? 28 : 36,
+			cellRenderer: (params: ICellRendererParams) => selectBtn(params),
+		},
+		{
+			field: "delete",
+			pinned: "right",
+			width: pageCompact.value ? 28 : 36,
+			minWidth: pageCompact.value ? 28 : 36,
+			cellRenderer: (params: ICellRendererParams) => deleteBtn(params),
+		},
+	]
+
+
+	const customGridOptions: GridOptions = {
+		columnDefs: ribbonPresetsAgGridDef,
+
+		getRowId: (params: GetRowIdParams) => {
+			return String(params.data.id);
+		},
 	}
 
 
-	// Drag and drop pro řazení filtrů
-	let hovering: number | null = $state();
-	let start: number;
+	function selectBtn(params: ICellRendererParams) {
+		const div = document.createElement('div');
+		let divClasses = pageCompact.value
+			? ["h-full", "mt-[3px]"]
+			: ["h-full", "mt-1.5"]
 
-	function dragPreset(e: DragEvent, index: number) {
-		if (e.dataTransfer) {
-			e.dataTransfer.setData('text', String(index));
-			start = index;
-		}
-	}
+		div.classList.add(...divClasses);
 
-	function setHoveringPreset(index: number) {
-		hovering = index;
-	}
+		const link = document.createElement('button');
+		const linkClasses = ["size-5", "text-albi-500", "hover:text-albi-700", "flex", "justify-center", "items-center"];
+		div.classList.add(...linkClasses);
 
-	function dropPreset(e: DragEvent, target: number | null) {
-		if (e.dataTransfer && target !== null) {
-			if (start < target) {
-				presets.splice(target + 1, 0, presets[start]);
-				presets.splice(start, 1);
+		link.innerHTML = pageCompact.value
+			? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>"
+			: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>";
+
+		link.addEventListener("click", () => {
+			if (!hasUnsavedData) {
+				let defaultColDefCopy = new Map(
+					deepcopy(defaultColDef.value).map((col: ColDef) => [col.field, col])
+				);
+				let clickedPreset = params.data.presets;
+
+				clickedPreset.forEach((preset: StoredPreset) => {
+					let column = defaultColDefCopy.get(preset.field);
+					if (column) {
+						Object.keys(column).forEach((key) => {
+							preset[key] = preset[key] ?? column[key];
+						});
+					}
+				});
+
+				selectedPreset.value = clickedPreset;
+				isOpen = false;
+				setTimeout(() => {
+					openedRibbonDialog.value = 'empty';
+				}, 200)
 			} else {
-				presets.splice(target, 0, presets[start]);
-				presets.splice(start + 1, 1);
+				customToast("WarningToast", "Nejprve ulož data");
 			}
-			hovering = null;
-		}
+		});
+
+
+		div.appendChild(link);
+		return div;
 	}
 
+	function deleteBtn(params: ICellRendererParams) {
+		const div = document.createElement('div');
+		let divClasses = pageCompact.value
+			? ["h-full", "mt-[3px]"]
+			: ["h-full", "mt-1.5"];
 
-	// Smazání filtru po souhlasu ve warning dialogu
-	async function deletePreset(filterId: number | undefined) {
-		if (!filterId) return;
+		div.classList.add(...divClasses);
 
-		console.log("delete preset");
+		const link = document.createElement('button');
+		const linkClasses = ["size-5", "text-red-600", "hover:text-red-800", "flex", "justify-center", "items-center"];
+		div.classList.add(...linkClasses);
 
-		// try {
-		// 	const response = await apiServiceDELETE('presets', filterId);
-		//
-		// 	if (!response.ok) {
-		// 		customToast(
-		// 			'Critical',
-		// 			'Nastala chyba při mazání šablony.'
-		// 		);
-		// 	}
-		// 	// frontendové smazání filtru, aby se nemuselo znovu fetchovat
-		// 	presets = presets?.filter(filter => filter.id !== filterId);
-		// 	customToast(
-		// 		'Success',
-		// 		'Šablona byla úspěšně smazána'
-		// 	);
-		// } catch (error) {
-		// 	console.error('Error deleting filter:', error);
-		// 	customToast(
-		// 		'Critical',
-		// 		'Nastala chyba při mazání šablony.'
-		// 	);
-		// }
+		link.innerHTML = pageCompact.value
+			? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
+			: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
+
+		link.addEventListener("click", () => {
+			storedPresets.forEach((filter, index) => {
+				if (filter.id === params.data.id) {
+					storedPresets.splice(index, 1);
+					hasUnsavedData = true;
+				}
+			})
+		})
+
+		div.appendChild(link);
+		return div;
 	}
-
-
-	function loadPresetsInTable(presets: Preset[]) {
-		selectedPresetStore.set(presets)
-		
-		ribbonActionStore.set(undefined);
-		dialogOpen = false;
-		setTimeout(() => {
-			openedDialogStore.set(undefined);
-		}, 250);
-	}
-
-
-	async function updatePreset(preset: FetchedPreset) {
-		console.log("update preset");
-		// try {
-		// 	const response = await apiServicePUT(
-		// 		"presets",
-		// 		preset.id,
-		// 		preset
-		// 	)
-		//
-		// 	if (response.ok) {
-		// 		customToast('Success','Šablona byla úspěšně upravena.');
-		// 		isEditing = false;
-		// 	} else {
-		// 		customToast('Critical','Nastala chyba při editaci šablony.');
-		// 		isEditing = false;
-		// 	}
-		//
-		// } catch (error) {
-		// 	customToast('Critical','Nastala chyba při editaci šablony.');
-		// 	console.error('Error deleting preset:', error);
-		// }
-	}
-
-
-	// Nastavuje se ve warning dialogu. Pokud je true, zvolený filtr se smaže
-	deleteConsent.subscribe((consent) => {
-		if (consent) {
-			deletePreset(currentPresetId);
-		}
-
-		deleteConsent.set(false);
-	});
-
-	function setDefault() {
-		setColDefToDefault.set(true)
-		ribbonActionStore.set(undefined);
-		dialogOpen = false;
-		setTimeout(() => {
-			openedDialogStore.set(undefined);
-		}, 250);
-	}
-
-	onMount(() => {
-		dialogOpen = true;
-		console.log("open");
-		
-		fetchPresets()
-	});
 </script>
 
 
 
-<Dialog.Root
-	bind:open={dialogOpen}
-	closeOnOutsideClick={false}
->
-	<Dialog.Content class="!w-[400px]">
-		<Dialog.Header>
-			<Dialog.Title class="h-6 mb-2">
-				Moje šablony
-			</Dialog.Title>
-		</Dialog.Header>
-
-
-		{#if presets !== undefined}
-			{#if presets.length === 0}
-				<p class="mt-2">
-					Nemáte uložené žádné šablony.
-				</p>
-			{/if}
-
-			<div>
-				<button
-					class="hover:bg-muted/70 rounded-md text-left text-sm w-full hover:text-primary px-1.5 py-2"
-					onclick={setDefault}
-				>
-					Výchozí
-				</button>
-				
-				{#each presets as preset, index (preset.id)}
-					<div
-						role="listitem"
-						class=" flex justify-between items-center hover:bg-muted/70 rounded-md px-1"
-					>
-						{#if isEditing && currentEditedId === preset.id}
-							<form
-								onsubmit={() => updatePreset(preset)}
-								onfocusout={() => updatePreset(preset)}
-								class="w-full">
-								<Input
-									class="w-fit h-7 m-1"
-									bind:value={preset.presetName}
-								/>
-							</form>
-						{:else}
-							<button
-								draggable="true"
-								onclick={() => loadPresetsInTable(preset.presets)}
-								ondragstart={(e) => dragPreset(e, index)}
-								ondragover={() => setHoveringPreset(index)}
-								ondragend={(e) => dropPreset(e, hovering)}
-								class="text-left text-sm w-full hover:text-primary px-0.5 py-2"
-							>
-								{preset.presetName}
-							</button>
-						{/if}
-
-						<div class="flex gap-2 ml-4">
-							<button
-								onclick={() => {
-									isEditing = !isEditing
-									currentEditedId = preset.id
-								}}
-								class="size-5"
-							>
-								<Pencil class="size-4 text-albi-600 hover:text-albi-900" />
-							</button>
-
-							<button
-								onclick={() => {
-									warningDialogOpen = true
-									if (preset.id) currentPresetId = preset.id
-								}}
-								class="size-5"
-							>
-								<X class="size-4 text-albi-600 hover:text-albi-900" />
-							</button>
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else}
-			<!-- Placeholdery během toho, co se filtry fetchují.
-			Ukáže se jen při pomalém internetu -->
-			<div class="space-y-3 mt-2">
-				<Skeleton class="h-4 w-[250px]" />
-				<Skeleton class="h-4 w-[180px]" />
-				<Skeleton class="h-4 w-[220px]" />
-			</div>
-		{/if}
-	</Dialog.Content>
-</Dialog.Root>
-
-<WarningDialog
-	bind:open={warningDialogOpen}
-	bind:consent={deleteConsent}
-	message="Opravdu chcete pokračovat?"
-	desription="Tuhle akci nelze vrátit."
-	buttonAllowLabel="Smazat šablonu"
-	buttonDenyLabel="Zrušit"
+<DialogWrapper
+	bind:isOpen
+	{header}
+	{content}
+	onChange={() => {
+		isOpen = false;
+		setTimeout(() => {
+			openedRibbonDialog.value = 'empty';
+		}, 200)
+	}}
+	fixedHeight={false}
+	size="sm"
+	customCss={"!h-[360px]  md:!w-[500px]"}
 />
+
+{#snippet header()}
+	<Dialog.Title class="h-6 flex pr-4 gap-2 items-center">
+		Uložené šablony - Zákazníci
+
+		{#if hasUnsavedData}
+			<button
+				onclick={() => hasUnsavedData = false}
+			>
+				<Save
+					class="size-5 text-albi-500 hover:text-albi-700"
+				/>
+			</button>
+		{/if}
+	</Dialog.Title>
+{/snippet}
+
+{#snippet content()}
+	<div class="h-full">
+		{#if storedPresets.length > 0}
+			<AgGridCSWrapper
+				rowData={storedPresets}
+				gridOptionsCustom={customGridOptions}
+				fullHeight={true}
+				hiddenHeader={true}
+			/>
+		{:else }
+			Nemáš žádné uložené šablony :(
+		{/if}
+	</div>
+{/snippet}
+
+
+

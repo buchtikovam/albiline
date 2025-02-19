@@ -8,7 +8,7 @@
 	import { customerDetailFormDef } from '$lib/data/autoform/zakaznici/customerDetailFormDef';
 	import { customerPageLayout } from '$lib/data/detail-page-layout/customerPageLayout';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import { activeTabIndex } from '$lib/runes/page.svelte';
+	import { activeTabIndex, pageKey } from '$lib/runes/page.svelte';
 	import { page } from '$app/state';
 	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
 	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
@@ -43,7 +43,7 @@
 
 	let { data }: Props = $props();
 
-
+	pageKey.value = btoa(page.route.id || ""); // todo: update page key
 	activeTabIndex.value = 2;
 
 	let initialFormValues: CustomerType = $derived.by(() => {

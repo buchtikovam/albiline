@@ -4,7 +4,7 @@
 		InputDialogZakazniciSelectOptions
 	} from "$lib/data/input-dialog/prodej/zakaznici/InputDialogZakaznici";
 	import { customerAgGridDef, customerHeaderTranslations } from '$lib/data/ag-grid/server-side/prodej/zakaznici/customerAgGridDef';
-	import { activeTabIndex, showFulltextSearch } from '$lib/runes/page.svelte';
+	import {activeTabIndex, pageKey, showFulltextSearch} from '$lib/runes/page.svelte';
 	import { storedSelectedRows } from '$lib/runes/table.svelte';
 	import { i18n } from '$lib/i18n';
 	import { goto } from '$app/navigation';
@@ -14,8 +14,10 @@
 	import InputDialog from "$lib/components/input-params/InputDialog.svelte";
 	import NewCustomerOrAddressDecisionDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
+	import {page} from "$app/state";
 
 
+	pageKey.value = btoa(page.route.id || "");
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 
@@ -82,7 +84,7 @@
 	<AgGridSSWrapper
 		gridOptionsCustom={gridOptions}
 		requiredFields={["customerNodeCode", "customerAddressCode"]}
-		url="http://10.2.2.10/albiline.test/api/v1/customers"
+		url="customers"
 		headerTranslations={customerHeaderTranslations}
 	/>
 {/if}

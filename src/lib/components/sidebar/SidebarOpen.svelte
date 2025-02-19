@@ -43,19 +43,22 @@
 							<ContextMenu.Trigger>
 								<Accordion.Trigger
 									disabled={disableTab}
-									class="hover:bg-muted/50 rounded-md flex-1"
-									onclick={() =>  { console.log('clicked') } }
+									class="hover:bg-muted/50 rounded-md flex-1 "
 								>
 									{@const Icon = item.icon}
 									<a
 										class="flex text-sm font-bold w-fit pl-0.5 items-center gap-3 text-albi-950 hover:text-black"
 										onclick={() => {
-											console.log("click");
-											handleTabClick(item, 0);
+											if (item.href) handleTabClick(item, 0);
 										}}
 										href={item.href}
-										onmouseenter={() => disableTab = true}
-										onmouseleave={() => disableTab = false}
+										onmouseenter={() => {
+											if (item.href) disableTab = true
+										}}
+										onmouseleave={() => {
+											if (item.href) disableTab = false
+
+										}}
 									>
 										<Icon class="size-5"/>
 										{ item.translation() }

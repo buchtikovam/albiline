@@ -14,119 +14,31 @@
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
+	import {apiServiceGET} from "$lib/api/apiService.svelte";
 
 	let isOpen: boolean = $state(false);
 	let openDetailDialog = $state(false);
 	let detailFilter: StoredFilters|undefined = $state(undefined);
 	let hasUnsavedData = $state(false);
 
+	let fetchedFilters: StoredFilters[] = $state([]);
 
-	let storedFilters: StoredFilters[] = $state([ // will come from api
-		{
-			id: 1212,
-			label: 'Filtr na jméno',
-			filters: {
-				name: {
-					filterType: "multi",
-					filterModels: [
-						{
-							filterType: "text",
-							operator: "OR",
-							conditions: [
-								{
-									filterType: "text",
-									type: "contains",
-									filter: "pepa"
-								},
-								{
-									filterType: "text",
-									type: "contains",
-									filter: "jan"
-								}
-							]
-						}
-					]
-				},
-				i_Name: {
-					filterType: "multi",
-					filterModels: [
-						{
-							filterType: "text",
-							type: "contains",
-							filter: "jan"
-						}
-					]
-				}
-			}
-		},
-		{
-			id: 1,
-			label: 'Filtr podle PSČ',
-			filters: {
-				postalCode: {
-					filterType: "multi",
-					filterModels: [
-						{
-							filterType: "text",
-							type: "contains",
-							filter: "180 00"
-						}
-					]
-				}
-			}
-		},
-		{
-			id: 2,
-			label: 'Velmi důležitý filtr',
-			filters: {
-				name: {
-					filterType: "multi",
-					filterModels: [
-						{
-							filterType: "text",
-							operator: "OR",
-							conditions: [
-								{
-									filterType: "text",
-									type: "contains",
-									filter: "pepa"
-								},
-								{
-									filterType: "text",
-									type: "contains",
-									filter: "jan"
-								}
-							]
-						}
-					]
-				},
-				i_Name: {
-					filterType: "multi",
-					filterModels: [
-						{
-							filterType: "text",
-							type: "contains",
-							filter: "jan"
-						}
-					]
-				},
-				postalCode: {
-					filterType: "multi",
-					filterModels: [
-						{
-							filterType: "text",
-							type: "contains",
-							filter: "180 00"
-						}
-					]
-				}
-			}
-		},
-	]);
+	async function getFilters() {
+		console.log("get")
+
+		const resp = await apiServiceGET("userfilters/mbuc");
+
+		if (resp.ok) {
+			const respItems = await resp.json();
+			fetchedFilters = respItems.items;
+		}
+	}
+
 
 
 	$effect(() => {
 		isOpen = true;
+		getFilters();
 
 		return (() => {
 			isOpen = false;
@@ -134,10 +46,14 @@
 		})
 	})
 
+	$inspect(fetchedFilters)
+
+
+
 
 	export const ribbonFiltersAgGridDef: ColDef<any, any>[] = [
 		{
-			field: "label",
+			field: "filterName",
 			editable: true,
 			flex: 1,
 		},
@@ -196,12 +112,13 @@
 		const linkClasses = ["size-5", "text-albi-500", "hover:text-albi-700", "flex", "justify-center", "items-center"];
 		div.classList.add(...linkClasses);
 
-		pageCompact.value
-			? link.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>"
-			: link.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>"
+		link.innerHTML = pageCompact.value
+			? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>"
+			: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>";
 
 		link.addEventListener("click", () => {
 			if (!hasUnsavedData) {
+				console.log(params.data.filters)
 				selectedFilters.value = params.data.filters;
 				isOpen = false;
 				openedRibbonDialog.value = "empty";
@@ -226,16 +143,14 @@
 		const linkClasses = ["size-5", "text-red-600", "hover:text-red-800", "flex", "justify-center", "items-center"];
 		div.classList.add(...linkClasses);
 
-		pageCompact.value
-			? link.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
-			: link.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
-
-
+		link.innerHTML = pageCompact.value
+			? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
+			: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
 
 		link.addEventListener("click", () => {
-			storedFilters.forEach((filter, index) => {
+			fetchedFilters.forEach((filter, index) => {
 				if (filter.id === params.data.id) {
-					storedFilters.splice(index, 1);
+					fetchedFilters.splice(index, 1);
 					hasUnsavedData = true;
 				}
 			})
@@ -281,9 +196,9 @@
 
 {#snippet content()}
 	<div class="h-full">
-		{#if storedFilters.length > 0}
+		{#if fetchedFilters.length > 0}
 			<AgGridCSWrapper
-				rowData={storedFilters}
+				rowData={fetchedFilters}
 				gridOptionsCustom={customGridOptions}
 				fullHeight={true}
 				hiddenHeader={true}

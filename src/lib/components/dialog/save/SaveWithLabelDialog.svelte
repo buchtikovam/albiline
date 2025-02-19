@@ -6,9 +6,15 @@
 	import { Input } from '$lib/components/ui/input';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {apiServicePOST} from "$lib/api/apiService.svelte";
-	import {responseDialogMessages} from "$lib/runes/page.svelte";
 
+	interface Props {
+		isOpen: boolean;
+		inputValue: string;
+		onChange: () => void;
+		onSubmit: () => void;
+		title: string,
+		label: string,
+	}
 
 	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
@@ -24,29 +30,8 @@
 	})
 
 
-	async function saveFilters() {
-		const saveObj = {
-			filterName: inputValue,
-			filters: filtersToSave.value
-		}
-
-		// console.log(JSON.stringify(saveObj, null, 1)) ;
-
-		try {
-			const resp = await apiServicePOST("userfilters", saveObj, "zakaznici");
-
-			if (resp.ok) {
-				isOpen = false;
-				setTimeout(() => {
-					openedRibbonDialog.value = "empty";
-				}, 200)
-			} else {
-				let respData = await resp.json()
-				responseDialogMessages.value = respData.messages
-			}
-		} catch (e) {
-			console.error("Unexpexted error: ", e)
-		}
+	function saveFilters() {
+		console.log(inputValue, JSON.stringify(filtersToSave.value, null, 2));
 	}
 </script>
 

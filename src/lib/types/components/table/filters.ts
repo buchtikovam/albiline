@@ -1,7 +1,7 @@
 import type { FilterModel } from "ag-grid-enterprise";
 
 export type StoredFilters = {
-	id: number;
-	label: string;
+	filterId: number;
+	filterName: string;
 	filters: FilterModel;
 }

@@ -57,7 +57,7 @@
 	bind:open
 >
 	<Popover.Trigger
-		class="hidden sm:flex min-w-10 ml-1 items-center justify-center border rounded-md bg-white p-0"
+		class="flex min-w-10 ml-1 items-center justify-center border rounded-md bg-white p-0"
 	>
 		<ChevronDown
 			strokeWidth={3}

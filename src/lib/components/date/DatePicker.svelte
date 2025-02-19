@@ -27,7 +27,7 @@
 
 	$effect(() => {
 		if (value) {
-			dateValue = new Date(value.year, value.month - 1, value.day + 1);
+			dateValue = new Date(value.year, value.month, value.day);
 		}
 	});
 </script>

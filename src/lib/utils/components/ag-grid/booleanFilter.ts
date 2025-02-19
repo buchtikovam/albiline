@@ -68,18 +68,26 @@ export class BooleanFilter implements IFilterComp {
 		return this.selectedValue !== null;
 	}
 
-	getModel(): { value: boolean | null } | null {
+	getModel(): {
+		filterType: 'boolean',
+		filter: boolean | null
+	} | null {
 		if (!this.isFilterActive()) return null;
-		return { value: this.selectedValue };
+		return {
+			filterType: 'boolean',
+			filter: this.selectedValue
+		};
 	}
 
-	setModel(model: { value: boolean | null } | null): void {
+	setModel(
+		model: { filterType: 'boolean', filter: boolean | null } | null
+	): void {
 		if (!model) {
 			this.selectedValue = null;
 			this.selectElement.value = '';
 		} else {
-			this.selectedValue = model.value;
-			this.selectElement.value = model.value === null ? '' : model.value.toString();
+			this.selectedValue = model.filter;
+			this.selectElement.value = model.filter === null ? '' : model.filter.toString();
 		}
 	}
 

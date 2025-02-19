@@ -4,8 +4,11 @@ import { openedTabs } from '$lib/runes/navigation.svelte';
 import { recentItems } from '$lib/runes/sidebar.svelte';
 
 
-export function handleTabClick(item: SidebarItem, treeDepth: number): void {
-	if (editedTableData.value.length === 0) {
+export function handleTabClick(
+	item: SidebarItem,
+	treeDepth: number
+): void {
+	if (item.href) {
 		const tab: HeaderTab = {
 			field: item.field,
 			url: item.href,

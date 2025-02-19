@@ -8,7 +8,7 @@
 	import { customerAddressPageLayout } from '$lib/data/detail-page-layout/customerAddressPageLayout';
 	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import { activeTabIndex, isMobile } from '$lib/runes/page.svelte';
+	import {activeTabIndex, isMobile, pageKey} from '$lib/runes/page.svelte';
 	import { ribbonAction } from '$lib/runes/ribbon.svelte';
 	import { page } from '$app/state';
 	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService.svelte';
@@ -26,7 +26,6 @@
 	import type {CustomerAddressType, CustomerContactType, CustomerType} from '$lib/types/page/customers';
 	import type { GridOptions } from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
-
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
@@ -50,6 +49,7 @@
 	let { data }: Props = $props();
 
 	activeTabIndex.value = 1;
+	pageKey.value = btoa(page.route.id || "");
 
 	let initialFormValues: CustomerType = $derived.by(() => {
 		if (data.response) {

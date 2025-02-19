@@ -1,9 +1,18 @@
 import type { PageLoad } from "./$types";
+import {authDetails} from "$lib/runes/page.svelte";
+import {languageTag} from "$lib/paraglide/runtime";
 
 // export const prerender = false;
 
 export const load: PageLoad = async ({ params, fetch}) => {
-	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}`)
+	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}`, {
+		headers: {
+			'Content-Type': 'application/json',
+			'Session-Key': authDetails.sessionKey || "",
+			'Accept-Language' : languageTag(),
+			'Page-Code' : "",
+		}
+	})
 
 	if (res.ok) {
 		const response = await res.json();

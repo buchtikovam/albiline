@@ -3,7 +3,7 @@ import type { Icon as IconType } from 'lucide-svelte';
 
 export type SidebarItem = {
 	field: string;
-	href: string;
+	href?: string;
 	open: boolean;
 	hide: boolean;
 	disabled: boolean

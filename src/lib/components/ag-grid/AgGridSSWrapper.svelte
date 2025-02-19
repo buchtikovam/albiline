@@ -7,19 +7,18 @@
 		lastVisibleRowIndex,
 		latestRowCount,
 		presetToSave,
-		selectedFilters,
+		selectedFilters, selectedPreset,
 		selectionState,
 		sortState,
 		storedSelectedRows
 	} from '$lib/runes/table.svelte';
-	import {authDetails, fulltextFilterValue, sessionKey} from '$lib/runes/page.svelte';
+	import {authDetails, fulltextFilterValue, pageKey, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/getAgGridLocale";
-
 	import {onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
@@ -37,6 +36,9 @@
 	} from 'ag-grid-enterprise';
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
+	import {languageTag} from "$lib/paraglide/runtime";
+	import {apiServicePOST} from "$lib/api/apiService.svelte";
+	import {customToast} from "$lib/utils/customToast";
 
 
 	interface Props {
@@ -253,57 +255,51 @@
 
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
-			fetch(url
-				,{
-					method: "post",
-					body: JSON.stringify(params.request),
-					headers: {
-						"Content-Type": "application/json",
-						"Session-Key": sessionKey.value || "",
-					}
-				}
-			)
-			.then(httpResponse => httpResponse.json())
-			.then(response => {
-				params.success({ rowData: response.items });
-				latestRowCount.value = response.totalRows === -1 ? 0 : response.totalRows;
-				gridApi.setRowCount(latestRowCount.value);
+			apiServicePOST(url, updatedParamsRequest)
+				.then(httpResponse => httpResponse.json())
+				.then(response => {
+					params.success({ rowData: response.items });
+					latestRowCount.value = response.totalRows === -1 ? 0 : response.totalRows;
+					gridApi.setRowCount(latestRowCount.value);
 
-				if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
-					const columnState = {
-						state: sortState.value,
-					}
+					if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
+						const columnState = {
+							state: sortState.value,
+						}
 
-					gridApi.applyColumnState(columnState);
+						gridApi.applyColumnState(columnState);
 
-					// setting scroll position
-					if (lastVisibleRowIndex.value > rowBufferSize) {
-						gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
-					} else {
-						if (selectionState.value) {
-							if (selectionState.value.toggledNodes) {
-								if (Number(selectionState.value.toggledNodes[0])) {
-									gridApi.ensureIndexVisible(Number(selectionState.value.toggledNodes[0]) - 1 , "top");
+						// setting scroll position
+						if (lastVisibleRowIndex.value > rowBufferSize) {
+							gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
+						} else {
+							if (selectionState.value) {
+								if (selectionState.value.toggledNodes) {
+									if (Number(selectionState.value.toggledNodes[0])) {
+										gridApi.ensureIndexVisible(
+											Number(selectionState.value.toggledNodes[0]) - 1 ,
+											"top"
+										);
+									}
 								}
 							}
 						}
+
+						// setting selectedRows
+						if (selectionState.value) {
+							setTimeout(() => {
+								disablePageTabs.value = selectionState.value.toggledNodes.length === 0;
+								gridApi.setServerSideSelectionState(selectionState.value)
+							}, 200)
+						}
 					}
 
-					// setting selectedRows
-					if (selectionState.value) {
-						setTimeout(() => {
-							disablePageTabs.value = selectionState.value.toggledNodes.length === 0;
-							gridApi.setServerSideSelectionState(selectionState.value)
-						}, 200)
-					}
-				}
-
-				isInitial = false;
-			})
-			.catch(error => {
-				console.log(error);
-				params.fail();
-			});
+					isInitial = false;
+				})
+				.catch(error => {
+					console.log(error);
+					params.fail();
+				});
 		}
 	};
 
@@ -386,8 +382,33 @@
 
 	$effect(() => {
 		if (Object.keys(selectedFilters.value).length > 0) {
+			console.log("effect", selectedFilters.value)
+
+
 			gridApi.setFilterModel(selectedFilters.value);
 			selectedFilters.value = {};
+		}
+	})
+
+	$effect(() => {
+		if (selectedPreset.value.length > 0) {
+			gridApi.setGridOption("columnDefs", selectedPreset.value);
+
+			let columnOrder: ColumnOrder = [];
+
+			console.log(selectedPreset.value);
+
+			selectedPreset.value?.forEach(colDef => {
+				columnOrder.push({ colId: colDef.colId })
+			})
+
+
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+
+			selectedPreset.value = [];
 		}
 	})
 
@@ -493,15 +514,36 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
-			openedRibbonDialog.value = "ribbon-save-filters";
-			filtersToSave.value = gridApi.getFilterModel();
+			const filters = gridApi.getFilterModel();
+
+			// if (Object.keys(filters).length > 0) {
+				openedRibbonDialog.value = "ribbon-save-filters";
+				filtersToSave.value = filters;
+			// } else {
+			// 	responseDialogMessages.value = [{
+			// 		type: "InfoToast",
+			// 		title: "Informace",
+			// 		content: "Nemáš žádné filtry k uložení",
+			// 	}]
+			// }
+
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
 			openedRibbonDialog.value = "ribbon-save-preset";
-			filtersToSave.value = gridApi.getFilterModel();
+			presetToSave.value = gridApi.getColumnDefs() || [];
+
+
+
+			console.log(gridApi.getColumnDefs());
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.MY_PRESETS) {
+			openedRibbonDialog.value = "ribbon-my-presets";
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 	})

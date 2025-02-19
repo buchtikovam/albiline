@@ -63,7 +63,7 @@
 		{#snippet child({ props })}
 			<Button
 				variant="outline"
-				class="w-full items-start font-light hover:bg-muted/50"
+				class="hidden sm:block w-full items-start font-light hover:bg-muted/50"
 				{...props}
 				role="combobox"
 				aria-expanded={open}
@@ -82,35 +82,35 @@
 	</Popover.Trigger>
 
 
-	<Popover.Content
-		side="bottom"
-		class="p-0 max-h-60 h-60 w-[200px]"
-	>
-		<Command.Root>
-			<Command.Input placeholder="..." />
+<!--	<Popover.Content-->
+<!--		side="bottom"-->
+<!--		class="p-0 max-h-60 h-60 w-[200px]"-->
+<!--	>-->
+<!--		<Command.Root>-->
+<!--			<Command.Input placeholder="..." />-->
 
-			<Command.List class="max-h-80">
-				<Command.Empty class="">
-					<p class="">
-						Takový sloupec nemáme.
-					</p>
+<!--			<Command.List class="max-h-80">-->
+<!--				<Command.Empty class="">-->
+<!--					<p class="">-->
+<!--						Takový sloupec nemáme.-->
+<!--					</p>-->
 
-				</Command.Empty>
+<!--				</Command.Empty>-->
 
 
-				<Command.Group>
-					{#each selectOptions as option}
-						<Command.Item
-							onSelect={() => {
-								updateItem(option);
-							}}
-							value={ option.label() }
-						>
-							{ option.label() }
-						</Command.Item>
-					{/each}
-				</Command.Group>
-			</Command.List>
-		</Command.Root>
-	</Popover.Content>
+<!--				<Command.Group>-->
+<!--					{#each selectOptions as option}-->
+<!--						<Command.Item-->
+<!--							onSelect={() => {-->
+<!--								updateItem(option);-->
+<!--							}}-->
+<!--							value={ option.label() }-->
+<!--						>-->
+<!--							{ option.label() }-->
+<!--						</Command.Item>-->
+<!--					{/each}-->
+<!--				</Command.Group>-->
+<!--			</Command.List>-->
+<!--		</Command.Root>-->
+<!--	</Popover.Content>-->
 </Popover.Root>

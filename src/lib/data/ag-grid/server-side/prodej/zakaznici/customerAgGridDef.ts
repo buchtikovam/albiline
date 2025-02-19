@@ -1,6 +1,7 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 import * as m from '$lib/paraglide/messages.js'
 import {BooleanFilter} from "$lib/utils/components/ag-grid/booleanFilter";
+import {formatDate} from "$lib/utils/formatting/formatDate";
 
 export const customerHeaderTranslations = {
 	customerAddressCode: m.routes_prodej_zakaznici_table_column_customer_address_code,
@@ -209,7 +210,7 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 					filter: BooleanFilter,
 					filterParams: {
 						buttons: ["apply", "reset"],
-					}// custom boolean filter
+					}
 				},
 			]
 		}
@@ -530,15 +531,20 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 		width: 100,
 		cellDataType: "date",
 		valueFormatter: (params: ValueFormatterParams) => {
-			return new Date(params.value).toLocaleDateString(); // Format as desired
+			if (params.value === null) {
+				return "";
+			}
+			return formatDate(params.value);
 		},
-		editable: false,
+		editable: true,
+		cellClass: ['text-right'],
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
 				{
 					filter: 'agDateColumnFilter',
 					filterParams: {
+						inRangeFloatingFilterDateFormat: "DD-MM-YYYY",
 						buttons: ["apply", "reset"],
 					}
 				},
@@ -550,9 +556,13 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 		width: 100,
 		cellDataType: "date",
 		valueFormatter: (params: ValueFormatterParams) => {
-			return new Date(params.value).toLocaleDateString(); // Format as desired
+			if (params.value === null) {
+				return "";
+			}
+			return formatDate(params.value);
 		},
 		editable: false,
+		cellClass: ['text-right'],
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [
@@ -570,9 +580,13 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 		width: 100,
 		cellDataType: "date",
 		valueFormatter: (params: ValueFormatterParams) => {
-			return new Date(params.value).toLocaleDateString(); // Format as desired
+			if (params.value === null) {
+				return "";
+			}
+			return formatDate(params.value);
 		},
 		editable: false,
+		cellClass: ['text-right'],
 		filter: 'agMultiColumnFilter',
 		filterParams: {
 			filters: [

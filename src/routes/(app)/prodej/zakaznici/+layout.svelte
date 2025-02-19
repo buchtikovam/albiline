@@ -32,15 +32,14 @@
 		}
 	})
 
+
 	$effect(() => {
-		activePageTab.value = "/prodej/zakaznici";
+		activePageTab.value = i18n.resolveRoute("/prodej/zakaznici");
 
 		return (() => {
 			activePageTab.value = "";
 		})
 	})
-
-
 </script>
 
 

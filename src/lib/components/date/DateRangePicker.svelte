@@ -40,8 +40,8 @@
 
 	$effect(() => {
 		if (value.start && value.end) {
-			startValue = new Date(value.start.year, value.start.month - 1, value.start.day + 1);
-			endValue = new Date(value.end.year, value.end.month - 1, value.end.day + 1);
+			startValue = new Date(value.start.year, value.start.month, value.start.day);
+			endValue = new Date(value.end.year, value.end.month, value.end.day);
 		}
 	});
 </script>

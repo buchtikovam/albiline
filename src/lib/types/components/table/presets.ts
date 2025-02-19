@@ -1,11 +1,39 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ColDef, ColGroupDef } from "ag-grid-community"
 
-export type FetchedPreset = {
+export type StoredPresets = {
 	id: number,
-	pageOrigin: string,
-	presetName: string,
-	presets: ColDef<unknown, any> | ColGroupDef<unknown> 
+	label: string,
+	presets: StoredPreset[]
 }
 
-export type Preset = ColDef<unknown, any> | ColGroupDef<unknown> 
+export type StoredPreset = {
+	field?: string,
+	width?: number,
+	rowGroup?: boolean,
+	hide: boolean,
+	rowGroupIndex?: number | null,
+	pivot?: boolean,
+	pivotIndex?: number | null,
+	aggFunc?: any,
+	pinned?: boolean | 'left' | 'right' | null,
+	sort?: 'asc' | 'desc' | null,
+	sortIndex?: number | null,
+}
+
+/*
+* {
+  "field": "customerAddressCode",
+  "width": 68,
+  "rowGroup": false,
+  "rowGroupIndex": null,
+  "pivot": false,
+  "pivotIndex": null,
+  "aggFunc": null,
+  "pinned": null,
+  "sort": null,
+  "sortIndex": null,
+},
+
+* */
+
+export type Preset = ColDef<unknown, any> | ColGroupDef<unknown>

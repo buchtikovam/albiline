@@ -1,11 +1,8 @@
 import { LocalStore, localStore } from '$lib/utils/browser-storage/localStorage.svelte';
-import { SessionStore, sessionStore } from '$lib/utils/browser-storage/sessionStorage.svelte';
-import type {ResponseDialogMessage} from "$lib/types/components/response";
+import type { ResponseDialogMessage } from "$lib/types/components/response";
 
 
 export const isMobile: { value: boolean } = $state({ value: false });
-
-export const sessionKey: SessionStore<string> = sessionStore('sessionKey', "422bdfbc-845a-4222-bbae-63fc452f1f92");
 
 export const disableInputs: { value: boolean } = $state({ value: false });
 
@@ -22,6 +19,8 @@ export const authDetails: { sessionKey: string|null, userName: string|null } = $
 export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 	value: []
 });
+
+export const pageKey: { value: string } = $state({ value: "" });
 
 // export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 // 	value: [

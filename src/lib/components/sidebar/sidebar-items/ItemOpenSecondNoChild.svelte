@@ -28,6 +28,7 @@
 			<a
 				href="{item.href}"
 				onclick={() => {
+					console.log("yay")
 					handleTabClick(item, 1)
 					if (isMobile) {
 						isMobileSidebarOpen = false;

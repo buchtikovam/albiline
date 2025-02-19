@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { editedTableData } from '$lib/runes/table.svelte';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import { authDetails } from "$lib/runes/page.svelte";
+	import {authDetails, pageKey} from "$lib/runes/page.svelte";
 	import { beforeNavigate } from '$app/navigation';
 	import type { LayoutData } from './$types';
 	import { type Snippet } from 'svelte';
@@ -16,6 +16,7 @@
 
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;
+
 
 	beforeNavigate(({ cancel }) => {
 		if (editedTableData.value.length > 0) {

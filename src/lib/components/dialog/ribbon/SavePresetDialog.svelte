@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import { filtersToSave } from "$lib/runes/table.svelte";
+	import {filtersToSave, presetToSave} from "$lib/runes/table.svelte";
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
+	import type {ColDef} from "ag-grid-enterprise";
+	import type {StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
 
 
 	let isOpen: boolean = $state(false);
@@ -23,7 +25,23 @@
 
 
 	function savePreset() {
-		console.log(inputValue, filtersToSave.value)
+		const strippedPreset: StoredPreset[] = presetToSave.value.map((preset: ColDef) => {
+			return {
+				field: preset.field,
+				width: preset.width,
+				hide: preset.hide || false,
+				rowGroup: preset.rowGroup,
+				rowGroupIndex: preset.rowGroupIndex,
+				pivot: preset.pivot,
+				pivotIndex: preset.pivotIndex,
+				aggFunc: preset.aggFunc,
+				pinned: preset.pinned,
+				sort: preset.sort,
+				sortIndex: preset.sortIndex,
+			};
+		});
+
+		console.log(inputValue, JSON.stringify(strippedPreset, null, 1));
 	}
 </script>
 
@@ -33,7 +51,9 @@
 	bind:isOpen
 	onChange={() => {
 		isOpen = false;
-		openedRibbonDialog.value = "empty";
+		setTimeout(() => {
+			openedRibbonDialog.value = "empty";
+		}, 200)
 	}}
 	{header}
 	{content}
