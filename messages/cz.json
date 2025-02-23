@@ -7,7 +7,8 @@
 	"components_avatar_view_default" : "Výchozí",
 	"components_avatar_view_compact" : "Kompaktní",
 	"components_avatar_logout": "Odhlásit se",
-	"test_compiler": "Testování kompilace",
+
+	"components_header_search_placeholder": "Hledat...",
 
 	"components_sidebar_category_all" : "Všechny",
 	"components_sidebar_category_recent" : "Nedávné",

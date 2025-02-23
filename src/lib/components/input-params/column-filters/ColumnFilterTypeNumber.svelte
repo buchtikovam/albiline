@@ -24,6 +24,7 @@
 			disabled={columnFilter.columnName === null}
 			bind:value={condition.value}
 			type="number"
+			inputmode="numeric"
 			required
 		/>
 	</div>
@@ -33,6 +34,7 @@
 			disabled={columnFilter.columnName === null}
 			bind:value={condition.value}
 			type="number"
+			inputmode="numeric"
 			required
 		/>
 		<Input
@@ -40,7 +42,7 @@
 			bind:value={condition.endValue}
 			required
 			type="number"
+			inputmode="numeric"
 		/>
 	</div>
-
 {/if}

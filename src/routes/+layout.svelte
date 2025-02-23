@@ -16,7 +16,7 @@
 	let innerWidth: number = $state(0);
 
 	$effect(() => {
-		isMobile.value = innerWidth < 768;
+		isMobile.value = innerWidth < 640;
 	});
 
 </script>

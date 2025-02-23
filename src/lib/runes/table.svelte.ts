@@ -9,6 +9,23 @@ import type {
 import type { FilterModel } from "ag-grid-enterprise";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// interface Table {
+// 	pageKey: string;
+// 	table: any
+// }
+//
+// pagekey: table
+//
+//
+// export const tables: Table[] = $state([
+//
+// ]);
+//
+// const pageKey = "awdawd";
+// const table =  tables[pageKey];
+
+
+
 
 // k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
 export const editedTableData: { value: any[] } = $state({ value:[] });

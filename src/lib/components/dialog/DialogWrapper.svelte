@@ -52,7 +52,7 @@
 			class={`
 				${fixedHeight ? "!h-[70%]" : "h-auto"}
 				${customCss}
-				w-[90%] md:w-[720px] max-w-[720px] max-h-[70%] overflow-auto flex flex-col`
+				w-[90%] md:w-[680px] max-w-[680px] max-h-[70%] overflow-auto flex flex-col`
 			}>
 			<Dialog.Header>
 				{@render header()}

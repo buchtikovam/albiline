@@ -22,6 +22,7 @@
 	let value: DateValue = $state();
 
 	if (dateValue) {
+		// dateValue.setDate(dateValue.getDate());
 		value = parseDate(new Date(dateValue).toISOString().split('T')[0]);
 	}
 
@@ -64,7 +65,7 @@
 						{:else}
 							<DatePicker.Segment
 								{part}
-								class="p-0.5 focus:outline-none focus-visible:bg-muted rounded"
+								class="p-0 focus:outline-none focus-visible:bg-muted rounded text-xs sm:text-sm"
 							>
 								{value === "yyyy" ? "rrrr" : value}
 							</DatePicker.Segment>

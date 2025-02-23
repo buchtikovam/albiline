@@ -134,3 +134,31 @@
 		bind:this={gridContainer}
 	></div>
 </div>
+
+
+
+<style>
+	:global(.ag-header-cell-text) {
+		overflow: hidden;
+		word-break: keep-all !important;
+		white-space: preserve-breaks;
+		text-overflow: ellipsis;
+	}
+
+	:global(.ag-header-icon) {
+		min-width: 20px !important;
+	}
+
+	:global(.ag-sort-indicator-icon) {
+		min-width: 22px !important;
+		margin-left: -6px !important;
+	}
+
+	/*:global(.ag-input-field-input) {*/
+	/*	height: 32px;*/
+	/*}*/
+
+	/*:global(.ag-picker-field-wrapper) {*/
+	/*	height: 32px;*/
+	/*}*/
+</style>

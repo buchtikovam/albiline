@@ -5,6 +5,7 @@
 	import Input from '../ui/input/input.svelte';
 	import MobileSidebar from '../sidebar/mobile/MobileSidebar.svelte';
 	import HeaderTabs from "$lib/components/header/HeaderTabs.svelte";
+	import * as m from '$lib/paraglide/messages.js'
 
 	let openMobileSidebar: boolean = $state(false);
 </script>
@@ -32,7 +33,7 @@
 			<div class="md:hidden w-full px-2">
 				<Input
 					class="h-[32px] rounded-md border-none focus-visible:ring-0"
-					placeholder={'routes.prodej.zakaznici.fulltext_placeholder'}
+					placeholder={m.components_header_search_placeholder()}
 					type="text"
 					bind:value={fulltextFilterValue.value}
 				/>

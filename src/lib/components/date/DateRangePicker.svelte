@@ -30,10 +30,13 @@
 
 
 	if (startValue) {
+		// startValue.setMonth(startValue.getMonth() - 1);
+		// startValue.setDate(startValue.getDate() + 1);
 		value.start = parseDate(new Date(startValue).toISOString().split('T')[0])
 	}
 
 	if (endValue) {
+		// endValue.setMonth(endValue.getMonth() - 1);
 		value.end = parseDate(new Date(endValue).toISOString().split('T')[0])
 	}
 
@@ -85,7 +88,7 @@
 							{:else}
 								<DateRangePicker.Segment
 									{part}
-									class="p-0.5 focus:outline-none focus-visible:bg-muted rounded"
+									class="p-0 focus:outline-none focus-visible:bg-muted rounded text-xs sm:text-sm"
 								>
 									{value === "yyyy" ? "rrrr" : value}
 								</DateRangePicker.Segment>
@@ -100,9 +103,9 @@
 		{/each}
 
 		<DateRangePicker.Trigger
-			class="ml-auto flex items-center justify-center size-7 rounded-md transition-all hover:bg-muted/50 text-albi-900 hover:text-black active:bg-dark-10"
+			class="ml-auto flex items-center justify-center size-6 sm:size-7 rounded-md transition-all hover:bg-muted/50 text-albi-900 hover:text-black active:bg-dark-10"
 		>
-			<CalendarRange class="size-5" />
+			<CalendarRange class="size-4 sm:size-5" />
 		</DateRangePicker.Trigger>
 	</div>
 

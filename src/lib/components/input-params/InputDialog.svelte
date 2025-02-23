@@ -180,7 +180,7 @@
 />
 
 {#snippet header()}
-	<Dialog.Title class="h-6">
+	<Dialog.Title class="h-5">
 		Vstupní parametry
 	</Dialog.Title>
 {/snippet}
@@ -189,7 +189,7 @@
 	<div>
 		{#if inputDialog.fulltext !== undefined}
 			<p
-				class="mb-2 text-albi-500 text-sm font-bold"
+				class="mb-1 text-albi-500 text-sm font-bold"
 			>
 				Hledat všude
 			</p>
@@ -214,12 +214,12 @@
 				<div
 					class={
 						columnFilter.filterModel.conditions.length > 1
-							? "rounded-lg border bg-slate-50 p-2 flex flex-col mt-2 "
+							? "rounded-lg border bg-slate-50 p-2 pt-0 sm:pt-2 flex flex-col mt-1.5 sm:mt-2 "
 							: "bg-white p-0"
 					}
 				>
 					{#if columnFilter.filterModel.conditions.length > 1}
-						<p class="text-xs font-bold text-slate-400">
+						<p class="hidden sm:block text-xs font-bold text-slate-400">
 							{columnFilter.filterModel.operator}
 						</p>
 					{/if}
@@ -233,9 +233,9 @@
 		{/if}
 
 
-		<Dialog.Footer class="w-full mt-8">
+		<Dialog.Footer class="w-full mt-6">
 			<div class="w-full flex justify-between">
-				<div class="flex gap-2">
+				<div class="flex gap-1.5 sm:gap-2">
 					<Button
 						type="button"
 						class="size-10"
@@ -253,7 +253,7 @@
 					</Button>
 				</div>
 
-				<div class="flex items-center gap-2">
+				<div class="flex items-center gap-1.5 sm:gap-2">
 					<Button
 						type="button"
 						onclick={postInputParams}
