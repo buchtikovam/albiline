@@ -47,6 +47,7 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 	{
 		field: "customerAddressCode",
 		cellDataType: "number",
+		headerTooltip: "customerAddressCode",
 		editable: false,
 		hide: false,
 		width: 68,

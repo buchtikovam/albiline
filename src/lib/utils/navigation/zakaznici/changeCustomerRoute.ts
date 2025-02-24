@@ -1,7 +1,8 @@
-import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 import { goto } from '$app/navigation';
 import { i18n } from '$lib/i18n.js'
+import {serverSideTables} from "$lib/runes/table.svelte";
+import {pageKey} from "$lib/runes/page.svelte";
 
 
 export function changeCustomerRoute(
@@ -19,6 +20,8 @@ export function changeCustomerRoute(
 		id.customerNodeCode === activeId.customerNodeCode
 	);
 
+	const table = $state(serverSideTables[pageKey.value]);
+
 	if (activeRowIndex === -1) return {
 		right: true,
 		left: true
@@ -28,7 +31,7 @@ export function changeCustomerRoute(
 		const nextIndex = activeRowIndex + 1;
 
 		// locate item in non-unique selected rows and set its id, to allow navigation to customer addresses
-		activeSelectedRowIndex.value = selectedRows.findIndex((item) => {
+		table.activeSelectedRowIndex = selectedRows.findIndex((item) => {
 			return item === uniqueSelectedRows[nextIndex];
 		})
 
@@ -60,7 +63,7 @@ export function changeCustomerRoute(
 	if (direction === "left") {
 		const prevIndex = activeRowIndex - 1;
 
-		activeSelectedRowIndex.value = 	selectedRows.findIndex((item) => {
+		table.activeSelectedRowIndex = 	selectedRows.findIndex((item) => {
 			return item === uniqueSelectedRows[prevIndex];
 		})
 

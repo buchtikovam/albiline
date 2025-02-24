@@ -53,7 +53,7 @@
 
 
 		<DatePicker.Input
-			class={(hasError ? "border-red-600" : "") + " flex h-input w-full h-10  select-none items-center rounded-md border border-border bg-background px-2 py-2 text-sm tracking-[0.01em] text-foreground"}
+			class={(hasError ? "border-red-600" : "") + " flex h-input w-full h-10 select-none items-center rounded-md border border-border bg-background sm:pl-3 sm:pr-2 px-2 py-2 text-sm tracking-[0.01em] text-foreground"}
 		>
 			{#snippet children({ segments })}
 				{#each segments as { part, value }}

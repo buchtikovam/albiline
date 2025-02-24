@@ -1,13 +1,9 @@
 <script lang="ts">
-	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import { filtersToSave } from "$lib/runes/table.svelte";
-	import { Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
-	import { Input } from '$lib/components/ui/input';
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as Dialog from '$lib/components/ui/dialog';
+	import {pageKey, responseDialogMessages} from "$lib/runes/page.svelte";
+	import {serverSideTables} from "$lib/runes/table.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {apiServicePOST} from "$lib/api/apiService.svelte";
-	import {responseDialogMessages} from "$lib/runes/page.svelte";
+	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 
 
 	let isOpen: boolean = $state(false);
@@ -27,13 +23,11 @@
 	async function saveFilters() {
 		const saveObj = {
 			filterName: inputValue,
-			filters: filtersToSave.value
+			filters: serverSideTables[pageKey.value].filtersToSave
 		}
 
-		// console.log(JSON.stringify(saveObj, null, 1)) ;
-
 		try {
-			const resp = await apiServicePOST("userfilters", saveObj, "zakaznici");
+			const resp = await apiServicePOST("userfilters", saveObj);
 
 			if (resp.ok) {
 				isOpen = false;
@@ -52,53 +46,17 @@
 
 
 
-<DialogWrapper
+<SaveWithLabelDialog
 	bind:isOpen
+	bind:inputValue
 	onChange={() => {
 		isOpen = false;
 		setTimeout(() => {
 			openedRibbonDialog.value = "empty";
-		}, 200)	}}
-	{header}
-	{content}
-	fixedHeight={false}
-	size="sm"
+		}, 200)
+	}}
+	onSubmit={saveFilters}
+	title="Uložit filtry"
+	label="Název"
+	saveButtonLabel="Potvrdit"
 />
-
-
-{#snippet header()}
-	<Dialog.Title>
-		Uložit filtry
-	</Dialog.Title>
-{/snippet}
-
-
-{#snippet content()}
-	<form
-		onsubmit={saveFilters}
-		class="p-0.5 pt-0 -mt-1"
-	>
-		<Label
-			for="name"
-			class="text-right"
-		>
-			Název
-		</Label>
-
-		<Input
-			id="name"
-			bind:value={inputValue}
-			required
-			class=""
-		/>
-
-		<Dialog.Footer>
-			<Button
-				type="submit"
-				class="mt-6 w-full"
-			>
-				Potvrdit
-			</Button>
-		</Dialog.Footer>
-	</form>
-{/snippet}

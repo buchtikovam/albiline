@@ -2,9 +2,9 @@
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
-	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
+	import {serverSideTableKey, serverSideTables} from '$lib/runes/table.svelte';
 	import { customerAddressDetailFormDef } from '$lib/data/autoform/zakaznici/customerAddressFormDef';
-	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAddressesAgGridDef';
+	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAddressesAgGridDef.svelte';
 	import { customerAddressPageLayout } from '$lib/data/detail-page-layout/customerAddressPageLayout';
 	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
@@ -50,6 +50,7 @@
 
 	activeTabIndex.value = 1;
 	pageKey.value = btoa(page.route.id || "");
+	const table = $state(serverSideTables[serverSideTableKey]);
 
 	let initialFormValues: CustomerType = $derived.by(() => {
 		if (data.response) {
@@ -73,7 +74,7 @@
 	let openAgGridDialog: boolean = $state(false);
 
 	let autoformDef = $state(customerAddressDetailFormDef);
-	let selectedRows = $derived(storedSelectedRows.value);
+	let selectedRows = $derived(table.selectedRows);
 
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
@@ -101,11 +102,11 @@
 		} else {
 			disableNavigation.value = false;
 
-			if (selectedRows[activeSelectedRowIndex.value + 1]) {
+			if (selectedRows[table.activeSelectedRowIndex + 1]) {
 				disableRight = false;
 			}
 
-			if (selectedRows[activeSelectedRowIndex.value - 1]) {
+			if (selectedRows[table.activeSelectedRowIndex - 1]) {
 				disableLeft = false;
 			}
 		}
@@ -226,35 +227,6 @@
 	}
 
 
-	// function savePageLayout() {
-	// 	const pageStripped = pageLayout.map((item) => {
-	// 		return item.type;
-	// 	})
-	//
-	// 	const formDefStripped = []
-	//
-	// 	Object.entries(get(autoformDef)).map(([key, value]) => {
-	// 		let temp = {};
-	//
-	// 		temp[key] = value.map((item) => {
-	// 			return {
-	// 				field: item.field,
-	// 				isOpen: item.isOpen,
-	// 			}
-	// 		});
-	// 		formDefStripped.push(temp)
-	// 	})
-	//
-	//
-	// 	const pageLayoutObj = {
-	// 		pageLayout: pageStripped,
-	// 		formDef: formDefStripped,
-	// 	}
-	//
-	// 	console.log(JSON.stringify(pageLayoutObj, null, 1));
-	// }
-
-
 	const contactsGridOptions: GridOptions = {
 		columnDefs: customerAndAddressContactsAgGridDef,
 	}
@@ -306,19 +278,21 @@
 			</div>
 
 			<!-- page navigation buttons -->
-			<div class={storedSelectedRows.value.length > 1 ? "flex gap-3" : "hidden"}>
-				<DetailNavButton
-					direction="left"
-					bind:disable={disableLeft}
-					navigateDetailFn={() => changeRouteParameterAndDisable("left")}
-				/>
+			{#if table}
+				<div class={table.selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
+					<DetailNavButton
+						direction="left"
+						bind:disable={disableLeft}
+						navigateDetailFn={() => changeRouteParameterAndDisable("left")}
+					/>
 
-				<DetailNavButton
-					direction="right"
-					bind:disable={disableRight}
-					navigateDetailFn={() => changeRouteParameterAndDisable("right")}
-				/>
-			</div>
+					<DetailNavButton
+						direction="right"
+						bind:disable={disableRight}
+						navigateDetailFn={() => changeRouteParameterAndDisable("right")}
+					/>
+				</div>
+			{/if}
 		</div>
 	</div>
 

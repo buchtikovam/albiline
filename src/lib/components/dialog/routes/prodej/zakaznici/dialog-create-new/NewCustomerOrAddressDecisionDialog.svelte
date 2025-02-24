@@ -10,6 +10,7 @@
 
 	let isOpen = $state(false);
 
+
 	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.NEW) {
 			isOpen = true;
@@ -37,12 +38,12 @@
 
 {#snippet content()}
 	<div class="flex flex-col gap-4 mt-2  w-[320px]">
-		<Button>
+		<Button class="w-full">
 			<UserPlus strokeWidth={2.5}/>
 			Nový zákazník
 		</Button>
 
-		<Button>
+		<Button class="w-full">
 			<MapPinHouse strokeWidth={2.5}/>
 			Nová prodejna
 		</Button>

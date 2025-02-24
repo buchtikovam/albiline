@@ -17,6 +17,7 @@
 	import {formatDateLong} from "$lib/utils/formatting/formatDateLong.js";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import Save from "lucide-svelte/icons/save";
+	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 
 
 	interface Props {
@@ -35,6 +36,25 @@
 	let inputDialog: InputDialogType = $state(defaultInputDialog);
 	let fulltextFilter: string|null|undefined = $state(inputDialog.fulltext);
 	let columnFilters = $state(inputDialog.columnFilters);
+
+
+	let isSaveDialogOpen = $state(false);
+	let saveLabel = $state("");
+
+	function saveInputParams() {
+		const inputsParamsToSave = {
+			label: saveLabel,
+			inputParams: {
+				fulltext: fulltextFilter,
+				columnFilters: getColumnFilters(),
+			},
+		}
+
+		isSaveDialogOpen = false;
+		saveLabel = "";
+
+		console.log(JSON.stringify(inputsParamsToSave, null, 1));
+	}
 
 
 	function addInput() {
@@ -179,15 +199,17 @@
 	fixedHeight={false}
 />
 
+
 {#snippet header()}
 	<Dialog.Title class="h-5">
 		Vstupní parametry
 	</Dialog.Title>
 {/snippet}
 
+
 {#snippet content()}
 	<div>
-		{#if inputDialog.fulltext !== undefined}
+		{#if fulltextFilter !== undefined}
 			<p
 				class="mb-1 text-albi-500 text-sm font-bold"
 			>
@@ -240,8 +262,12 @@
 						type="button"
 						class="size-10"
 						variant="secondary"
+						onclick={() => isSaveDialogOpen = true}
 					>
-						<Save strokeWidth="2.5" class="!size-[18px]"/>
+						<Save
+							strokeWidth="2.5"
+							class="!size-[18px]"
+						/>
 					</Button>
 
 					<Button
@@ -277,3 +303,13 @@
 	</div>
 {/snippet}
 
+
+
+<SaveWithLabelDialog
+	bind:isOpen={isSaveDialogOpen}
+	bind:inputValue={saveLabel}
+	onSubmit={saveInputParams}
+	title="Uložit vstupní parametry"
+	label="Název"
+	saveButtonLabel="Uložit"
+/>

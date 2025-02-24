@@ -92,7 +92,7 @@
 			/>
 
 
-			<div class="w-full">
+			<div class="w-full mr-1">
 				{#if columnFilter.type === "text"}
 					<div class="w-full">
 						<Input
@@ -102,7 +102,6 @@
 						/>
 					</div>
 				{/if}
-
 
 
 				{#if columnFilter.type === "number"}
@@ -115,7 +114,6 @@
 				{/if}
 
 
-
 				{#if columnFilter.type === "boolean"}
 					<div class="w-full">
 						<Input
@@ -124,7 +122,6 @@
 						/>
 					</div>
 				{/if}
-
 
 
 				{#if columnFilter.type === "date"}
@@ -145,16 +142,13 @@
 				{/if}
 
 
-
 				{#if columnFilter.type === "enum"}
 					<div class="w-full">
 						.
 					</div>
 				{/if}
-
-
-
 			</div>
+
 
 			<InputDialogColumnFilterActionButtons
 				bind:columnFilter={columnFilter}
@@ -170,6 +164,7 @@
 					/>
 				</div>
 
+
 				<div class="w-full flex">
 					{#if columnFilter.type === "text"}
 						<div class="w-full">
@@ -182,7 +177,6 @@
 					{/if}
 
 
-
 					{#if columnFilter.type === "number"}
 						<div class="w-full">
 							<ColumnFilterTypeNumber
@@ -193,7 +187,6 @@
 					{/if}
 
 
-
 					{#if columnFilter.type === "boolean"}
 						<div class="w-full">
 							<Input
@@ -202,7 +195,6 @@
 							/>
 						</div>
 					{/if}
-
 
 
 					{#if columnFilter.type === "date"}
@@ -223,16 +215,13 @@
 					{/if}
 
 
-
 					{#if columnFilter.type === "enum"}
 						<div class="w-full">
 							.
 						</div>
 					{/if}
-
-
-
 				</div>
+
 
 				<InputDialogColumnFilterActionButtons
 					bind:columnFilter={columnFilter}
@@ -241,8 +230,4 @@
 			</div>
 		{/if}
 	</div>
-
 {/each}
-
-
-

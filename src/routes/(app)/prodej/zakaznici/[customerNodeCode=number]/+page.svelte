@@ -2,7 +2,6 @@
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
-	import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte';
 	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import { customerDetailFormDef } from '$lib/data/autoform/zakaznici/customerDetailFormDef';
@@ -29,6 +28,7 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
+	import {serverSideTables} from "$lib/runes/table.svelte";
 
 
 	interface Props {
@@ -43,6 +43,7 @@
 
 	let { data }: Props = $props();
 
+	const table = $state(serverSideTables[pageKey.value]);
 	pageKey.value = btoa(page.route.id || ""); // todo: update page key
 	activeTabIndex.value = 2;
 
@@ -73,15 +74,15 @@
 		} else {
 			disableNavigation.value = false;
 
-			if (uniqueSelectedRows[activeSelectedRowIndex.value + 1]) disableRight = false;
-			if (uniqueSelectedRows[activeSelectedRowIndex.value - 1]) disableLeft = false;
+			if (uniqueSelectedRows[table.activeSelectedRowIndex + 1]) disableRight = false;
+			if (uniqueSelectedRows[table.activeSelectedRowIndex - 1]) disableLeft = false;
 		}
 	})
 
 
 	// get all unique selected rows from table
 	const uniqueSelectedRows = $derived.by(() => {
-		return storedSelectedRows.value.reduce((
+		return table.selectedRows.reduce((
 			acc: Record<string, string | number | boolean | Date>[],
 			item
 		) => {
@@ -104,7 +105,7 @@
 	// called when user swappes to the next/previous customer
 	function changeRouteParameterAndDisable(direction: "left" | "right") {
 		let returnedDisable = changeCustomerRoute(
-			storedSelectedRows.value,
+			table.selectedRows,
 			uniqueSelectedRows,
 			direction,
 			activeRouteId,

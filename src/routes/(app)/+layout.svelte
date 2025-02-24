@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { editedTableData } from '$lib/runes/table.svelte';
+	import { authDetails, pageKey } from "$lib/runes/page.svelte";
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import {authDetails, pageKey} from "$lib/runes/page.svelte";
+	import { serverSideTables} from '$lib/runes/table.svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import type { LayoutData } from './$types';
 	import { type Snippet } from 'svelte';
@@ -11,20 +11,28 @@
 	import Header from '$lib/components/header/Header.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+	import {page} from "$app/state";
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;
 
+	$effect(() => {
+		pageKey.value = btoa(page.route.id || "");
+	})
+
+	const table = $state(serverSideTables[pageKey.value])
 
 	beforeNavigate(({ cancel }) => {
-		if (editedTableData.value.length > 0) {
-			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
-				cancel();
-			} else {
-				editedTableData.value = [];
-				disableNavigation.value = false;
+		if (table) {
+			if (table.editedTableData.length > 0) {
+				if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
+					cancel();
+				} else {
+					table.editedTableData = [];
+					disableNavigation.value = false;
+				}
 			}
 		}
 	})

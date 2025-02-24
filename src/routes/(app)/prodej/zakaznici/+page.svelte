@@ -5,7 +5,7 @@
 	} from "$lib/data/input-dialog/prodej/zakaznici/InputDialogZakaznici";
 	import { customerAgGridDef, customerHeaderTranslations } from '$lib/data/ag-grid/server-side/prodej/zakaznici/customerAgGridDef';
 	import {activeTabIndex, pageKey, showFulltextSearch} from '$lib/runes/page.svelte';
-	import { storedSelectedRows } from '$lib/runes/table.svelte';
+	import {serverSideTables} from '$lib/runes/table.svelte';
 	import { i18n } from '$lib/i18n';
 	import { goto } from '$app/navigation';
 	import type { CellDoubleClickedEvent } from 'ag-grid-community';
@@ -17,15 +17,38 @@
 	import {page} from "$app/state";
 
 
-	pageKey.value = btoa(page.route.id || "");
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
+	pageKey.value = btoa(page.route.id || "");
+
+	let open = $state(false);
+	let inputDialogFinished = $derived(!open);
+	const table = $state(serverSideTables[pageKey.value])
+
+	if (!table) {
+		serverSideTables[pageKey.value] = {
+			defaultColDef: [],
+			setColDefToDefault: false,
+			editedTableData: [],
+			filtersToSave: {},
+			selectedFilters: {},
+			presetToSave: [],
+			selectedPreset: [],
+			selectedRows: [],
+			selectionState: { selectAll: false, toggledNodes: [] },
+			sortState: [],
+			activeSelectedRowIndex: 0,
+			lastVisibleRowIndex: 0,
+			latestRowCount: 100,
+		}
+	}
+
 
 	// ag grid gridOptions containing conditional routing cant be generic,
 	// so this is a workaround
 	const gridOptions: GridOptions = {
 		onCellDoubleClicked(event: CellDoubleClickedEvent) {
-			storedSelectedRows.value = [{
+			serverSideTables[pageKey.value].selectedRows = [{
 				customerAddressCode: event.data.customerAddressCode,
 				customerNodeCode: event.data.customerNodeCode
 			}]
@@ -44,16 +67,12 @@
 	}
 
 
-
-	let open = $state(false);
-	let inputDialogFinished = $derived(!open);
-
-
 	const handleKeyDown = (event) => {
 		if (event.ctrlKey && event.key.toUpperCase() === 'I') {
 			open = true;
 		}
 	};
+
 
 	$effect(() => {
 		document.addEventListener('keydown', handleKeyDown);

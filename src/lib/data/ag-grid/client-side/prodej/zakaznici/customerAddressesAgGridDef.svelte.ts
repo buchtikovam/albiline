@@ -1,12 +1,13 @@
-import { activeSelectedRowIndex, storedSelectedRows } from '$lib/runes/table.svelte.js';
+import {serverSideTables} from '$lib/runes/table.svelte.js';
 import { page } from '$app/state';
 import { get } from 'svelte/store';
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
 import type {ColDef} from "ag-grid-enterprise";
-import {pageCompact} from "$lib/runes/page.svelte";
+import {pageCompact, pageKey} from "$lib/runes/page.svelte";
 import {i18n} from "$lib/i18n";
 
 const bgHEX = "#fff7df";
+const table = $state(serverSideTables[pageKey.value]);
 
 export const customerAddressesAgGridDef: ColDef<any, any>[] = [
 	{
@@ -172,7 +173,7 @@ function selectBtn(params: ICellRendererParams) {
 
 	link.addEventListener("click", () => {
 		let match = false;
-		const storedRows = storedSelectedRows.value;
+		const storedRows = table.selectedRows;
 
 		storedRows.forEach((item) => {
 			if (
@@ -184,9 +185,9 @@ function selectBtn(params: ICellRendererParams) {
 		})
 
 		if (!match) storedRows.push(selectedRow);
-		storedSelectedRows.value = storedRows;
+		table.selectedRows = storedRows;
 
-		activeSelectedRowIndex.value = storedSelectedRows.value.findIndex((id) =>
+		table.activeSelectedRowIndex = table.selectedRows.findIndex((id) =>
 			id.customerNodeCode === selectedRow.customerNodeCode &&
 			id.customerAddressCode === selectedRow.customerAddressCode
 		);

@@ -3,11 +3,10 @@ import {languageTag} from "$lib/paraglide/runtime";
 
 
 const url = "http://10.2.2.10/albiline.test/api/v1/";
-const sessionKey = $derived(authDetails.sessionKey);
 const headers = $state(
 	{
 		'Content-Type': 'application/json',
-		'Session-Key': sessionKey || "",
+		'Session-Key': authDetails.sessionKey || "",
 		'Accept-Language' : languageTag(),
 		'Page-Code' : pageKey.value,
 	}
@@ -32,8 +31,6 @@ export async function apiServicePOST(
 	endpoint: string,
 	body = {},
 ): Promise<Response> {
-	console.log(pageKey.value)
-
 	return await fetch(url + endpoint, {
 		method: 'POST',
 		headers: headers,

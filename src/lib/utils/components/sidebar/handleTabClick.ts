@@ -1,5 +1,4 @@
 import type { HeaderTab, SidebarItem } from '$lib/types/components/sidebar/sidebar';
-import { editedTableData } from '$lib/runes/table.svelte';
 import { openedTabs } from '$lib/runes/navigation.svelte';
 import { recentItems } from '$lib/runes/sidebar.svelte';
 

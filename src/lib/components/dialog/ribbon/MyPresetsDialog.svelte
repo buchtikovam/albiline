@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { serverSideTables } from "$lib/runes/table.svelte";
 	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import {defaultColDef, selectedPreset} from "$lib/runes/table.svelte";
-	import { pageCompact } from "$lib/runes/page.svelte";
+	import { pageCompact, pageKey } from "$lib/runes/page.svelte";
 	import { customToast } from "$lib/utils/customToast";
 	import deepcopy from "deepcopy";
 	import Save from "lucide-svelte/icons/save";
@@ -16,6 +16,8 @@
 
 	let isOpen: boolean = $state(false);
 	let hasUnsavedData = $state(false);
+
+	const table = $state(serverSideTables[pageKey.value]);
 
 	let storedPresets: StoredPresets[] = $state([ // will come from api
 		{
@@ -556,7 +558,7 @@
 		link.addEventListener("click", () => {
 			if (!hasUnsavedData) {
 				let defaultColDefCopy = new Map(
-					deepcopy(defaultColDef.value).map((col: ColDef) => [col.field, col])
+					deepcopy(table.defaultColDef).map((col: ColDef) => [col.field, col])
 				);
 				let clickedPreset = params.data.presets;
 
@@ -569,7 +571,7 @@
 					}
 				});
 
-				selectedPreset.value = clickedPreset;
+				table.selectedPreset = clickedPreset;
 				isOpen = false;
 				setTimeout(() => {
 					openedRibbonDialog.value = 'empty';

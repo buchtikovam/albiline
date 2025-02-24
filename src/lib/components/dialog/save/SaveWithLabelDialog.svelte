@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import { filtersToSave } from "$lib/runes/table.svelte";
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
@@ -10,40 +8,29 @@
 	interface Props {
 		isOpen: boolean;
 		inputValue: string;
-		onChange: () => void;
-		onSubmit: () => void;
+		saveButtonLabel: string;
+		onChange?: () => void;
+		onSubmit?: () => void;
 		title: string,
 		label: string,
 	}
 
-	let isOpen: boolean = $state(false);
-	let inputValue: string = $state("");
+	let {
+		isOpen = $bindable(),
+		inputValue = $bindable(),
+		saveButtonLabel,
+		onChange,
+		onSubmit,
+		title,
+		label,
+	}: Props = $props();
 
-
-	$effect(() => {
-		isOpen = true;
-
-		return (() => {
-			isOpen = false;
-			openedRibbonDialog.value = "empty";
-		})
-	})
-
-
-	function saveFilters() {
-		console.log(inputValue, JSON.stringify(filtersToSave.value, null, 2));
-	}
 </script>
 
 
 
 <DialogWrapper
 	bind:isOpen
-	onChange={() => {
-		isOpen = false;
-		setTimeout(() => {
-			openedRibbonDialog.value = "empty";
-		}, 200)	}}
 	{header}
 	{content}
 	fixedHeight={false}
@@ -53,21 +40,21 @@
 
 {#snippet header()}
 	<Dialog.Title>
-		Uložit filtry
+		{ title }
 	</Dialog.Title>
 {/snippet}
 
 
 {#snippet content()}
 	<form
-		onsubmit={saveFilters}
+		onsubmit={onSubmit}
 		class="p-0.5 pt-0 -mt-1"
 	>
 		<Label
 			for="name"
 			class="text-right"
 		>
-			Název
+			{ label }
 		</Label>
 
 		<Input
@@ -82,7 +69,7 @@
 				type="submit"
 				class="mt-6 w-full"
 			>
-				Potvrdit
+				{ saveButtonLabel }
 			</Button>
 		</Dialog.Footer>
 	</form>

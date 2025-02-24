@@ -137,12 +137,19 @@
 
 
 
+
 <style>
+	/* HEADER */
+
+
 	:global(.ag-header-cell-text) {
 		overflow: hidden;
 		word-break: keep-all !important;
+		-webkit-line-clamp: 2; /* number of lines to show */
+		line-clamp: 2;
 		white-space: preserve-breaks;
 		text-overflow: ellipsis;
+		-webkit-box-orient: vertical;
 	}
 
 	:global(.ag-header-icon) {
@@ -154,11 +161,117 @@
 		margin-left: -6px !important;
 	}
 
-	/*:global(.ag-input-field-input) {*/
-	/*	height: 32px;*/
+	:global(.ag-filter-apply-panel) {
+		padding: 0 6px 6px 6px;
+	}
+
+	:global(.ag-filter-body-wrapper) {
+		padding: 6px 6px 0 6px;
+	}
+
+
+
+	/* SIDEBAR FILTER PANEL */
+
+
+	:global(.ag-filter-tool-panel) {
+		height: 100% !important;
+		display: flex !important;
+		flex-direction: column !important;
+	}
+
+	:global(.ag-filter-toolpanel-search) {
+		display: none;
+	}
+
+	:global(.ag-filter-toolpanel-group-instance-header-icon) {
+		color: var(--albi-500);
+	}
+
+	:global(.ag-filter-list-panel) {
+		height: 100% !important;
+		padding: 4px 0;
+		overflow: auto;
+	}
+
+	:global(.ag-filter-toolpanel-instance-body) {
+		border-radius: 6px;
+		border-width: 1px;
+		margin: 4px 8px !important;
+	}
+
+	:global(.ag-filter-toolpanel-instance-filter) {
+		width: 100%;
+		margin-right: 40px;
+	}
+
+
+	/* SIDEBAR COLUMN PANEL */
+
+
+	:global(.ag-column-panel-column-select) {
+		padding-top: 4px;
+	}
+
+	:global(.ag-column-drop-vertical-empty-message) {
+		border-radius: 6px;
+	}
+
+
+	/*INPUTY */
+
+
+
+	/*:global(.ag-filter-select) {*/
+	/*	margin-bottom: 6px;*/
+	/*	padding-bottom: 0;*/
 	/*}*/
 
-	/*:global(.ag-picker-field-wrapper) {*/
-	/*	height: 32px;*/
+	/*:global(.ag-input-wrapper) {*/
+	/*	margin-bottom: 6px;*/
+	/*	padding-bottom: 0;*/
 	/*}*/
+
+	:global(.ag-text-field-input):focus {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.ag-picker-field-wrapper) {
+		height: 26px;
+	}
+
+	:global(.ag-input-field-input) {
+		height: 26px;
+	}
+
+	:global(.ag-number-field-input):focus {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.ag-picker-field-wrapper):focus-within {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.ag-checkbox) {
+		overflow: visible !important;
+	}
+
+
+	/*	BUTTONS */
+
+
+	:global(.ag-standard-button) {
+		line-height: normal;
+		margin: 0 !important;
+		display: flex !important;
+		justify-content: center;
+		align-items: center !important;
+		width: fit-content;
+		padding: 0 6px;
+		height: 26px;
+		margin-left: 6px !important;
+	}
 </style>

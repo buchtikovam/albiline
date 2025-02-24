@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import { selectedFilters } from "$lib/runes/table.svelte";
-	import { pageCompact } from "$lib/runes/page.svelte";
+	import {pageCompact, pageKey} from "$lib/runes/page.svelte";
 	import { customToast } from "$lib/utils/customToast";
 	import Save from "lucide-svelte/icons/save";
 	import type {
@@ -15,6 +14,7 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
 	import {apiServiceGET} from "$lib/api/apiService.svelte";
+	import {serverSideTables} from "$lib/runes/table.svelte.js";
 
 	let isOpen: boolean = $state(false);
 	let openDetailDialog = $state(false);
@@ -119,7 +119,7 @@
 		link.addEventListener("click", () => {
 			if (!hasUnsavedData) {
 				console.log(params.data.filters)
-				selectedFilters.value = params.data.filters;
+				serverSideTables[pageKey.value].selectedFilters = params.data.filters;
 				isOpen = false;
 				openedRibbonDialog.value = "empty";
 			} else {

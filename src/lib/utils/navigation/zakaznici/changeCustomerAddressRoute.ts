@@ -1,7 +1,8 @@
-import { activeSelectedRowIndex } from '$lib/runes/table.svelte';
+import {serverSideTables} from '$lib/runes/table.svelte';
 import { processRoute } from '$lib/utils/navigation/processRoute';
 import { goto } from '$app/navigation';
 import { i18n } from '$lib/i18n.js'
+import {pageKey} from "$lib/runes/page.svelte";
 
 
 export function changeCustomerAddressRoute(
@@ -18,9 +19,11 @@ export function changeCustomerAddressRoute(
 		id.customerAddressCode === activeId.customerAddressCode
 	);
 
+	const table = $state(serverSideTables[pageKey.value]);
+
 	if (direction === "right") {
 		const nextIndex = currentIndex + 1;
-		activeSelectedRowIndex.value = nextIndex;
+		table.activeSelectedRowIndex = nextIndex;
 
 		const newRoute = processRoute(routeId, {
 			customerNodeCode: selectedRows[nextIndex].customerNodeCode || "",
@@ -47,7 +50,7 @@ export function changeCustomerAddressRoute(
 
 	if (direction === "left") {
 		const prevIndex = currentIndex - 1;
-		activeSelectedRowIndex.value = prevIndex;
+		table.activeSelectedRowIndex = prevIndex;
 
 		const newRoute = processRoute(routeId, {
 			customerNodeCode: selectedRows[prevIndex].customerNodeCode,

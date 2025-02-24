@@ -8,56 +8,33 @@ import type {
 } from 'ag-grid-community';
 import type { FilterModel } from "ag-grid-enterprise";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// interface Table {
-// 	pageKey: string;
-// 	table: any
-// }
-//
-// pagekey: table
-//
-//
-// export const tables: Table[] = $state([
-//
-// ]);
-//
-// const pageKey = "awdawd";
-// const table =  tables[pageKey];
+export interface ServerSideTables {
+	[pageKey: string]: ServerSideTable
+}
 
 
+// INITIALIZE IN +PAGE.SVELTE, NOT IN AG GRID WRAPPER!!!
+export interface ServerSideTable {
+	// for restoring default table settings and layout
+	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[];
+	// used when setting default colDef - preset
+	setColDefToDefault: boolean;
+	// used for disabling tabs and saving edits
+	editedTableData: any[];
+	// current filters used in table. Can be saved through ribbon
+	filtersToSave: FilterModel;
+	selectedFilters: FilterModel;
+	presetToSave: Preset[];
+	selectedPreset: Preset[];
+	selectedRows: Record<string, any>[];
+	selectionState: IServerSideSelectionState|IServerSideGroupSelectionState|null;
+	sortState: { colId: string, sort: SortDirection|undefined }[];
+	activeSelectedRowIndex: number;
+	lastVisibleRowIndex: number;
+	latestRowCount: number;
+}
 
 
-// k ukládání editovaných dat z tabulky + k disabled tabům, když je editedDataStore.length > 0
-export const editedTableData: { value: any[] } = $state({ value:[] });
+export const serverSideTables: ServerSideTables = $state({});
 
-// defaultní definice sloupečků, která se vytvoří z /lib/data/ag-grid/col-def,
-// důležité pro nastavení defaultní šablony přes ribbon
-export const defaultColDef: { value: (ColDef<unknown, any> | ColGroupDef<unknown>)[]} = $state({ value: [] });
-
-// boolean pro nastavení defaultní šablony
-export const setColDefToDefault: { value: boolean } = $state({ value: false })
-
-// store pro uchovávání filtrů v tabulce, důležité pro ukládání nové sady filtrů
-export const filtersToSave: { value: FilterModel } = $state({ value: {} });
-
-// po vybrání sady filtrů z ribbonu se nastaví do této proměnné, po jejíž změně se načtou filtry do tabulky
-export const selectedFilters: { value: Record<string, any> } = $state({ value: {} });
-
-// store pro uchování rozložení sloupečků v tabulce, pro ukládání nové šablony
-export const presetToSave: { value: Preset[] } = $state({ value: [] });
-
-// po vybrání šablony z ribbonu se nastaví do této proměnné, po jejíž změně se načte do tabulky
-export const selectedPreset: { value: Preset[] } = $state({ value: [] });
-
-// id vybraného řádku v tabulce
-export const storedSelectedRows: { value: Record<string, string|number|boolean|Date>[] }  = $state({ value: [] });
-
-export const activeSelectedRowIndex: { value: number } = $state({ value: 0 });
-
-export const lastVisibleRowIndex: { value: number } = $state({ value: 0 });
-
-export const selectionState: { value: IServerSideSelectionState  |  IServerSideGroupSelectionState | null } = $state({ value: { selectAll: false, toggledNodes: [] } })
-
-export const sortState: { value: { colId: string, sort: SortDirection|undefined }[] } = $state({ value: [] })
-
-export const latestRowCount: { value: number } = $state({ value: 1000 });
+export const serverSideTableKey = btoa("/(app)/prodej/zakaznici");

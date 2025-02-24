@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import {filtersToSave, presetToSave} from "$lib/runes/table.svelte";
-	import { Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
-	import { Input } from '$lib/components/ui/input';
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as Dialog from '$lib/components/ui/dialog';
 	import type {ColDef} from "ag-grid-enterprise";
-	import type {StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
+	import type {StoredPreset} from "$lib/types/components/table/presets";
+	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
+	import {serverSideTables} from "$lib/runes/table.svelte.js";
+	import {pageKey} from "$lib/runes/page.svelte";
 
 
 	let isOpen: boolean = $state(false);
@@ -25,7 +22,7 @@
 
 
 	function savePreset() {
-		const strippedPreset: StoredPreset[] = presetToSave.value.map((preset: ColDef) => {
+		const strippedPreset: StoredPreset[] = serverSideTables[pageKey.value].presetToSave.map((preset: ColDef) => {
 			return {
 				field: preset.field,
 				width: preset.width,
@@ -47,52 +44,17 @@
 
 
 
-<DialogWrapper
+<SaveWithLabelDialog
 	bind:isOpen
+	bind:inputValue
 	onChange={() => {
 		isOpen = false;
 		setTimeout(() => {
 			openedRibbonDialog.value = "empty";
 		}, 200)
 	}}
-	{header}
-	{content}
-	fixedHeight={false}
-	size="sm"
+	onSubmit={savePreset}
+	title="Uložit filtry"
+	label="Název"
+	saveButtonLabel="Potvrdit"
 />
-
-{#snippet header()}
-	<Dialog.Title>
-		Uložit šablonu
-	</Dialog.Title>
-{/snippet}
-
-{#snippet content()}
-	<form
-		onsubmit={savePreset}
-		class="p-0.5 pt-0 -mt-1"
-	>
-		<Label
-			for="name"
-			class="text-right"
-		>
-			Název
-		</Label>
-
-		<Input
-			id="name"
-			bind:value={inputValue}
-			required
-			class=""
-		/>
-
-		<Dialog.Footer>
-			<Button
-				type="submit"
-				class="mt-6 w-full"
-			>
-				Potvrdit
-			</Button>
-		</Dialog.Footer>
-	</form>
-{/snippet}

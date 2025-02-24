@@ -1,20 +1,11 @@
 <script lang="ts">
 	import {
-		activeSelectedRowIndex,
-		defaultColDef,
-		editedTableData,
-		filtersToSave,
-		lastVisibleRowIndex,
-		latestRowCount,
-		presetToSave,
-		selectedFilters, selectedPreset,
-		selectionState,
-		sortState,
-		storedSelectedRows
+		 type ServerSideTable, serverSideTables,
 	} from '$lib/runes/table.svelte';
-	import {authDetails, fulltextFilterValue, pageKey, responseDialogMessages} from '$lib/runes/page.svelte';
+	import {authDetails, fulltextFilterValue, isMobile, pageKey} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disablePageTabs} from '$lib/runes/navigation.svelte';
+	import * as XLSX from "xlsx";
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
@@ -36,9 +27,7 @@
 	} from 'ag-grid-enterprise';
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
-	import {languageTag} from "$lib/paraglide/runtime";
 	import {apiServicePOST} from "$lib/api/apiService.svelte";
-	import {customToast} from "$lib/utils/customToast";
 
 
 	interface Props {
@@ -56,6 +45,15 @@
 	}: Props = $props();
 
 
+	let table: ServerSideTable|undefined = $state(serverSideTables[pageKey.value]);
+
+
+	if (serverSideTables[pageKey.value]) {
+		console.log("if");
+	}
+
+	$inspect(table)
+
 
 	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
@@ -65,14 +63,13 @@
 	let themeParams = $state(themeAlbiBlueParams);
 
 
-
 	// grid configuration
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
 		localeText: getAgGridLocale(),
 		rowModelType: "serverSide",
 		maintainColumnOrder: true,
-		serverSideInitialRowCount: latestRowCount.value,
+		serverSideInitialRowCount: table.latestRowCount,
 		enterNavigatesVerticallyAfterEdit: true,
 		undoRedoCellEditing: true,
 		cacheBlockSize: 1000,
@@ -81,7 +78,10 @@
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,
 		enableCellTextSelection: true,
-		// sideBar: true,
+		sideBar: {
+			toolPanels: ["columns", "filters"],
+			hiddenByDefault: isMobile.value,
+		},
 
 		cellSelection: {
 			handle: {
@@ -109,7 +109,6 @@
 			autoHeaderHeight: true,
 			wrapHeaderText: true,
 			suppressHeaderMenuButton: true,
-			header: ["test"]
 		},
 
 
@@ -142,7 +141,7 @@
 				addToEditedTableData(
 					event,
 					["customerNodeCode", "customerAddressCode"],
-					editedTableData.value
+					table.editedTableData,
 				)
 			}
 		},
@@ -155,14 +154,14 @@
 					toggledNodes: []
 				})
 
-				storedSelectedRows.value = [];
+				table.selectedRows = [];
 			}
 
 			if (event.columns) {
 				event.columns.forEach((column: Column) => {
 					let match = false;
 
-					sortState.value.forEach((sort) => {
+					table.sortState.forEach((sort) => {
 						if (sort.colId === column.getId()) {
 							match = true;
 							sort.sort = column.getSort();
@@ -170,7 +169,7 @@
 					})
 
 					if (!match) {
-						sortState.value.push({
+						table.sortState.push({
 							colId: column.getColId(),
 							sort: column.getSort(),
 						})
@@ -188,7 +187,7 @@
 					toggledNodes: []
 				})
 
-				storedSelectedRows.value = [];
+				table.selectedRows = [];
 			}
 		},
 
@@ -199,14 +198,14 @@
 
 
 		onSelectionChanged: (event: SelectionChangedEvent) => {
-			selectionState.value = event.api.getServerSideSelectionState();
-			activeSelectedRowIndex.value = 0
+			table.selectionState = event.api.getServerSideSelectionState();
+			table.activeSelectedRowIndex = 0
 
-			if (selectionState.value) {
-				if (selectionState.value.toggledNodes) {
+			if (table.selectionState) {
+				if (table.selectionState.toggledNodes) {
 					const selectedRows: any[] = [];
 
-					selectionState.value.toggledNodes.forEach((rowNumber) => {
+					table.selectionState.toggledNodes.forEach((rowNumber) => {
 						selectedRows.push(event.api.getDisplayedRowAtIndex(Number(rowNumber) - 1));
 					})
 
@@ -226,11 +225,11 @@
 
 						}
 
-						storedSelectedRows.value = rowArr;
 						disablePageTabs.value = false;
+						table.selectedRows = rowArr;
 					} else {
 						disablePageTabs.value = true;
-						storedSelectedRows.value = [];
+						table.selectedRows = [];
 					}
 				}
 			}
@@ -261,25 +260,25 @@
 				.then(httpResponse => httpResponse.json())
 				.then(response => {
 					params.success({ rowData: response.items });
-					latestRowCount.value = response.totalRows === -1 ? 0 : response.totalRows;
-					gridApi.setRowCount(latestRowCount.value);
+					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
+					gridApi.setRowCount(table.latestRowCount || 0);
 
-					if (isInitial) { // TODO: ?? use session storage with route as a key to save and update
+					if (isInitial) {
 						const columnState = {
-							state: sortState.value,
+							state: table.sortState,
 						}
 
 						gridApi.applyColumnState(columnState);
 
 						// setting scroll position
-						if (lastVisibleRowIndex.value > rowBufferSize) {
-							gridApi.ensureIndexVisible(lastVisibleRowIndex.value + rowBufferSize, "top");
+						if (table.lastVisibleRowIndex > rowBufferSize) {
+							gridApi.ensureIndexVisible(table.lastVisibleRowIndex + rowBufferSize, "top");
 						} else {
-							if (selectionState.value) {
-								if (selectionState.value.toggledNodes) {
-									if (Number(selectionState.value.toggledNodes[0])) {
+							if (table.selectionState) {
+								if (table.selectionState.toggledNodes) {
+									if (Number(table.selectionState.toggledNodes[0])) {
 										gridApi.ensureIndexVisible(
-											Number(selectionState.value.toggledNodes[0]) - 1 ,
+											Number(table.selectionState.toggledNodes[0]) - 1 ,
 											"top"
 										);
 									}
@@ -288,10 +287,10 @@
 						}
 
 						// setting selectedRows
-						if (selectionState.value) {
+						if (table.selectionState) {
 							setTimeout(() => {
-								disablePageTabs.value = selectionState.value.toggledNodes.length === 0;
-								gridApi.setServerSideSelectionState(selectionState.value)
+								disablePageTabs.value = table.selectionState.toggledNodes.length === 0;
+								gridApi.setServerSideSelectionState(table.selectionState)
 							}, 200)
 						}
 					}
@@ -320,14 +319,16 @@
 			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
 		}
 
-		gridApi.setFilterModel(filtersToSave.value);
+		gridApi.setFilterModel(table.filtersToSave);
 		gridApi.setGridOption('serverSideDatasource', datasource);
+
+		console.log(table)
 
 		let colDefs = gridApi.getColumnDefs();
 		let columnOrder: ColumnOrder = [];
 		// add header translations + keep track of initial editable state of columns
-		if (presetToSave.value.length > 0) {
-			colDefs = presetToSave.value;
+		if (table.presetToSave.length > 0) {
+			colDefs = table.presetToSave;
 		}
 
 		colDefs?.forEach(colDef => {
@@ -341,7 +342,7 @@
 		})
 
 		// initialize default column definitions for ribbon -> load preset
-		defaultColDef.value = colDefs || [];
+		table.defaultColDef = colDefs || [];
 
 		// update grid with updated column defs
 		gridApi.setGridOption("columnDefs", colDefs);
@@ -352,11 +353,14 @@
 
 		return (() => {
 			console.log("!!! ---- RETURN ---- !!!")
-			selectionState.value = gridApi.getServerSideSelectionState();
-			filtersToSave.value = gridApi.getFilterModel();
-			lastVisibleRowIndex.value = gridApi.getFirstDisplayedRowIndex();
-			presetToSave.value = gridApi.getColumnDefs() || [];
-			gridApi.destroy();
+			table.selectionState = gridApi.getServerSideSelectionState();
+			table.filtersToSave = gridApi.getFilterModel();
+			table.lastVisibleRowIndex = gridApi.getFirstDisplayedRowIndex();
+			table.presetToSave = gridApi.getColumnDefs() || [];
+
+			setTimeout(() => {
+				gridApi.destroy();
+			}, 500)
 		})
 	})
 
@@ -383,24 +387,22 @@
 
 
 	$effect(() => {
-		if (Object.keys(selectedFilters.value).length > 0) {
-			console.log("effect", selectedFilters.value)
-
-
-			gridApi.setFilterModel(selectedFilters.value);
-			selectedFilters.value = {};
+		if (Object.keys(table.selectedFilters).length > 0) {
+			gridApi.setFilterModel(table.selectedFilters);
+			table.selectedFilters = {};
 		}
 	})
 
+
 	$effect(() => {
-		if (selectedPreset.value.length > 0) {
-			gridApi.setGridOption("columnDefs", selectedPreset.value);
+		if (table.selectedPreset.length > 0) {
+			gridApi.setGridOption("columnDefs", table.selectedPreset);
 
 			let columnOrder: ColumnOrder = [];
 
-			console.log(selectedPreset.value);
+			console.log(table.selectedPreset);
 
-			selectedPreset.value?.forEach(colDef => {
+			table.selectedPreset?.forEach(colDef => {
 				columnOrder.push({ colId: colDef.colId })
 			})
 
@@ -410,13 +412,60 @@
 				applyOrder: true
 			});
 
-			selectedPreset.value = [];
+			table.selectedPreset = [];
 		}
 	})
 
 
 
+	let excelFileInput: HTMLInputElement;
+
+	function handleExcelUpload(event) {
+		const file = event.target.files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			const data = new Uint8Array(e.target.result);
+			const workbook = XLSX.read(data, { type: "array" });
+			const sheetName = workbook.SheetNames[0];
+			const sheet = workbook.Sheets[sheetName];
+
+			let columnFields: { field: string, headerName: string }[] = gridApi.getColumnDefs()?.map(colDef => {
+				return {
+					field: colDef.colId,
+					headerName: colDef.headerName,
+				}
+			})
+
+
+			let jsonData = XLSX.utils.sheet_to_json(sheet);
+
+			const rowDataExc = jsonData.map((row) => {
+				const importedRow: Record<string, any> = {};
+
+				columnFields.forEach((columnField) => {
+					importedRow[columnField.field] = row[columnField.headerName];
+				})
+
+				return importedRow;
+			});
+
+			console.log(rowDataExc);
+		};
+
+		reader.readAsArrayBuffer(file);
+	}
+
+
+
 	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.DELETE) {
+			console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
 		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_HEADERS) {
 			const allColumns = gridApi.getColumns();
 
@@ -459,6 +508,12 @@
 		}
 
 
+		if (ribbonAction.value === RibbonActionEnum.IMPORT) {
+			excelFileInput.click();
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
 		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
 			const column = gridApi.getFocusedCell()?.column;
 			const selection = window.getSelection()?.toString().trim();
@@ -470,10 +525,7 @@
 
 				if (cellType === "text") filterModelType = "contains";
 
-				if (cellType === "number") filterModelType = "equals";
-
-				if (cellType === "date") filterModelType = "equals";
-
+				if (cellType === "number" || cellType === "date") filterModelType = "equals";
 
 				currentFilters[column.getColId()] = {
 					filterType: "multi",
@@ -517,28 +569,15 @@
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
 			const filters = gridApi.getFilterModel();
-
-			// if (Object.keys(filters).length > 0) {
-				openedRibbonDialog.value = "ribbon-save-filters";
-				filtersToSave.value = filters;
-			// } else {
-			// 	responseDialogMessages.value = [{
-			// 		type: "InfoToast",
-			// 		title: "Informace",
-			// 		content: "Nemáš žádné filtry k uložení",
-			// 	}]
-			// }
-
+			openedRibbonDialog.value = "ribbon-save-filters";
+			table.filtersToSave = filters;
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
 			openedRibbonDialog.value = "ribbon-save-preset";
-			presetToSave.value = gridApi.getColumnDefs() || [];
-
-
-
+			table.presetToSave = gridApi.getColumnDefs() || [];
 			console.log(gridApi.getColumnDefs());
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
@@ -549,13 +588,18 @@
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 	})
-
-
-	$inspect("action", ribbonAction.value);
-	$inspect("ribbon dialog", openedRibbonDialog.value);
 </script>
 
 
+
+<input
+	type="file"
+	accept=".xls,.xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	multiple={false}
+	hidden
+	bind:this={excelFileInput}
+	onchange={handleExcelUpload}
+/>
 
 
 <div class="flex flex-column h-full">
@@ -570,6 +614,9 @@
 
 
 <style>
+	/* HEADER */
+
+
 	:global(.ag-header-cell-text) {
 		overflow: hidden;
 		word-break: keep-all !important;
@@ -586,11 +633,117 @@
 		margin-left: -6px !important;
 	}
 
-	/*:global(.ag-input-field-input) {*/
-	/*	height: 32px;*/
+	:global(.ag-filter-apply-panel) {
+		padding: 0 6px 6px 6px;
+	}
+
+	:global(.ag-filter-body-wrapper) {
+		padding: 6px 6px 0 6px;
+	}
+
+
+
+	/* SIDEBAR FILTER PANEL */
+
+
+	:global(.ag-filter-tool-panel) {
+		height: 100% !important;
+		display: flex !important;
+		flex-direction: column !important;
+	}
+
+	:global(.ag-filter-toolpanel-search) {
+		display: none;
+	}
+
+	:global(.ag-filter-toolpanel-group-instance-header-icon) {
+		color: var(--albi-500);
+	}
+
+	:global(.ag-filter-list-panel) {
+		height: 100% !important;
+		padding: 4px 0;
+		overflow: auto;
+	}
+
+	:global(.ag-filter-toolpanel-instance-body) {
+		border-radius: 6px;
+		border-width: 1px;
+		margin: 4px 8px !important;
+	}
+
+	:global(.ag-filter-toolpanel-instance-filter) {
+		width: 100%;
+		margin-right: 40px;
+	}
+
+
+	/* SIDEBAR COLUMN PANEL */
+
+
+	:global(.ag-column-panel-column-select) {
+		padding-top: 4px;
+	}
+
+	:global(.ag-column-drop-vertical-empty-message) {
+		border-radius: 6px;
+	}
+
+
+	/*INPUTY */
+
+
+
+	/*:global(.ag-filter-select) {*/
+	/*	margin-bottom: 6px;*/
+	/*	padding-bottom: 0;*/
 	/*}*/
 
-	/*:global(.ag-picker-field-wrapper) {*/
-	/*	height: 32px;*/
+	/*:global(.ag-input-wrapper) {*/
+	/*	margin-bottom: 6px;*/
+	/*	padding-bottom: 0;*/
 	/*}*/
+
+	:global(.ag-text-field-input):focus {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.ag-picker-field-wrapper) {
+		height: 26px;
+	}
+
+	:global(.ag-input-field-input) {
+		height: 26px;
+	}
+
+	:global(.ag-number-field-input):focus {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.ag-picker-field-wrapper):focus-within {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.ag-checkbox) {
+		overflow: visible !important;
+	}
+
+
+	/*	BUTTONS */
+
+
+	:global(.ag-standard-button) {
+		line-height: normal;
+		margin: 0 !important;
+		display: flex !important;
+		justify-content: center;
+		align-items: center !important;
+		width: fit-content;
+		padding: 0 6px;
+		height: 26px;
+		margin-left: 6px !important;
+	}
 </style>

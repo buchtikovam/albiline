@@ -66,7 +66,7 @@
 
 	<div
 		class={
-			`flex h-10 w-full px-2 py-2 select-none items-center rounded-input border
+			`flex h-10 w-full md:pl-3 sm:pr-2 px-2 py-2 select-none items-center rounded-input border
 			${hasError ? "border-red-600" : "border-border"}
 			rounded-md bg-background px-2 py-3 text-sm tracking-[0.01em] text-foreground
 			focus-within:border-border-input-hover focus-within:shadow-date-field-focus
@@ -88,7 +88,7 @@
 							{:else}
 								<DateRangePicker.Segment
 									{part}
-									class="p-0 focus:outline-none focus-visible:bg-muted rounded text-xs sm:text-sm"
+									class="p-0 focus:outline-none focus-visible:bg-muted rounded text-xs md:text-sm"
 								>
 									{value === "yyyy" ? "rrrr" : value}
 								</DateRangePicker.Segment>
@@ -98,7 +98,12 @@
 				{/snippet}
 			</DateRangePicker.Input>
 			{#if type === "start"}
-				<div aria-hidden="true" class="px-1 text-muted-foreground">-</div>
+				<div
+					aria-hidden="true"
+					class="px-1 text-muted-foreground"
+				>
+					-
+				</div>
 			{/if}
 		{/each}
 
