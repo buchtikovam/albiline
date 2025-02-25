@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ribbonAction, ribbonOpen } from '$lib/runes/ribbon.svelte';
-	import type { RibbonItem } from '$lib/types/components/ribbon/ribbon';
+	import {ribbonAction, ribbonOpen} from '$lib/runes/ribbon.svelte';
+	import type {RibbonItemType} from "$lib/types/components/ribbon/ribbon";
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	interface Props {
-		ribbonItems: RibbonItem[];
+		ribbonItems: RibbonItemType[];
 	}
 
 	let { ribbonItems }: Props = $props();

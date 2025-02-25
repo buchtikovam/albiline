@@ -29,7 +29,7 @@
 
 {#snippet header()}
 	<Dialog.Title class="h-6">
-		{filter?.label}
+		{filter?.filterName}
 	</Dialog.Title>
 {/snippet}
 

@@ -4,8 +4,8 @@
 	import type {StoredPreset} from "$lib/types/components/table/presets";
 	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte.js";
-	import {pageKey} from "$lib/runes/page.svelte";
-
+	import {pageCode} from "$lib/runes/page.svelte";
+	import * as m from '$lib/paraglide/messages.js'
 
 	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
@@ -22,7 +22,7 @@
 
 
 	function savePreset() {
-		const strippedPreset: StoredPreset[] = serverSideTables[pageKey.value].presetToSave.map((preset: ColDef) => {
+		const strippedPreset: StoredPreset[] = serverSideTables[pageCode.value].presetToSave.map((preset: ColDef) => {
 			return {
 				field: preset.field,
 				width: preset.width,
@@ -54,7 +54,7 @@
 		}, 200)
 	}}
 	onSubmit={savePreset}
-	title="Uložit filtry"
-	label="Název"
-	saveButtonLabel="Potvrdit"
+	title={m.components_ribbon_dialog_save_preset_label}
+	label={m.components_ribbon_dialog_save_preset_input_label}
+	saveButtonLabel={m.components_ribbon_dialog_save_preset_save_button}
 />

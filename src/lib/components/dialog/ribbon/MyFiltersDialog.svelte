@@ -1,31 +1,30 @@
 <script lang="ts">
-	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import {pageCompact, pageKey} from "$lib/runes/page.svelte";
-	import { customToast } from "$lib/utils/customToast";
+	import {pageCompact, pageCode} from "$lib/runes/page.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
+	import {serverSideTables} from "$lib/runes/table.svelte.js";
+	import {apiServiceGET} from "$lib/api/apiService.svelte";
+	import {customToast} from "$lib/utils/customToast";
 	import Save from "lucide-svelte/icons/save";
 	import type {
 		CellContextMenuEvent,
 		ICellRendererParams
 	} from "ag-grid-community";
 	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
-	import type { StoredFilters } from "$lib/types/components/table/filters";
+	import type {StoredFilters} from "$lib/types/components/table/filters";
 	import FilterDetailDialog from "$lib/components/dialog/ribbon/FilterDetailDialog.svelte";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {apiServiceGET} from "$lib/api/apiService.svelte";
-	import {serverSideTables} from "$lib/runes/table.svelte.js";
+
 
 	let isOpen: boolean = $state(false);
 	let openDetailDialog = $state(false);
 	let detailFilter: StoredFilters|undefined = $state(undefined);
 	let hasUnsavedData = $state(false);
-
 	let fetchedFilters: StoredFilters[] = $state([]);
 
-	async function getFilters() {
-		console.log("get")
 
+	async function getFilters() {
 		const resp = await apiServiceGET("userfilters/mbuc");
 
 		if (resp.ok) {
@@ -33,7 +32,6 @@
 			fetchedFilters = respItems.items;
 		}
 	}
-
 
 
 	$effect(() => {
@@ -45,10 +43,6 @@
 			openedRibbonDialog.value = "empty";
 		})
 	})
-
-	$inspect(fetchedFilters)
-
-
 
 
 	export const ribbonFiltersAgGridDef: ColDef<any, any>[] = [
@@ -78,7 +72,7 @@
 		columnDefs: ribbonFiltersAgGridDef,
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data.id);
+			return String(params.data.filterId);
 		},
 
 		getContextMenuItems: () => {
@@ -118,8 +112,7 @@
 
 		link.addEventListener("click", () => {
 			if (!hasUnsavedData) {
-				console.log(params.data.filters)
-				serverSideTables[pageKey.value].selectedFilters = params.data.filters;
+				serverSideTables[pageCode.value].selectedFilters = params.data.filters;
 				isOpen = false;
 				openedRibbonDialog.value = "empty";
 			} else {
@@ -130,6 +123,7 @@
 		div.appendChild(link);
 		return div;
 	}
+
 
 	function deleteBtn(params: ICellRendererParams) {
 		const div = document.createElement('div');
@@ -149,7 +143,7 @@
 
 		link.addEventListener("click", () => {
 			fetchedFilters.forEach((filter, index) => {
-				if (filter.id === params.data.id) {
+				if (filter.filterId === params.data.filterId) {
 					fetchedFilters.splice(index, 1);
 					hasUnsavedData = true;
 				}

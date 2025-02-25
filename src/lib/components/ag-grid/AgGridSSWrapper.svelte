@@ -2,15 +2,15 @@
 	import {
 		 type ServerSideTable, serverSideTables,
 	} from '$lib/runes/table.svelte';
-	import {authDetails, fulltextFilterValue, isMobile, pageKey} from '$lib/runes/page.svelte';
+	import {authDetails, fulltextFilterValue, isMobile} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {disablePageTabs} from '$lib/runes/navigation.svelte';
+	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import * as XLSX from "xlsx";
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/getAgGridLocale";
-	import {onMount, tick} from 'svelte';
+	import {getContext, onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
 		type Column,
@@ -45,14 +45,8 @@
 	}: Props = $props();
 
 
-	let table: ServerSideTable|undefined = $state(serverSideTables[pageKey.value]);
-
-
-	if (serverSideTables[pageKey.value]) {
-		console.log("if");
-	}
-
-	$inspect(table)
+	let tableKey: string = getContext('serverSideTableKey');
+	let table: ServerSideTable|undefined = $state(serverSideTables[tableKey]);
 
 
 	// create grid
@@ -153,8 +147,6 @@
 					selectAll: false,
 					toggledNodes: []
 				})
-
-				table.selectedRows = [];
 			}
 
 			if (event.columns) {
@@ -186,8 +178,6 @@
 					selectAll: false,
 					toggledNodes: []
 				})
-
-				table.selectedRows = [];
 			}
 		},
 
@@ -203,6 +193,8 @@
 
 			if (table.selectionState) {
 				if (table.selectionState.toggledNodes) {
+					disablePageTabs.value = table.selectionState.toggledNodes.length < 1;
+
 					const selectedRows: any[] = [];
 
 					table.selectionState.toggledNodes.forEach((rowNumber) => {
@@ -225,16 +217,17 @@
 
 						}
 
-						disablePageTabs.value = false;
+						// disablePageTabs.value = false;
 						table.selectedRows = rowArr;
 					} else {
-						disablePageTabs.value = true;
-						table.selectedRows = [];
+						// disablePageTabs.value = true;
+						// table.selectedRows = [];
 					}
 				}
 			}
 		},
 	}
+
 
 
 
@@ -264,6 +257,8 @@
 					gridApi.setRowCount(table.latestRowCount || 0);
 
 					if (isInitial) {
+						disablePageTabs.value = false;
+
 						const columnState = {
 							state: table.sortState,
 						}
@@ -287,12 +282,14 @@
 						}
 
 						// setting selectedRows
-						if (table.selectionState) {
-							setTimeout(() => {
-								disablePageTabs.value = table.selectionState.toggledNodes.length === 0;
-								gridApi.setServerSideSelectionState(table.selectionState)
-							}, 200)
-						}
+						setTimeout(() => {
+							if (table.selectionState) {
+								if (table.selectionState.toggledNodes) {
+									disablePageTabs.value = table.selectionState.toggledNodes.length === 0;
+									gridApi.setServerSideSelectionState(table.selectionState)
+								}
+							}
+						}, 200)
 					}
 
 					isInitial = false;
@@ -313,27 +310,25 @@
 
 	// runs when component is mounted only
 	onMount(() => {
-		console.log("!!! ---- MOUNTED ---- !!!")
+		disablePageTabs.value = true;
 
-		if (gridContainer) { // initialize grid
-			gridApi = createGrid(gridContainer, {...gridOptions, ...gridOptionsCustom});
+		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
+		table.defaultColDef = finalGridOptions.columnDefs || [];
+
+		// overwrite default coldef if user has unsaved preset
+		if (table.presetToSave.length > 0) {
+			finalGridOptions.columnDefs = table.presetToSave;
+		}
+
+		// initialize grid
+		if (gridContainer) {
+			gridApi = createGrid(gridContainer, finalGridOptions);
 		}
 
 		gridApi.setFilterModel(table.filtersToSave);
 		gridApi.setGridOption('serverSideDatasource', datasource);
 
-		console.log(table)
-
 		let colDefs = gridApi.getColumnDefs();
-		let columnOrder: ColumnOrder = [];
-		// add header translations + keep track of initial editable state of columns
-		if (table.presetToSave.length > 0) {
-			colDefs = table.presetToSave;
-		}
-
-		colDefs?.forEach(colDef => {
-			columnOrder.push({ colId: colDef.colId })
-		})
 
 		// const colDefs =
 		colDefs?.forEach((column: ColDef) => {
@@ -341,26 +336,46 @@
 			column.headerName = headerTranslations[column.field || ""]();
 		})
 
-		// initialize default column definitions for ribbon -> load preset
-		table.defaultColDef = colDefs || [];
-
 		// update grid with updated column defs
 		gridApi.setGridOption("columnDefs", colDefs);
-		gridApi.applyColumnState({
-			state: columnOrder,
-			applyOrder: true
-		});
+
 
 		return (() => {
-			console.log("!!! ---- RETURN ---- !!!")
 			table.selectionState = gridApi.getServerSideSelectionState();
 			table.filtersToSave = gridApi.getFilterModel();
 			table.lastVisibleRowIndex = gridApi.getFirstDisplayedRowIndex();
 			table.presetToSave = gridApi.getColumnDefs() || [];
+			table.activeSelectedRowIndex = 0;
+			disableNavigation.value = false;
+
+			if (table.selectionState) {
+				if (table.selectionState.toggledNodes) {
+					const rows: any[] = [];
+
+					table.selectionState.toggledNodes.forEach((rowNumber) => {
+						rows.push(gridApi.getDisplayedRowAtIndex(Number(rowNumber) - 1));
+					})
+
+					if (rows.length > 0) {
+						const rowArr: Record<string, number>[] = [];
+
+						rows.forEach((row) => {
+							let rowObj: { [key: string]: any } = {}
+							requiredFields.forEach((field) => {
+								rowObj[field] = row.data[field]
+							})
+
+							rowArr.push(rowObj);
+						});
+
+						table.selectedRows = rowArr;
+					}
+				}
+			}
 
 			setTimeout(() => {
 				gridApi.destroy();
-			}, 500)
+			}, 100)
 		})
 	})
 
@@ -400,12 +415,9 @@
 
 			let columnOrder: ColumnOrder = [];
 
-			console.log(table.selectedPreset);
-
 			table.selectedPreset?.forEach(colDef => {
 				columnOrder.push({ colId: colDef.colId })
 			})
-
 
 			gridApi.applyColumnState({
 				state: columnOrder,
@@ -692,8 +704,6 @@
 
 	/*INPUTY */
 
-
-
 	/*:global(.ag-filter-select) {*/
 	/*	margin-bottom: 6px;*/
 	/*	padding-bottom: 0;*/
@@ -746,4 +756,9 @@
 		height: 26px;
 		margin-left: 6px !important;
 	}
+
+
+	/*:global(.ag-center-cols-viewport) {*/
+	/*	min-height: 20px !important;*/
+	/*}*/
 </style>

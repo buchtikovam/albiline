@@ -16,13 +16,19 @@
 
 {#if ribbonOpen.value === true}
 	<DropdownMenu.Root>
-		<div class="min-w-11 max-w-11">
-			<DropdownMenu.Trigger class="mt-auto">
+		<div
+			class="min-w-11 max-w-11"
+		>
+			<DropdownMenu.Trigger
+				class="mt-auto"
+			>
 				{@const Icon = ribbonItem.icon}
 				<button
 					class="text-[9px] size-11 leading-none rounded hover:bg-muted/80 text-albi-950 hover:text-black"
 				>
-					<span class="flex w-11 items-center justify-center ml-1 text-albi-950 hover:text-black">
+					<span
+						class="flex w-11 items-center justify-center ml-1 text-albi-950 hover:text-black"
+					>
 						<Icon
 							class="size-4 muted-foreground"
 						/>
@@ -33,13 +39,19 @@
 			</DropdownMenu.Trigger>
 		</div>
 
-		<DropdownMenu.Content class="w-fit">
+		<DropdownMenu.Content
+			class="w-fit"
+		>
 			{#each children as ribbonChild}
-				<DropdownMenu.Item class="w-full">
-					<button onclick={() => {
-						console.log("click")
-						ribbonAction.value = ribbonChild.action;
-					}}>
+				<DropdownMenu.Item
+					class="w-full"
+				>
+					<button
+						class="w-full text-start"
+						onclick={() => {
+							ribbonAction.value = ribbonChild.action;
+						}}
+					>
 						{ ribbonChild.translation() }
 					</button>
 				</DropdownMenu.Item>
@@ -47,23 +59,34 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 {:else}
-	<div class="min-w-6 ml-0.5">
+	<div
+		class="min-w-6 ml-0.5"
+	>
 		<Tooltip.Root>
 			<DropdownMenu.Root>
-				<DropdownMenu.Trigger class="rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black">
-					<Tooltip.Trigger class="flex  items-center w-auto">
+				<DropdownMenu.Trigger
+					class="rounded hover:bg-muted/80 flex items-center text-albi-950 hover:text-black"
+				>
+					<Tooltip.Trigger
+						class="flex items-center w-auto"
+					>
 						{@const Icon = ribbonItem.icon}
 
 						<Icon
 							class="size-4 "
 						/>
+
 						<ChevronDown class="size-2 mr-0.5" />
 					</Tooltip.Trigger>
 				</DropdownMenu.Trigger>
 
-				<DropdownMenu.Content side="top">
+				<DropdownMenu.Content
+					side="top"
+				>
 					{#each children as ribbonChild}
-						<DropdownMenu.Item class="w-full">
+						<DropdownMenu.Item
+							class="w-full"
+						>
 							<button onclick={() => {
 								ribbonAction.value = ribbonChild.action;
 							}}>

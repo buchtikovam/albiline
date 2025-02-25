@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { authDetails, pageKey } from "$lib/runes/page.svelte";
+	import { authDetails, pageCode } from "$lib/runes/page.svelte";
 	import { disableNavigation } from '$lib/runes/navigation.svelte';
 	import { serverSideTables} from '$lib/runes/table.svelte';
 	import { beforeNavigate } from '$app/navigation';
@@ -19,10 +19,12 @@
 	authDetails.sessionKey = data.auth.sessionKey;
 
 	$effect(() => {
-		pageKey.value = btoa(page.route.id || "");
+		pageCode.value = btoa(page.route.id || "");
 	})
 
-	const table = $state(serverSideTables[pageKey.value])
+	$inspect("page code", pageCode.value);
+
+	const table = $state(serverSideTables[pageCode.value])
 
 	beforeNavigate(({ cancel }) => {
 		if (table) {

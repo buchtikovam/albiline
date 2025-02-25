@@ -274,4 +274,9 @@
 		height: 26px;
 		margin-left: 6px !important;
 	}
+
+
+	:global(.ag-center-cols-viewport) {
+		min-height: 60px !important;
+	}
 </style>

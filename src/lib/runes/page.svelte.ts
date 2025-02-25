@@ -20,7 +20,7 @@ export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state
 	value: []
 });
 
-export const pageKey: { value: string } = $state({ value: "" });
+export const pageCode: { value: string } = $state({ value: "" });
 
 // export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 // 	value: [

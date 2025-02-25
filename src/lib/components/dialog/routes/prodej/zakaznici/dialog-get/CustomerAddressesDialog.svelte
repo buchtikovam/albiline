@@ -6,6 +6,7 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import type {GridOptions} from "ag-grid-enterprise";
+	import {onNavigate} from "$app/navigation";
 
 	interface Props {
 		colDef: any;
@@ -29,6 +30,11 @@
 	const customGridOptions: GridOptions = {
 		columnDefs: colDef,
 	}
+
+	onNavigate(() => {
+		openNewAddressDialog = false;
+		open = false;
+	})
 </script>
 
 

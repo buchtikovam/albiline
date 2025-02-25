@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { serverSideTables } from "$lib/runes/table.svelte";
 	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import { pageCompact, pageKey } from "$lib/runes/page.svelte";
+	import { pageCompact, pageCode } from "$lib/runes/page.svelte";
 	import { customToast } from "$lib/utils/customToast";
 	import deepcopy from "deepcopy";
 	import Save from "lucide-svelte/icons/save";
@@ -17,7 +17,7 @@
 	let isOpen: boolean = $state(false);
 	let hasUnsavedData = $state(false);
 
-	const table = $state(serverSideTables[pageKey.value]);
+	const table = $state(serverSideTables[pageCode.value]);
 
 	let storedPresets: StoredPresets[] = $state([ // will come from api
 		{

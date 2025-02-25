@@ -18,6 +18,7 @@
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import Save from "lucide-svelte/icons/save";
 	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
+	import * as m from '$lib/paraglide/messages.js'
 
 
 	interface Props {
@@ -201,19 +202,19 @@
 
 
 {#snippet header()}
-	<Dialog.Title class="h-5">
-		Vstupní parametry
+	<Dialog.Title class="min-h-5 overflow-visible">
+		{ m.components_input_params_label() }
 	</Dialog.Title>
 {/snippet}
 
 
 {#snippet content()}
-	<div>
+	<div class="overflow-auto pb-2">
 		{#if fulltextFilter !== undefined}
 			<p
 				class="mb-1 text-albi-500 text-sm font-bold"
 			>
-				Hledat všude
+				{ m.components_input_params_section_fulltext() }
 			</p>
 
 			<Input
@@ -229,7 +230,7 @@
 			<p
 				class="text-albi-500 text-sm font-bold "
 			>
-				Hledat podle sloupce
+				{ m.components_input_params_section_columns() }
 			</p>
 
 			{#each columnFilters as columnFilter, i (columnFilter.id)}
@@ -275,7 +276,7 @@
 						class="bg-white"
 						variant="secondary"
 					>
-						Načíst
+						{m.components_input_params_button_load_input_params()}
 					</Button>
 				</div>
 
@@ -284,7 +285,7 @@
 						type="button"
 						onclick={postInputParams}
 					>
-						Filtrovat
+						{m.components_input_params_button_filter()}
 					</Button>
 
 					{#if columnFilters !== undefined}
@@ -309,7 +310,7 @@
 	bind:isOpen={isSaveDialogOpen}
 	bind:inputValue={saveLabel}
 	onSubmit={saveInputParams}
-	title="Uložit vstupní parametry"
-	label="Název"
-	saveButtonLabel="Uložit"
+	title={m.components_input_params_save_dialog_label}
+	label={m.components_input_params_save_dialog_input_label}
+	saveButtonLabel={m.components_input_params_save_dialog_save_button}
 />

@@ -2,22 +2,24 @@
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
-	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
+	import {newCustomerContactFormDef} from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import { customerDetailFormDef } from '$lib/data/autoform/zakaznici/customerDetailFormDef';
-	import { customerPageLayout } from '$lib/data/detail-page-layout/customerPageLayout';
-	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import { activeTabIndex, pageKey } from '$lib/runes/page.svelte';
-	import { page } from '$app/state';
-	import { changeCustomerRoute } from '$lib/utils/navigation/zakaznici/changeCustomerRoute';
-	import { RibbonActionEnum } from "$lib/enums/ribbon/ribbonAction";
-	import { customToast } from "$lib/utils/customToast";
-	import { flipItems } from '$lib/utils/flipItems';
+	import {customerDetailFormDef} from '$lib/data/autoform/zakaznici/customerDetailFormDef';
+	import {customerPageLayout} from '$lib/data/detail-page-layout/customerPageLayout';
+	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
+	import {type ServerSideTable, serverSideTables} from "$lib/runes/table.svelte";
+	import {activeTabIndex, pageCode} from '$lib/runes/page.svelte';
+	import {page} from '$app/state';
+	import {changeCustomerRoute} from '$lib/utils/navigation/zakaznici/changeCustomerRoute.svelte';
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {customToast} from "$lib/utils/customToast";
+	import {flipItems} from '$lib/utils/flipItems';
+	import {getContext} from "svelte";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import type { CustomerContactType, CustomerType } from '$lib/types/page/customers';
-	import type { GridOptions } from 'ag-grid-enterprise';
-	import type { AutoFormType } from '$lib/types/components/form/autoform';
+	import type {CustomerContactType, CustomerType} from '$lib/types/page/customers';
+	import type {GridOptions} from 'ag-grid-enterprise';
+	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
@@ -28,7 +30,6 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import {serverSideTables} from "$lib/runes/table.svelte";
 
 
 	interface Props {
@@ -43,97 +44,106 @@
 
 	let { data }: Props = $props();
 
-	const table = $state(serverSideTables[pageKey.value]);
-	pageKey.value = btoa(page.route.id || ""); // todo: update page key
+
+	// page settings
+	pageCode.value = btoa(page.route.id || "");
 	activeTabIndex.value = 2;
 
-	let initialFormValues: CustomerType = $derived.by(() => {
-		if (data.response) {
-			return data.response.item
-		}
 
-		return {}
-	});
-
-	let editedFormValues: Record<string, any> = $state({ })
-
-	let contactValues: CustomerContactType[] = $derived(data.response.contacts)
-	let editedContactValues: any[] = $state([]);
-	let createdContacts: CustomerContactType[] = $state([]);
-
-	let pageLayout = $state(customerPageLayout);
-	let autoformDef: AutoFormType = $state(customerDetailFormDef);
-	let openNewContactDialog: boolean = $state(false);
-
-
-	$effect(() => {
-		if (Object.keys(editedFormValues).length > 0) {
-			disableNavigation.value = true;
-			disableLeft = true;
-			disableRight = true;
-		} else {
-			disableNavigation.value = false;
-
-			if (uniqueSelectedRows[table.activeSelectedRowIndex + 1]) disableRight = false;
-			if (uniqueSelectedRows[table.activeSelectedRowIndex - 1]) disableLeft = false;
-		}
-	})
-
-
-	// get all unique selected rows from table
-	const uniqueSelectedRows = $derived.by(() => {
-		return table.selectedRows.reduce((
-			acc: Record<string, string | number | boolean | Date>[],
-			item
-		) => {
-			const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
-			if (existingIndex === -1) {
-				acc.push(item);
-			}
-			return acc;
-		}, [])
-	})
-
-
+	// --- initialize variables and state
+	// page
+	let tableKey: string = getContext('serverSideTableKey');
+	let table: ServerSideTable = $state(serverSideTables[tableKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
-	let activeRouteId = $derived({
+	let activeIndex = $state(0);
+	let activeRoute = $derived({
 		customerNodeCode: Number(page.params.customerNodeCode),
 	})
 
+	$inspect("index", activeIndex)
 
-	// called when user swappes to the next/previous customer
-	function changeRouteParameterAndDisable(direction: "left" | "right") {
-		let returnedDisable = changeCustomerRoute(
-			table.selectedRows,
-			uniqueSelectedRows,
-			direction,
-			activeRouteId,
-			page.route.id || "/"
-		);
+	// autoform
+	let initialFormValues: Record<string, any> = $derived(data.response.item);
+	let editedFormValues: Record<string, any> = $state({ })
+	let pageLayout = $state(customerPageLayout);
+	let autoformDef: AutoFormType = $state(customerDetailFormDef);
 
-		disableLeft = returnedDisable.left;
-		disableRight = returnedDisable.right;
+	// contacts ag grid
+	let contactValues: CustomerContactType[] = $derived(data.response.contacts)
+	let editedContactValues: any[] = $state([]);
+	let createdContacts: CustomerContactType[] = $state([]);
+	let openNewContactDialog: boolean = $state(false);
+	const contactsGridOptions: GridOptions = {
+		columnDefs: customerAndAddressContactsAgGridDef,
 	}
 
+	// get all unique selected rows from table
+	const uniqueSelectedRows = $derived.by(() => {
+		if (table) {
+			return table.selectedRows.reduce((
+				acc: Record<string, string | number | boolean | Date>[],
+				item
+			) => {
+				const existingIndex = acc.findIndex(accItem => accItem.customerNodeCode === item.customerNodeCode);
+				if (existingIndex === -1) {
+					acc.push(item);
+				}
+				return acc;
+			}, [])
+		}
 
+		return [];
+	})
+
+
+
+	// runs on mount
 	$effect(() => {
-		const currentIndex = uniqueSelectedRows.findIndex((id) =>
-			id.customerNodeCode === activeRouteId.customerNodeCode
+		disablePageTabs.value = false;
+	})
+
+
+
+	// handles disabling page routing
+	$effect(() => {
+		activeIndex = uniqueSelectedRows.findIndex((id) =>
+			id.customerNodeCode === activeRoute.customerNodeCode
 		);
 
-		if (!uniqueSelectedRows[currentIndex + 1]) disableRight = true;
-		if (!uniqueSelectedRows[currentIndex - 1]) disableLeft = true;
+		if (!uniqueSelectedRows[activeIndex + 1]) disableRight = true;
+		if (!uniqueSelectedRows[activeIndex - 1] || activeIndex === 0) disableLeft = true;
 	})
 
 
+
+	// push current route if no selected rows (user has refreshed page)
 	$effect(() => {
-		if (createdContacts.length > 0) {
-			disableNavigation.value = true;
-			disableLeft = true;
-			disableRight = true;
+		if (table.selectedRows.length === 0) {
+			table.selectedRows.push(activeRoute)
 		}
 	})
+
+
+
+	// disable navigation if edited data are present
+	$effect(() => {
+		if (Object.keys(editedFormValues).length > 0) {
+			disableAllNavigation();
+		} else {
+			disableNavigation.value = false;
+			if (uniqueSelectedRows[activeIndex + 1]) disableRight = false;
+			if (uniqueSelectedRows[activeIndex - 1]) disableLeft = false;
+		}
+	})
+
+
+
+	// disable navigation if new contact was created
+	$effect(() => {
+		if (createdContacts.length > 0) disableAllNavigation();
+	})
+
 
 
 	// runs when ribbon action changes
@@ -166,8 +176,11 @@
 	})
 
 
-	const contactsGridOptions: GridOptions = {
-		columnDefs: customerAndAddressContactsAgGridDef,
+
+	function disableAllNavigation() {
+		disableNavigation.value = true;
+		disableLeft = true;
+		disableRight = true;
 	}
 </script>
 
@@ -196,17 +209,30 @@
 				<DetailNavButton
 					direction="left"
 					bind:disable={disableLeft}
-					navigateDetailFn={() => changeRouteParameterAndDisable("left")}
-					/>
+					navigateDetailFn={() => changeCustomerRoute(
+						activeIndex,
+						uniqueSelectedRows,
+						"left",
+						page.route.id || "/",
+						tableKey
+					)}
+				/>
 
 				<DetailNavButton
 					direction="right"
 					bind:disable={disableRight}
-					navigateDetailFn={() => changeRouteParameterAndDisable("right")}
-					/>
+					navigateDetailFn={() => changeCustomerRoute(
+						activeIndex,
+						uniqueSelectedRows,
+						"right",
+						page.route.id || "/",
+						tableKey
+					)}
+				/>
 			</div>
 		</div>
 	</div>
+
 
 	{#each pageLayout as item (item.id)}
 		<div >
@@ -226,7 +252,9 @@
 			{#if item.type === "contacts"}
 				<div class={item.isLast ? "" : "mb-4"}>
 					<div class="flex gap-2" >
-						<SectionLabel label={m.routes_prodej_zakaznici_detail_contacts_label()}/>
+						<SectionLabel
+							label={m.routes_prodej_zakaznici_detail_contacts_label()}
+						/>
 
 						<button
 							id="contacts"
@@ -235,12 +263,14 @@
 							<ArrowUpDown class="size-4 text-albi-500"/>
 						</button>
 
+
 						<button
 							onclick={() => openNewContactDialog = true}
 						>
 							<Plus strokeWidth={2.5} class="size-4 text-albi-500"/>
 						</button>
 					</div>
+
 
 					<AgGridCSWrapper
 						requiredFields={["customerPersonCode"]}

@@ -8,11 +8,11 @@
 	interface Props {
 		isOpen: boolean;
 		inputValue: string;
-		saveButtonLabel: string;
+		saveButtonLabel: () => string;
 		onChange?: () => void;
 		onSubmit?: () => void;
-		title: string,
-		label: string,
+		title: () => string,
+		label: () => string,
 	}
 
 	let {
@@ -40,7 +40,7 @@
 
 {#snippet header()}
 	<Dialog.Title>
-		{ title }
+		{ title() }
 	</Dialog.Title>
 {/snippet}
 
@@ -54,7 +54,7 @@
 			for="name"
 			class="text-right"
 		>
-			{ label }
+			{ label() }
 		</Label>
 
 		<Input
@@ -69,7 +69,7 @@
 				type="submit"
 				class="mt-6 w-full"
 			>
-				{ saveButtonLabel }
+				{ saveButtonLabel() }
 			</Button>
 		</Dialog.Footer>
 	</form>

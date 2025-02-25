@@ -29,16 +29,19 @@
 	})
 
 
-	if (startValue) {
-		// startValue.setMonth(startValue.getMonth() - 1);
-		// startValue.setDate(startValue.getDate() + 1);
-		value.start = parseDate(new Date(startValue).toISOString().split('T')[0])
-	}
+	$effect(() => {
+		if (startValue) {
+			// startValue.setMonth(startValue.getMonth() - 1);
+			// startValue.setDate(startValue.getDate() + 1);
+			value.start = parseDate(new Date(startValue).toISOString().split('T')[0])
+		}
 
-	if (endValue) {
-		// endValue.setMonth(endValue.getMonth() - 1);
-		value.end = parseDate(new Date(endValue).toISOString().split('T')[0])
-	}
+		if (endValue) {
+			// endValue.setMonth(endValue.getMonth() - 1);
+			value.end = parseDate(new Date(endValue).toISOString().split('T')[0])
+		}
+
+	})
 
 
 	$effect(() => {

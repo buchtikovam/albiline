@@ -2,29 +2,27 @@
 	import {
 		customerAndAddressContactsAgGridDef
 	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
-	import {serverSideTableKey, serverSideTables} from '$lib/runes/table.svelte';
-	import { customerAddressDetailFormDef } from '$lib/data/autoform/zakaznici/customerAddressFormDef';
-	import { customerAddressesAgGridDef } from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAddressesAgGridDef.svelte';
-	import { customerAddressPageLayout } from '$lib/data/detail-page-layout/customerAddressPageLayout';
-	import { newCustomerContactFormDef } from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
-	import { disableNavigation } from '$lib/runes/navigation.svelte';
-	import {activeTabIndex, isMobile, pageKey} from '$lib/runes/page.svelte';
-	import { ribbonAction } from '$lib/runes/ribbon.svelte';
-	import { page } from '$app/state';
-	import { apiServiceGET, apiServicePOST } from '$lib/api/apiService.svelte';
-	import { changeCustomerAddressRoute } from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute';
-	import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-	import { getPageMetaData } from '$lib/utils/getPageMetaData';
-	import { invalidateAll } from '$app/navigation';
-	import { customToast } from '$lib/utils/customToast';
-	import { flipItems } from '$lib/utils/flipItems';
-	import { onMount } from 'svelte';
+	import {type ServerSideTable, serverSideTables} from '$lib/runes/table.svelte';
+	import {activeTabIndex, isMobile, pageCode} from '$lib/runes/page.svelte';
+	import {customerAddressDetailFormDef} from '$lib/data/autoform/zakaznici/customerAddressFormDef';
+	import {customerAddressesAgGridDef} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAddressesAgGridDef.svelte';
+	import {customerAddressPageLayout} from '$lib/data/detail-page-layout/customerAddressPageLayout';
+	import {newCustomerContactFormDef} from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
+	import {disableNavigation} from '$lib/runes/navigation.svelte';
+	import {ribbonAction} from '$lib/runes/ribbon.svelte';
+	import {page} from '$app/state';
+	import {apiServiceGET} from '$lib/api/apiService.svelte';
+	import {changeCustomerAddressRoute} from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute.svelte';
+	import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
+	import {customToast} from '$lib/utils/customToast';
+	import {flipItems} from '$lib/utils/flipItems';
+	import {getContext} from 'svelte';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Repeat from 'lucide-svelte/icons/repeat';
 	import Plus from 'lucide-svelte/icons/plus';
 	import * as m from '$lib/paraglide/messages.js';
-	import type {CustomerAddressType, CustomerContactType, CustomerType} from '$lib/types/page/customers';
-	import type { GridOptions } from 'ag-grid-enterprise';
+	import type {CustomerAddressType, CustomerContactType} from '$lib/types/page/customers';
+	import type {GridOptions} from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
@@ -38,136 +36,112 @@
 
 	interface Props {
 		data: {
-		response: {
-			item: CustomerAddressType,
-			contacts: CustomerContactType[]
-		},
-		status: "success" | "fail",
-	};
+			response: {
+				item: CustomerAddressType,
+				contacts: CustomerContactType[]
+			},
+			status: "success" | "fail",
+		};
 	}
 
 	let { data }: Props = $props();
 
+
+	// page settings
 	activeTabIndex.value = 1;
-	pageKey.value = btoa(page.route.id || "");
-	const table = $state(serverSideTables[serverSideTableKey]);
-
-	let initialFormValues: CustomerType = $derived.by(() => {
-		if (data.response) {
-			return data.response.item
-		}
-
-		return {}
-	});
+	pageCode.value = btoa(page.route.id || "");
 
 
-	let editedFormValues: Record<string, any> = $state({ id: data.response.item.id });
-
-	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
-	let editedContactValues: any[] = $state([]);
-	let createdContacts: CustomerContactType[] = $state([]);
-
-	let pageLayout = $state(customerAddressPageLayout);
-	let pageMetaData = $state();
-
-	let openNewContactDialog: boolean = $state(false);
-	let openAgGridDialog: boolean = $state(false);
-
-	let autoformDef = $state(customerAddressDetailFormDef);
-	let selectedRows = $derived(table.selectedRows);
-
+	// --- initialize variables and state
+	// page
+	let tableKey: string = getContext('serverSideTableKey');
+	let table: ServerSideTable = $state(serverSideTables[tableKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
-
-	let activeRouteId = $derived({
+	let activeRoute = $derived({
 		customerNodeCode: Number(page.params.customerNodeCode),
 		customerAddressCode: Number(page.params.customerAddressCode)
 	});
 
-	$inspect(initialFormValues);
+	// customer addresses dialog
+	let openAgGridDialog: boolean = $state(false);
+	let addresses = $state([]);
 
-	onMount(async () => {
-		if (!pageMetaData) {
-			pageMetaData = await getPageMetaData();
+	// autoform
+	let initialFormValues: Record<string, any> = $derived(data.response.item);
+	let editedFormValues: Record<string, any> = $state({ id: data.response.item.id });
+	let pageLayout = $state(customerAddressPageLayout);
+	let autoformDef = $state(customerAddressDetailFormDef);
+
+	// contacts ag grid
+	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
+	let editedContactValues: any[] = $state([]);
+	let createdContacts: CustomerContactType[] = $state([]);
+	let openNewContactDialog: boolean = $state(false);
+	const contactsGridOptions: GridOptions = {
+		columnDefs: customerAndAddressContactsAgGridDef,
+	}
+
+
+
+	// runs during mount and unmount
+	$effect(() => {
+		disableNavigation.value = false;
+		if (!table.selectedRows[table.activeSelectedRowIndex + 1]) disableRight = true;
+		if (!table.selectedRows[table.activeSelectedRowIndex - 1]) disableLeft = true;
+
+		return(() => {
+			console.log("return")
+			addresses = [];
+			openAgGridDialog = false;
+		})
+	})
+
+
+
+	// push current route if no selected rows (user has refreshed page)
+	$effect(() => {
+		if (table.selectedRows.length === 0) {
+			table.selectedRows.push(activeRoute)
 		}
 	})
+
+
+
+	// disable navigation on routing between detail pages
+	$effect(() => {
+		if (table.activeSelectedRowIndex) {
+			if (!table.selectedRows[table.activeSelectedRowIndex + 1]) disableRight = true;
+			if (!table.selectedRows[table.activeSelectedRowIndex - 1]) disableLeft = true;
+		}
+	})
+
 
 
 	// disable navigation if there are unsaved changes in form
 	$effect(() => {
 		if (Object.keys(editedFormValues).length > 1) {
-			disableNavigation.value = true;
-			disableLeft = true;
-			disableRight = true;
+			disableAllNavigation();
 		} else {
 			disableNavigation.value = false;
 
-			if (selectedRows[table.activeSelectedRowIndex + 1]) {
+			if (table.selectedRows[table.activeSelectedRowIndex + 1]) {
 				disableRight = false;
 			}
 
-			if (selectedRows[table.activeSelectedRowIndex - 1]) {
+			if (table.selectedRows[table.activeSelectedRowIndex - 1]) {
 				disableLeft = false;
 			}
 		}
 	})
 
 
+
 	// disable navigation if new contact was created
 	$effect(() => {
-		if (createdContacts.length > 0) {
-			disableNavigation.value = true;
-			disableLeft = true;
-			disableRight = true;
-		}
+		if (createdContacts.length > 0) disableAllNavigation();
 	})
 
-
-	// called when user swappes to the next/previous address
-	function changeRouteParameterAndDisable(direction: "left" | "right") {
-		const returnedDisable = changeCustomerAddressRoute(
-			selectedRows,
-			direction,
-			activeRouteId,
-			page.route.id || "/"
-		);
-
-		disableLeft = returnedDisable.left;
-		disableRight = returnedDisable.right;
-	}
-
-
-	// fetching for customer addresses ag-grid dialog
-	let addresses = $state([])
-
-	async function getAddresses() {
-		if (addresses.length === 0) {
-			const res = await apiServiceGET(`customers/${page.params.customerNodeCode}/addresses`)
-
-			if (res.ok) {
-				const responseData = await res.json();
-				addresses = await responseData.items;
-			} else {
-				customToast("Critical", "Nepodařilo se získat prodejny")
-			}
-		}
-	}
-
-
-	// runs during mount and unmount
-	$effect(() => {
-		const currentIndex = selectedRows.findIndex((id) =>
-			id.customerNodeCode === activeRouteId.customerNodeCode
-		);
-
-		if (!selectedRows[currentIndex + 1]) disableRight = true;
-		if (!selectedRows[currentIndex - 1]) disableLeft = true;
-
-		return(() => {
-			addresses = [];
-			openAgGridDialog = false;
-		})
-	})
 
 
 	// runs when ribbon action changes
@@ -178,17 +152,13 @@
 				createdContacts.length > 0 ||
 				editedContactValues.length > 0
 			) {
-				let editedFormValuesArr = [];
-				editedFormValuesArr.push(editedFormValues)
-
 				const saveObj = {
 					insert: [...createdContacts],
-					update: [...editedContactValues, ...editedFormValuesArr],
+					update: [...editedContactValues, ...[editedFormValues]],
 					delete: []
 				}
 
-				console.log(JSON.stringify(saveObj, null, 1));
-				// updateAndReload(saveObj);
+				updateAndReload(saveObj);
 			} else {
 				customToast(
 					"InfoToast",
@@ -201,36 +171,37 @@
 	})
 
 
-	// save data on the api
-	async function updateAndReload(saveObj) {
-		const res = await apiServicePOST(
-			`customers/${page.params.customerNodeCode}/addresses/${page.params.customerAddressCode}`,
-			saveObj
-		)
 
-		if (res.ok) {
-			editedFormValues = {};
-			editedContactValues = [];
-			createdContacts = [];
-			disableNavigation.value = false;
-			customToast(
-				"Success",
-				"Změny byly úspěšně uloženy"
-			);
-			await invalidateAll();
-		} else {
-			customToast(
-				"Critical",
-				"Nepovedlo se uložit změny."
-			)
+	function disableAllNavigation() {
+		disableNavigation.value = true;
+		disableLeft = true;
+		disableRight = true;
+	}
+
+
+
+	// save data on the api
+	async function updateAndReload(saveObj: {insert: any[], update: any[], delete: any[]}) {
+		console.log(JSON.stringify(saveObj, null, 1)); // clear all edited and created
+	}
+
+
+
+	// fetching for customer addresses ag-grid dialog
+	async function getAddresses() {
+		if (addresses.length === 0) {
+			const res = await apiServiceGET(`customers/${page.params.customerNodeCode}/addresses`)
+
+			if (res.ok) {
+				const responseData = await res.json();
+				addresses = await responseData.items;
+			} else {
+				customToast("Critical", "Nepodařilo se získat prodejny")
+			}
 		}
 	}
-
-
-	const contactsGridOptions: GridOptions = {
-		columnDefs: customerAndAddressContactsAgGridDef,
-	}
 </script>
+
 
 
 
@@ -239,6 +210,7 @@
 		Prodejna {initialFormValues.customerAddressCode || ""} | Albiline
 	</title>
 </svelte:head>
+
 
 
 
@@ -264,7 +236,6 @@
 					/>
 				{/if}
 
-
 				<button
 					class={(disableNavigation.value ? "text-slate-300 " : "text-albi-500") + " w-6"}
 					disabled={disableNavigation.value}
@@ -278,21 +249,29 @@
 			</div>
 
 			<!-- page navigation buttons -->
-			{#if table}
-				<div class={table.selectedRows.length > 1 ? "flex gap-3" : "hidden"}>
-					<DetailNavButton
-						direction="left"
-						bind:disable={disableLeft}
-						navigateDetailFn={() => changeRouteParameterAndDisable("left")}
-					/>
+			<div
+				class={table.selectedRows.length > 1 ? "flex gap-3" : "hidden"}
+			>
+				<DetailNavButton
+					direction="left"
+					bind:disable={disableLeft}
+					navigateDetailFn={() => changeCustomerAddressRoute(
+						"left",
+						page.route.id || "",
+						tableKey
+					)}
+				/>
 
-					<DetailNavButton
-						direction="right"
-						bind:disable={disableRight}
-						navigateDetailFn={() => changeRouteParameterAndDisable("right")}
-					/>
-				</div>
-			{/if}
+				<DetailNavButton
+					direction="right"
+					bind:disable={disableRight}
+					navigateDetailFn={() => changeCustomerAddressRoute(
+						"right",
+						page.route.id || "",
+						tableKey
+					)}
+				/>
+			</div>
 		</div>
 	</div>
 
@@ -302,7 +281,9 @@
 		<div class="">
 			<!-- address detail form -->
 			{#if item.type === "form"}
-				<div class={(item.isLast ? "-mb-2" : "")}>
+				<div
+					class={(item.isLast ? "-mb-2" : "")}
+				>
 					<AutoForm
 						bind:formDef={autoformDef}
 						allowCrossColumnDND={true}
@@ -314,7 +295,9 @@
 
 			<!-- address contacts table: display all, add new, move table up/down -->
 			{#if item.type === "contacts"}
-				<div class={(item.isLast ? "mb-2" : "mb-4")}>
+				<div
+					class={(item.isLast ? "mb-2" : "mb-4")}
+				>
 					<div class="flex gap-2 pb-2">
 						<SectionLabel
 							label={m.routes_prodej_zakaznici_detail_contacts_label()}
@@ -362,7 +345,7 @@
 />
 
 
-<!--&lt;!&ndash; new customer form &ndash;&gt;-->
+<!-- new customer form -->
 <NewCustomerContactDialog
 	formDef={newCustomerContactFormDef}
 	bind:createdContacts={createdContacts}

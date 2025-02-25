@@ -1,4 +1,4 @@
-import {authDetails, pageKey} from '$lib/runes/page.svelte';
+import {authDetails, pageCode} from '$lib/runes/page.svelte';
 import {languageTag} from "$lib/paraglide/runtime";
 
 
@@ -8,7 +8,7 @@ const headers = $state(
 		'Content-Type': 'application/json',
 		'Session-Key': authDetails.sessionKey || "",
 		'Accept-Language' : languageTag(),
-		'Page-Code' : pageKey.value,
+		'Page-Code' : pageCode.value,
 	}
 )
 
@@ -19,7 +19,6 @@ const headers = $state(
 export async function apiServiceGET(
 	endpoint: string
 ): Promise<Response> {
-	console.log(pageKey.value)
 	return await fetch(url + endpoint, {
 		method: 'GET',
 		headers: headers,

@@ -61,6 +61,13 @@
 	"components_ribbon_item_save_preset": "Uložit šablonu",
 	"components_ribbon_item_my_presets": "Vybrat z uložených šablon",
 
+	"components_ribbon_dialog_save_filters_label" : "Uložit filtry",
+	"components_ribbon_dialog_save_filters_input_label" : "Název",
+	"components_ribbon_dialog_save_filters_save_button" : "Potvrdit",
+	"components_ribbon_dialog_save_preset_label" : "Uložit šablonu",
+	"components_ribbon_dialog_save_preset_input_label" : "Název",
+	"components_ribbon_dialog_save_preset_save_button" : "Potvrdit",
+
 	"components_operators_or" : "NEBO",
 	"components_operators_and" : "A",
 	"components_operators_comparator" : "Podmínka",
@@ -80,6 +87,14 @@
 	"components_operators_before" : "Před",
 	"components_operators_after" : "Po",
 
+	"components_input_params_label" : "Vstupní parametry",
+	"components_input_params_section_fulltext" : "Hledat všude",
+	"components_input_params_section_columns" : "Hledat podle sloupce",
+	"components_input_params_button_load_input_params" : "Načíst",
+	"components_input_params_button_filter" : "Filtrovat",
+	"components_input_params_save_dialog_label" : "Uložit vstupní parametry",
+	"components_input_params_save_dialog_input_label" : "Název",
+	"components_input_params_save_dialog_save_button" : "Uložit",
 
 	"routes_login_form_label": "Přihlaste se ke svému účtu",
 	"routes_login_form_user_code": "Uživatelský kód",
