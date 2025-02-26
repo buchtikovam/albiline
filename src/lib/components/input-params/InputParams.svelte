@@ -1,30 +1,33 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from "$lib/components/ui/input";
+	import {Button} from '$lib/components/ui/button';
+	import {Input} from "$lib/components/ui/input";
+	import {getColumnFilters} from "$lib/utils/components/input-params/getColumnFilters";
 	import Plus from "lucide-svelte/icons/plus";
 	import deepcopy from "deepcopy";
 	import type {
-		InputDialogType,
-		InputDialogSelectOption,
-		ColumnFilter,
-		ColumnFilterModelCondition
-	} from "$lib/types/components/dialog/inputDialog";
+		InputParamsType,
+		InputParamsSelectOption,
+		FetchedInputParam
+	} from "$lib/types/components/input-params/inputParams";
 	import InputDialogColumnFilterWrapper
 		from "$lib/components/input-params/column-filters/InputDialogColumnFilterWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import {formatDateLong} from "$lib/utils/formatting/formatDateLong.js";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import Save from "lucide-svelte/icons/save";
 	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 	import * as m from '$lib/paraglide/messages.js'
+	import LoadInputParamsDialog from "$lib/components/input-params/LoadInputParamsDialog.svelte";
+	import {apiServicePOST} from "$lib/api/apiService.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
+	import {responseDialogMessages} from "$lib/runes/page.svelte";
 
 
 	interface Props {
 		open: boolean,
-		defaultInputDialog: InputDialogType,
-		selectOptions: InputDialogSelectOption[]
+		defaultInputDialog: InputParamsType,
+		selectOptions: InputParamsSelectOption[]
 	}
 
 	let {
@@ -34,39 +37,56 @@
 	}: Props = $props();
 
 
-	let inputDialog: InputDialogType = $state(defaultInputDialog);
-	let fulltextFilter: string|null|undefined = $state(inputDialog.fulltext);
-	let columnFilters = $state(inputDialog.columnFilters);
-
-
+	let inputDialog: InputParamsType = $state(defaultInputDialog);
+	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
 	let saveLabel = $state("");
+	let selectedParam: FetchedInputParam|undefined = $state();
+	let isLoadedParamChanged = $derived(JSON.stringify(inputDialog) !== JSON.stringify(selectedParam?.paramValue))
 
-	function saveInputParams() {
+
+
+
+	async function saveInputParams() {
 		const inputsParamsToSave = {
-			label: saveLabel,
-			inputParams: {
-				fulltext: fulltextFilter,
-				columnFilters: getColumnFilters(),
+			paramName: saveLabel,
+			paramValue: {
+				fulltext: inputDialog.fulltext,
+				columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 			},
 		}
 
-		isSaveDialogOpen = false;
-		saveLabel = "";
-
 		console.log(JSON.stringify(inputsParamsToSave, null, 1));
+
+		try {
+			const resp = await apiServicePOST("userInputParameters", inputsParamsToSave);
+
+			if (resp.ok) {
+				isSaveDialogOpen = false;
+				saveLabel = "";
+
+				setTimeout(() => {
+					openedRibbonDialog.value = "empty";
+				}, 200)
+			} else {
+				let respData = await resp.json()
+				responseDialogMessages.value = respData.messages
+			}
+		} catch (e) {
+			console.error("Unexpected error: ", e)
+		}
 	}
 
 
 	function addInput() {
-		if (columnFilters) {
+		if (inputDialog.columnFilters) {
 			let lastIndex = 0;
 
-			columnFilters.length > 0
-				? lastIndex = columnFilters[columnFilters.length - 1].id || 0
+			inputDialog.columnFilters.length > 0
+				? lastIndex = inputDialog.columnFilters[inputDialog.columnFilters.length - 1].id || 0
 				: lastIndex = 0;
 
-			columnFilters.push({
+			inputDialog.columnFilters.push({
 				id: lastIndex + 1,
 				columnName: null,
 				type: "text",
@@ -82,113 +102,23 @@
 	}
 
 
-	function getColumnFilters() {
-		const cleanedColumnFilters: ColumnFilter[] = [];
-		const currentColumnFilters = deepcopy(columnFilters);
-
-		currentColumnFilters?.forEach((columnFilter) => {
-			if (
-				columnFilter.filterModel.conditions.length > 0 &&
-				columnFilter.columnName !== null
-			) {
-				let cleanedConditions: ColumnFilterModelCondition[] = [];
-
-				if (columnFilter.type === "text") {
-					columnFilter.filterModel.conditions.forEach((condition) => {
-						if (
-							condition.type !== null &&
-							condition.value !== null &&
-							condition.value !== ""
-						) {
-							cleanedConditions.push(condition);
-						}
-					})
-				}
-
-				if (columnFilter.type === "number") {
-					columnFilter.filterModel.conditions.forEach((condition) => {
-						if (
-							condition.type !== null &&
-							condition.type !== "between" &&
-							condition.value !== null
-						) {
-							cleanedConditions.push(condition);
-						}
-
-						if (
-							condition.type === "between" &&
-							condition.value &&
-							condition.endValue
-						) {
-							cleanedConditions.push(condition);
-						}
-					})
-				}
-
-				if (columnFilter.type === "boolean") {
-					columnFilter.filterModel.conditions.forEach((condition) => {
-						if (condition.type !== null) {
-							const cleanCondition = condition;
-							cleanCondition.value = condition.type === "true";
-							cleanedConditions.push(cleanCondition);
-						}
-					})
-				}
-
-				if (columnFilter.type === "date") {
-					columnFilter.filterModel.conditions.forEach((condition) => {
-						if (
-							condition.type !== null &&
-							condition.type !== "between" &&
-							condition.value
-						) {
-							condition.value = formatDateLong(condition.value);
-							cleanedConditions.push(condition);
-						}
-
-						if (
-							condition.type === "between" &&
-							condition.value &&
-							condition.endValue
-						) {
-							condition.value = formatDateLong(condition.value);
-							condition.endValue = formatDateLong(condition.endValue);
-							cleanedConditions.push(condition);
-						}
-					})
-				}
-
-				if (cleanedConditions.length > 0) {
-					let cleanedColumnFilter = columnFilter;
-
-					if (cleanedConditions.length === 1) {
-						cleanedColumnFilter.filterModel.operator = null;
-					}
-
-					cleanedColumnFilter.filterModel.conditions = cleanedConditions;
-					cleanedColumnFilters.push(cleanedColumnFilter);
-				}
-			}
-		})
-
-		cleanedColumnFilters.forEach((columnFilter) => {
-			delete columnFilter.id
-		})
-
-		return cleanedColumnFilters;
-	}
-
-
 	function postInputParams() {
-		let inputParamObj: InputDialogType = {
-			fulltext: fulltextFilter,
+		let inputParamObj: InputParamsType = {
+			fulltext: inputDialog.fulltext,
 			inputs: [],
-			columnFilters: getColumnFilters(),
+			columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 		}
 
 		console.log(JSON.stringify(inputParamObj, null, 2));
 	}
+
+
+	function onParamSelect(inputParam: FetchedInputParam) {
+		inputDialog = deepcopy(inputParam.paramValue);
+		selectedParam = inputParam;
+	}
 </script>
+
 
 
 
@@ -202,15 +132,19 @@
 
 
 {#snippet header()}
-	<Dialog.Title class="min-h-5 overflow-visible">
+	<Dialog.Title class="min-h-5 overflow-visible flex gap-1">
 		{ m.components_input_params_label() }
+
+		{#if selectedParam}
+			<p class={`${isLoadedParamChanged ? "text-slate-300" : "text-albi-950"} transition-all`}>({selectedParam.paramName})</p>
+		{/if}
 	</Dialog.Title>
 {/snippet}
 
 
 {#snippet content()}
 	<div class="overflow-auto pb-2">
-		{#if fulltextFilter !== undefined}
+		{#if inputDialog.fulltext !== undefined}
 			<p
 				class="mb-1 text-albi-500 text-sm font-bold"
 			>
@@ -219,21 +153,21 @@
 
 			<Input
 				type="text"
-				bind:value={fulltextFilter}
+				bind:value={inputDialog.fulltext}
 				placeholder="Id, Název, Město, ..."
 				class="border-border mb-4"
 			/>
 		{/if}
 
 
-		{#if columnFilters !== undefined}
+		{#if inputDialog.columnFilters !== undefined}
 			<p
 				class="text-albi-500 text-sm font-bold "
 			>
 				{ m.components_input_params_section_columns() }
 			</p>
 
-			{#each columnFilters as columnFilter, i (columnFilter.id)}
+			{#each inputDialog.columnFilters as columnFilter, i}
 				<div
 					class={
 						columnFilter.filterModel.conditions.length > 1
@@ -249,7 +183,7 @@
 
 					<InputDialogColumnFilterWrapper
 						selectOptions={selectOptions}
-						bind:columnFilter={columnFilters[columnFilter.id]}
+						bind:columnFilter={inputDialog.columnFilters[i]}
 					/>
 				</div>
 			{/each}
@@ -275,6 +209,7 @@
 						type="button"
 						class="bg-white"
 						variant="secondary"
+						onclick={() => isLoadDialogOpen = true}
 					>
 						{m.components_input_params_button_load_input_params()}
 					</Button>
@@ -288,7 +223,7 @@
 						{m.components_input_params_button_filter()}
 					</Button>
 
-					{#if columnFilters !== undefined}
+					{#if inputDialog.columnFilters !== undefined}
 						<Button
 							type="button"
 							onclick={() => addInput()}
@@ -306,6 +241,7 @@
 
 
 
+
 <SaveWithLabelDialog
 	bind:isOpen={isSaveDialogOpen}
 	bind:inputValue={saveLabel}
@@ -313,4 +249,11 @@
 	title={m.components_input_params_save_dialog_label}
 	label={m.components_input_params_save_dialog_input_label}
 	saveButtonLabel={m.components_input_params_save_dialog_save_button}
+/>
+
+
+
+<LoadInputParamsDialog
+	bind:isOpen={isLoadDialogOpen}
+	onchange={onParamSelect}
 />

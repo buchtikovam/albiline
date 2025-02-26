@@ -1,4 +1,4 @@
-export function formatDateLong(dateString: string) {
+export function parseStringToDateLong(dateString: string) {
 	const date = new Date(dateString);
 
 	console.log(dateString)

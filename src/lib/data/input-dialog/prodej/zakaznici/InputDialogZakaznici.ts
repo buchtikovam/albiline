@@ -1,8 +1,8 @@
-import type {InputDialogSelectOption, InputDialogType} from "$lib/types/components/dialog/inputDialog";
+import type {InputParamsSelectOption, InputParamsType} from "$lib/types/components/input-params/inputParams";
 import * as m from '$lib/paraglide/messages.js'
 
 
-export const InputDialogZakaznici: InputDialogType = {
+export const InputDialogZakaznici: InputParamsType = {
 	fulltext: "",
 
 	// inputs : [],
@@ -25,7 +25,7 @@ export const InputDialogZakaznici: InputDialogType = {
 
 
 
-export const InputDialogZakazniciSelectOptions: InputDialogSelectOption[] = [
+export const InputDialogZakazniciSelectOptions: InputParamsSelectOption[] = [
 	{
 		field: "customerAddressCode",
 		label: m.routes_prodej_zakaznici_table_column_customer_address_code,

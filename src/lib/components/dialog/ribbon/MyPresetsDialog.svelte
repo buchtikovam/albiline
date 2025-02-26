@@ -1,29 +1,30 @@
 <script lang="ts">
-	import { serverSideTables } from "$lib/runes/table.svelte";
-	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import { pageCompact, pageCode } from "$lib/runes/page.svelte";
-	import { customToast } from "$lib/utils/customToast";
+	import {pageCompact, pageCode} from "$lib/runes/page.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
+	import {serverSideTables} from "$lib/runes/table.svelte";
+	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
+	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
 	import deepcopy from "deepcopy";
 	import Save from "lucide-svelte/icons/save";
+	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
+	import type {StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
 	import type {
 		ICellRendererParams
 	} from "ag-grid-community";
-	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
-	import type {StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
+
 
 	let isOpen: boolean = $state(false);
 	let hasUnsavedData = $state(false);
 
-	const table = $state(serverSideTables[pageCode.value]);
-
-	let storedPresets: StoredPresets[] = $state([ // will come from api
+	let fetchedPresets: StoredPresets[] = $state([ // will come from api
 		{
-			id: 0,
-			label: 'Testovací šablonka',
-			presets: [
+			presetId: 0,
+			presetName: 'Testovací šablonka',
+			presetValue: [
 				{
 					field: "isBadPayer",
 					width: 103,
@@ -507,9 +508,9 @@
 	})
 
 
-	export const ribbonPresetsAgGridDef: ColDef<any, any>[] = [
+	export const ribbonPresetsAgGridDef: ColDef[] = [
 		{
-			field: "label",
+			field: "presetName",
 			editable: true,
 			flex: 1,
 		},
@@ -518,14 +519,14 @@
 			pinned: "right",
 			width: pageCompact.value ? 28 : 36,
 			minWidth: pageCompact.value ? 28 : 36,
-			cellRenderer: (params: ICellRendererParams) => selectBtn(params),
+			cellRenderer: (params: ICellRendererParams) => selectButton(params, handleClickSelect),
 		},
 		{
 			field: "delete",
 			pinned: "right",
 			width: pageCompact.value ? 28 : 36,
 			minWidth: pageCompact.value ? 28 : 36,
-			cellRenderer: (params: ICellRendererParams) => deleteBtn(params),
+			cellRenderer: (params: ICellRendererParams) => deleteButton(params, handleDelete),
 		},
 	]
 
@@ -534,85 +535,53 @@
 		columnDefs: ribbonPresetsAgGridDef,
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data.id);
+			return String(params.data.presetId);
 		},
 	}
 
 
-	function selectBtn(params: ICellRendererParams) {
-		const div = document.createElement('div');
-		let divClasses = pageCompact.value
-			? ["h-full", "mt-[3px]"]
-			: ["h-full", "mt-1.5"]
 
-		div.classList.add(...divClasses);
 
-		const link = document.createElement('button');
-		const linkClasses = ["size-5", "text-albi-500", "hover:text-albi-700", "flex", "justify-center", "items-center"];
-		div.classList.add(...linkClasses);
+	async function getPresets() {
+		// const resp = await apiServiceGET("userfilters/mbuc");
+		//
+		// if (resp.ok) {
+		// 	const respItems = await resp.json();
+		// 	fetchedPresets = respItems.items;
+		// }
+	}
 
-		link.innerHTML = pageCompact.value
-			? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>"
-			: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-external-link\"><path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/></svg>";
 
-		link.addEventListener("click", () => {
-			if (!hasUnsavedData) {
-				let defaultColDefCopy = new Map(
-					deepcopy(table.defaultColDef).map((col: ColDef) => [col.field, col])
-				);
-				let clickedPreset = params.data.presets;
+	function handleClickSelect(params: ICellRendererParams) {
+		let defaultColDefCopy = new Map(
+			deepcopy(serverSideTables[pageCode.value].defaultColDef).map((col: ColDef) => [col.field, col])
+		);
 
-				clickedPreset.forEach((preset: StoredPreset) => {
-					let column = defaultColDefCopy.get(preset.field);
-					if (column) {
-						Object.keys(column).forEach((key) => {
-							preset[key] = preset[key] ?? column[key];
-						});
-					}
+		let clickedPreset = params.data.presetValue;
+
+		clickedPreset.forEach((preset: StoredPreset) => {
+			let column = defaultColDefCopy.get(preset.field);
+			if (column) {
+				Object.keys(column).forEach((key) => {
+					// @ts-ignore
+					preset[key] = preset[key] ?? column[key];
 				});
-
-				table.selectedPreset = clickedPreset;
-				isOpen = false;
-				setTimeout(() => {
-					openedRibbonDialog.value = 'empty';
-				}, 200)
-			} else {
-				customToast("WarningToast", "Nejprve ulož data");
 			}
 		});
 
-
-		div.appendChild(link);
-		return div;
+		serverSideTables[pageCode.value].selectedPreset = clickedPreset;
+		openedRibbonDialog.value = "empty";
 	}
 
-	function deleteBtn(params: ICellRendererParams) {
-		const div = document.createElement('div');
-		let divClasses = pageCompact.value
-			? ["h-full", "mt-[3px]"]
-			: ["h-full", "mt-1.5"];
 
-		div.classList.add(...divClasses);
 
-		const link = document.createElement('button');
-		const linkClasses = ["size-5", "text-red-600", "hover:text-red-800", "flex", "justify-center", "items-center"];
-		div.classList.add(...linkClasses);
-
-		link.innerHTML = pageCompact.value
-			? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
-			: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>"
-
-		link.addEventListener("click", () => {
-			storedPresets.forEach((filter, index) => {
-				if (filter.id === params.data.id) {
-					storedPresets.splice(index, 1);
-					hasUnsavedData = true;
-				}
-			})
+	function handleDelete(params: ICellRendererParams) {
+		fetchedPresets.forEach((filter, index) => {
+			if (filter.presetId === params.data.id) {
+				fetchedPresets.splice(index, 1);
+				hasUnsavedData = true;
+			}
 		})
-
-		div.appendChild(link);
-		return div;
 	}
 </script>
 
@@ -630,12 +599,13 @@
 	}}
 	fixedHeight={false}
 	size="sm"
-	customCss={"!h-[360px]  md:!w-[500px]"}
+	customCss={"!h-[360px] md:!w-[500px]"}
 />
+
 
 {#snippet header()}
 	<Dialog.Title class="h-6 flex pr-4 gap-2 items-center">
-		Uložené šablony - Zákazníci
+		{m.components_ribbon_dialog_my_presets_label()}
 
 		{#if hasUnsavedData}
 			<button
@@ -649,17 +619,18 @@
 	</Dialog.Title>
 {/snippet}
 
+
 {#snippet content()}
 	<div class="h-full">
-		{#if storedPresets.length > 0}
+		{#if fetchedPresets.length > 0}
 			<AgGridCSWrapper
-				rowData={storedPresets}
+				rowData={fetchedPresets}
 				gridOptionsCustom={customGridOptions}
 				fullHeight={true}
 				hiddenHeader={true}
 			/>
 		{:else }
-			Nemáš žádné uložené šablony :(
+			{m.components_ribbon_dialog_my_presets_no_instances_found()}
 		{/if}
 	</div>
 {/snippet}

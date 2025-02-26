@@ -4,11 +4,11 @@ import Equal from "lucide-svelte/icons/equal";
 import EqualNot from "lucide-svelte/icons/equal-not";
 import ArrowRightFromLine from "lucide-svelte/icons/arrow-right-from-line";
 import ArrowRightToLine from "lucide-svelte/icons/arrow-right-to-line";
-import type { InputDialogOperator } from "$lib/types/components/dialog/inputDialog";
+import type { InputParamsOperator } from "$lib/types/components/input-params/inputParams";
 import * as m from '$lib/paraglide/messages.js'
 
 
-export const stringOperators: InputDialogOperator[] = [
+export const stringOperators: InputParamsOperator[] = [
 	{
 		field: "contains",
 		label: m.components_operators_contains,

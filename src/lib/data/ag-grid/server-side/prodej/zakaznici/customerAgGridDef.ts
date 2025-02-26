@@ -1,7 +1,7 @@
 import type { ValueFormatterParams, ColDef } from 'ag-grid-enterprise';
 import * as m from '$lib/paraglide/messages.js'
-import {BooleanFilter} from "$lib/utils/components/ag-grid/booleanFilter";
-import {formatDate} from "$lib/utils/formatting/formatDate";
+import {BooleanFilter} from "$lib/utils/components/ag-grid/column-filters/booleanFilter";
+import {parseStringToDate} from "$lib/utils/formatting/parseStringToDate";
 
 export const customerHeaderTranslations = {
 	customerAddressCode: m.routes_prodej_zakaznici_table_column_customer_address_code,
@@ -535,7 +535,7 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 			if (params.value === null) {
 				return "";
 			}
-			return formatDate(params.value);
+			return parseStringToDate(params.value);
 		},
 		editable: true,
 		cellClass: ['text-right'],
@@ -560,7 +560,7 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 			if (params.value === null) {
 				return "";
 			}
-			return formatDate(params.value);
+			return parseStringToDate(params.value);
 		},
 		editable: false,
 		cellClass: ['text-right'],
@@ -584,7 +584,7 @@ export const customerAgGridDef: ColDef<any, any>[] = [
 			if (params.value === null) {
 				return "";
 			}
-			return formatDate(params.value);
+			return parseStringToDate(params.value);
 		},
 		editable: false,
 		cellClass: ['text-right'],

@@ -9,7 +9,7 @@
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {getAgGridLocale} from "$lib/utils/components/ag-grid/getAgGridLocale";
+	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {getContext, onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
@@ -28,6 +28,7 @@
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
 	import {apiServicePOST} from "$lib/api/apiService.svelte";
+	import deepcopy from "deepcopy";
 
 
 	interface Props {
@@ -313,7 +314,9 @@
 		disablePageTabs.value = true;
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
+		console.log(finalGridOptions.columnDefs);
 		table.defaultColDef = finalGridOptions.columnDefs || [];
+
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
@@ -411,14 +414,15 @@
 
 	$effect(() => {
 		if (table.selectedPreset.length > 0) {
-			gridApi.setGridOption("columnDefs", table.selectedPreset);
+			const preset = deepcopy(table.selectedPreset);
+			const columnOrder: ColumnOrder = [];
 
-			let columnOrder: ColumnOrder = [];
-
-			table.selectedPreset?.forEach(colDef => {
-				columnOrder.push({ colId: colDef.colId })
+			preset.forEach((column: ColDef) => {
+				columnOrder.push({ colId: column.field })
+				column.headerName = headerTranslations[column.field || ""]();
 			})
 
+			gridApi.setGridOption("columnDefs", preset);
 			gridApi.applyColumnState({
 				state: columnOrder,
 				applyOrder: true

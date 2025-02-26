@@ -2,7 +2,7 @@
 	import Plus from "lucide-svelte/icons/plus";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import Trash2 from "lucide-svelte/icons/trash-2";
-	import type { ColumnFilter } from "$lib/types/components/dialog/inputDialog";
+	import type { ColumnFilter } from "$lib/types/components/input-params/inputParams";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
 	import ActionButton from "$lib/components/input-params/column-filters/ActionButton.svelte";

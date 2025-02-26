@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-	import type { ColumnFilter, InputDialogSelectOption } from "$lib/types/components/dialog/inputDialog";
+	import type { ColumnFilter, InputParamsSelectOption } from "$lib/types/components/input-params/inputParams";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
@@ -9,7 +9,7 @@
 
 	interface Props {
 		columnFilter: ColumnFilter;
-		selectOptions: InputDialogSelectOption[]
+		selectOptions: InputParamsSelectOption[]
 	}
 
 	let {
@@ -42,7 +42,7 @@
 	}
 
 
-	function updateItem(option: InputDialogSelectOption) {
+	function updateItem(option: InputParamsSelectOption) {
 		open = false;
 		columnFilter.columnName = option.field;
 

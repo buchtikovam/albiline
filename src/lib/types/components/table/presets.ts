@@ -1,9 +1,9 @@
 import type { ColDef, ColGroupDef } from "ag-grid-community"
 
 export type StoredPresets = {
-	id: number,
-	label: string,
-	presets: StoredPreset[]
+	presetId: number,
+	presetName: string,
+	presetValue: StoredPreset[]
 }
 
 export type StoredPreset = {

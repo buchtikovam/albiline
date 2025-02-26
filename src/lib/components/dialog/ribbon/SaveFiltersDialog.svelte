@@ -40,7 +40,7 @@
 				responseDialogMessages.value = respData.messages
 			}
 		} catch (e) {
-			console.error("Unexpexted error: ", e)
+			console.error("Unexpected error: ", e)
 		}
 	}
 </script>

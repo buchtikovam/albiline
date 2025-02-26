@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { languageTag } from "$lib/paraglide/runtime";
-	import { cn } from "$lib/utils";
-	import ChevronLeft from "lucide-svelte/icons/chevron-left";
-	import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import {formatDateValueToString} from "$lib/utils/formatting/formatDateValueToString";
+	import {parseStringToDateValue} from "$lib/utils/formatting/parseStringToDateValue";
+	import {languageTag} from "$lib/paraglide/runtime";
+	import {cn} from "$lib/utils";
 	import CalendarRange from "lucide-svelte/icons/calendar-range";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import ChevronLeft from "lucide-svelte/icons/chevron-left";
 	import Portal from "svelte-portal";
-	import {type DateValue, parseDate} from "@internationalized/date";
 	import { type DateRange, DateRangePicker } from "bits-ui";
 
 	interface Props {
-		startValue: Date|null;
-		endValue: Date|null;
+		startValue: string;
+		endValue: string;
 		hasError?: boolean;
 		label?: string;
 	}
@@ -29,25 +30,19 @@
 	})
 
 
-	$effect(() => {
-		if (startValue) {
-			// startValue.setMonth(startValue.getMonth() - 1);
-			// startValue.setDate(startValue.getDate() + 1);
-			value.start = parseDate(new Date(startValue).toISOString().split('T')[0])
-		}
+	if (startValue) {
+		value.start = parseStringToDateValue(startValue);
+	}
 
-		if (endValue) {
-			// endValue.setMonth(endValue.getMonth() - 1);
-			value.end = parseDate(new Date(endValue).toISOString().split('T')[0])
-		}
-
-	})
+	if (endValue) {
+		value.end = parseStringToDateValue(endValue)
+	}
 
 
 	$effect(() => {
 		if (value.start && value.end) {
-			startValue = new Date(value.start.year, value.start.month, value.start.day);
-			endValue = new Date(value.end.year, value.end.month, value.end.day);
+			startValue = formatDateValueToString(value.start);
+			endValue = formatDateValueToString(value.end)
 		}
 	});
 </script>
@@ -61,7 +56,9 @@
 	locale={languageTag()}
 >
 	{#if label}
-		<DateRangePicker.Label class="block select-none text-sm font-medium text-slate-500 mb-0.5">
+		<DateRangePicker.Label
+			class="block select-none text-sm font-medium text-slate-500 mb-0.5"
+		>
 			{ label }
 		</DateRangePicker.Label>
 	{/if}

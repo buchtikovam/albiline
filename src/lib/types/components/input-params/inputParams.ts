@@ -3,7 +3,7 @@ import type { Icon as IconType } from "lucide-svelte";
 
 
 // SELECT OPTIONS
-export type InputDialogSelectOption = {
+export type InputParamsSelectOption = {
 	field: string;
 	label: () => string;
 	type: ColumnFilterType;
@@ -11,17 +11,27 @@ export type InputDialogSelectOption = {
 
 
 
-// INPUT DIALOG
-export type InputDialogType = {
+// INPUT PARAMS
+export type InputParamsType = {
 	fulltext?: string|null;
-	inputs?: InputDialogInput[];
+	inputs?: InputParamsInput[];
 	columnFilters?: ColumnFilter[];
 }
 
 
 
-// Input dialog -- INPUTS
-type InputDialogInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange;
+export type FetchedInputParamsType = FetchedInputParam[]
+
+export type FetchedInputParam = {
+	paramId: number;
+	paramName: string;
+	paramValue: InputParamsType;
+}
+
+
+
+// Input params -- INPUTS
+type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange;
 
 type InputString = {
 	field: string;
@@ -54,9 +64,9 @@ type InputDateRange = {
 	endValue: string, // v domluveném datumovém formátu
 }
 
-// Input dialog -- COLUMN FILTERS
+// Input params -- COLUMN FILTERS
 export type ColumnFilter = {
-	id?: number;
+	id: number;
 	columnName: string|null;
 	type: ColumnFilterType;
 	filterModel: ColumnFilterModel;
@@ -142,7 +152,7 @@ export type ConditionTypesDate = (
 
 
 // OPERATOR SELECT
-export type InputDialogOperator = {
+export type InputParamsOperator = {
 	field: (
 		ConditionTypesText |
 		ConditionTypesNumber |

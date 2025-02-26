@@ -2,7 +2,7 @@
 <script lang="ts">
 	import AlbiLogo from '$lib/icons/AlbiLogo.svelte';
 	import type { InvoiceData, InvoiceItem } from '$lib/types/pdfs/invoiceData';
-	import { formatDate } from '$lib/utils/formatting/formatDate';
+	import { parseStringToDate } from '$lib/utils/formatting/parseStringToDate';
 	import { currencyCZ } from '$lib/constants/currency-formatters/currency-cz';
 	import { getVAT } from '$lib/utils/formatting/getVAT';
 	import { albiInfo } from '$lib/constants/info/albiInfo';
@@ -100,9 +100,9 @@
 		</div>
 
 		<div class="flex text-xs gap-10 pb-0.5 ml-8 text-slate-950"> <!-- dates -->
-			<p>Datum zd. plnění: <b>{ header.datplneni ? formatDate(header.datplneni) : "{{datplneni}}" }</b></p>
-			<p>Datum vystavení: <b>{ header.datprod ? formatDate(header.datprod) : "{{datprod}}"}</b></p>
-			<p>Datum splatnosti: <b>{ header.datsplat ? formatDate(header.datsplat) : "{{datsplat}}"}</b></p>		
+			<p>Datum zd. plnění: <b>{ header.datplneni ? parseStringToDate(header.datplneni) : "{{datplneni}}" }</b></p>
+			<p>Datum vystavení: <b>{ header.datprod ? parseStringToDate(header.datprod) : "{{datprod}}"}</b></p>
+			<p>Datum splatnosti: <b>{ header.datsplat ? parseStringToDate(header.datsplat) : "{{datsplat}}"}</b></p>
 		</div>
 		
 		<div class="flex"> <!-- billing info -->

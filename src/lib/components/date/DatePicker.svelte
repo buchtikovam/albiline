@@ -1,14 +1,16 @@
 <script lang="ts">
-	import {type DateValue, parseDate} from '@internationalized/date';
+	import {formatDateValueToString} from "$lib/utils/formatting/formatDateValueToString";
+	import {parseStringToDateValue} from "$lib/utils/formatting/parseStringToDateValue";
+	import {languageTag} from '$lib/paraglide/runtime.js'
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
-	import { DatePicker } from 'bits-ui';
-	import { languageTag } from '$lib/paraglide/runtime.js'
 	import Portal from "svelte-portal";
+	import {type DateValue} from '@internationalized/date';
+	import { DatePicker } from 'bits-ui';
 
 	interface Props {
-		dateValue?: Date|undefined|null;
+		dateValue?: string;
 		hasError?: boolean;
 		label?: string;
 	}
@@ -19,20 +21,20 @@
 		label,
 	}: Props = $props();
 
+
 	let value: DateValue = $state();
 
 	if (dateValue) {
-		// dateValue.setDate(dateValue.getDate());
-		value = parseDate(new Date(dateValue).toISOString().split('T')[0]);
+		value = parseStringToDateValue(dateValue);
 	}
+
 
 	$effect(() => {
 		if (value) {
-			dateValue = new Date(value.year, value.month, value.day);
+			dateValue = formatDateValueToString(value);
 		}
 	});
 </script>
-
 
 
 
@@ -46,7 +48,9 @@
 >
 	<div class="flex w-full flex-col">
 		{#if label}
-			<DatePicker.Label class="block select-none text-sm font-medium text-slate-500 mb-0.5">
+			<DatePicker.Label
+				class="block select-none text-sm font-medium text-slate-500 mb-0.5"
+			>
 				{ label }
 			</DatePicker.Label>
 		{/if}

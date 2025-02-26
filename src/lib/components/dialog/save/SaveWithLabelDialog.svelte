@@ -33,6 +33,7 @@
 	bind:isOpen
 	{header}
 	{content}
+	{onChange}
 	fixedHeight={false}
 	size="sm"
 />

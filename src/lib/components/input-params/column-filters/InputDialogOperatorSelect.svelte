@@ -11,8 +11,8 @@
 		ConditionTypesNumber,
 		ConditionTypesText,
 		ColumnFilterType,
-		InputDialogOperator
-	} from "$lib/types/components/dialog/inputDialog";
+		InputParamsOperator
+	} from "$lib/types/components/input-params/inputParams";
 	import Fa from 'svelte-fa'
 	import * as Command from "$lib/components/ui/command";
 	import * as Popover from "$lib/components/ui/popover";
@@ -69,7 +69,7 @@
 	}
 
 
-	let activeItem: InputDialogOperator|null = $state(null);
+	let activeItem: InputParamsOperator|null = $state(null);
 
 
 	$effect(() => {
@@ -94,7 +94,7 @@
 	}
 
 
-	function updateItem(option: InputDialogOperator) {
+	function updateItem(option: InputParamsOperator) {
 		operator = option.field;
 	}
 </script>

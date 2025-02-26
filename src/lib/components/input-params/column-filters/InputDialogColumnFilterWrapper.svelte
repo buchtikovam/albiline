@@ -3,8 +3,8 @@
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
 	import type {
 		ColumnFilter,
-		InputDialogSelectOption
-	} from "$lib/types/components/dialog/inputDialog";
+		InputParamsSelectOption
+	} from "$lib/types/components/input-params/inputParams";
 	import InputDialogColumnFilterActionButtons
 		from "$lib/components/input-params/column-filters/InputDialogColumnFilterActionButtons.svelte";
 	import InputDialogColumnFilterFieldSelect
@@ -17,7 +17,7 @@
 
 
 	interface Props {
-		selectOptions: InputDialogSelectOption[],
+		selectOptions: InputParamsSelectOption[],
 		columnFilter: ColumnFilter,
 	}
 
@@ -28,15 +28,16 @@
 
 
 	$effect(() => {
-		columnFilter.filterModel.conditions.forEach((condition) => {
-			if (condition.type !== "between") {
-				// @ts-ignore
-				delete condition.endValue;
-			}
-		})
+		if (columnFilter) {
+			columnFilter.filterModel.conditions.forEach((condition) => {
+				if (condition.type !== "between") {
+					// @ts-ignore
+					delete condition.endValue;
+				}
+			})
+		}
 	})
 </script>
-
 
 
 

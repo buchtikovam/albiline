@@ -3,7 +3,7 @@
 	import type {
 		ColumnFilter,
 		ColumnFilterModelCondition,
-	} from "$lib/types/components/dialog/inputDialog";
+	} from "$lib/types/components/input-params/inputParams";
 
 	interface Props {
 		columnFilter: ColumnFilter;

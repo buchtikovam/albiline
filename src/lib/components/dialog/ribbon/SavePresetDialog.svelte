@@ -38,7 +38,12 @@
 			};
 		});
 
-		console.log(inputValue, JSON.stringify(strippedPreset, null, 1));
+		const presetToSave = {
+			presetName: inputValue,
+			presetValue: strippedPreset
+		}
+
+		console.log(JSON.stringify(presetToSave, null, 1));
 	}
 </script>
 

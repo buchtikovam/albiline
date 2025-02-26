@@ -1,10 +1,10 @@
 import Check from "lucide-svelte/icons/check";
 import X from "lucide-svelte/icons/x";
-import type { InputDialogOperator } from "$lib/types/components/dialog/inputDialog";
+import type { InputParamsOperator } from "$lib/types/components/input-params/inputParams";
 import * as m from '$lib/paraglide/messages.js'
 
 
-export const booleanOperators: InputDialogOperator[] = [
+export const booleanOperators: InputParamsOperator[] = [
 	{
 		field: "true",
 		label: m.components_operators_true,
