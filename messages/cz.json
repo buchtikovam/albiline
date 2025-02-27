@@ -111,6 +111,9 @@
 	"components_input_params_save_dialog_input_label" : "Název",
 	"components_input_params_save_dialog_save_button" : "Uložit",
 
+	"components_input_params_load_dialog_label" : "Uložené vstupní parametry",
+	"components_input_params_load_dialog_no_instances_found" : "Nemáš žádné uložené vstupní parametry",
+
 
 
 

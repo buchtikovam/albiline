@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { sidebarCategory, favoriteItems, recentItems } from '$lib/runes/sidebar.svelte';
-	import { allItems } from '$lib/data/page-components/sidebar';
+	import { allItems } from '$lib/definitions/components/sidebar/sidebar';
 	import { Input } from '$lib/components/ui/input';
 	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';
 	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';

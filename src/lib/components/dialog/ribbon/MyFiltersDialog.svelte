@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {pageCompact, pageCode} from "$lib/runes/page.svelte";
+	import {pageCompact, pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte";
-	import {apiServiceGET} from "$lib/api/apiService.svelte";
+	import {apiServiceDELETE, apiServiceGET, apiServicePUT} from "$lib/api/apiService.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte.js";
 	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
 	import Save from "lucide-svelte/icons/save";
@@ -17,6 +17,8 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
+	import {ribbonFiltersAgGridDef} from "$lib/definitions/components/ribbon/ag-grid/ribbonFiltersAgGridDef";
+	import type {FetchedInputParamsType} from "$lib/types/components/input-params/inputParams";
 
 
 	let isOpen: boolean = $state(false);
@@ -24,6 +26,8 @@
 	let detailFilter: StoredFilters|undefined = $state(undefined);
 	let hasUnsavedData = $state(false);
 	let fetchedFilters: StoredFilters[] = $state([]);
+	let idsToDelete: number[] = $state([]);
+	let editedFilters: StoredFilters[] = $state([]);
 
 
 	$effect(() => {
@@ -37,31 +41,15 @@
 	})
 
 
-	const ribbonFiltersAgGridDef: ColDef<any, any>[] = [
-		{
-			field: "filterName",
-			editable: true,
-			flex: 1,
-		},
-		{
-			field: "select",
-			pinned: "right",
-			width: pageCompact.value ? 28 : 36,
-			minWidth: pageCompact.value ? 28 : 36,
-			cellRenderer: (params: ICellRendererParams) => selectButton(params, handleClickSelect),
-		},
-		{
-			field: "delete",
-			pinned: "right",
-			width: pageCompact.value ? 28 : 36,
-			minWidth: pageCompact.value ? 28 : 36,
-			cellRenderer: (params: ICellRendererParams) => deleteButton(params, handleDelete),
-		},
-	]
+	$effect(() => {
+		if (idsToDelete.length > 0 || editedFilters.length > 0) {
+			hasUnsavedData = true;
+		}
+	})
 
 
 	const customGridOptions: GridOptions = {
-		columnDefs: ribbonFiltersAgGridDef,
+		columnDefs: ribbonFiltersAgGridDef(handleClickSelect, handleDelete),
 
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data.filterId);
@@ -87,7 +75,7 @@
 
 
 	async function getFilters() {
-		const resp = await apiServiceGET("userfilters/mbuc");
+		const resp = await apiServiceGET("userfilters");
 
 		if (resp.ok) {
 			const respItems = await resp.json();
@@ -96,6 +84,7 @@
 	}
 
 
+	// if filter was selected, load it in table and close dialog
 	function handleClickSelect(params: ICellRendererParams) {
 		if (!hasUnsavedData) {
 			serverSideTables[pageCode.value].selectedFilters = params.data.filters;
@@ -104,14 +93,40 @@
 	}
 
 
+	// todo: finish delete with api
 	function handleDelete(params: ICellRendererParams) {
 		fetchedFilters.forEach((filter, index) => {
 			if (filter.filterId === params.data.filterId) {
+				idsToDelete.push(params.data.filterId)
 				fetchedFilters.splice(index, 1);
-				hasUnsavedData = true;
 			}
 		})
 	}
+
+
+	async function saveChanges() {
+		for (const id of idsToDelete) {
+			console.log("deleting ", id)
+			let resp = await apiServiceDELETE("userfilters", id);
+			let respData = await resp.json();
+
+			console.log(respData)
+			responseDialogMessages.value = respData.messages;
+		}
+
+		for (const filter of editedFilters) {
+			let resp = await apiServicePUT("userfilters", filter.filterId, filter);
+			let respData = await resp.json();
+			responseDialogMessages.value = respData.messages;
+		}
+
+		hasUnsavedData = false;
+	}
+
+
+	$inspect(idsToDelete)
+
+	$inspect(editedFilters)
 </script>
 
 
@@ -138,7 +153,7 @@
 
 		{#if hasUnsavedData}
 			<button
-				onclick={() => hasUnsavedData = false}
+				onclick={() => saveChanges()}
 			>
 				<Save
 					class="size-5 text-albi-500 hover:text-albi-700"
@@ -153,6 +168,9 @@
 		{#if fetchedFilters.length > 0}
 			<AgGridCSWrapper
 				rowData={fetchedFilters}
+				requiredFields={["fiterId"]}
+				bind:editedRowData={editedFilters}
+				returnWholeRowOnEdit={true}
 				gridOptionsCustom={customGridOptions}
 				fullHeight={true}
 				hiddenHeader={true}

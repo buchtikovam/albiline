@@ -1,5 +1,5 @@
 import {serverSideTables} from '$lib/runes/table.svelte.js';
-import {pageCompact} from "$lib/runes/page.svelte";
+import {pageCompact} from "$lib/runes/page.svelte.js";
 import {page} from '$app/state';
 import {i18n} from "$lib/i18n";
 import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';

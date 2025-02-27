@@ -1,9 +1,14 @@
 <script lang="ts">
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {Button} from '$lib/components/ui/button';
 	import {Input} from "$lib/components/ui/input";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {getColumnFilters} from "$lib/utils/components/input-params/getColumnFilters";
-	import Plus from "lucide-svelte/icons/plus";
+	import {addColumnFilter} from "$lib/utils/components/input-params/addColumnFilter";
+	import {setContext} from "svelte";
 	import deepcopy from "deepcopy";
+	import Plus from "lucide-svelte/icons/plus";
+	import Save from "lucide-svelte/icons/save";
 	import type {
 		InputParamsType,
 		InputParamsSelectOption,
@@ -11,17 +16,12 @@
 	} from "$lib/types/components/input-params/inputParams";
 	import InputDialogColumnFilterWrapper
 		from "$lib/components/input-params/column-filters/InputDialogColumnFilterWrapper.svelte";
+	import LoadInputParamsDialog from "$lib/components/input-params/LoadInputParamsDialog.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
-	import Save from "lucide-svelte/icons/save";
-	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
-	import * as m from '$lib/paraglide/messages.js'
-	import LoadInputParamsDialog from "$lib/components/input-params/LoadInputParamsDialog.svelte";
-	import {apiServicePOST} from "$lib/api/apiService.svelte";
-	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {responseDialogMessages} from "$lib/runes/page.svelte";
+	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 
 
 	interface Props {
@@ -37,6 +37,9 @@
 	}: Props = $props();
 
 
+	setContext("endpoint", "userInputParameters");
+
+
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
@@ -46,73 +49,40 @@
 
 
 
+	// api will keep track of input params, creating a smaller data set for
+	// server side tables.
+	function loadInputParamsInTable() {
+		// let inputParamObj: InputParamsType = {
+		// 	fulltext: inputDialog.fulltext,
+		// 	inputs: [],
+		// 	columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+		// }
+	}
 
-	async function saveInputParams() {
-		const inputsParamsToSave = {
-			paramName: saveLabel,
-			paramValue: {
-				fulltext: inputDialog.fulltext,
-				columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
-			},
-		}
 
-		console.log(JSON.stringify(inputsParamsToSave, null, 1));
-
-		try {
-			const resp = await apiServicePOST("userInputParameters", inputsParamsToSave);
-
-			if (resp.ok) {
-				isSaveDialogOpen = false;
-				saveLabel = "";
-
-				setTimeout(() => {
-					openedRibbonDialog.value = "empty";
-				}, 200)
-			} else {
-				let respData = await resp.json()
-				responseDialogMessages.value = respData.messages
+	// save input params into db, user can load these later
+	async function saveInputParam() {
+		await apiServicePostHandled(
+			"userInputParameters",
+			{
+				paramName: saveLabel,
+				paramValue: {
+					fulltext: inputDialog.fulltext,
+					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+				},
 			}
-		} catch (e) {
-			console.error("Unexpected error: ", e)
-		}
+		);
+
+		isSaveDialogOpen = false;
+		saveLabel = "";
+
+		setTimeout(() => {
+			openedRibbonDialog.value = "empty";
+		}, 200)
 	}
 
 
-	function addInput() {
-		if (inputDialog.columnFilters) {
-			let lastIndex = 0;
-
-			inputDialog.columnFilters.length > 0
-				? lastIndex = inputDialog.columnFilters[inputDialog.columnFilters.length - 1].id || 0
-				: lastIndex = 0;
-
-			inputDialog.columnFilters.push({
-				id: lastIndex + 1,
-				columnName: null,
-				type: "text",
-				filterModel: {
-					operator: null,
-					conditions: [{
-						type: null,
-						value: null
-					}]
-				}
-			})
-		}
-	}
-
-
-	function postInputParams() {
-		let inputParamObj: InputParamsType = {
-			fulltext: inputDialog.fulltext,
-			inputs: [],
-			columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
-		}
-
-		console.log(JSON.stringify(inputParamObj, null, 2));
-	}
-
-
+	// load selected input param into InputParam component
 	function onParamSelect(inputParam: FetchedInputParam) {
 		inputDialog = deepcopy(inputParam.paramValue);
 		selectedParam = inputParam;
@@ -132,11 +102,17 @@
 
 
 {#snippet header()}
-	<Dialog.Title class="min-h-5 overflow-visible flex gap-1">
+	<Dialog.Title
+		class="min-h-5 overflow-visible flex gap-1"
+	>
 		{ m.components_input_params_label() }
 
 		{#if selectedParam}
-			<p class={`${isLoadedParamChanged ? "text-slate-300" : "text-albi-950"} transition-all`}>({selectedParam.paramName})</p>
+			<p
+				class={`${isLoadedParamChanged ? "text-slate-300" : "text-albi-950"} transition-all`}
+			>
+				({selectedParam.paramName})
+			</p>
 		{/if}
 	</Dialog.Title>
 {/snippet}
@@ -190,9 +166,15 @@
 		{/if}
 
 
-		<Dialog.Footer class="w-full mt-6">
-			<div class="w-full flex justify-between">
-				<div class="flex gap-1.5 sm:gap-2">
+		<Dialog.Footer
+			class="w-full mt-6"
+		>
+			<div
+				class="w-full flex justify-between"
+			>
+				<div
+					class="flex gap-1.5 sm:gap-2"
+				>
 					<Button
 						type="button"
 						class="size-10"
@@ -215,10 +197,12 @@
 					</Button>
 				</div>
 
-				<div class="flex items-center gap-1.5 sm:gap-2">
+				<div
+					class="flex items-center gap-1.5 sm:gap-2"
+				>
 					<Button
 						type="button"
-						onclick={postInputParams}
+						onclick={loadInputParamsInTable}
 					>
 						{m.components_input_params_button_filter()}
 					</Button>
@@ -226,7 +210,7 @@
 					{#if inputDialog.columnFilters !== undefined}
 						<Button
 							type="button"
-							onclick={() => addInput()}
+							onclick={() => addColumnFilter(inputDialog)}
 							class="size-10"
 							variant="secondary"
 						>
@@ -241,16 +225,13 @@
 
 
 
-
-<SaveWithLabelDialog
+<InputParamsSaveNewOrUpdateDialog
 	bind:isOpen={isSaveDialogOpen}
 	bind:inputValue={saveLabel}
-	onSubmit={saveInputParams}
-	title={m.components_input_params_save_dialog_label}
-	label={m.components_input_params_save_dialog_input_label}
-	saveButtonLabel={m.components_input_params_save_dialog_save_button}
+	onsubmit={saveInputParam}
+	selectedParam={selectedParam}
+	hasEditedData={isLoadedParamChanged}
 />
-
 
 
 <LoadInputParamsDialog

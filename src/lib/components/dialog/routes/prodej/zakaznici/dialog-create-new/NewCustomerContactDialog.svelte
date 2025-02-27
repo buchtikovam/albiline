@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
-	import type { CustomerContactType } from '$lib/types/page/customers';
+	import type { CustomerContactType } from '$lib/types/routes/prodej/zakaznci/customers';
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";

@@ -2,7 +2,7 @@
 	import {
 		sidebarCategory, sidebarOpen, recentItems, favoriteItems
 	} from '$lib/runes/sidebar.svelte';
-	import { allItems } from '$lib/data/page-components/sidebar';
+	import { allItems } from '$lib/definitions/components/sidebar/sidebar';
 	import { Input } from '$lib/components/ui/input';
 	import { filterItemsSearch } from '$lib/utils/components/sidebar/filterItemsSearch';
 	import { filterItemsCategory } from '$lib/utils/components/sidebar/filterItemsCategory';

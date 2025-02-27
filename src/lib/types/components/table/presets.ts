@@ -1,9 +1,9 @@
 import type { ColDef, ColGroupDef } from "ag-grid-community"
 
 export type StoredPresets = {
-	presetId: number,
-	presetName: string,
-	presetValue: StoredPreset[]
+	pagePresetId: number,
+	pagePresetName: string,
+	pagePresetValue: StoredPreset[]
 }
 
 export type StoredPreset = {
@@ -19,21 +19,5 @@ export type StoredPreset = {
 	sort?: 'asc' | 'desc' | null,
 	sortIndex?: number | null,
 }
-
-/*
-* {
-  "field": "customerAddressCode",
-  "width": 68,
-  "rowGroup": false,
-  "rowGroupIndex": null,
-  "pivot": false,
-  "pivotIndex": null,
-  "aggFunc": null,
-  "pinned": null,
-  "sort": null,
-  "sortIndex": null,
-},
-
-* */
 
 export type Preset = ColDef<unknown, any> | ColGroupDef<unknown>

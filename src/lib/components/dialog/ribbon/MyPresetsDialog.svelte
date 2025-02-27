@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {pageCompact, pageCode} from "$lib/runes/page.svelte";
+	import {pageCompact, pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
@@ -15,491 +15,20 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
+	import {apiServiceDELETE, apiServiceGET, apiServicePUT} from "$lib/api/apiService.svelte";
+	import type {FetchedInputParamsType} from "$lib/types/components/input-params/inputParams";
 
 
 	let isOpen: boolean = $state(false);
 	let hasUnsavedData = $state(false);
-
-	let fetchedPresets: StoredPresets[] = $state([ // will come from api
-		{
-			presetId: 0,
-			presetName: 'Testovací šablonka',
-			presetValue: [
-				{
-					field: "isBadPayer",
-					width: 103,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "customerAddressCode",
-					width: 108,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "name",
-					width: 240,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "customerNodeCode",
-					width: 120,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "i_Name",
-					width: 240,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "street",
-					width: 200,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "city",
-					width: 315,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "postalCode",
-					width: 66,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "countryCode",
-					width: 68,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "customerRank",
-					width: 70,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "dealerCode",
-					width: 60,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "areaCode",
-					width: 60,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "responsiblePerson",
-					width: 78,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "i_ICO",
-					width: 85,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "i_DIC",
-					width: 135,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "i_IcDph",
-					width: 135,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "paymentTypeCode",
-					width: 68,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "dueDays",
-					width: 68,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "consignmentSaleEnabled",
-					width: 70,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null,
-				},
-				{
-					field: "retailStoreTypeName",
-					width: 180,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "areaId",
-					width: 76,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "useAssortedEanCodes",
-					width: 70,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "b2BeshopEnabled",
-					width: 70,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "i_Street",
-					width: 200,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "i_City",
-					width: 200,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "i_PostalCode",
-					width: 70,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "i_CountryCode",
-					width: 70,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "note",
-					width: 200,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "dateCreated",
-					width: 100,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "firstOrderDate",
-					width: 100,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "lastOrderDate",
-					width: 100,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "companyName",
-					width: 200,
-					hide: false,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "isReturnAllowed",
-					width: 200,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "customerStoreCode",
-					width: 200,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "customerStoreEan",
-					width: 200,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				},
-				{
-					field: "splitOrderByFood",
-					width: 200,
-					hide: true,
-					rowGroup: false,
-					rowGroupIndex: null,
-					pivot: false,
-					pivotIndex: null,
-					aggFunc: null,
-					pinned: null,
-					sort: null,
-					sortIndex: null
-				}
-			]
-		}
-	]);
+	let idsToDelete: number[] = $state([]);
+	let fetchedPresets: StoredPresets[] = $state([]);
+	let editedPresets: StoredPresets[] = $state([]);
 
 
 	$effect(() => {
 		isOpen = true;
+		getPresets()
 
 		return (() => {
 			isOpen = false;
@@ -507,10 +36,15 @@
 		})
 	})
 
+	$effect(() => {
+		if (idsToDelete.length > 0 || editedPresets.length > 0) {
+			hasUnsavedData = true;
+		}
+	})
 
 	export const ribbonPresetsAgGridDef: ColDef[] = [
 		{
-			field: "presetName",
+			field: "pagePresetName",
 			editable: true,
 			flex: 1,
 		},
@@ -535,20 +69,18 @@
 		columnDefs: ribbonPresetsAgGridDef,
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data.presetId);
+			return String(params.data.pagePresetId);
 		},
 	}
 
 
-
-
 	async function getPresets() {
-		// const resp = await apiServiceGET("userfilters/mbuc");
-		//
-		// if (resp.ok) {
-		// 	const respItems = await resp.json();
-		// 	fetchedPresets = respItems.items;
-		// }
+		const resp = await apiServiceGET("userpresets");
+
+		if (resp.ok) {
+			const respItems = await resp.json();
+			fetchedPresets = respItems.items;
+		}
 	}
 
 
@@ -557,7 +89,7 @@
 			deepcopy(serverSideTables[pageCode.value].defaultColDef).map((col: ColDef) => [col.field, col])
 		);
 
-		let clickedPreset = params.data.presetValue;
+		let clickedPreset = params.data.pagePresetValue;
 
 		clickedPreset.forEach((preset: StoredPreset) => {
 			let column = defaultColDefCopy.get(preset.field);
@@ -575,9 +107,30 @@
 
 
 
+	async function saveChanges() {
+		for (const id of idsToDelete) {
+			console.log("deleting ", id)
+			let resp = await apiServiceDELETE("userpresets", id);
+			let respData = await resp.json();
+
+			console.log(respData)
+			responseDialogMessages.value = respData.messages;
+		}
+
+		for (const preset of editedPresets) {
+			let resp = await apiServicePUT("userpresets", preset.pagePresetId, preset);
+			let respData = await resp.json();
+			responseDialogMessages.value = respData.messages;
+		}
+
+		hasUnsavedData = false;
+	}
+
+
 	function handleDelete(params: ICellRendererParams) {
 		fetchedPresets.forEach((filter, index) => {
-			if (filter.presetId === params.data.id) {
+			if (filter.pagePresetId === params.data.pagePresetId) {
+				idsToDelete.push(params.data.pagePresetId)
 				fetchedPresets.splice(index, 1);
 				hasUnsavedData = true;
 			}
@@ -609,7 +162,7 @@
 
 		{#if hasUnsavedData}
 			<button
-				onclick={() => hasUnsavedData = false}
+				onclick={() => saveChanges()}
 			>
 				<Save
 					class="size-5 text-albi-500 hover:text-albi-700"
@@ -625,6 +178,9 @@
 		{#if fetchedPresets.length > 0}
 			<AgGridCSWrapper
 				rowData={fetchedPresets}
+				requiredFields={["pagePresetId"]}
+				bind:editedRowData={editedPresets}
+				returnWholeRowOnEdit={true}
 				gridOptionsCustom={customGridOptions}
 				fullHeight={true}
 				hiddenHeader={true}

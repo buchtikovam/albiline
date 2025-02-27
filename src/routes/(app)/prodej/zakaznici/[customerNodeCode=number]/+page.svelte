@@ -1,11 +1,11 @@
 <script lang="ts">
 	import {
 		customerAndAddressContactsAgGridDef
-	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
-	import {newCustomerContactFormDef} from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
+	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
+	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {customerDetailFormDef} from '$lib/data/autoform/zakaznici/customerDetailFormDef';
-	import {customerPageLayout} from '$lib/data/detail-page-layout/customerPageLayout';
+	import {customerDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerDetailFormDef';
+	import {customerPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerPageLayout';
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {type ServerSideTable, serverSideTables} from "$lib/runes/table.svelte";
 	import {activeTabIndex, pageCode} from '$lib/runes/page.svelte';
@@ -17,7 +17,7 @@
 	import {getContext} from "svelte";
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import type {CustomerContactType, CustomerType} from '$lib/types/page/customers';
+	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznci/customers';
 	import type {GridOptions} from 'ag-grid-enterprise';
 	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog

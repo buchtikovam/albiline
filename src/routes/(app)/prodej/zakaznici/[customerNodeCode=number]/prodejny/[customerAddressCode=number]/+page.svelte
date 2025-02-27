@@ -1,13 +1,13 @@
 <script lang="ts">
 	import {
 		customerAndAddressContactsAgGridDef
-	} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAndAddressContactsAgGridDef';
+	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
 	import {type ServerSideTable, serverSideTables} from '$lib/runes/table.svelte';
 	import {activeTabIndex, isMobile, pageCode} from '$lib/runes/page.svelte';
-	import {customerAddressDetailFormDef} from '$lib/data/autoform/zakaznici/customerAddressFormDef';
-	import {customerAddressesAgGridDef} from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerAddressesAgGridDef.svelte';
-	import {customerAddressPageLayout} from '$lib/data/detail-page-layout/customerAddressPageLayout';
-	import {newCustomerContactFormDef} from '$lib/data/autoform/zakaznici/newCustomerContactFormDef';
+	import {customerAddressDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressFormDef';
+	import {customerAddressesAgGridDef} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAddressesAgGridDef.svelte.js';
+	import {customerAddressPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerAddressPageLayout';
+	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
 	import {disableNavigation} from '$lib/runes/navigation.svelte';
 	import {ribbonAction} from '$lib/runes/ribbon.svelte';
 	import {page} from '$app/state';
@@ -21,7 +21,7 @@
 	import Repeat from 'lucide-svelte/icons/repeat';
 	import Plus from 'lucide-svelte/icons/plus';
 	import * as m from '$lib/paraglide/messages.js';
-	import type {CustomerAddressType, CustomerContactType} from '$lib/types/page/customers';
+	import type {CustomerAddressType, CustomerContactType} from '$lib/types/routes/prodej/zakaznci/customers';
 	import type {GridOptions} from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';

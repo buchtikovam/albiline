@@ -2,7 +2,7 @@
 	import Plus from 'lucide-svelte/icons/plus';
 	import NewCustomerAddressDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
 	import * as Dialog from "$lib/components/ui/dialog";
-	import {newCustomerAddressFormDef} from "$lib/data/autoform/zakaznici/newCustomerAddressFormDef";
+	import {newCustomerAddressFormDef} from "$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerAddressFormDef";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import type {GridOptions} from "ag-grid-enterprise";

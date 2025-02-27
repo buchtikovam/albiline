@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-	import { stringOperators } from "$lib/data/input-dialog/operators/stringOperators";
-	import { numberOperators } from "$lib/data/input-dialog/operators/numberOperators";
-	import { booleanOperators } from "$lib/data/input-dialog/operators/booleanOperators";
-	import { dateOperators } from "$lib/data/input-dialog/operators/dateOperators";
+	import { stringOperators } from "$lib/definitions/components/input-params/operators/stringOperators";
+	import { numberOperators } from "$lib/definitions/components/input-params/operators/numberOperators";
+	import { booleanOperators } from "$lib/definitions/components/input-params/operators/booleanOperators";
+	import { dateOperators } from "$lib/definitions/components/input-params/operators/dateOperators";
 	import { tick } from "svelte";
 	import type {
 		ConditionTypesBoolean,

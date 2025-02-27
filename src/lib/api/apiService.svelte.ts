@@ -13,36 +13,10 @@ const headers = $derived(
 )
 
 
-export async function apiServiceGetHandeled(endpoint: string) {
-	try {
-		let response = await apiServiceGET(endpoint)
-
-		if (response.ok) {
-			console.log("ok")
-			return await response.json();
-		}
-
-		console.log("not ok", response.status)
-		let respData = await response.json();
-		responseDialogMessages.value = respData.messages;
-		return {};
-	} catch (error) {
-		console.error("Unexpected error: ", error);
-		responseDialogMessages.value = [{
-			title: "Upozornění",
-			content: "Nastala kritická chyba" + error,
-			type: "Critical",
-		}];
-		return {};
-	}
-}
-
 
 export async function apiServiceGET(
 	endpoint: string
 ): Promise<Response> {
-	console.log("page code", headers["Page-Code"])
-
 	return await fetch(url + endpoint, {
 		method: 'GET',
 		headers: headers,
@@ -50,12 +24,36 @@ export async function apiServiceGET(
 }
 
 
+export async function apiServiceGETHandled(endpoint: string) {
+	try {
+		let response = await apiServiceGET(endpoint)
+
+		if (response.ok) {
+			return await response.json();
+		}
+
+		let respData = await response.json();
+		responseDialogMessages.value = respData.messages;
+		return {};
+	} catch (error) {
+		console.error("Unexpected error: ", error);
+
+		responseDialogMessages.value = [{
+			title: "Upozornění",
+			content: "Nastala kritická FE chyba" + error,
+			type: "Critical",
+		}];
+
+		return {};
+	}
+}
+
+
+
 export async function apiServicePOST(
 	endpoint: string,
 	body = {},
 ): Promise<Response> {
-	console.log("page code", headers["Page-Code"])
-
 	return await fetch(url + endpoint, {
 		method: 'POST',
 		headers: headers,
@@ -63,18 +61,34 @@ export async function apiServicePOST(
 	});
 }
 
-
-export async function apiServicePUT(
+export async function apiServicePostHandled(
 	endpoint: string,
-	id: number,
-	body = {}
-): Promise<Response> {
-	return await fetch(url + endpoint, {
-		method: 'PUT',
-		headers: headers,
-		body: body ? JSON.stringify(body) : undefined
-	});
+	body = {},
+) {
+	try {
+		let response = await apiServicePOST(endpoint, body)
+
+		if (response.ok) {
+			return await response.json();
+		}
+
+		let respData = await response.json();
+		responseDialogMessages.value = respData.messages;
+		return {};
+	} catch (error) {
+		console.error("Unexpected error: ", error);
+
+		responseDialogMessages.value = [{
+			title: "Upozornění",
+			content: "Nastala kritická FE chyba" + error,
+			type: "Critical",
+		}];
+
+		return {};
+	}
 }
+
+
 
 
 export async function apiServicePATCH(
@@ -89,6 +103,78 @@ export async function apiServicePATCH(
 }
 
 
+export async function apiServicePatchHandled(
+	endpoint: string,
+	body = {},
+) {
+	try {
+		let response = await apiServicePATCH(endpoint, body)
+
+		if (response.ok) {
+			return await response.json();
+		}
+
+		let respData = await response.json();
+		responseDialogMessages.value = respData.messages;
+		return {};
+	} catch (error) {
+		console.error("Unexpected error: ", error);
+
+		responseDialogMessages.value = [{
+			title: "Upozornění",
+			content: "Nastala kritická FE chyba" + error,
+			type: "Critical",
+		}];
+
+		return {};
+	}
+}
+
+
+
+export async function apiServicePUT(
+	endpoint: string,
+	id: number,
+	body = {}
+): Promise<Response> {
+	return await fetch(url + endpoint + "/" + id, {
+		method: 'PUT',
+		headers: headers,
+		body: body ? JSON.stringify(body) : undefined
+	});
+}
+
+
+export async function apiServicePUTHandled(
+	endpoint: string,
+	id: number,
+	body = {},
+) {
+	try {
+		let response = await apiServicePUT(endpoint, id, body)
+
+		if (response.ok) {
+			return await response.json();
+		}
+
+		let respData = await response.json();
+		responseDialogMessages.value = respData.messages;
+		return {};
+	} catch (error) {
+		console.error("Unexpected error: ", error);
+
+		responseDialogMessages.value = [{
+			title: "Upozornění",
+			content: "Nastala kritická FE chyba" + error,
+			type: "Critical",
+		}];
+
+		return {};
+	}
+}
+
+
+
 export async function apiServiceDELETE(
 	endpoint: string,
 	id: number
@@ -97,4 +183,32 @@ export async function apiServiceDELETE(
 		method: 'DELETE',
 		headers: headers,
 	});
+}
+
+
+export async function apiServiceDELETEHandled(
+	endpoint: string,
+	id: number,
+) {
+	try {
+		let response = await apiServiceDELETE(endpoint, id)
+
+		if (response.ok) {
+			return await response.json();
+		}
+
+		let respData = await response.json();
+		responseDialogMessages.value = respData.messages;
+		return {};
+	} catch (error) {
+		console.error("Unexpected error: ", error);
+
+		responseDialogMessages.value = [{
+			title: "Upozornění",
+			content: "Nastala kritická FE chyba" + error,
+			type: "Critical",
+		}];
+
+		return {};
+	}
 }

@@ -1,6 +1,6 @@
 comp<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import type { CustomerAddressType } from '$lib/types/page/customers';
+	import type { CustomerAddressType } from '$lib/types/routes/prodej/zakaznci/customers';
 	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';

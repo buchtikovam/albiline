@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { customerInvoiceAddressesAgGridDef } from '$lib/data/ag-grid/client-side/prodej/zakaznici/customerInvoiceAddressesAgGridDef';
+	import { customerInvoiceAddressesAgGridDef } from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerInvoiceAddressesAgGridDef';
 	import { openedRibbonDialog } from '$lib/runes/ribbon.svelte.js';
 	import { page } from '$app/state';
 	import { apiServiceGET } from '$lib/api/apiService.svelte.js';

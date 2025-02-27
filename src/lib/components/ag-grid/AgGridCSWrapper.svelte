@@ -12,6 +12,7 @@
 
 	interface Props {
 		rowData: any[];
+		returnWholeRowOnEdit?: boolean;
 		editedRowData?:	any[];
 		createdRowData?: any[];
 		requiredFields?: string[];
@@ -22,6 +23,7 @@
 
 	let {
 		rowData,
+		returnWholeRowOnEdit,
 		editedRowData = $bindable(),
 		createdRowData = $bindable(),
 		requiredFields,
@@ -58,8 +60,12 @@
 		rowData: [],
 
 		// function to update editedRowData store,
+
+		// if returnWholeRowOnEdit, return whole row, then it gets updated on its own because of svelte state
+
 		// if record already exists, is added to editedRowData
 		// if record was created during runtime, has not been saved and is being edited, gets added to createdRowData
+
 		// checks created x edited by unique field, that only existing records have
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
 			if (requiredFields) {
@@ -68,6 +74,25 @@
 				})
 
 				if (event.oldValue !== event.newValue) {
+					if (returnWholeRowOnEdit && editedRowData) {
+						console.log(editedRowData);
+
+						let match = false;
+
+						editedRowData.forEach((row) => {
+							requiredFields.forEach((field) => {
+								if (row[field] === event.data[field]) {
+									match = true;
+								}
+							})
+						})
+
+						if (!match) {
+							console.log("no match")
+							editedRowData.push(event.data)
+						}
+					}
+
 					if (editedRowData && createdRowData) {
 						if (isInitialColumn) {
 							addToEditedTableData(

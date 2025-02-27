@@ -4,8 +4,9 @@
 	import type {StoredPreset} from "$lib/types/components/table/presets";
 	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte.js";
-	import {pageCode} from "$lib/runes/page.svelte";
+	import {pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
 	import * as m from '$lib/paraglide/messages.js'
+	import {apiServicePOST} from "$lib/api/apiService.svelte";
 
 	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
@@ -21,7 +22,7 @@
 	})
 
 
-	function savePreset() {
+	async function savePreset() {
 		const strippedPreset: StoredPreset[] = serverSideTables[pageCode.value].presetToSave.map((preset: ColDef) => {
 			return {
 				field: preset.field,
@@ -39,11 +40,27 @@
 		});
 
 		const presetToSave = {
-			presetName: inputValue,
-			presetValue: strippedPreset
+			pagePresetName: inputValue,
+			pagePresetValue: strippedPreset
 		}
 
 		console.log(JSON.stringify(presetToSave, null, 1));
+
+		try {
+			const resp = await apiServicePOST("userpresets", presetToSave);
+
+			if (resp.ok) {
+				isOpen = false;
+				setTimeout(() => {
+					openedRibbonDialog.value = "empty";
+				}, 200)
+			} else {
+				let respData = await resp.json()
+				responseDialogMessages.value = respData.messages
+			}
+		} catch (e) {
+			console.error("Unexpected error: ", e)
+		}
 	}
 </script>
 

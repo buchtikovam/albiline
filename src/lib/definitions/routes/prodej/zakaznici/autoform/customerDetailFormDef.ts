@@ -4,6 +4,7 @@ import type { AutoFormType } from '$lib/types/components/form/autoform';
 import Repeat from 'lucide-svelte/icons/repeat';
 import * as m from '$lib/paraglide/messages.js'
 
+
 export const customerDetailFormDef: AutoFormType = {
 	left: [
 		{
@@ -401,10 +402,3 @@ export const customerDetailFormDef: AutoFormType = {
 		}
 	]
 }
-
-
-//
-//
-//
-// 	],
-// }

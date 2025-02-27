@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ribbonItems } from '$lib/data/page-components/ribbon';
+	import { ribbonItems } from '$lib/definitions/components/ribbon/ribbon';
 	import { ribbonOpen, visibleRibbonItems } from '$lib/runes/ribbon.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';

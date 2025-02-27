@@ -12,15 +12,24 @@
 	let messages = $derived(responseDialogMessages.value);
 
 	let dialogMessages = $derived.by(() => {
-		return messages.filter((message) => {
-			return !message.type.endsWith("Toast");
-		})
+		if (messages) {
+			return messages.filter((message) => {
+				return !message.type.endsWith("Toast");
+			})
+		}
+
+		return []
 	});
 
 	let toastMessages = $derived.by(() => {
-		return messages.filter((message) => {
-			return message.type.endsWith("Toast");
-		})
+		if (messages) {
+			return messages.filter((message) => {
+				return message.type.endsWith("Toast");
+			})
+		}
+
+		return [];
+
 	})
 
 	$effect(() => {
