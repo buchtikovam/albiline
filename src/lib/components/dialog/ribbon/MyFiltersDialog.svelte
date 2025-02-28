@@ -1,24 +1,21 @@
 <script lang="ts">
-	import {pageCompact, pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
+	import {pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte";
-	import {apiServiceDELETE, apiServiceGET, apiServicePUT} from "$lib/api/apiService.svelte";
-	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte.js";
-	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
+	import {apiServiceDELETEHandled, apiServiceGETHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
+	import {ribbonFiltersAgGridDef} from "$lib/definitions/components/ribbon/ag-grid/ribbonFiltersAgGridDef";
 	import Save from "lucide-svelte/icons/save";
 	import type {
 		CellContextMenuEvent,
 		ICellRendererParams
 	} from "ag-grid-community";
-	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
+	import type {GetRowIdParams, GridOptions} from "ag-grid-enterprise";
 	import type {StoredFilters} from "$lib/types/components/table/filters";
 	import FilterDetailDialog from "$lib/components/dialog/ribbon/FilterDetailDialog.svelte";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {ribbonFiltersAgGridDef} from "$lib/definitions/components/ribbon/ag-grid/ribbonFiltersAgGridDef";
-	import type {FetchedInputParamsType} from "$lib/types/components/input-params/inputParams";
 
 
 	let isOpen: boolean = $state(false);
@@ -75,11 +72,10 @@
 
 
 	async function getFilters() {
-		const resp = await apiServiceGET("userfilters");
+		const response = await apiServiceGETHandled("userfilters");
 
-		if (resp.ok) {
-			const respItems = await resp.json();
-			fetchedFilters = respItems.items;
+		if (response.success) {
+			fetchedFilters = response.data.items;
 		}
 	}
 
@@ -105,22 +101,20 @@
 
 
 	async function saveChanges() {
+		let hasFailed = false;
+
 		for (const id of idsToDelete) {
 			console.log("deleting ", id)
-			let resp = await apiServiceDELETE("userfilters", id);
-			let respData = await resp.json();
-
-			console.log(respData)
-			responseDialogMessages.value = respData.messages;
+			let response = await apiServiceDELETEHandled("userfilters", id);
+			if (!response.success) hasFailed = true;
 		}
 
 		for (const filter of editedFilters) {
-			let resp = await apiServicePUT("userfilters", filter.filterId, filter);
-			let respData = await resp.json();
-			responseDialogMessages.value = respData.messages;
+			let response = await apiServicePUTHandled("userfilters", filter.filterId, filter);
+			if (!response.success) hasFailed = true;
 		}
 
-		hasUnsavedData = false;
+		if (!hasFailed) hasUnsavedData = false;
 	}
 
 

@@ -29,12 +29,18 @@ export async function apiServiceGETHandled(endpoint: string) {
 		let response = await apiServiceGET(endpoint)
 
 		if (response.ok) {
-			return await response.json();
+			return {
+				success: true,
+				data: await response.json(),
+			}
 		}
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	} catch (error) {
 		console.error("Unexpected error: ", error);
 
@@ -44,7 +50,10 @@ export async function apiServiceGETHandled(endpoint: string) {
 			type: "Critical",
 		}];
 
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	}
 }
 
@@ -69,12 +78,18 @@ export async function apiServicePostHandled(
 		let response = await apiServicePOST(endpoint, body)
 
 		if (response.ok) {
-			return await response.json();
+			return {
+				success: true,
+				data: await response.json(),
+			}
 		}
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	} catch (error) {
 		console.error("Unexpected error: ", error);
 
@@ -84,7 +99,10 @@ export async function apiServicePostHandled(
 			type: "Critical",
 		}];
 
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	}
 }
 
@@ -111,12 +129,18 @@ export async function apiServicePatchHandled(
 		let response = await apiServicePATCH(endpoint, body)
 
 		if (response.ok) {
-			return await response.json();
+			return {
+				success: true,
+				data: await response.json(),
+			}
 		}
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	} catch (error) {
 		console.error("Unexpected error: ", error);
 
@@ -126,7 +150,10 @@ export async function apiServicePatchHandled(
 			type: "Critical",
 		}];
 
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	}
 }
 
@@ -154,12 +181,18 @@ export async function apiServicePUTHandled(
 		let response = await apiServicePUT(endpoint, id, body)
 
 		if (response.ok) {
-			return await response.json();
+			return {
+				success: true,
+				data: await response.json(),
+			}
 		}
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	} catch (error) {
 		console.error("Unexpected error: ", error);
 
@@ -169,7 +202,10 @@ export async function apiServicePUTHandled(
 			type: "Critical",
 		}];
 
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	}
 }
 
@@ -194,12 +230,20 @@ export async function apiServiceDELETEHandled(
 		let response = await apiServiceDELETE(endpoint, id)
 
 		if (response.ok) {
-			return await response.json();
+			if (response.ok) {
+				return {
+					success: true,
+					data: await response.json(),
+				}
+			}
 		}
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	} catch (error) {
 		console.error("Unexpected error: ", error);
 
@@ -209,6 +253,9 @@ export async function apiServiceDELETEHandled(
 			type: "Critical",
 		}];
 
-		return {};
+		return {
+			success: false,
+			data: {},
+		};
 	}
 }

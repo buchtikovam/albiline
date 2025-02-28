@@ -102,6 +102,7 @@
 
 
 	"components_input_params_label" : "Vstupní parametry",
+	"components_input_params_fulltext_placeholder" : "Id, název, město, ...",
 	"components_input_params_section_fulltext" : "Hledat všude",
 	"components_input_params_section_columns" : "Hledat podle sloupce",
 	"components_input_params_button_load_input_params" : "Načíst",
@@ -110,6 +111,13 @@
 	"components_input_params_save_dialog_label" : "Uložit vstupní parametry",
 	"components_input_params_save_dialog_input_label" : "Název",
 	"components_input_params_save_dialog_save_button" : "Uložit",
+
+	"components_input_params_save_fail_info_toast_title" : "Informace",
+	"components_input_params_save_fail_info_toast_content" : "Nejprve musíš něco zadat",
+
+	"components_input_params_save_dialog_decision_label" : "Jak chceš vstupní parametr uložit?",
+	"components_input_params_save_dialog_decision_choice_update" : "Aktualizovat aktuální",
+	"components_input_params_save_dialog_decision_choice_save" : "Uložit jako nový",
 
 	"components_input_params_load_dialog_label" : "Uložené vstupní parametry",
 	"components_input_params_load_dialog_no_instances_found" : "Nemáš žádné uložené vstupní parametry",

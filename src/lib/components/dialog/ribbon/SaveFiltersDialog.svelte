@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
-	import {serverSideTables} from "$lib/runes/table.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {apiServicePOST} from "$lib/api/apiService.svelte";
+	import {serverSideTables} from "$lib/runes/table.svelte";
+	import {pageCode} from "$lib/runes/page.svelte";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 	import * as m from "$lib/paraglide/messages";
 
@@ -13,11 +13,6 @@
 
 	$effect(() => {
 		isOpen = true;
-
-		return (() => {
-			isOpen = false;
-			openedRibbonDialog.value = "empty";
-		})
 	})
 
 
@@ -27,20 +22,13 @@
 			filters: serverSideTables[pageCode.value].filtersToSave
 		}
 
-		try {
-			const resp = await apiServicePOST("userfilters", saveObj);
+		const response = await apiServicePostHandled("userfilters", saveObj);
 
-			if (resp.ok) {
-				isOpen = false;
-				setTimeout(() => {
-					openedRibbonDialog.value = "empty";
-				}, 200)
-			} else {
-				let respData = await resp.json()
-				responseDialogMessages.value = respData.messages
-			}
-		} catch (e) {
-			console.error("Unexpected error: ", e)
+		if (response.success) {
+			isOpen = false;
+			setTimeout(() => {
+				openedRibbonDialog.value = "empty";
+			}, 200)
 		}
 	}
 </script>

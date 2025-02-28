@@ -15,7 +15,12 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {apiServiceDELETE, apiServiceGET, apiServicePUT} from "$lib/api/apiService.svelte";
+	import {
+		apiServiceDELETE,
+		apiServiceDELETEHandled,
+		apiServiceGETHandled,
+		apiServicePUT, apiServicePUTHandled
+	} from "$lib/api/apiService.svelte";
 	import type {FetchedInputParamsType} from "$lib/types/components/input-params/inputParams";
 
 
@@ -75,11 +80,10 @@
 
 
 	async function getPresets() {
-		const resp = await apiServiceGET("userpresets");
+		const response = await apiServiceGETHandled("userpresets");
 
-		if (resp.ok) {
-			const respItems = await resp.json();
-			fetchedPresets = respItems.items;
+		if (response.success) {
+			fetchedPresets = response.data.items;
 		}
 	}
 
@@ -106,24 +110,20 @@
 	}
 
 
-
 	async function saveChanges() {
-		for (const id of idsToDelete) {
-			console.log("deleting ", id)
-			let resp = await apiServiceDELETE("userpresets", id);
-			let respData = await resp.json();
+		let hasFailed = false;
 
-			console.log(respData)
-			responseDialogMessages.value = respData.messages;
+		for (const id of idsToDelete) {
+			let response = await apiServiceDELETEHandled("userpresets", id);
+			if (!response.success) hasFailed = true;
 		}
 
 		for (const preset of editedPresets) {
-			let resp = await apiServicePUT("userpresets", preset.pagePresetId, preset);
-			let respData = await resp.json();
-			responseDialogMessages.value = respData.messages;
+			let response = await apiServicePUTHandled("userpresets", preset.pagePresetId, preset);
+			if (!response.success) hasFailed = true;
 		}
 
-		hasUnsavedData = false;
+		if (!hasFailed) hasUnsavedData = false;
 	}
 
 

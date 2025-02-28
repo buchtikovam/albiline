@@ -1,8 +1,9 @@
 <script lang="ts">
+	import {responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {Button} from '$lib/components/ui/button';
 	import {Input} from "$lib/components/ui/input";
-	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
+	import {apiServicePostHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import {getColumnFilters} from "$lib/utils/components/input-params/getColumnFilters";
 	import {addColumnFilter} from "$lib/utils/components/input-params/addColumnFilter";
 	import {setContext} from "svelte";
@@ -14,6 +15,7 @@
 		InputParamsSelectOption,
 		FetchedInputParam
 	} from "$lib/types/components/input-params/inputParams";
+	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 	import InputDialogColumnFilterWrapper
 		from "$lib/components/input-params/column-filters/InputDialogColumnFilterWrapper.svelte";
 	import LoadInputParamsDialog from "$lib/components/input-params/LoadInputParamsDialog.svelte";
@@ -21,7 +23,6 @@
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 
 
 	interface Props {
@@ -38,7 +39,6 @@
 
 
 	setContext("endpoint", "userInputParameters");
-
 
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
 	let isLoadDialogOpen = $state(false)
@@ -62,7 +62,7 @@
 
 	// save input params into db, user can load these later
 	async function saveInputParam() {
-		await apiServicePostHandled(
+		let response = await apiServicePostHandled(
 			"userInputParameters",
 			{
 				paramName: saveLabel,
@@ -73,12 +73,14 @@
 			}
 		);
 
-		isSaveDialogOpen = false;
-		saveLabel = "";
+		if (response.success) {
+			isSaveDialogOpen = false;
+			saveLabel = "";
 
-		setTimeout(() => {
-			openedRibbonDialog.value = "empty";
-		}, 200)
+			setTimeout(() => {
+				openedRibbonDialog.value = "empty";
+			}, 200)
+		}
 	}
 
 
@@ -86,6 +88,27 @@
 	function onParamSelect(inputParam: FetchedInputParam) {
 		inputDialog = deepcopy(inputParam.paramValue);
 		selectedParam = inputParam;
+	}
+
+
+
+	async function updateInputParam() {
+		if (selectedParam) {
+			const response = await apiServicePUTHandled(
+				"userInputParameters",
+				selectedParam.paramId,
+				{
+					paramId: selectedParam.paramId,
+					paramName: selectedParam.paramName,
+					paramValue: {
+						fulltext: inputDialog.fulltext,
+						columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+					},
+				}
+			)
+
+			console.log(response.success)
+		}
 	}
 </script>
 
@@ -130,7 +153,7 @@
 			<Input
 				type="text"
 				bind:value={inputDialog.fulltext}
-				placeholder="Id, Název, Město, ..."
+				placeholder={m.components_input_params_fulltext_placeholder()}
 				class="border-border mb-4"
 			/>
 		{/if}
@@ -179,7 +202,17 @@
 						type="button"
 						class="size-10"
 						variant="secondary"
-						onclick={() => isSaveDialogOpen = true}
+						onclick={() => {
+							if (JSON.stringify(defaultInputDialog) === JSON.stringify(inputDialog)) {
+								responseDialogMessages.value = [{
+									type: "InfoToast",
+									title: m.components_input_params_save_fail_info_toast_title(),
+									content: m.components_input_params_save_fail_info_toast_content(),
+								}]
+							} else {
+								isSaveDialogOpen = true;
+							}
+						}}
 					>
 						<Save
 							strokeWidth="2.5"
@@ -229,6 +262,7 @@
 	bind:isOpen={isSaveDialogOpen}
 	bind:inputValue={saveLabel}
 	onsubmit={saveInputParam}
+	onupdate={updateInputParam}
 	selectedParam={selectedParam}
 	hasEditedData={isLoadedParamChanged}
 />

@@ -27,7 +27,7 @@
 	} from 'ag-grid-enterprise';
 	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
-	import {apiServicePOST} from "$lib/api/apiService.svelte";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import deepcopy from "deepcopy";
 
 
@@ -250,8 +250,8 @@
 
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
-			apiServicePOST(url, updatedParamsRequest)
-				.then(httpResponse => httpResponse.json())
+			apiServicePostHandled(url, updatedParamsRequest)
+				.then(httpResponse => httpResponse.data)
 				.then(response => {
 					params.success({ rowData: response.items });
 					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;

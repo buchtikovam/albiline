@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
-	import type {ColDef} from "ag-grid-enterprise";
-	import type {StoredPreset} from "$lib/types/components/table/presets";
-	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte.js";
-	import {pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
+	import {pageCode} from "$lib/runes/page.svelte";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
+	import type {StoredPreset} from "$lib/types/components/table/presets";
+	import type {ColDef} from "ag-grid-enterprise";
+	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 	import * as m from '$lib/paraglide/messages.js'
-	import {apiServicePOST} from "$lib/api/apiService.svelte";
+
 
 	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
@@ -14,11 +15,6 @@
 
 	$effect(() => {
 		isOpen = true;
-
-		return (() => {
-			isOpen = false;
-			openedRibbonDialog.value = "empty";
-		})
 	})
 
 
@@ -44,22 +40,14 @@
 			pagePresetValue: strippedPreset
 		}
 
-		console.log(JSON.stringify(presetToSave, null, 1));
 
-		try {
-			const resp = await apiServicePOST("userpresets", presetToSave);
+		const response = await apiServicePostHandled("userpresets", presetToSave);
 
-			if (resp.ok) {
-				isOpen = false;
-				setTimeout(() => {
-					openedRibbonDialog.value = "empty";
-				}, 200)
-			} else {
-				let respData = await resp.json()
-				responseDialogMessages.value = respData.messages
-			}
-		} catch (e) {
-			console.error("Unexpected error: ", e)
+		if (response.success) {
+			isOpen = false;
+			setTimeout(() => {
+				openedRibbonDialog.value = "empty";
+			}, 200)
 		}
 	}
 </script>

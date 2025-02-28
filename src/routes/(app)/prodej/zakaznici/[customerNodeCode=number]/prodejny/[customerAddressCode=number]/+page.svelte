@@ -11,7 +11,7 @@
 	import {disableNavigation} from '$lib/runes/navigation.svelte';
 	import {ribbonAction} from '$lib/runes/ribbon.svelte';
 	import {page} from '$app/state';
-	import {apiServiceGET} from '$lib/api/apiService.svelte';
+	import {apiServiceGETHandled} from '$lib/api/apiService.svelte';
 	import {changeCustomerAddressRoute} from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute.svelte';
 	import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
 	import {customToast} from '$lib/utils/customToast';
@@ -190,13 +190,10 @@
 	// fetching for customer addresses ag-grid dialog
 	async function getAddresses() {
 		if (addresses.length === 0) {
-			const res = await apiServiceGET(`customers/${page.params.customerNodeCode}/addresses`)
+			const response = await apiServiceGETHandled(`customers/${page.params.customerNodeCode}/addresses`)
 
-			if (res.ok) {
-				const responseData = await res.json();
-				addresses = await responseData.items;
-			} else {
-				customToast("Critical", "Nepodařilo se získat prodejny")
+			if (response.success) {
+				addresses = response.data.items;
 			}
 		}
 	}

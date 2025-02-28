@@ -59,10 +59,11 @@
 
 
 	async function getUserInputParams() {
-		isLoading = true
-		let items = await apiServiceGETHandled(endpoint);
-		if (items) {
-			fetchedInputParams = items.items;
+		isLoading = true;
+		let response = await apiServiceGETHandled(endpoint);
+
+		if (response.success) {
+			fetchedInputParams = response.data.items;
 			isLoading = false;
 		}
 	}
@@ -86,16 +87,22 @@
 
 
 	async function saveChanges() {
+		let hasFailed = false;
+
 		for (const id of idsToDelete) {
-			await apiServiceDELETEHandled(endpoint, id);
+			const response = await apiServiceDELETEHandled(endpoint, id);
+			if (!response.success) hasFailed = true;
 		}
 
 		for (const param of updatedInputParams) {
-			await apiServicePUTHandled(endpoint, param.paramId, param);
+			const response = await apiServicePUTHandled(endpoint, param.paramId, param);
+			if (!response.success) hasFailed = true;
 		}
 
-		idsToDelete = [];
-		updatedInputParams = [];
+		if (!hasFailed) {
+			idsToDelete = [];
+			updatedInputParams = [];
+		}
 	}
 </script>
 
