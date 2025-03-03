@@ -1,20 +1,18 @@
 <script lang="ts">
 	import DatePicker from '$lib/components/date/DatePicker.svelte';
-	import { z } from 'zod';
+	import type {AutoFormInput} from "$lib/types/components/form/autoform";
 
 	interface Props {
-		value: Date|undefined;
-		label: string;
+		value: string|undefined;
 		disable?: boolean;
-		schema: z.ZodType<T>;
-		addToEditedFormData: (newValue: Date, initialValue: Date|null) => void;
+		formInput: AutoFormInput;
+		addToEditedFormData: (newValue: string, initialValue: string|null) => void;
 	}
 
 	let {
 		value,
-		label,
 		disable,
-		schema,
+		formInput,
 		addToEditedFormData
 	}: Props = $props();
 
@@ -28,24 +26,29 @@
 		}
 	})
 
-	function validateDateSchema(newValue: Date) {
-		try {
-			schema.parse(newValue);
-			errorMessage = "";
-			hasError = false;
+	function validateDateSchema(newValue: string) {
+		// try {
+		// 	schema.parse(newValue);
+		// 	errorMessage = "";
+		// 	hasError = false;
 			addToEditedFormData(newValue, value);
-		} catch (e) {
-			console.log(e);
-			errorMessage = e.issues[0].code;
-			hasError = true;
-			addToEditedFormData(newValue, value);
-			return false;
-		}
+		// } catch (e) {
+		// 	console.log(e);
+		// 	errorMessage = e.issues[0].code;
+		// 	hasError = true;
+		// 	addToEditedFormData(newValue, value);
+		// 	return false;
+		// }
 	}
 </script>
 
 <div class="w-full">
-	<DatePicker hasError={hasError} bind:dateValue={dateValue} label={label}/>
+	<DatePicker
+		hasError={hasError}
+		bind:dateValue={dateValue}
+		label={formInput.translation()}
+		field={formInput.field}
+	/>
 
 	<p class="text-xs text-red-700 w-full">
 		{errorMessage}

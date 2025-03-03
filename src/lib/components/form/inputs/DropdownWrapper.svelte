@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { z } from 'zod';
-	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
+	import type {AutoFormInput} from "$lib/types/components/form/autoform";
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import * as Select from "$lib/components/ui/select/index.js";
 
 	export const disable: boolean = false;
+
 	interface Props {
 		value: string;
-		options?: string[];
-		schema: z.ZodType<T>;
-		label: any;
+		formInput: AutoFormInput;
 		addToEditedFormData: (newValue: any, initialValue: any) => void;
 	}
 
 	let {
 		value,
-		options = [],
-		schema,
-		label,
+		formInput,
 		addToEditedFormData
 	}: Props = $props();
 
@@ -29,7 +26,7 @@
 
 	function validateDropdownSchema(selectedValue: any) {
 		try {
-			schema.parse(selectedValue);
+			formInput.schema.parse(selectedValue);
 			hasError = false;
 			errorMessage = "";
 			addToEditedFormData(selectedValue, value);
@@ -45,7 +42,11 @@
 
 
 <div class="w-full flex flex-col">
-	<InputLabel label={label} />
+	<InputLabelWithContext
+		contextMenuField={formInput.field}
+		label={formInput.translation()}
+	/>
+
 	<Select.Root
 		type="single"
 		disabled={disable}
@@ -57,9 +58,14 @@
 		</Select.Trigger>
 
 		<Select.Content>
-			{#each options as option}
-				<Select.Item value={option} label={option} />
-			{/each}
+			{#if formInput.dropdownOptions}
+				{#each formInput.dropdownOptions as option}
+					<Select.Item
+						value={option}
+						label={option}
+					/>
+				{/each}
+			{/if}
 		</Select.Content>
 	</Select.Root>
 

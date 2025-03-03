@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { themeAlbiBlueParams } from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
-	import { pageCompact } from "$lib/runes/page.svelte";
 	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
 	import {
 		type CellValueChangedEvent,
@@ -8,7 +7,7 @@
 		type GridApi,
 		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
-	import {AG_GRID_LOCALE_CZ} from "@ag-grid-community/locale";
+	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 
 	interface Props {
 		rowData: any[];
@@ -44,7 +43,7 @@
 
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
-		localeText: AG_GRID_LOCALE_CZ,
+		localeText: getAgGridLocale(),
 
 		defaultColDef: {
 			sortable: true,
@@ -59,10 +58,35 @@
 
 		rowData: [],
 
+		getMainMenuItems: (event) => {
+			return [
+				'pinSubMenu',
+				'separator',
+				'valueAggSubMenu',
+				'autoSizeThis',
+				'columnChooser',
+				'resetColumns',
+				'separator',
+				'sortUnSort',
+				'separator',
+				{
+					name: "IT",
+					icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-code-xml\"><path d=\"m18 16 4-4-4-4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"m14.5 4-5 16\"/></svg>",
+					subMenu: [
+						{
+							name: "field: " + event.column.getColId(),
+							action: () => {
+								navigator.clipboard.writeText(event.column.getColId())
+							},
+						}
+					]
+				}
+			];
+		},
+
 		// function to update editedRowData store,
 
 		// if returnWholeRowOnEdit, return whole row, then it gets updated on its own because of svelte state
-
 		// if record already exists, is added to editedRowData
 		// if record was created during runtime, has not been saved and is being edited, gets added to createdRowData
 
@@ -75,8 +99,6 @@
 
 				if (event.oldValue !== event.newValue) {
 					if (returnWholeRowOnEdit && editedRowData) {
-						console.log(editedRowData);
-
 						let match = false;
 
 						editedRowData.forEach((row) => {
@@ -88,7 +110,6 @@
 						})
 
 						if (!match) {
-							console.log("no match")
 							editedRowData.push(event.data)
 						}
 					}
@@ -165,13 +186,12 @@
 
 <style>
 	/* HEADER */
-
-
 	:global(.ag-header-cell-text) {
 		overflow: hidden;
 		word-break: keep-all !important;
 		-webkit-line-clamp: 2; /* number of lines to show */
 		line-clamp: 2;
+		max-height: 32px;
 		white-space: preserve-breaks;
 		text-overflow: ellipsis;
 		-webkit-box-orient: vertical;
@@ -281,7 +301,10 @@
 	}
 
 	:global(.ag-checkbox) {
+		margin-left: 4px;
 		overflow: visible !important;
+		outline: none !important;
+		box-shadow: none !important;
 	}
 
 

@@ -16,6 +16,7 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
+	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
 
 
 	let isOpen: boolean = $state(false);
@@ -25,10 +26,12 @@
 	let fetchedFilters: StoredFilters[] = $state([]);
 	let idsToDelete: number[] = $state([]);
 	let editedFilters: StoredFilters[] = $state([]);
+	let isLoading = $state(true);
 
 
 	$effect(() => {
 		isOpen = true;
+		isLoading = true;
 		getFilters();
 
 		return (() => {
@@ -76,6 +79,7 @@
 
 		if (response.success) {
 			fetchedFilters = response.data.items;
+			isLoading = false;
 		}
 	}
 
@@ -159,18 +163,24 @@
 
 {#snippet content()}
 	<div class="h-full">
-		{#if fetchedFilters.length > 0}
-			<AgGridCSWrapper
-				rowData={fetchedFilters}
-				requiredFields={["fiterId"]}
-				bind:editedRowData={editedFilters}
-				returnWholeRowOnEdit={true}
-				gridOptionsCustom={customGridOptions}
-				fullHeight={true}
-				hiddenHeader={true}
-			/>
-		{:else }
-			{m.components_ribbon_dialog_my_filters_no_instances_found()}
+		{#if isLoading}
+			<TableSkeletonSmall/>
+		{:else}
+
+			{#if fetchedFilters.length > 0}
+				<AgGridCSWrapper
+					rowData={fetchedFilters}
+					requiredFields={["fiterId"]}
+					bind:editedRowData={editedFilters}
+					returnWholeRowOnEdit={true}
+					gridOptionsCustom={customGridOptions}
+					fullHeight={true}
+					hiddenHeader={true}
+				/>
+			{:else }
+				{m.components_ribbon_dialog_my_filters_no_instances_found()}
+			{/if}
+
 		{/if}
 	</div>
 {/snippet}

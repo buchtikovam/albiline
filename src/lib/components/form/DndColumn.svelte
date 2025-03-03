@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { disableInputs } from '$lib/runes/page.svelte';
 	import { openedRibbonDialog } from '$lib/runes/ribbon.svelte';
-	import { dragHandleZone, dragHandle, dndzone } from 'svelte-dnd-action';
+	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
+	import { cubicInOut } from "svelte/easing";
+	import { slide } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import Grip from 'lucide-svelte/icons/grip';
 	import type { AutoFormType, AutoFormSection } from '$lib/types/components/form/autoform';
@@ -16,8 +18,6 @@
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 	import EmptyField from '$lib/components/form/inputs/EmptyField.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
-	import { slide } from 'svelte/transition';
-	import { cubicInOut } from "svelte/easing";
 
 	interface Props {
 		formDef: AutoFormType;
@@ -35,18 +35,21 @@
 		allowCrossColumnDND = true,
 	}: Props = $props();
 
+
 	let disable = $derived(disableInputs);
 	let column = $derived(formDef[colName]);
-
 	const flipDurationMs = 300;
+
 
 	function handleDndConsider(ev: CustomEvent<{ items: AutoFormSection[] }>) {
 		formDef[colName] = ev.detail.items;
 	}
 
+
 	function handleDndFinalize(ev: CustomEvent<{ items: AutoFormSection[] }>) {
 		formDef[colName] = ev.detail.items;
 	}
+
 
 	function updateFormValues(newValue: any, initialValue: any, field: string) {
 		editedFormValues[field] = newValue;
@@ -84,7 +87,9 @@
 						   class="p-0 pr-2 text-albi-500 w-fit"
 						   onclick={() => section.isOpen = !section.isOpen}
 					   >
-						   <SectionLabel label={section.translation()} />
+						   <SectionLabel
+							   label={section.translation()}
+						   />
 					   </button>
 
 
@@ -112,7 +117,9 @@
 						class="pr-2 w-full text-left text-albi-500"
 						onclick={() => section.isOpen = !section.isOpen}
 					>
-						<SectionLabel label={section.translation()} />
+						<SectionLabel
+							label={section.translation()}
+						/>
 					</button>
 
 
@@ -136,37 +143,34 @@
 									{#each row.rowInputs as input}
 										{#if input.type === "text"}
 											<InputWrapperText
-												label={input.translation()}
-												schema={input.schema}
+												formInput={input}
 												value={initialFormValues[input.field]}
 												disable={disable.value}
 												addToEditedFormData={
-												(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
-											}
+													(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+												}
 											/>
 										{/if}
 										{#if input.type === "number"}
 											<InputWrapperNumber
-												label={input.translation()}
-												schema={input.schema}
+												formInput={input}
 												value={initialFormValues[input.field]}
 												disable={disable.value}
 												addToEditedFormData={
-												(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
-											}
+													(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+												}
 											/>
 										{/if}
 
 										{#if input.type === "checkbox"}
 											<div class="mt-5 w-full">
 												<CheckboxWrapper
-													label={input.translation()}
-													schema={input.schema}
+													formInput={input}
 													value={initialFormValues[input.field]}
 													disable={disable.value}
 													addToEditedFormData={
-													(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
-												}
+														(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+													}
 												/>
 											</div>
 										{/if}
@@ -177,20 +181,17 @@
 
 										{#if input.type === "dropdown"}
 											<DropdownWrapper
-												label={input.translation()}
-												schema={input.schema}
+												formInput={input}
 												value={initialFormValues[input.field]}
-												options={input.dropdownOptions}
 												addToEditedFormData={
-												(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
-											}
+													(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+												}
 											/>
 										{/if}
 
 										{#if input.type === "date"}
 											<DateWrapper
-												label={input.translation()}
-												schema={input.schema}
+												formInput={input}
 												disable={disable.value}
 												value={initialFormValues[input.field]}
 												addToEditedFormData={
@@ -207,13 +208,12 @@
 									{#each row.rowInputs as input}
 										{#if input.type === "checkbox"}
 											<CheckboxWrapper
-												label={input.translation()}
-												schema={input.schema}
+												formInput={input}
 												value={initialFormValues[input.field]}
 												disable={disable.value}
 												addToEditedFormData={
-												(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
-											}
+													(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+												}
 											/>
 										{/if}
 									{/each}

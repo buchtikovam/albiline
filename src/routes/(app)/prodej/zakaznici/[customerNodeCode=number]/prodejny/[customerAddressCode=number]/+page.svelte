@@ -33,6 +33,7 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerAddressesDialog.svelte";
 	import NewCustomerContactDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte";
+	import { flip } from 'svelte/animate';
 
 	interface Props {
 		data: {
@@ -91,7 +92,6 @@
 		if (!table.selectedRows[table.activeSelectedRowIndex - 1]) disableLeft = true;
 
 		return(() => {
-			console.log("return")
 			addresses = [];
 			openAgGridDialog = false;
 		})
@@ -275,7 +275,7 @@
 
 	<!-- page content -->
 	{#each pageLayout as item (item.id)}
-		<div class="">
+		<div animate:flip={{ duration: 300 }} >
 			<!-- address detail form -->
 			{#if item.type === "form"}
 				<div

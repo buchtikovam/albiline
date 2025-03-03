@@ -73,6 +73,8 @@
 		blockLoadDebounceMillis: 600,
 		undoRedoCellEditingLimit: 20,
 		enableCellTextSelection: true,
+		tooltipShowDelay: 1000,
+
 		sideBar: {
 			toolPanels: ["columns", "filters"],
 			hiddenByDefault: isMobile.value,
@@ -107,7 +109,7 @@
 		},
 
 
-		getMainMenuItems: () => {
+		getMainMenuItems: (event) => {
 			return [
 				'pinSubMenu',
 				'separator',
@@ -117,6 +119,19 @@
 				'resetColumns',
 				'separator',
 				'sortUnSort',
+				'separator',
+				{
+					name: "IT",
+					icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-code-xml\"><path d=\"m18 16 4-4-4-4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"m14.5 4-5 16\"/></svg>",
+					subMenu: [
+						{
+							name: "field: " + event.column.getColId(),
+							action: () => {
+								navigator.clipboard.writeText(event.column.getColId())
+							},
+						}
+					]
+				}
 			];
 		},
 
@@ -135,7 +150,7 @@
 			if (event.oldValue !== event.newValue) {
 				addToEditedTableData(
 					event,
-					["customerNodeCode", "customerAddressCode"],
+					requiredFields,
 					table.editedTableData,
 				)
 			}
@@ -631,13 +646,15 @@
 
 <style>
 	/* HEADER */
-
-
 	:global(.ag-header-cell-text) {
 		overflow: hidden;
 		word-break: keep-all !important;
+		-webkit-line-clamp: 2; /* number of lines to show */
+		line-clamp: 2;
+		max-height: 32px;
 		white-space: preserve-breaks;
 		text-overflow: ellipsis;
+		-webkit-box-orient: vertical;
 	}
 
 	:global(.ag-header-icon) {
@@ -656,7 +673,6 @@
 	:global(.ag-filter-body-wrapper) {
 		padding: 6px 6px 0 6px;
 	}
-
 
 
 	/* SIDEBAR FILTER PANEL */
@@ -742,7 +758,10 @@
 	}
 
 	:global(.ag-checkbox) {
+		margin-left: 4px;
 		overflow: visible !important;
+		outline: none !important;
+		box-shadow: none !important;
 	}
 
 

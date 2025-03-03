@@ -4,11 +4,11 @@ import * as runtime from "$lib/paraglide/runtime.js"
 
 export const i18n = createI18n(runtime, {
 	pathnames: {
-		"/sklad" : {
-			cz: "/sklad",
-			en: "/warehouse",
-			pl: "/sklad",
-			sk: "/sklad",
-		},
+		"/nastaveni": {
+			cz: "/nastaveni",
+			en: "/settings",
+			pl: "/ustawienia",
+			sk: "/nastavenie",
+		}
 	}
 })

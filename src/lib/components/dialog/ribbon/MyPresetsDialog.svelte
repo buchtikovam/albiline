@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {pageCompact, pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
+	import {pageCompact, pageCode} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {serverSideTables} from "$lib/runes/table.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
@@ -16,12 +16,11 @@
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
 	import {
-		apiServiceDELETE,
 		apiServiceDELETEHandled,
 		apiServiceGETHandled,
-		apiServicePUT, apiServicePUTHandled
+		apiServicePUTHandled
 	} from "$lib/api/apiService.svelte";
-	import type {FetchedInputParamsType} from "$lib/types/components/input-params/inputParams";
+	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
 
 
 	let isOpen: boolean = $state(false);
@@ -29,11 +28,13 @@
 	let idsToDelete: number[] = $state([]);
 	let fetchedPresets: StoredPresets[] = $state([]);
 	let editedPresets: StoredPresets[] = $state([]);
+	let isLoading = $state(true);
 
 
 	$effect(() => {
 		isOpen = true;
 		getPresets()
+		isLoading = true;
 
 		return (() => {
 			isOpen = false;
@@ -84,6 +85,7 @@
 
 		if (response.success) {
 			fetchedPresets = response.data.items;
+			isLoading = false;
 		}
 	}
 
@@ -175,18 +177,23 @@
 
 {#snippet content()}
 	<div class="h-full">
-		{#if fetchedPresets.length > 0}
-			<AgGridCSWrapper
-				rowData={fetchedPresets}
-				requiredFields={["pagePresetId"]}
-				bind:editedRowData={editedPresets}
-				returnWholeRowOnEdit={true}
-				gridOptionsCustom={customGridOptions}
-				fullHeight={true}
-				hiddenHeader={true}
-			/>
-		{:else }
-			{m.components_ribbon_dialog_my_presets_no_instances_found()}
+		{#if isLoading}
+			<TableSkeletonSmall/>
+		{:else}
+			{#if fetchedPresets.length > 0}
+				<AgGridCSWrapper
+					rowData={fetchedPresets}
+					requiredFields={["pagePresetId"]}
+					bind:editedRowData={editedPresets}
+					returnWholeRowOnEdit={true}
+					gridOptionsCustom={customGridOptions}
+					fullHeight={true}
+					hiddenHeader={true}
+				/>
+			{:else }
+				{m.components_ribbon_dialog_my_presets_no_instances_found()}
+			{/if}
+
 		{/if}
 	</div>
 {/snippet}

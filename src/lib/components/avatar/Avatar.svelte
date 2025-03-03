@@ -12,6 +12,7 @@
 	import CountryFlag from '$lib/components/icons/CountryFlag.svelte';
 	import * as Select from "$lib/components/ui/select/index.js";
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import {goto} from "$app/navigation";
 
 
 	let userName = $derived(authDetails.userName);
@@ -21,12 +22,20 @@
 
 
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger class="rounded-md bg-albi-500 min-w-8 size-8">
-		<User class="size-5 m-1 mx-auto text-slate-50"/>
+	<DropdownMenu.Trigger
+		class="rounded-md bg-albi-500 min-w-8 size-8"
+	>
+		<User
+			class="size-5 m-1 mx-auto text-slate-50"
+		/>
 	</DropdownMenu.Trigger>
 
-	<DropdownMenu.Content class="min-w-48 md:min-w-64  mr-4 mb-4">
-		<DropdownMenu.Label class="font-bold  text-albi-950 max-w-[280px] text-base flex justify-between items-center overflow-visible">
+	<DropdownMenu.Content
+		class="min-w-48 md:min-w-64  mr-4 mb-4"
+	>
+		<DropdownMenu.Label
+			class="font-bold  text-albi-950 max-w-[280px] text-base flex justify-between items-center overflow-visible"
+		>
 			<p class="pr-2">
 				{userName}
 			</p>
@@ -68,18 +77,20 @@
 
 
 		<DropdownMenu.Group>
-			<DropdownMenu.Item>
-				<div class="flex items-center">
-					<User class="size-5 mr-2" />
-					<a href={i18n.resolveRoute("profil")}>{m.components_avatar_profile()}</a>
-
-				</div>
+			<DropdownMenu.Item
+				class="flex w-full items-center"
+				onclick={() => goto(i18n.resolveRoute("profil"))}
+			>
+				<User class="size-5" />
+				{m.components_avatar_profile()}
 			</DropdownMenu.Item>
-			<DropdownMenu.Item>
-				<div class="flex items-center">
-					<Settings class="size-5 mr-2" />
-					{m.components_avatar_settings()}
-				</div>
+
+			<DropdownMenu.Item
+				class="flex w-full items-center"
+				onclick={() => goto(i18n.resolveRoute("nastaveni"))}
+			>
+				<Settings class="size-5" />
+				{m.components_avatar_settings()}
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 

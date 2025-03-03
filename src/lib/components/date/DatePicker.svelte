@@ -8,25 +8,30 @@
 	import Portal from "svelte-portal";
 	import {type DateValue} from '@internationalized/date';
 	import { DatePicker } from 'bits-ui';
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 
 	interface Props {
 		dateValue?: string;
 		hasError?: boolean;
 		label?: string;
+		field?: string;
 	}
 
 	let {
 		dateValue = $bindable(),
 		hasError,
 		label,
+		field,
 	}: Props = $props();
 
 
 	let value: DateValue = $state();
 
-	if (dateValue) {
-		value = parseStringToDateValue(dateValue);
-	}
+	$effect(() => {
+		if (dateValue) {
+			value = parseStringToDateValue(dateValue);
+		}
+	})
 
 
 	$effect(() => {
@@ -48,11 +53,10 @@
 >
 	<div class="flex w-full flex-col">
 		{#if label}
-			<DatePicker.Label
-				class="block select-none text-sm font-medium text-slate-500 mb-0.5"
-			>
-				{ label }
-			</DatePicker.Label>
+			<InputLabelWithContext
+				contextMenuField={field}
+				{label}
+			/>
 		{/if}
 
 
@@ -69,7 +73,7 @@
 						{:else}
 							<DatePicker.Segment
 								{part}
-								class="p-0 focus:outline-none focus-visible:bg-muted rounded text-xs sm:text-sm"
+								class="p-0 focus:outline-none focus-visible:bg-muted rounded text-sm"
 							>
 								{value === "yyyy" ? "rrrr" : value}
 							</DatePicker.Segment>

@@ -1,12 +1,11 @@
 <script lang="ts">
 	import {Button} from "$lib/components/ui/button/index.js";
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as m from "$lib/paraglide/messages";
-	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
-	import type {FetchedInputParam} from "$lib/types/components/input-params/inputParams";
 	import {Label} from "$lib/components/ui/label";
 	import {Input} from "$lib/components/ui/input";
+	import type {FetchedInputParam} from "$lib/types/components/input-params/inputParams";
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from "$lib/paraglide/messages";
+	import * as Dialog from '$lib/components/ui/dialog';
 
 
 	interface Props {
@@ -27,9 +26,13 @@
 		hasEditedData,
 	}: Props = $props();
 
+
 	let showSaveNew = $state(false);
 
+
 	$effect(() => {
+		showSaveNew = !hasEditedData;
+
 		return(() => {
 			showSaveNew = false;
 		})
@@ -61,6 +64,7 @@
 	</Dialog.Title>
 {/snippet}
 
+
 {#snippet content()}
 	{#if !selectedParam || showSaveNew}
 		<form
@@ -85,7 +89,6 @@
 				<Button
 					type="submit"
 					class="mt-6 w-full"
-					onclick={() => showSaveNew = false}
 				>
 					{m.components_input_params_save_dialog_save_button()}
 				</Button>

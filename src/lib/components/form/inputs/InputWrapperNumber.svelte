@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { z } from "zod";
-  	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
+	import type {AutoFormInput} from "$lib/types/components/form/autoform";
 
 	interface Props {
 		value: number;
-		label: any;
-		schema: z.ZodType<T>;
+		formInput: AutoFormInput;
 		disable?: boolean;
 		addToEditedFormData: (newValue: number, initialValue: number|null) => void;
 	}
 
 	let {
 		value,
-		label,
-		schema,
+		formInput,
 		disable = false,
 		addToEditedFormData
 	}: Props = $props();
@@ -22,11 +21,12 @@
 	let errorMessage = $state("");
 	let hasError: boolean = $state(false);
 
+
 	function validateNumberSchema(ev) {
 		const inputValue = Number(ev.target?.value);
 
 		try {
-			schema.parse(inputValue);
+			formInput.schema.parse(inputValue);
 			errorMessage = "";
 			hasError = false;
 			addToEditedFormData(inputValue, value);
@@ -52,7 +52,10 @@
 
 <div class="w-full flex flex-col">
 	<div class="w-full">
-		<InputLabel label={label} />
+		<InputLabelWithContext
+			contextMenuField={formInput.field}
+			label={formInput.translation()}
+		/>
 
 		<input
 			type="number"

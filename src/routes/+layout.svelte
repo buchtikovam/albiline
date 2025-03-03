@@ -3,10 +3,12 @@
     import { i18n } from "$lib/i18n"
 	// import { pwaAssetsHead } from "virtual:pwa-assets/head";
 	// import { pwaInfo } from "virtual:pwa-info";
-	import { type Snippet } from 'svelte';
+	import {onMount, type Snippet} from 'svelte';
 	import {isMobile} from "$lib/runes/page.svelte";
 	import {Toaster} from "svelte-sonner";
 	import Response from "$lib/components/response/Response.svelte";
+	import {browser} from "$app/environment";
+	import {initializeJSPM} from "$lib/api/printerService.svelte";
 
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
 
@@ -18,6 +20,12 @@
 	$effect(() => {
 		isMobile.value = innerWidth < 640;
 	});
+
+	onMount(async () => {
+		if (browser) {
+			await initializeJSPM();
+		}
+	})
 
 </script>
 

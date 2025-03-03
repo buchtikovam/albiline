@@ -1,19 +1,18 @@
 <script lang="ts">
-  	import InputLabel from '$lib/components/form/labels/InputLabel.svelte';
-	import { z } from "zod";
+	import type {AutoFormInput} from "$lib/types/components/form/autoform";
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
+	import * as m from "$lib/paraglide/messages.js"
 
 	interface Props {
 		value: string|null;
-		label: string;
-		schema: z.ZodType<T>;
+		formInput: AutoFormInput;
 		disable?: boolean;
 		addToEditedFormData: (newValue: string, initialValue: string|null) => void;
 	}
 
 	let {
 		value,
-		label,
-		schema,
+		formInput,
 		disable = false,
 		addToEditedFormData
 	}: Props = $props();
@@ -27,34 +26,27 @@
 	}
 
 
-	function validateTextSchema(ev) {
-		const inputValue = ev.target?.value;
+	function validateTextSchema(ev: InputEvent) {  // <-- Add event type
+		const inputValue = (ev.target as HTMLInputElement).value; // <-- Cast to HTMLInputElement
 
 		try {
-			schema.parse(inputValue);
+			formInput.schema.parse(inputValue);
 			errorMessage = "";
 			hasError = false;
-
 			addToEditedFormData(inputValue, value);
-		} catch (e) {
-			console.log(e);
+		} catch (err: any) {
+			console.log(err);
 			addToEditedFormData(inputValue, value);
 			hasError = true;
-			errorMessage = e.issues[0].code;
+			errorMessage = err.issues[0].code;
 
-			switch (e.issues[0].code) {
-				case "too_small":
-					// errorMessage = $_('zod_errors.string.too_small', {values: { min: e.issues[0].minimum, field: label }});
-					break;
-				case "too_big":
-					// errorMessage = $_('zod_errors.string.too_big', {values: { max: e.issues[0].maximum, field: label }});
-					break;
+			switch (err.issues[0].code) {
 				case "invalid_string":
-					switch (e.issues[0].validation) {
+					switch (err.issues[0].validation) {
 						case "email":
-							// errorMessage = $_('zod_errors.string.invalid_string.email');
+							errorMessage = m.components_autoform_string_error_invalid_email();
 							break;
-						default:
+						// default:
 							// errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
 					}
 					break;
@@ -67,7 +59,10 @@
 
 <div class="w-full flex flex-col">
 	<div class="w-full">
-		<InputLabel label={label} />
+		<InputLabelWithContext
+			contextMenuField={formInput.field}
+			label={formInput.translation()}
+		/>
 
 		<input
 			type="text"

@@ -30,13 +30,16 @@
 	})
 
 
-	if (startValue) {
-		value.start = parseStringToDateValue(startValue);
-	}
+	$effect(() => {
+		if (startValue) {
+			value.start = parseStringToDateValue(startValue);
+		}
 
-	if (endValue) {
-		value.end = parseStringToDateValue(endValue)
-	}
+		if (endValue) {
+			value.end = parseStringToDateValue(endValue)
+		}
+	})
+
 
 
 	$effect(() => {

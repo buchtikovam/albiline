@@ -113,7 +113,7 @@
 	"components_input_params_save_dialog_save_button" : "Uložit",
 
 	"components_input_params_save_fail_info_toast_title" : "Informace",
-	"components_input_params_save_fail_info_toast_content" : "Nejprve musíš něco zadat",
+	"components_input_params_save_fail_info_toast_content" : "Nejprve musíš něco změnit",
 
 	"components_input_params_save_dialog_decision_label" : "Jak chceš vstupní parametr uložit?",
 	"components_input_params_save_dialog_decision_choice_update" : "Aktualizovat aktuální",
@@ -123,7 +123,7 @@
 	"components_input_params_load_dialog_no_instances_found" : "Nemáš žádné uložené vstupní parametry",
 
 
-
+	"components_autoform_string_error_invalid_email" : "Email je ve špatném formátu",
 
 
 	"routes_login_form_label": "Přihlaste se ke svému účtu",

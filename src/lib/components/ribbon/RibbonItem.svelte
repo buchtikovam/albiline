@@ -22,7 +22,7 @@
 		{ribbonItem.translation()}
 	</button>
 {:else}
-	<Tooltip.Root >
+	<Tooltip.Root>
 		<Tooltip.Trigger
 			class="w-5 min-w-5 hover:bg-muted/70 hover:text-black"
 			onclick={() => {

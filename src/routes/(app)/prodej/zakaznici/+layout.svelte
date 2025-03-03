@@ -4,11 +4,11 @@
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {Input} from '$lib/components/ui/input';
 	import {i18n} from '$lib/i18n.js'
+	import {setContext} from 'svelte';
 	import {goto} from '$app/navigation';
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
-	import { setContext } from 'svelte';
 
 	interface Props {
 		children?: import('svelte').Snippet;

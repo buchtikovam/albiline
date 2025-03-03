@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox';
-	import InputLabel from '../labels/InputLabel.svelte';
-	import { z } from 'zod';
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
+	import type {AutoFormInput} from "$lib/types/components/form/autoform";
 
 	interface Props {
 		value: boolean;
-		label: string;
-		schema: z.ZodType<T>;
+		formInput: AutoFormInput;
 		disable?: boolean;
 		addToEditedFormData: (newValue: boolean, initialValue: boolean) => void;
 	}
 
 	let {
 		value,
-		label,
-		schema,
+		formInput,
 		disable = false,
 		addToEditedFormData
 	}: Props = $props();
@@ -27,7 +25,7 @@
 
 	function validateBooleanSchema() {
 		try {
-			schema.parse(!checkedValue);
+			formInput.schema.parse(!checkedValue);
 			hasError = false;
 			addToEditedFormData(!checkedValue, value);
 		} catch (e) {
@@ -49,8 +47,9 @@
 			onclick={() => validateBooleanSchema()}
 		/>
 
-		<InputLabel
-			label={label}
+		<InputLabelWithContext
+			contextMenuField={formInput.field}
+			label={formInput.translation()}
 		/>
 	</div>
 </div>

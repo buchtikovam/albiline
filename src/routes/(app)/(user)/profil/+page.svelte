@@ -15,13 +15,15 @@
 </script>
 
 
+<div class="w-full h-full rounded-lg bg-white p-4">
+	<Button
+		class="w-fit"
+		onclick={() => openChangePasswordDialog = true}
+	>
+		Změnit heslo
+	</Button>
 
-<Button
-	class="w-fit"
-	onclick={() => openChangePasswordDialog = true}
->
-	Změnit heslo
-</Button>
 
+</div>
 
 <ChangePasswordDialog isOpen={openChangePasswordDialog} />

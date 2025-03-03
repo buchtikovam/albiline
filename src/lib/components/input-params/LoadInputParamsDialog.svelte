@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {Skeleton} from "$lib/components/ui/skeleton/index.js";
 	import {getContext} from "svelte";
 	import {
 		apiServiceDELETEHandled,
@@ -19,6 +18,7 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
 
 	interface Props {
 		isOpen: boolean;
@@ -128,9 +128,7 @@
 		{m.components_input_params_load_dialog_label()}
 
 		{#if hasUnsavedData}
-			<button
-				onclick={() => saveChanges()}
-			>
+			<button onclick={() => saveChanges()}>
 				<Save
 					class="size-5 text-albi-500 hover:text-albi-700"
 				/>
@@ -142,11 +140,7 @@
 {#snippet content()}
 	<div class="h-full">
 		{#if isLoading}
-			<div class="flex flex-col gap-1">
-				<Skeleton class="h-[30px] w-full rounded-xl" />
-				<Skeleton class="h-[30px] w-2/3 rounded-xl" />
-				<Skeleton class="h-[30px] w-5/6 rounded-xl" />
-			</div>
+			<TableSkeletonSmall/>
 		{:else}
 			{#if fetchedInputParams.length > 0}
 				<AgGridCSWrapper

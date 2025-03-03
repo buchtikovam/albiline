@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {responseDialogMessages} from "$lib/runes/page.svelte";
+	import {isMobile, responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {Button} from '$lib/components/ui/button';
 	import {Input} from "$lib/components/ui/input";
@@ -8,6 +8,8 @@
 	import {addColumnFilter} from "$lib/utils/components/input-params/addColumnFilter";
 	import {setContext} from "svelte";
 	import deepcopy from "deepcopy";
+	import Pencil from "lucide-svelte/icons/pencil";
+	import Check from "lucide-svelte/icons/check";
 	import Plus from "lucide-svelte/icons/plus";
 	import Save from "lucide-svelte/icons/save";
 	import type {
@@ -40,23 +42,41 @@
 
 	setContext("endpoint", "userInputParameters");
 
+
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
+
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
 	let saveLabel = $state("");
 	let selectedParam: FetchedInputParam|undefined = $state();
-	let isLoadedParamChanged = $derived(JSON.stringify(inputDialog) !== JSON.stringify(selectedParam?.paramValue))
 
+	let editLabel = $state(false);
+	let editedLabel = $state("");
+	let isLoadedParamChanged = $derived.by(() => {
+		if (JSON.stringify(inputDialog) !== JSON.stringify(selectedParam?.paramValue)) {
+			return true
+		}
+
+		if (editedLabel.length > 0) {
+			if (editedLabel !== selectedParam?.paramName) {
+				return true;
+			}
+		}
+
+		return false;
+	});
 
 
 	// api will keep track of input params, creating a smaller data set for
 	// server side tables.
 	function loadInputParamsInTable() {
-		// let inputParamObj: InputParamsType = {
-		// 	fulltext: inputDialog.fulltext,
-		// 	inputs: [],
-		// 	columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
-		// }
+		let inputParamObj: InputParamsType = {
+			fulltext: inputDialog.fulltext,
+			inputs: [],
+			columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+		}
+
+		console.log(JSON.stringify(inputParamObj, null, 1));
 	}
 
 
@@ -87,9 +107,9 @@
 	// load selected input param into InputParam component
 	function onParamSelect(inputParam: FetchedInputParam) {
 		inputDialog = deepcopy(inputParam.paramValue);
-		selectedParam = inputParam;
+		selectedParam = deepcopy(inputParam);
+		editedLabel = inputParam.paramName;
 	}
-
 
 
 	async function updateInputParam() {
@@ -99,7 +119,7 @@
 				selectedParam.paramId,
 				{
 					paramId: selectedParam.paramId,
-					paramName: selectedParam.paramName,
+					paramName: editedLabel.length > 0 ? editedLabel : selectedParam.paramName,
 					paramValue: {
 						fulltext: inputDialog.fulltext,
 						columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
@@ -107,7 +127,19 @@
 				}
 			)
 
-			console.log(response.success)
+			if (response.success) {
+				selectedParam = {
+					paramId: selectedParam.paramId,
+					paramName: editedLabel.length > 0 ? editedLabel : selectedParam.paramName,
+					paramValue: {
+						fulltext: inputDialog.fulltext,
+						columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+					},
+				}
+
+				editedLabel = "";
+				isSaveDialogOpen = false;
+			}
 		}
 	}
 </script>
@@ -126,16 +158,54 @@
 
 {#snippet header()}
 	<Dialog.Title
-		class="min-h-5 overflow-visible flex gap-1"
+		class="min-h-5 overflow-visible flex gap-1 items-center"
 	>
 		{ m.components_input_params_label() }
 
 		{#if selectedParam}
-			<p
-				class={`${isLoadedParamChanged ? "text-slate-300" : "text-albi-950"} transition-all`}
-			>
-				({selectedParam.paramName})
-			</p>
+			{#if !editLabel}
+				<div
+					class={`${isMobile.value ? "hidden" : "flex"} gap-2 items-center`}
+				>
+					<p
+						class={`${isLoadedParamChanged ? "text-slate-300" : "text-albi-950"} transition-all`}
+					>
+						({editedLabel.length > 0 ? editedLabel : selectedParam.paramName})
+					</p>
+
+					<button
+						onclick={() => editLabel = !editLabel}
+					>
+						<Pencil
+							strokeWidth={2.5}
+							class="size-4 text-albi-500"
+						/>
+					</button>
+				</div>
+			{:else}
+				<div
+					class={`${isMobile.value ? "hidden" : "flex"} gap-2 items-center`}
+				>
+					<input
+						onblur={(e: FocusEvent) => editLabel = !editLabel}
+						onkeyup={(e: KeyboardEvent) => {
+							if (e.key === 'Enter') {
+							  e.preventDefault();
+							  e.currentTarget?.blur();  // Safer than target (guaranteed to be input element)
+							}
+						 }}
+						bind:value={editedLabel}
+						class="w-fit py-1 px-1 h-[20px] border bg-slate-50 rounded-md"
+					/>
+				</div>
+
+				<button onclick={() => editLabel = !editLabel}>
+					<Check
+						strokeWidth={3}
+						class="size-4 text-albi-500"
+					/>
+				</button>
+			{/if}
 		{/if}
 	</Dialog.Title>
 {/snippet}
@@ -144,9 +214,7 @@
 {#snippet content()}
 	<div class="overflow-auto pb-2">
 		{#if inputDialog.fulltext !== undefined}
-			<p
-				class="mb-1 text-albi-500 text-sm font-bold"
-			>
+			<p class="mb-1 text-albi-500 text-sm font-bold">
 				{ m.components_input_params_section_fulltext() }
 			</p>
 
@@ -160,9 +228,7 @@
 
 
 		{#if inputDialog.columnFilters !== undefined}
-			<p
-				class="text-albi-500 text-sm font-bold "
-			>
+			<p class="text-albi-500 text-sm font-bold">
 				{ m.components_input_params_section_columns() }
 			</p>
 
@@ -189,21 +255,18 @@
 		{/if}
 
 
-		<Dialog.Footer
-			class="w-full mt-6"
-		>
-			<div
-				class="w-full flex justify-between"
-			>
-				<div
-					class="flex gap-1.5 sm:gap-2"
-				>
+		<Dialog.Footer class="w-full mt-6">
+			<div class="w-full flex justify-between">
+				<div class="flex gap-1.5 sm:gap-2">
 					<Button
 						type="button"
 						class="size-10"
 						variant="secondary"
 						onclick={() => {
-							if (JSON.stringify(defaultInputDialog) === JSON.stringify(inputDialog)) {
+							if (
+								JSON.stringify(defaultInputDialog) === JSON.stringify(inputDialog) ||
+								!isLoadedParamChanged
+							) {
 								responseDialogMessages.value = [{
 									type: "InfoToast",
 									title: m.components_input_params_save_fail_info_toast_title(),
@@ -230,9 +293,7 @@
 					</Button>
 				</div>
 
-				<div
-					class="flex items-center gap-1.5 sm:gap-2"
-				>
+				<div class="flex items-center gap-1.5 sm:gap-2">
 					<Button
 						type="button"
 						onclick={loadInputParamsInTable}
@@ -266,6 +327,7 @@
 	selectedParam={selectedParam}
 	hasEditedData={isLoadedParamChanged}
 />
+
 
 
 <LoadInputParamsDialog

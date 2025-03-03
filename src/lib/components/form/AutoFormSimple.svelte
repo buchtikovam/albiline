@@ -5,7 +5,6 @@
 	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
 
-
 	interface Props {
 		autoform: AutoFormSimpleType;
 		formValues: Record<string, any>;
@@ -16,13 +15,23 @@
 		formValues = $bindable(),
 	}: Props = $props();
 
-	function updateFormValues(newValue: any, initialValue: any, field: string) {
+
+	function updateFormValues(
+		newValue: any,
+		initialValue: any,
+		field: string
+	) {
 		formValues[field] = newValue;
 	}
 </script>
 
 
-<form method="POST" autocomplete="off" class="overflow-auto">
+
+<form
+	method="POST"
+	autocomplete="off"
+	class="overflow-auto"
+>
 	<div class="w-full flex flex-col gap-1 h-full">
 		{#each autoform as row}
 			{#if row.rowType === "row"}
@@ -30,10 +39,8 @@
 					{#each row.rowInputs as input}
 						{#if input.type === "text"}
 							<InputWrapperText
-								label={input.translation()}
-								schema={input.schema}
+								formInput={input}
 								value={formValues[input.field]}
-								disable={false}
 								addToEditedFormData={
 									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
 								}
@@ -42,13 +49,12 @@
 
 						{#if input.type === "number"}
 							<InputWrapperNumber
-								label={input.translation()}
+								formInput={input}
 								value={formValues[input.field]}
-								schema={input.schema}
-								disable={false}
 								addToEditedFormData={
 									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
-								}							/>
+								}
+							/>
 						{/if}
 					{/each}
 				</FormInputSection>
@@ -59,8 +65,7 @@
 					{#each row.rowInputs as input}
 						{#if input.type === "checkbox"}
 							<CheckboxWrapper
-								label={input.translation()}
-								schema={input.schema}
+								formInput={input}
 								value={formValues[input.field]}
 								disable={false}
 								addToEditedFormData={

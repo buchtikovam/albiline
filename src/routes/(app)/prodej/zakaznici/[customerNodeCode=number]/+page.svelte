@@ -30,6 +30,7 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
+	import { flip } from 'svelte/animate';
 
 
 	interface Props {
@@ -60,8 +61,6 @@
 	let activeRoute = $derived({
 		customerNodeCode: Number(page.params.customerNodeCode),
 	})
-
-	$inspect("index", activeIndex)
 
 	// autoform
 	let initialFormValues: Record<string, any> = $derived(data.response.item);
@@ -235,7 +234,7 @@
 
 
 	{#each pageLayout as item (item.id)}
-		<div >
+		<div animate:flip={{ duration: 300 }} >
 			{#if item.type === "form"}
 				<div class={item.isLast ? "-mb-2" : ""}>
 					<!-- customer detail form -->

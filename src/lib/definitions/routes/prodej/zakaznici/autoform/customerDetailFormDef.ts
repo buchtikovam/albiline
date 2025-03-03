@@ -23,7 +23,7 @@ export const customerDetailFormDef: AutoFormType = {
 							field: "name",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_name,
 							type: "text",
-							schema: z.string().min(1).max(255),
+							schema: z.string(),
 						},
 					]
 				},
@@ -34,13 +34,13 @@ export const customerDetailFormDef: AutoFormType = {
 							field: "street",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_street,
 							type: "text",
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 						{
 							field: "city",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_city,
 							type: "text",
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 					]
 				},
@@ -51,7 +51,7 @@ export const customerDetailFormDef: AutoFormType = {
 							field: "postalCode",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_postal_code,
 							type: "text",
-							schema: z.string().max(10), // regex for postal code
+							schema: z.string(),
 						},
 						{
 							field: "countryCode",
@@ -69,13 +69,13 @@ export const customerDetailFormDef: AutoFormType = {
 							field: "ico",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_ico,
 							type: "number",
-							schema: z.number().min(8).max(8),
+							schema: z.number(),
 						},
 						{
 							field: "dic",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_dic,
 							type: "text",
-							schema: z.string().min(8).max(10),
+							schema: z.string(),
 						},
 					]
 				},
@@ -86,13 +86,13 @@ export const customerDetailFormDef: AutoFormType = {
 							field: "icDph",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_icdph,
 							type: "text",
-							schema: z.string().min(8).max(10),
+							schema: z.string(),
 						},
 						{
 							field: "companyName",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_company_name,
 							type: "text",
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 					]
 				}

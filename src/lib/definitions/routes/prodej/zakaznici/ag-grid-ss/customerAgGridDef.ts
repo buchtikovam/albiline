@@ -71,7 +71,6 @@ export const customerGridOptions: GridOptions = {
 		{
 			field: "customerAddressCode",
 			cellDataType: "number",
-			headerTooltip: "customerAddressCode",
 			editable: false,
 			hide: false,
 			width: 68,

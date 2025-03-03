@@ -19,7 +19,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "name",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_name,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 					]
 				},
@@ -36,7 +36,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "companyName",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_company_name,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 					]
 				},
@@ -47,13 +47,13 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "street",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_street,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 						{
 							type: "text",
 							field: "city",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_city,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 					]
 				},
@@ -64,7 +64,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "postalCode",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_postal_code,
-							schema: z.string().max(10),
+							schema: z.string(),
 						},
 						{
 							type: "dropdown",
@@ -192,7 +192,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "customerStoreEan",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_customer_store_ean,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 					]
 				},
@@ -203,7 +203,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "packingNote",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_packing_note,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
 
 					]
@@ -264,9 +264,8 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "text",
 							field: "note",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_note,
-							schema: z.string().max(255),
+							schema: z.string(),
 						},
-
 					]
 				},
 			]

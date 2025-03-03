@@ -3,6 +3,7 @@
 	let pulsate = $state(false)
 </script>
 
+
 <div class="text-albi-200" aria-label="signal-zero" role="img" >
 	<svg xmlns="http://www.w3.org/2000/svg"
 		 width="8"
@@ -19,6 +20,8 @@
 		<circle cx="12" cy="12" r="10" class="signal-level "/>
 	</svg>
 </div>
+
+
 
 <style>
 	.signal-icon {
