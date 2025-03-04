@@ -20,6 +20,9 @@
 	"components_sidebar_context_menu_add_to_favorites" : "Add to favorites",
 	"components_sidebar_context_menu_remove_from_favorites" : "Remove from favorites",
 
+	"components_sidebar_item_pruvodni_list" : "List",
+	"components_sidebar_item_prodej_zakaznici" : "Customers",
+
 	"routes_prodej_zakaznici_table_column_customer_address_code": "Store ID",
 	"routes_prodej_zakaznici_table_column_name": "Store Name",
 	"routes_prodej_zakaznici_table_column_customer_node_code": "Customer ID",

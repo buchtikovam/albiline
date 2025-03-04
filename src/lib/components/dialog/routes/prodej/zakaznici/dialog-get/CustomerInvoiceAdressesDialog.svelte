@@ -1,42 +1,31 @@
 <script lang="ts">
-	import { customerInvoiceAddressesAgGridDef } from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerInvoiceAddressesAgGridDef';
-	import { openedRibbonDialog } from '$lib/runes/ribbon.svelte.js';
-	import { page } from '$app/state';
-	import {apiServiceGETHandled} from '$lib/api/apiService.svelte.js';
+	import {
+		customerInvoiceAddressCustomGridOptions, customerInvoiceAddressHeaderTranslations,
+	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerInvoiceAddressesAgGridDef';
+	import {openedRibbonDialog} from '$lib/runes/ribbon.svelte.js';
+	import {apiGetCustomerInvoiceAddresses} from "$lib/api/customerService.svelte";
+	import {onMount} from "svelte";
+	import type {CustomerInvoiceAddressType} from "$lib/types/routes/prodej/zakaznci/customers";
+	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
-	import type {GridOptions} from "ag-grid-enterprise";
 
 
-	const activeRow = page.params.customerNodeCode;
-	let dialogOpen: boolean = $state(true)
-	let invoiceAddresses = $state([]);
+	let dialogOpen: boolean = $state(false)
+	let invoiceAddresses: CustomerInvoiceAddressType[] = $state([]);
 
 
-	async function getInvoiceAddresses() {
-		const response = await apiServiceGETHandled(`customers/${activeRow}/invoice-addresses`);
-
-		if (response.success) {
-			invoiceAddresses = response.data.items;
-		}
-	}
-
-
-	$effect(() => {
-		getInvoiceAddresses();
+	onMount(async () => {
+		dialogOpen = true;
+		invoiceAddresses = await apiGetCustomerInvoiceAddresses();
 	})
-
-	const customGridOptions: GridOptions = {
-		columnDefs: customerInvoiceAddressesAgGridDef,
-	}
 </script>
 
 
 
 <DialogWrapper
-	isOpen={dialogOpen}
+	bind:isOpen={dialogOpen}
 	onChange={() => {
 		setTimeout(() => {
 			openedRibbonDialog.value = 'empty';
@@ -61,6 +50,7 @@
 	<AgGridCSWrapper
 		fullHeight={true}
 		rowData={invoiceAddresses}
-		gridOptionsCustom={customGridOptions}
+		gridOptionsCustom={customerInvoiceAddressCustomGridOptions}
+		headerTranslations={customerInvoiceAddressHeaderTranslations}
 	/>
 {/snippet}

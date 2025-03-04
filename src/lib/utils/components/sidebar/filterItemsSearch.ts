@@ -11,7 +11,10 @@ export function filterItemsSearch(items: SidebarItem[], searchTerm: string): Sid
 		item.hide = true
 
 
-		if (item.translation().toLowerCase().includes(searchTerm.toLowerCase())) {
+		if (
+			item.translation().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.field.toLowerCase().includes(searchTerm.toLowerCase())
+		) {
 			item.open = true;
 			item.hide = false;
 		}

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import {activePageTab, disableNavigation, openedTabs} from "$lib/runes/navigation.svelte";
+	import {i18n} from '$lib/i18n.js'
 	import {page} from "$app/state";
-	import { i18n } from '$lib/i18n.js'
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { deleteTab } from '$lib/utils/navigation/deleteTab.svelte';
-	import { slide } from 'svelte/transition';
-	import { goto } from '$app/navigation';
+	import {deleteTab} from '$lib/utils/navigation/deleteTab.svelte';
+	import {slide} from 'svelte/transition';
+	import {goto} from '$app/navigation';
 	import Home from 'lucide-svelte/icons/home';
 	import X from 'lucide-svelte/icons/x';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import {languageTag} from "$lib/paraglide/runtime";
+	import {allItems} from "$lib/definitions/components/sidebar/sidebar";
+	import deepcopy from "deepcopy";
+	import {getSidebarItemByField} from "$lib/utils/components/sidebar/getSidebarItemByField";
 
 
 	let pathName = $state(page.url.pathname);
@@ -28,6 +32,19 @@
 		activePageTab.value.length > 0
 			? pathName = activePageTab.value
 			: pathName = page.url.pathname;
+	})
+
+
+	$effect(() => {
+		if (languageTag()) {
+			openedTabs.value.forEach((tab) => {
+				const foundTab = getSidebarItemByField(deepcopy(allItems), tab.field)
+
+				if (foundTab) {
+					tab.label = foundTab.translation();
+				}
+			})
+		}
 	})
 </script>
 

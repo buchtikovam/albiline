@@ -1,30 +1,33 @@
-import {authDetails, pageCode, responseDialogMessages} from '$lib/runes/page.svelte';
+import {authDetails, responseDialogMessages} from '$lib/runes/page.svelte';
 import {languageTag} from "$lib/paraglide/runtime";
+import {currentPageKey} from "$lib/runes/table.svelte";
 
 
 const url = "http://10.2.2.10/albiline.test/api/v1/";
-const headers = $derived(
-	{
-		'Content-Type': 'application/json',
-		'Session-Key': authDetails.sessionKey || "",
-		'Accept-Language' : languageTag(),
-		'Page-Code' : pageCode.value,
-	}
-)
-
+const pageKey = $derived(currentPageKey.value);
 
 
 export async function apiServiceGET(
-	endpoint: string
+	endpoint: string,
 ): Promise<Response> {
+	console.log(pageKey);
+
 	return await fetch(url + endpoint, {
 		method: 'GET',
-		headers: headers,
+		headers: 	{
+			'Content-Type': 'application/json',
+			'Session-Key': authDetails.sessionKey || "",
+			'Accept-Language' : languageTag(),
+			'Page-Code' : pageKey,
+		},
 	});
 }
 
 
-export async function apiServiceGETHandled(endpoint: string) {
+export async function apiServiceGETHandled(
+	endpoint: string,
+) {
+
 	try {
 		let response = await apiServiceGET(endpoint)
 
@@ -63,12 +66,20 @@ export async function apiServicePOST(
 	endpoint: string,
 	body = {},
 ): Promise<Response> {
+	console.log(pageKey);
+
 	return await fetch(url + endpoint, {
 		method: 'POST',
-		headers: headers,
+		headers: 	{
+			'Content-Type': 'application/json',
+			'Session-Key': authDetails.sessionKey || "",
+			'Accept-Language' : languageTag(),
+			'Page-Code' : pageKey,
+		},
 		body: body ? JSON.stringify(body) : undefined
 	});
 }
+
 
 export async function apiServicePostHandled(
 	endpoint: string,
@@ -78,14 +89,16 @@ export async function apiServicePostHandled(
 		let response = await apiServicePOST(endpoint, body)
 
 		if (response.ok) {
+			const respData = await response.json();
 			return {
 				success: true,
-				data: await response.json(),
+				data: respData,
 			}
 		}
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
+
 		return {
 			success: false,
 			data: {},
@@ -111,11 +124,18 @@ export async function apiServicePostHandled(
 
 export async function apiServicePATCH(
 	endpoint: string,
-	body = {}
+	body = {},
 ): Promise<Response> {
+	console.log(pageKey);
+
 	return await fetch(url + endpoint, {
 		method: 'PATCH',
-		headers: headers,
+		headers: {
+			'Content-Type': 'application/json',
+			'Session-Key': authDetails.sessionKey || "",
+			'Accept-Language' : languageTag(),
+			'Page-Code' : pageKey,
+		},
 		body: body ? JSON.stringify(body) : undefined
 	});
 }
@@ -162,11 +182,18 @@ export async function apiServicePatchHandled(
 export async function apiServicePUT(
 	endpoint: string,
 	id: number,
-	body = {}
+	body = {},
 ): Promise<Response> {
+	console.log(pageKey);
+
 	return await fetch(url + endpoint + "/" + id, {
 		method: 'PUT',
-		headers: headers,
+		headers: {
+			'Content-Type': 'application/json',
+			'Session-Key': authDetails.sessionKey || "",
+			'Accept-Language' : languageTag(),
+			'Page-Code' : pageKey,
+		},
 		body: body ? JSON.stringify(body) : undefined
 	});
 }
@@ -213,11 +240,18 @@ export async function apiServicePUTHandled(
 
 export async function apiServiceDELETE(
 	endpoint: string,
-	id: number
+	id: number,
 ): Promise<Response> {
+	console.log(pageKey);
+
 	return await fetch(url + endpoint + "/" + id, {
 		method: 'DELETE',
-		headers: headers,
+		headers: {
+			'Content-Type': 'application/json',
+			'Session-Key': authDetails.sessionKey || "",
+			'Accept-Language' : languageTag(),
+			'Page-Code' : pageKey,
+		},
 	});
 }
 
@@ -227,7 +261,7 @@ export async function apiServiceDELETEHandled(
 	id: number,
 ) {
 	try {
-		let response = await apiServiceDELETE(endpoint, id)
+		let response = await apiServiceDELETE(endpoint, id);
 
 		if (response.ok) {
 			if (response.ok) {

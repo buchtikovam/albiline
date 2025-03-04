@@ -2,6 +2,17 @@
     "$schema": "https://inlang.com/schema/inlang-message-format",
 
 
+	"generics_save" : "Uložit",
+
+
+	"components_response_title_info" : "Informace",
+	"components_response_title_warning" : "Varování",
+	"components_response_title_critical" : "Kritická chyba",
+	"components_response_title_success" : "Úspěch",
+
+	"components_response_dialog_make_changes_before_action" : "Nejdříve proveď změny",
+
+
 	"components_avatar_profile": "Profil",
 	"components_avatar_settings": "Nastavení",
 	"components_avatar_view": "Zobrazení",
@@ -66,7 +77,6 @@
 	"components_ribbon_item_save_preset": "Uložit šablonu",
 	"components_ribbon_item_my_presets": "Vybrat z uložených šablon",
 
-
 	"components_ribbon_dialog_save_filters_label" : "Uložit filtry",
 	"components_ribbon_dialog_save_filters_input_label" : "Název",
 	"components_ribbon_dialog_save_filters_save_button" : "Potvrdit",
@@ -126,6 +136,12 @@
 	"components_autoform_string_error_invalid_email" : "Email je ve špatném formátu",
 
 
+
+
+
+
+
+
 	"routes_login_form_label": "Přihlaste se ke svému účtu",
 	"routes_login_form_user_code": "Uživatelský kód",
 	"routes_login_form_password": "Heslo",
@@ -180,13 +196,23 @@
 	"routes_prodej_zakaznici_table_column_customer_store_code" : "ID zákazníka dle zákazníka",
 	"routes_prodej_zakaznici_table_column_split_order_by_food" : "Food/NonFood",
 
+
 	"routes_prodej_zakaznici_customer_detail_label" : "Detail zákazníka",
 	"routes_prodej_zakaznici_customer_detail_form_section_fakturacni_adresa" : "Fakturační adresa",
 	"routes_prodej_zakaznici_customer_detail_form_section_nastaveni_fakturace" : "Nastavení fakturace",
 	"routes_prodej_zakaznici_customer_detail_form_section_dalsi_udaje" : "Další údaje",
 	"routes_prodej_zakaznici_customer_detail_form_section_edi" : "EDI",
 	"routes_prodej_zakaznici_customer_detail_form_section_nastaveni" : "Nastavení",
+
 	"routes_prodej_zakaznici_customer_detail_invoice_address_selection" : "Fakturační adresy",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_valid_from" : "Platnost od",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_valid_to" : "Platnost do",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_ico" : "IČO",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_name" : "Jméno",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_street" : "Ulice",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_city" : "Město",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_postal_code" : "PSČ",
+	"routes_prodej_zakaznici_customer_detail_invoice_address_column_country_code" : "Země",
 
 	"routes_prodej_zakaznici_customer_detail_form_input_name" : "Jméno",
 	"routes_prodej_zakaznici_customer_detail_form_input_street" : "Ulice",
@@ -232,6 +258,7 @@
 	"routes_prodej_zakaznici_customer_detail_form_input_contract_recieved" : "Smlouva",
 	"routes_prodej_zakaznici_customer_detail_form_input_trade_licence_recieved" : "Živnostenský list",
 
+	"routes_prodej_zakaznici_customer_detail_new_contact_label" : "Nový kontakt zákazníka",
 
 
 	"routes_prodej_zakaznici_address_detail_label" : "Prodejny zákazníka {customerName} ({customerAddressCode})",
@@ -240,6 +267,8 @@
 	"routes_prodej_zakaznici_address_detail_form_section_oz" : "OZ a oblasti",
 	"routes_prodej_zakaznici_address_detail_form_section_settings" : "Nastavení",
 	"routes_prodej_zakaznici_address_detail_form_section_other" : "Ostatní",
+
+	"routes_prodej_zakaznici_address_detail_ag_select_label" : "Výběr prodejny",
 
 	"routes_prodej_zakaznici_address_detail_form_input_name" : "Název",
 	"routes_prodej_zakaznici_address_detail_form_input_customer_address_code" : "Číslo prodejny",
@@ -268,12 +297,15 @@
 	"routes_prodej_zakaznici_address_detail_form_input_split_order_by_food" : "Food/Nonfood",
 	"routes_prodej_zakaznici_address_detail_form_input_note" : "Poznámka",
 
+	"routes_prodej_zakaznici_address_detail_new_address_label" : "Nová prodejna",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_name" : "Název",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_company_name" : "Společnost",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_street" : "Ulice",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_city" : "Město",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_postal_code" : "PSČ",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_country_code" : "Země",
+
+	"routes_prodej_zakaznici_address_detail_new_contact_label" : "Nový kontakt prodejny",
 
 
 	"routes_prodej_zakaznici_detail_contacts_label" : "Kontakty",

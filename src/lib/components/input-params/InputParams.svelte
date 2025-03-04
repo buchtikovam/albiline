@@ -25,6 +25,7 @@
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
+	import {currentPageKey} from "$lib/runes/table.svelte";
 
 
 	interface Props {
@@ -44,7 +45,6 @@
 
 
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
-
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
 	let saveLabel = $state("");
@@ -53,6 +53,9 @@
 	let editLabel = $state(false);
 	let editedLabel = $state("");
 	let isLoadedParamChanged = $derived.by(() => {
+		console.log("3")
+
+
 		if (JSON.stringify(inputDialog) !== JSON.stringify(selectedParam?.paramValue)) {
 			return true
 		}
@@ -69,14 +72,21 @@
 
 	// api will keep track of input params, creating a smaller data set for
 	// server side tables.
-	function loadInputParamsInTable() {
-		let inputParamObj: InputParamsType = {
+	async function loadInputParamsInTable() {
+		console.log(JSON.stringify({
 			fulltext: inputDialog.fulltext,
 			inputs: [],
 			columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
-		}
+		}, null, 1));
 
-		console.log(JSON.stringify(inputParamObj, null, 1));
+		let response = await apiServicePostHandled("cachedPageData", {
+				fulltext: inputDialog.fulltext,
+				inputs: [],
+				columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+			}
+		)
+
+		console.log(response);
 	}
 
 

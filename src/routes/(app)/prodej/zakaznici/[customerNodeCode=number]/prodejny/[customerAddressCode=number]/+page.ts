@@ -1,78 +1,41 @@
-import type { PageLoad } from './$types';
+import {authDetails} from "$lib/runes/page.svelte";
+import {languageTag} from "$lib/paraglide/runtime";
+import type {CustomerAddressType, CustomerContactType} from "$lib/types/routes/prodej/zakaznci/customers";
+import type {LoadEvent} from "@sveltejs/kit";
+import type {PageLoad} from './$types';
+import {currentPageKey} from "$lib/runes/table.svelte";
 
-// export const prerender = false;
 
-export const load: PageLoad = async ({ params, fetch }) => {
-	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}/addresses/${params.customerAddressCode}/`)
+export const load: PageLoad = async (
+	{params, fetch}: LoadEvent
+): Promise<{
+	item: CustomerAddressType;
+	contacts: CustomerContactType[];
+}> => {
+	const res = await fetch(
+		`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}/addresses/${params.customerAddressCode}/`,
+		{
+			headers: {
+				'Content-Type': 'application/json',
+				'Session-Key': authDetails.sessionKey || '',
+				'Accept-Language': languageTag(),
+				'Page-Code': currentPageKey.value,
+			}
+		}
+	);
 
-
-
-	// TODO: headers + error handling
 	if (res.ok) {
 		const response = await res.json();
-		const contacts = response.contacts;
-		const item = response.item;
-
-		if (contacts && item) {
-			return {
-				response: {
-					item: item,
-					contacts: contacts
-				},
-				status: "success",
-			};
-		}
 
 		return {
-			response: {
-				item: getObject(),
-				contacts: [],
-			},
-			status: "fail",
-
+			item: response.item as CustomerAddressType,
+			contacts: response.contacts as CustomerContactType[],
 		};
 	}
 
-	return {
-		response: {
-			item: getObject(),
-			contacts: [],
-		},
-		status: "fail",
-	};
+	throw new Error(
+		`Could not load customer address: 
+		nodeCode: ${params.customerNodeCode}, 
+		addressCode: ${params.customerAddressCode}`
+	);
 };
-
-
-function getObject() {
-	return {
-		id: null,
-		customerNodeCode: "",
-		customerName: "",
-		name: "",
-		customerAddressCode: null,
-		companyName: null,
-		street: "",
-		city: "",
-		postalCode: "",
-		countryCode: "",
-		note: null,
-		paymentTypeCode: "",
-		dueDays: null,
-		invoiceCopies: null,
-		deliveryNoteCopies: null,
-		customerRank: "",
-		retailStoreTypeId: null,
-		customerStoreCode: null,
-		customerStoreEan: "",
-		packingNote: null,
-		consignmentSaleEnabled: false,
-		isReturnAllowed: false,
-		isForConsignmentReturn: false,
-		useAssortedEanCodes: false,
-		pickingBoxPacking: false,
-		splitOrderByFood: false,
-		dealerCode: null,
-		areaCode: null,
-		areaId: null
-	}
-}

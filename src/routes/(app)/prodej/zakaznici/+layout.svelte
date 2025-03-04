@@ -1,11 +1,13 @@
 <script lang="ts">
 	import {activeTabIndex, fulltextFilterValue, showFulltextSearch} from '$lib/runes/page.svelte';
-	import {serverSideTables} from '$lib/runes/table.svelte';
+	import {currentPageKey, serverSideTables} from '$lib/runes/table.svelte';
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
+	import {Button} from "$lib/components/ui/button";
 	import {Input} from '$lib/components/ui/input';
 	import {i18n} from '$lib/i18n.js'
-	import {setContext} from 'svelte';
 	import {goto} from '$app/navigation';
+	import Filter from "lucide-svelte/icons/filter";
+	import type {ServerSideTable} from "$lib/types/components/table/table";
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
@@ -16,11 +18,13 @@
 
 	let { children }: Props = $props();
 
-	let activeTab = $derived(activeTabIndex.value.toString());
-	let serverSideTableKey = btoa("/(app)/prodej/zakaznici")
-	let table = $state(serverSideTables[serverSideTableKey])
 
-	setContext('serverSideTableKey', serverSideTableKey);
+	currentPageKey.value = "CustomersGetList";
+
+	let activeTab = $derived(activeTabIndex.value.toString());
+	let serverSideTableKey = "CustomersGetList"
+
+	let table: ServerSideTable = $state(serverSideTables[serverSideTableKey]);
 
 	if (!table) {
 		serverSideTables[serverSideTableKey] = {
@@ -41,14 +45,14 @@
 	}
 
 
-	// $inspect("layout", serverSideTables[serverSideTableKey])
-
 
 	let customerAddressCode = $state(0);
 	let customerNodeCode = $state(0);
 
 
 	$effect(() => {
+		table = serverSideTables[serverSideTableKey];
+
 		if (serverSideTables[serverSideTableKey].selectedRows) {
 			if (serverSideTables[serverSideTableKey].selectedRows[serverSideTables[serverSideTableKey].activeSelectedRowIndex]) {
 				customerNodeCode = serverSideTables[serverSideTableKey].selectedRows[serverSideTables[serverSideTableKey].activeSelectedRowIndex].customerNodeCode;
@@ -115,18 +119,38 @@
 	</Tabs.Root>
 
 
-	{#if showFulltextSearch.value === true}
-		<div
-			class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible"
-		>
-			<Input
-				class="xl:w-80 lg:w-60 w-40 h-[30px] border-none "
-				placeholder={"Hledat..."}
-				type="search"
-				bind:value={fulltextFilterValue.value}
-			/>
-		</div>
-	{/if}
+	<div class="flex gap-2">
+
+		{#if table}
+			<div>
+				{#if Object.keys(table.selectedFilters).length > 0 }
+					<Button
+						class="size-8 border-none"
+						variant="secondary"
+					>
+						<Filter
+							strokeWidth={2}
+							class="size-5"
+						/>
+					</Button>
+				{/if}
+			</div>
+		{/if}
+
+		{#if showFulltextSearch.value === true}
+			<div
+				class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible"
+			>
+				<Input
+					class="xl:w-80 lg:w-60 w-40 h-[31px] border border-white focus-visible:border-albi-500"
+					placeholder={"Hledat..."}
+					type="search"
+					bind:value={fulltextFilterValue.value}
+				/>
+			</div>
+		{/if}
+	</div>
+
 </div>
 
 <div class="h-full bg-white rounded-lg">

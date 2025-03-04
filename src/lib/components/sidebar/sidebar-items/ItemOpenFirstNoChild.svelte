@@ -28,7 +28,7 @@
 					isMobileSidebarOpen = false;
 				}
 			}}
-			class="flex text-sm font-bold items-center gap-3 rounded-lg py-2 px-2 hover:bg-muted/50 text-albi-950 hover:text-black"
+			class="flex text-sm font-bold items-center gap-2 rounded-lg py-2 px-2 hover:bg-muted/50 text-albi-950 hover:text-black"
 		>
 			<Icon class="size-5 "/>
 			<span class="whitespace-nowrap">{item.translation()}</span>

@@ -8,6 +8,8 @@
 		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
+	import {languageTag} from "$lib/paraglide/runtime";
+	import type {ColDef} from "ag-grid-community";
 
 	interface Props {
 		rowData: any[];
@@ -17,6 +19,7 @@
 		requiredFields?: string[];
 		hiddenHeader?: boolean;
 		fullHeight?: boolean;
+		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
 	}
 
@@ -28,6 +31,7 @@
 		requiredFields,
 		fullHeight,
 		hiddenHeader,
+		headerTranslations,
 		gridOptionsCustom
 	}: Props = $props();
 
@@ -156,6 +160,7 @@
 	})
 
 
+
 	$effect(() => {
 		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
 	})
@@ -164,6 +169,23 @@
 	$effect(() => {
 		if (rowData) {
 			gridApi.setGridOption("rowData", rowData);
+		}
+	})
+
+
+	$effect(() => {
+		if (languageTag()) {
+			if (Object.keys(headerTranslations).length > 0) {
+				let colDefs = gridApi.getColumnDefs();
+
+				// const colDefs =
+				colDefs?.forEach((column: ColDef) => {
+					column.headerName = headerTranslations[column.field || ""]();
+				})
+
+				// update grid with updated column defs
+				gridApi.setGridOption("columnDefs", colDefs);
+			}
 		}
 	})
 </script>

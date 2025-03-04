@@ -1,5 +1,4 @@
-import {serverSideTables} from "$lib/runes/table.svelte";
-import {pageCode} from "$lib/runes/page.svelte";
+import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
 import {i18n} from "$lib/i18n";
 import {parseStringToDate} from "$lib/utils/formatting/parseStringToDate";
 import {BooleanFilter} from "$lib/utils/components/ag-grid/column-filters/booleanFilter";
@@ -8,6 +7,7 @@ import type {ValueFormatterParams, GridOptions} from 'ag-grid-enterprise';
 import type {CellDoubleClickedEvent} from "ag-grid-community";
 import * as m from '$lib/paraglide/messages.js'
 
+let pageKey = $derived(currentPageKey.value);
 
 export const customerHeaderTranslations = {
 	customerAddressCode: m.routes_prodej_zakaznici_table_column_customer_address_code,
@@ -52,7 +52,7 @@ export const customerHeaderTranslations = {
 
 export const customerGridOptions: GridOptions = {
 	onCellDoubleClicked(event: CellDoubleClickedEvent) {
-		serverSideTables[pageCode.value].selectedRows = [{
+		serverSideTables[pageKey].selectedRows = [{
 			customerAddressCode: event.data.customerAddressCode,
 			customerNodeCode: event.data.customerNodeCode
 		}]

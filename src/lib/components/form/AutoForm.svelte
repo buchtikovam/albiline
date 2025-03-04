@@ -20,7 +20,7 @@
 
 
 <form method="POST" autocomplete="off">
-	<div class="w-full gap-4 xl:flex ">
+	<div class="w-full gap-4 xl:flex">
 		{#each Object.entries(formDef) as [key]}
 			<DndColumn
 				bind:formDef={formDef}

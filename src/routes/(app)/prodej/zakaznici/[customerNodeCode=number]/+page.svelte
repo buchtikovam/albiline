@@ -1,20 +1,20 @@
 <script lang="ts">
 	import {
-		customerAndAddressContactsAgGridDef
+		customerAndAddressContactsAgGridDef, customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
 	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {customerDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerDetailFormDef';
 	import {customerPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerPageLayout';
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
-	import {type ServerSideTable, serverSideTables} from "$lib/runes/table.svelte";
-	import {activeTabIndex, pageCode} from '$lib/runes/page.svelte';
+	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
+	import {activeTabIndex, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
+	import {apiSaveCustomerDetail} from "$lib/api/customerService.svelte";
 	import {changeCustomerRoute} from '$lib/utils/navigation/zakaznici/changeCustomerRoute.svelte';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {customToast} from "$lib/utils/customToast";
 	import {flipItems} from '$lib/utils/flipItems';
-	import {getContext} from "svelte";
+	import {flip} from 'svelte/animate';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznci/customers';
@@ -30,16 +30,13 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import { flip } from 'svelte/animate';
+	import type {ServerSideTable} from "$lib/types/components/table/table";
 
 
 	interface Props {
 		data: {
-			response: {
-				item: CustomerType,
-				contacts: CustomerContactType[]
-			},
-			status: "success" | "fail",
+			item: CustomerType,
+			contacts: CustomerContactType[]
 		};
 	}
 
@@ -47,14 +44,13 @@
 
 
 	// page settings
-	pageCode.value = btoa(page.route.id || "");
 	activeTabIndex.value = 2;
 
 
 	// --- initialize variables and state
 	// page
-	let tableKey: string = getContext('serverSideTableKey');
-	let table: ServerSideTable = $state(serverSideTables[tableKey]);
+	let pageKey: string = $derived(currentPageKey.value);
+	let table: ServerSideTable = $state(serverSideTables[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeIndex = $state(0);
@@ -63,13 +59,13 @@
 	})
 
 	// autoform
-	let initialFormValues: Record<string, any> = $derived(data.response.item);
+	let initialFormValues: Record<string, any> = $derived(data.item);
 	let editedFormValues: Record<string, any> = $state({ })
 	let pageLayout = $state(customerPageLayout);
 	let autoformDef: AutoFormType = $state(customerDetailFormDef);
 
 	// contacts ag grid
-	let contactValues: CustomerContactType[] = $derived(data.response.contacts)
+	let contactValues: CustomerContactType[] = $derived(data.contacts)
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
 	let openNewContactDialog: boolean = $state(false);
@@ -153,22 +149,17 @@
 				createdContacts.length > 0 ||
 				editedContactValues.length > 0
 			) {
-				let editedFormValuesArr = [];
-				editedFormValuesArr.push(editedFormValues)
-
-				const saveObj = {
+				apiSaveCustomerDetail({
 					insert: [...createdContacts],
-					update: [...editedContactValues, ...editedFormValuesArr],
+					update: [...editedContactValues, ...[editedFormValues]],
 					delete: []
-				}
-
-				console.log(JSON.stringify(saveObj, null, 1));
-				// updateAndReload(saveObj);
+				});
 			} else {
-				customToast(
-					"InfoToast",
-					"Nemáte nic k uložení. Nejdříve proveďte změny."
-				)
+				responseDialogMessages.value = [{
+					type: "InfoToast",
+					title: m.components_response_title_info(),
+					content: m.components_response_dialog_make_changes_before_action(),
+				}]
 			}
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
@@ -181,6 +172,7 @@
 		disableLeft = true;
 		disableRight = true;
 	}
+
 </script>
 
 
@@ -213,7 +205,7 @@
 						uniqueSelectedRows,
 						"left",
 						page.route.id || "/",
-						tableKey
+						pageKey
 					)}
 				/>
 
@@ -225,7 +217,7 @@
 						uniqueSelectedRows,
 						"right",
 						page.route.id || "/",
-						tableKey
+						pageKey
 					)}
 				/>
 			</div>
@@ -275,6 +267,7 @@
 						requiredFields={["customerPersonCode"]}
 						rowData={contactValues}
 						fullHeight={false}
+						headerTranslations={customerAndAddressContactsHeaderTranslations}
 						gridOptionsCustom={contactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
@@ -292,7 +285,7 @@
 	formDef={newCustomerContactFormDef}
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
-	label="Nový kontakt zákazníka"
+	origin="customer"
 />
 
 

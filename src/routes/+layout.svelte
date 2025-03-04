@@ -20,12 +20,12 @@
 	$effect(() => {
 		isMobile.value = innerWidth < 640;
 	});
-
-	onMount(async () => {
-		if (browser) {
-			await initializeJSPM();
-		}
-	})
+	//
+	// onMount(async () => {
+	// 	if (browser) {
+	// 		await initializeJSPM();
+	// 	}
+	// })
 
 </script>
 

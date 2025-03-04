@@ -27,11 +27,11 @@
 
 	let value: DateValue = $state();
 
-	$effect(() => {
+	// $effect(() => {
 		if (dateValue) {
 			value = parseStringToDateValue(dateValue);
 		}
-	})
+	// })
 
 
 	$effect(() => {

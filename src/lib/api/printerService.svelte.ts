@@ -38,6 +38,7 @@ export async function initializeJSPM() {
 		});
 
 		// Fetch initial printers list
+		// @ts-ignore
 		availablePrinters.value = await JSPM.JSPrintManager.getPrinters();
 	} catch (error) {
 		jspmError.value = error;

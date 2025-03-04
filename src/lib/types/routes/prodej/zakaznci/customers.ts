@@ -48,6 +48,19 @@ export type CustomerType = {
 }
 
 
+export type CustomerDetailSaveObjectType = {
+	insert: CustomerContactType[],
+	update: Record<string, any>[],
+	delete: Record<string, any>[],
+}
+
+
+export type CustomerAddressDetailSaveObjectType = {
+	insert: CustomerContactType[],
+	update: Record<string, any>[],
+	delete: Record<string, any>[],
+}
+
 export type CustomerAddressType = {
 	id: number|null,
 	customerNodeCode: number|null,
@@ -99,4 +112,16 @@ export type CustomerContactType = {
 	consignmentReturnInfo: boolean,
 	consignmentInfo: boolean,
 	carrierInfo: boolean
+}
+
+
+export type CustomerInvoiceAddressType = {
+	validFrom: string;
+	validTo: string;
+	ico: string;
+	name: string;
+	street: string;
+	city: string;
+	postalCode: string;
+	countryCode: string;
 }

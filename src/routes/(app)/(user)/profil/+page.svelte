@@ -22,8 +22,7 @@
 	>
 		Změnit heslo
 	</Button>
-
-
 </div>
+
 
 <ChangePasswordDialog isOpen={openChangePasswordDialog} />

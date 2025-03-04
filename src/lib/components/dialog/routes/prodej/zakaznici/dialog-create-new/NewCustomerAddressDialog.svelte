@@ -1,54 +1,26 @@
 comp<script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import type { CustomerAddressType } from '$lib/types/routes/prodej/zakaznci/customers';
-	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
+	import {Button} from '$lib/components/ui/button';
+	import {createCleanCustomerAddress} from "$lib/api/customerService.svelte";
+	import type {CustomerAddressType} from '$lib/types/routes/prodej/zakaznci/customers';
+	import type {AutoFormSimpleType} from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	interface Props {
 		dialogOpen: boolean;
-		label: string;
 		formDef: AutoFormSimpleType;
 	}
 
 	let {
 		dialogOpen = $bindable(false),
-		label,
 		formDef,
 	}: Props = $props();
 
-	let address: CustomerAddressType = $state({
-		id: null,
-		customerNodeCode: null,
-		customerName: null,
-		name: null,
-		customerAddressCode: null,
-		companyName: null,
-		street: null,
-		city: null,
-		postalCode: null,
-		countryCode: null,
-		note: null,
-		paymentTypeCode: null,
-		dueDays: null,
-		invoiceCopies: null,
-		deliveryNoteCopies: null,
-		customerRank: null,
-		retailStoreTypeId: null,
-		customerStoreCode: null,
-		customerStoreEan: null,
-		packingNote: null,
-		consignmentSaleEnabled: false,
-		isReturnAllowed: false,
-		isForConsignmentReturn: false,
-		useAssortedEanCodes: false,
-		pickingBoxPacking: false,
-		splitOrderByFood: false,
-		dealerCode: null,
-		areaCode: null,
-		areaId: null
-	})
+
+	let address: CustomerAddressType = $state(createCleanCustomerAddress())
+
 
 	function addAddress() {
 		console.log(address);
@@ -67,7 +39,7 @@ comp<script lang="ts">
 
 {#snippet header()}
 	<Dialog.Title>
-		{ label }
+		{m.routes_prodej_zakaznici_address_detail_new_address_label()}
 	</Dialog.Title>
 {/snippet}
 
@@ -84,7 +56,7 @@ comp<script lang="ts">
 			class="w-full bg-albi-500 text-background font-bolder"
 			onclick={addAddress}
 		>
-			Uložit
+			{m.generics_save()}
 		</Button>
 	</Dialog.Footer>
 {/snippet}

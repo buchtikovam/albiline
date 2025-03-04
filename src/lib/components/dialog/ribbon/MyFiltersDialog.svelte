@@ -1,7 +1,6 @@
 <script lang="ts">
-	import {pageCode, responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {serverSideTables} from "$lib/runes/table.svelte";
+	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
 	import {apiServiceDELETEHandled, apiServiceGETHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import {ribbonFiltersAgGridDef} from "$lib/definitions/components/ribbon/ag-grid/ribbonFiltersAgGridDef";
 	import Save from "lucide-svelte/icons/save";
@@ -12,21 +11,22 @@
 	import type {GetRowIdParams, GridOptions} from "ag-grid-enterprise";
 	import type {StoredFilters} from "$lib/types/components/table/filters";
 	import FilterDetailDialog from "$lib/components/dialog/ribbon/FilterDetailDialog.svelte";
+	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
-	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
 
 
 	let isOpen: boolean = $state(false);
 	let openDetailDialog = $state(false);
+	let isLoading = $state(true);
 	let detailFilter: StoredFilters|undefined = $state(undefined);
 	let hasUnsavedData = $state(false);
 	let fetchedFilters: StoredFilters[] = $state([]);
 	let idsToDelete: number[] = $state([]);
 	let editedFilters: StoredFilters[] = $state([]);
-	let isLoading = $state(true);
+	let pageKey = $derived(currentPageKey.value);
 
 
 	$effect(() => {
@@ -87,13 +87,12 @@
 	// if filter was selected, load it in table and close dialog
 	function handleClickSelect(params: ICellRendererParams) {
 		if (!hasUnsavedData) {
-			serverSideTables[pageCode.value].selectedFilters = params.data.filters;
+			serverSideTables[pageKey].selectedFilters = params.data;
 			openedRibbonDialog.value = "empty";
 		}
 	}
 
 
-	// todo: finish delete with api
 	function handleDelete(params: ICellRendererParams) {
 		fetchedFilters.forEach((filter, index) => {
 			if (filter.filterId === params.data.filterId) {
@@ -108,7 +107,6 @@
 		let hasFailed = false;
 
 		for (const id of idsToDelete) {
-			console.log("deleting ", id)
 			let response = await apiServiceDELETEHandled("userfilters", id);
 			if (!response.success) hasFailed = true;
 		}
@@ -120,11 +118,6 @@
 
 		if (!hasFailed) hasUnsavedData = false;
 	}
-
-
-	$inspect(idsToDelete)
-
-	$inspect(editedFilters)
 </script>
 
 
@@ -173,6 +166,7 @@
 					requiredFields={["fiterId"]}
 					bind:editedRowData={editedFilters}
 					returnWholeRowOnEdit={true}
+					headerTranslations={{}}
 					gridOptionsCustom={customGridOptions}
 					fullHeight={true}
 					hiddenHeader={true}

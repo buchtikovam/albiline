@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {pageCompact, pageCode} from "$lib/runes/page.svelte";
+	import {pageCompact} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {serverSideTables} from "$lib/runes/table.svelte";
+	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
 	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
 	import deepcopy from "deepcopy";
@@ -29,7 +29,7 @@
 	let fetchedPresets: StoredPresets[] = $state([]);
 	let editedPresets: StoredPresets[] = $state([]);
 	let isLoading = $state(true);
-
+	let pageKey = currentPageKey.value;
 
 	$effect(() => {
 		isOpen = true;
@@ -92,7 +92,7 @@
 
 	function handleClickSelect(params: ICellRendererParams) {
 		let defaultColDefCopy = new Map(
-			deepcopy(serverSideTables[pageCode.value].defaultColDef).map((col: ColDef) => [col.field, col])
+			deepcopy(serverSideTables[pageKey].defaultColDef).map((col: ColDef) => [col.field, col])
 		);
 
 		let clickedPreset = params.data.pagePresetValue;
@@ -107,7 +107,7 @@
 			}
 		});
 
-		serverSideTables[pageCode.value].selectedPreset = clickedPreset;
+		serverSideTables[pageKey].selectedPreset = clickedPreset;
 		openedRibbonDialog.value = "empty";
 	}
 
@@ -186,6 +186,7 @@
 					requiredFields={["pagePresetId"]}
 					bind:editedRowData={editedPresets}
 					returnWholeRowOnEdit={true}
+					headerTranslations={{}}
 					gridOptionsCustom={customGridOptions}
 					fullHeight={true}
 					hiddenHeader={true}

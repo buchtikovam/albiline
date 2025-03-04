@@ -1,93 +1,99 @@
 import type {ColDef} from "ag-grid-enterprise";
+import * as m from '$lib/paraglide/messages.js'
+
+
+export const customerAndAddressContactsHeaderTranslations = {
+	name: m.routes_prodej_zakaznici_detail_contacts_input_name,
+	surname: m.routes_prodej_zakaznici_detail_contacts_input_surname,
+	mobile: m.routes_prodej_zakaznici_detail_contacts_input_mobile,
+	phone: m.routes_prodej_zakaznici_detail_contacts_input_phone,
+	email: m.routes_prodej_zakaznici_detail_contacts_input_email,
+	note: m.routes_prodej_zakaznici_detail_contacts_input_note,
+	isDefault: m.routes_prodej_zakaznici_detail_contacts_input_is_default,
+	enabled: m.routes_prodej_zakaznici_detail_contacts_input_enabled,
+	pdfInvoice: m.routes_prodej_zakaznici_detail_contacts_input_pdf_invoice,
+	pdfDeliveryNote: m.routes_prodej_zakaznici_detail_contacts_input_pdf_delivery_note,
+	csvInvoice: m.routes_prodej_zakaznici_detail_contacts_input_csv_invoice,
+	csvDeliveryNote: m.routes_prodej_zakaznici_detail_contacts_input_csv_delivery_note,
+	consignmentReturnInfo: m.routes_prodej_zakaznici_detail_contacts_input_consignment_return_info,
+	consignmentInfo: m.routes_prodej_zakaznici_detail_contacts_input_consignment_info,
+	carrierInfo: m.routes_prodej_zakaznici_detail_contacts_input_carrier_info,
+}
+
 
 export const customerAndAddressContactsAgGridDef: ColDef<any, any>[] = [
 	{
 		field: "isDefault",
-		headerName: "Výchozí",
 		cellDataType: "boolean",
 		width: 64,
 	},
 	{
 		field: "enabled",
-		headerName: "Aktivní",
 		cellDataType: "boolean",
 		width: 56,
 	},
 	{
 		field: "name",
-		headerName: "Jméno",
 		cellDataType: "text",
 		width: 120,
 	},
 	{
 		field: "surname",
-		headerName: "Příjmení",
 		cellDataType: "text",
 		width: 170,
 	},
 	{
 		field: "mobile",
-		headerName: "Telefon",
 		cellDataType: "text",
 		width: 140,
 	},
 	{
 		field: "phone",
-		headerName: "Pevná linka",
 		cellDataType: "text",
 		width: 140,
 	},
 	{
 		field: "email",
-		headerName: "E-mail",
 		cellDataType: "text",
 		width: 200,
 	},
 	{
 		field: "note",
-		headerName: "Poznámka",
 		cellDataType: "text",
 		width: 140,
 	},
 	{
 		field: "pdfInvoice",
-		headerName: "FA emailem v PDF",
 		cellDataType: "boolean",
 		width: 82,
 	},
 	{
 		field: "pdfDeliveryNote",
-		headerName: "DL emailem v PDF",
 		cellDataType: "boolean",
 		width: 84,
 	},
 	{
 		field: "csvInvoice",
-		headerName: "FA emailem v CSV",
 		cellDataType: "boolean",
 		width: 82,
 	},
 	{
 		field: "csvDeliveryNote",
-		headerName: "DL emailem v CSV",
 		cellDataType: "boolean",
 		width: 84,
 	},
 	{
 		field: "consignmentReturnInfo",
-		headerName: "AZ o svozu zásilky",
 		cellDataType: "boolean",
 		width: 82,
 	},
 	{
 		field: "consignmentInfo",
-		headerName: "AZ o expedici zásilky",
 		cellDataType: "boolean",
 		width: 94,
 	},
 	{
 		field: "carrierInfo",
-		headerName: "Kontakt pro přepravce",
 		cellDataType: "boolean",
 		width: 82,
 	},

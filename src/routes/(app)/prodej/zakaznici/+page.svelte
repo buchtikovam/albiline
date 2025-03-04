@@ -6,17 +6,17 @@
 	import {
 		customerGridOptions,
 		customerHeaderTranslations
-	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-ss/customerAgGridDef';
+	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-ss/customerAgGridDef.svelte';
 	import {
 		activeTabIndex,
 		showFulltextSearch
 	} from '$lib/runes/page.svelte';
-	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
-	import InputParams from "$lib/components/input-params/InputParams.svelte";
-	import NewCustomerOrAddressDecisionDialog
-		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
 	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import NewCustomerOrAddressDecisionDialog
+		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
+	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
+	import InputParams from "$lib/components/input-params/InputParams.svelte";
 
 
 	activeTabIndex.value = 0;

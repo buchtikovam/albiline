@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {serverSideTables} from "$lib/runes/table.svelte.js";
-	import {pageCode} from "$lib/runes/page.svelte";
+	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte.js";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import type {StoredPreset} from "$lib/types/components/table/presets";
 	import type {ColDef} from "ag-grid-enterprise";
@@ -11,7 +10,7 @@
 
 	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
-
+	let pageKey = $derived(currentPageKey.value);
 
 	$effect(() => {
 		isOpen = true;
@@ -19,7 +18,7 @@
 
 
 	async function savePreset() {
-		const strippedPreset: StoredPreset[] = serverSideTables[pageCode.value].presetToSave.map((preset: ColDef) => {
+		const strippedPreset: StoredPreset[] = serverSideTables[pageKey].presetToSave.map((preset: ColDef) => {
 			return {
 				field: preset.field,
 				width: preset.width,

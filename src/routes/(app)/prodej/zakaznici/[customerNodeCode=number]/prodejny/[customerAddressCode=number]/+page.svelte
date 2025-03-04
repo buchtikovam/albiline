@@ -1,27 +1,32 @@
 <script lang="ts">
 	import {
-		customerAndAddressContactsAgGridDef
+		customerAndAddressContactsAgGridDef, customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
-	import {type ServerSideTable, serverSideTables} from '$lib/runes/table.svelte';
-	import {activeTabIndex, isMobile, pageCode} from '$lib/runes/page.svelte';
+	import {currentPageKey, serverSideTables} from '$lib/runes/table.svelte';
+	import {activeTabIndex, isMobile, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {customerAddressDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressFormDef';
-	import {customerAddressesAgGridDef} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAddressesAgGridDef.svelte.js';
+	import {
+		customerAddressCustomGridOptions,
+	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAddressesAgGridDef.svelte.js';
 	import {customerAddressPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerAddressPageLayout';
 	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
 	import {disableNavigation} from '$lib/runes/navigation.svelte';
 	import {ribbonAction} from '$lib/runes/ribbon.svelte';
 	import {page} from '$app/state';
-	import {apiServiceGETHandled} from '$lib/api/apiService.svelte';
 	import {changeCustomerAddressRoute} from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute.svelte';
+	import {apiGetCustomerAddresses, apiSaveCustomerAddressDetail} from "$lib/api/customerService.svelte";
 	import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
-	import {customToast} from '$lib/utils/customToast';
-	import {flipItems} from '$lib/utils/flipItems';
 	import {getContext} from 'svelte';
+	import {flipItems} from '$lib/utils/flipItems';
+	import {flip} from 'svelte/animate';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Repeat from 'lucide-svelte/icons/repeat';
 	import Plus from 'lucide-svelte/icons/plus';
 	import * as m from '$lib/paraglide/messages.js';
-	import type {CustomerAddressType, CustomerContactType} from '$lib/types/routes/prodej/zakaznci/customers';
+	import type {
+		CustomerAddressType,
+		CustomerContactType,
+	} from '$lib/types/routes/prodej/zakaznci/customers';
 	import type {GridOptions} from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
@@ -33,16 +38,14 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerAddressesDialog.svelte";
 	import NewCustomerContactDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte";
-	import { flip } from 'svelte/animate';
+	import type {ServerSideTable} from "$lib/types/components/table/table";
+
 
 	interface Props {
 		data: {
-			response: {
-				item: CustomerAddressType,
-				contacts: CustomerContactType[]
-			},
-			status: "success" | "fail",
-		};
+			item: CustomerAddressType,
+			contacts: CustomerContactType[]
+		}
 	}
 
 	let { data }: Props = $props();
@@ -50,13 +53,12 @@
 
 	// page settings
 	activeTabIndex.value = 1;
-	pageCode.value = btoa(page.route.id || "");
 
 
 	// --- initialize variables and state
 	// page
-	let tableKey: string = getContext('serverSideTableKey');
-	let table: ServerSideTable = $state(serverSideTables[tableKey]);
+	let pageKey: string = $derived(currentPageKey.value);
+	let table: ServerSideTable = $state(serverSideTables[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeRoute = $derived({
@@ -66,16 +68,16 @@
 
 	// customer addresses dialog
 	let openAgGridDialog: boolean = $state(false);
-	let addresses = $state([]);
+	let addresses: CustomerAddressType[] = $state([]);
 
 	// autoform
-	let initialFormValues: Record<string, any> = $derived(data.response.item);
-	let editedFormValues: Record<string, any> = $state({ id: data.response.item.id });
+	let initialFormValues: Record<string, any> = $derived(data.item);
+	let editedFormValues: Record<string, any> = $state({});
 	let pageLayout = $state(customerAddressPageLayout);
 	let autoformDef = $state(customerAddressDetailFormDef);
 
 	// contacts ag grid
-	let contactValues: CustomerContactType[] = $derived(data.response.contacts);
+	let contactValues: CustomerContactType[] = $derived(data.contacts);
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
 	let openNewContactDialog: boolean = $state(false);
@@ -152,18 +154,17 @@
 				createdContacts.length > 0 ||
 				editedContactValues.length > 0
 			) {
-				const saveObj = {
+				apiSaveCustomerAddressDetail({
 					insert: [...createdContacts],
 					update: [...editedContactValues, ...[editedFormValues]],
 					delete: []
-				}
-
-				updateAndReload(saveObj);
+				})
 			} else {
-				customToast(
-					"InfoToast",
-					"Nemáte nic k uložení. Nejdříve proveďte změny."
-				)
+				responseDialogMessages.value = [{
+					type: "InfoToast",
+					title: m.components_response_title_info(),
+					content: m.components_response_dialog_make_changes_before_action(),
+				}]
 			}
 		}
 
@@ -176,26 +177,6 @@
 		disableNavigation.value = true;
 		disableLeft = true;
 		disableRight = true;
-	}
-
-
-
-	// save data on the api
-	async function updateAndReload(saveObj: {insert: any[], update: any[], delete: any[]}) {
-		console.log(JSON.stringify(saveObj, null, 1)); // clear all edited and created
-	}
-
-
-
-	// fetching for customer addresses ag-grid dialog
-	async function getAddresses() {
-		if (addresses.length === 0) {
-			const response = await apiServiceGETHandled(`customers/${page.params.customerNodeCode}/addresses`)
-
-			if (response.success) {
-				addresses = response.data.items;
-			}
-		}
 	}
 </script>
 
@@ -236,9 +217,11 @@
 				<button
 					class={(disableNavigation.value ? "text-slate-300 " : "text-albi-500") + " w-6"}
 					disabled={disableNavigation.value}
-					onclick={() => {
+					onclick={async () => {
 						openAgGridDialog = true;
-						getAddresses();
+						if (addresses.length === 0) {
+							addresses = await apiGetCustomerAddresses();
+						}
 					}}
 				>
 					<Repeat class="size-5"/>
@@ -255,7 +238,7 @@
 					navigateDetailFn={() => changeCustomerAddressRoute(
 						"left",
 						page.route.id || "",
-						tableKey
+						pageKey
 					)}
 				/>
 
@@ -265,7 +248,7 @@
 					navigateDetailFn={() => changeCustomerAddressRoute(
 						"right",
 						page.route.id || "",
-						tableKey
+						pageKey
 					)}
 				/>
 			</div>
@@ -323,6 +306,7 @@
 						rowData={contactValues}
 						fullHeight={false}
 						hiddenHeader={false}
+						headerTranslations={customerAndAddressContactsHeaderTranslations}
 						gridOptionsCustom={contactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
@@ -336,7 +320,7 @@
 
 <!-- display all customer addresses, select new active -->
 <CustomerAddressesDialog
-	colDef={customerAddressesAgGridDef}
+	gridOptionsCustom={customerAddressCustomGridOptions}
 	rowData={addresses}
 	bind:open={openAgGridDialog}
 />
@@ -347,5 +331,5 @@
 	formDef={newCustomerContactFormDef}
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
-	label="Nový kontakt prodejny"
+	origin="address"
 />

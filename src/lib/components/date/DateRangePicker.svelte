@@ -30,7 +30,7 @@
 	})
 
 
-	$effect(() => {
+	// $effect(() => {
 		if (startValue) {
 			value.start = parseStringToDateValue(startValue);
 		}
@@ -38,7 +38,7 @@
 		if (endValue) {
 			value.end = parseStringToDateValue(endValue)
 		}
-	})
+	// })
 
 
 

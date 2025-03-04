@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {authDetails, pageCode} from "$lib/runes/page.svelte";
+	import {authDetails} from "$lib/runes/page.svelte";
 	import {page} from "$app/state";
 	import type { LayoutData } from './$types';
 	import {type Snippet} from 'svelte';
@@ -14,10 +14,6 @@
 
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;
-
-	$effect(() => {
-		pageCode.value = btoa(page.route.id || "");
-	})
 
 
 	// const table = $state(serverSideTables[pageCode.value])

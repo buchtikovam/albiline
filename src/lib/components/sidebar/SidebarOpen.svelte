@@ -23,6 +23,7 @@
 		filteredItems = $bindable(),
 	}: Props = $props();
 
+
 	let disableTab = $state(false);
 </script>
 
@@ -47,7 +48,7 @@
 								>
 									{@const Icon = item.icon}
 									<a
-										class="flex text-sm font-bold w-fit pl-0.5 items-center gap-3 text-albi-950 hover:text-black"
+										class="flex text-sm font-bold w-fit pl-0.5 items-center gap-2 text-albi-950 hover:text-black"
 										onclick={() => {
 											if (item.href) handleTabClick(item, 0);
 										}}

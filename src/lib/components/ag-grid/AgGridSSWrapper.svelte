@@ -1,7 +1,5 @@
 <script lang="ts">
-	import {
-		 type ServerSideTable, serverSideTables,
-	} from '$lib/runes/table.svelte';
+	import {currentPageKey, serverSideTables} from '$lib/runes/table.svelte';
 	import {authDetails, fulltextFilterValue, isMobile} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
@@ -10,7 +8,7 @@
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import {getContext, onMount, tick} from 'svelte';
+	import {onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
 		type Column,
@@ -25,11 +23,11 @@
 		type SortChangedEvent,
 		themeQuartz
 	} from 'ag-grid-enterprise';
-	import type {ColumnOrder, TableRowRequest} from '$lib/types/components/table/table';
+	import type {ColumnOrder, ServerSideTable, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
+	import {languageTag} from "$lib/paraglide/runtime";
 	import deepcopy from "deepcopy";
-
 
 	interface Props {
 		url: string;
@@ -46,9 +44,8 @@
 	}: Props = $props();
 
 
-	let tableKey: string = getContext('serverSideTableKey');
-	let table: ServerSideTable|undefined = $state(serverSideTables[tableKey]);
-
+	let pageKey: string = currentPageKey.value;
+	let table: ServerSideTable|undefined = $state(serverSideTables[pageKey]);
 
 	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
@@ -265,12 +262,18 @@
 
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
-			apiServicePostHandled(url, updatedParamsRequest)
+
+			apiServicePostHandled(url, updatedParamsRequest, "CustomersGetList")
 				.then(httpResponse => httpResponse.data)
 				.then(response => {
+					console.log(response)
+
 					params.success({ rowData: response.items });
 					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
-					gridApi.setRowCount(table.latestRowCount || 0);
+
+					if (response.items.length > 0) {
+						gridApi.setRowCount(table.latestRowCount || 0);
+					}
 
 					if (isInitial) {
 						disablePageTabs.value = false;
@@ -326,10 +329,11 @@
 
 	// runs when component is mounted only
 	onMount(() => {
+		console.log("mount")
+
 		disablePageTabs.value = true;
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
-		console.log(finalGridOptions.columnDefs);
 		table.defaultColDef = finalGridOptions.columnDefs || [];
 
 
@@ -343,15 +347,17 @@
 			gridApi = createGrid(gridContainer, finalGridOptions);
 		}
 
+
+		// gridApi.setGridOption("loading", true)
 		gridApi.setFilterModel(table.filtersToSave);
 		gridApi.setGridOption('serverSideDatasource', datasource);
+
 
 		let colDefs = gridApi.getColumnDefs();
 
 		// const colDefs =
 		colDefs?.forEach((column: ColDef) => {
 			columnDefaultEditable.set(column.field, column.editable)
-			column.headerName = headerTranslations[column.field || ""]();
 		})
 
 		// update grid with updated column defs
@@ -399,6 +405,26 @@
 
 
 
+	$effect(() => {
+		console.log("header translate")
+
+		if (gridApi) {
+			if (languageTag()) {
+				let colDefs = gridApi.getColumnDefs();
+
+				// const colDefs =
+				colDefs?.forEach((column: ColDef) => {
+					column.headerName = headerTranslations[column.field || ""]();
+				})
+
+				// update grid with updated column defs
+				gridApi.setGridOption("columnDefs", colDefs);
+			}
+		}
+	})
+
+
+
 	// listening to fulltext filter changes from layout, refresh grid with delay
 	let timer: NodeJS.Timeout;
 
@@ -412,6 +438,8 @@
 	}
 
 	$effect(() => {
+		console.log("fulltext")
+
 		if (fulltextFilterValue.value.length > 1) {
 			debounceFulltext();
 		}
@@ -420,14 +448,19 @@
 
 
 	$effect(() => {
+		console.log("filter")
+
 		if (Object.keys(table.selectedFilters).length > 0) {
-			gridApi.setFilterModel(table.selectedFilters);
-			table.selectedFilters = {};
+	//
+			gridApi.setFilterModel(table.selectedFilters.filters);
+			// table.selectedFilters = {};
 		}
 	})
 
 
 	$effect(() => {
+		console.log("preset")
+
 		if (table.selectedPreset.length > 0) {
 			const preset = deepcopy(table.selectedPreset);
 			const columnOrder: ColumnOrder = [];
@@ -446,7 +479,6 @@
 			table.selectedPreset = [];
 		}
 	})
-
 
 
 	let excelFileInput: HTMLInputElement;
@@ -491,6 +523,8 @@
 
 
 	$effect(() => {
+		console.log("ribbon")
+
 		if (ribbonAction.value === RibbonActionEnum.DELETE) {
 			console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;

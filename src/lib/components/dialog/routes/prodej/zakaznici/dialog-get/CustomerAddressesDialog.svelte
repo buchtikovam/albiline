@@ -1,42 +1,44 @@
 <script lang="ts">
-	import Plus from 'lucide-svelte/icons/plus';
-	import NewCustomerAddressDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
-	import * as Dialog from "$lib/components/ui/dialog";
 	import {newCustomerAddressFormDef} from "$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerAddressFormDef";
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
-	import type {GridOptions} from "ag-grid-enterprise";
 	import {onNavigate} from "$app/navigation";
+	import Plus from 'lucide-svelte/icons/plus';
+	import type {CustomerAddressType} from "$lib/types/routes/prodej/zakaznci/customers";
+	import type {GridOptions} from "ag-grid-enterprise";
+	import NewCustomerAddressDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
+	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
+	import * as Dialog from "$lib/components/ui/dialog";
+	import {
+		customerAddressHeaderTranslations
+	} from "$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAddressesAgGridDef.svelte";
 
 	interface Props {
-		colDef: any;
-		rowData: any[];
+		gridOptionsCustom: GridOptions;
+		rowData: CustomerAddressType[];
 		open: boolean;
 	}
 
 	let {
-		colDef,
+		gridOptionsCustom,
 		rowData,
 		open = $bindable()
 	}: Props = $props();
 
 	let openNewAddressDialog: boolean = $state(false);
 
+
 	function newCustomerAddressDialog() {
 		open = false;
 		openNewAddressDialog = true;
 	}
 
-	const customGridOptions: GridOptions = {
-		columnDefs: colDef,
-	}
 
 	onNavigate(() => {
 		openNewAddressDialog = false;
 		open = false;
 	})
 </script>
-
 
 
 
@@ -51,7 +53,7 @@
 
 {#snippet header()}
 	<Dialog.Title class="flex items-center gap-2">
-		Výběr prodejny
+		{m.routes_prodej_zakaznici_address_detail_ag_select_label()}
 
 		<button
 			onclick={newCustomerAddressDialog}
@@ -67,15 +69,15 @@
 {#snippet content()}
 	<AgGridCSWrapper
 		rowData={rowData}
-		gridOptionsCustom={customGridOptions}
+		gridOptionsCustom={gridOptionsCustom}
 		fullHeight={true}
+		headerTranslations={customerAddressHeaderTranslations}
 	/>
 {/snippet}
 
 
 <NewCustomerAddressDialog
 	bind:dialogOpen={openNewAddressDialog}
-	label="Nová prodejna"
 	formDef={newCustomerAddressFormDef}
 />
 

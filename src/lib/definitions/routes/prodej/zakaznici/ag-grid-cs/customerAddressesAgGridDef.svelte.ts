@@ -2,149 +2,156 @@ import {serverSideTables} from '$lib/runes/table.svelte.js';
 import {pageCompact} from "$lib/runes/page.svelte.js";
 import {page} from '$app/state';
 import {i18n} from "$lib/i18n";
-import type { ICellRendererParams, CellClassParams } from 'ag-grid-community';
-import type {ColDef} from "ag-grid-enterprise";
+import type {ICellRendererParams, CellClassParams} from 'ag-grid-community';
+import type {GridOptions} from "ag-grid-enterprise";
+import * as m from '$lib/paraglide/messages.js'
 
 
 const bgHEX = "#fff7df";
 
 
-export const customerAddressesAgGridDef: ColDef<any, any>[] = [
-	{
-		field: "customerAddressCode",
-		headerName: "ID prodejny",
-		width: 115,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+export const customerAddressHeaderTranslations = {
+	customerAddressCode: m.routes_prodej_zakaznici_address_detail_form_input_customer_address_code,
+	name: m.routes_prodej_zakaznici_address_detail_form_input_name,
+	street: m.routes_prodej_zakaznici_address_detail_form_input_street,
+	city: m.routes_prodej_zakaznici_address_detail_form_input_city,
+	postalCode: m.routes_prodej_zakaznici_address_detail_form_input_postal_code,
+	countryCode: m.routes_prodej_zakaznici_address_detail_form_input_country_code,
+	customerRank: m.routes_prodej_zakaznici_address_detail_form_input_customer_rank,
+}
+
+
+export const customerAddressCustomGridOptions: GridOptions = {
+	columnDefs: [
+		{
+			field: "customerAddressCode",
+			width: 115,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "name",
-		headerName: "Jméno",
-		width: 280,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+		{
+			field: "name",
+			width: 280,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "street",
-		headerName: "Ulice",
-		width: 200,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+		{
+			field: "street",
+			width: 200,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "city",
-		headerName: "Město",
-		width: 200,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+		{
+			field: "city",
+			width: 200,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "postalCode",
-		headerName: "PSČ",
-		width: 90,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+		{
+			field: "postalCode",
+			width: 90,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "countryCode",
-		headerName: "Země",
-		width: 90,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+		{
+			field: "countryCode",
+			width: 90,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "customerRank",
-		headerName: "Bonita",
-		width: 90,
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
+		{
+			field: "customerRank",
+			width: 90,
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
 		},
-	},
-	{
-		field: "selectBtn",
-		headerName: "",
-		filter: false,
-		resizable: false,
-		sortable: false,
-		pinned: "left",
-		minWidth: 40,
-		width: 40,
-		cellRenderer: (params: ICellRendererParams) => selectBtn(params),
-		cellStyle: (params: CellClassParams) => {
-			if (
-				params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
-				params.data.customerAddressCode === Number(page.params.customerAddressCode)
-			) {
-				return {
-					backgroundColor: bgHEX
-				};
-			}
-			return null;
-		},
-	}
-]
+		{
+			field: "selectBtn",
+			headerName: "",
+			filter: false,
+			resizable: false,
+			sortable: false,
+			pinned: "left",
+			minWidth: 40,
+			width: 40,
+			cellRenderer: (params: ICellRendererParams) => selectBtn(params),
+			cellStyle: (params: CellClassParams) => {
+				if (
+					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&
+					params.data.customerAddressCode === Number(page.params.customerAddressCode)
+				) {
+					return {
+						backgroundColor: bgHEX
+					};
+				}
+				return null;
+			},
+		}
+	]
+}
 
 
 

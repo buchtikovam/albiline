@@ -1,72 +1,29 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import type { AutoFormSimpleType } from "$lib/types/components/form/autoform";
-	import type { CustomerContactType } from '$lib/types/routes/prodej/zakaznci/customers';
+	import {Button} from '$lib/components/ui/button';
+	import {createCleanCustomerOrAddressContact} from "$lib/api/customerService.svelte";
+	import type {CustomerContactType} from '$lib/types/routes/prodej/zakaznci/customers';
+	import type {AutoFormSimpleType} from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	interface Props {
 		dialogOpen: boolean;
-		label: string;
 		formDef: AutoFormSimpleType;
 		createdContacts: CustomerContactType[];
+		origin: "customer"|"address";
 	}
 
 	let {
 		dialogOpen = $bindable(),
-		label,
 		formDef,
-		createdContacts = $bindable()
+		createdContacts = $bindable(),
+		origin,
 	}: Props = $props();
 
 
-	let contact: CustomerContactType = $state({
-		createdRowId: createdContacts.length, // only for frontend, irrelevant for backend
-		customerPersonCode: null,
-		isDefault: false,
-		enabled: false,
-		name: null,
-		surname: null,
-		mobile: null,
-		phone: null,
-		email: null,
-		note: null,
-		pdfInvoice: false,
-		pdfDeliveryNote: false,
-		csvInvoice: false,
-		csvDeliveryNote: false,
-		consignmentReturnInfo: false,
-		consignmentInfo: false,
-		carrierInfo: false
-	})
-
-
-	function addContact() {
-		createdContacts.push(contact);
-
-		contact = {
-			createdRowId: createdContacts.length,
-			customerPersonCode: null,
-			isDefault: false,
-			enabled: false,
-			name: null,
-			surname: null,
-			mobile: null,
-			phone: null,
-			email: null,
-			note: null,
-			pdfInvoice: false,
-			pdfDeliveryNote: false,
-			csvInvoice: false,
-			csvDeliveryNote: false,
-			consignmentReturnInfo: false,
-			consignmentInfo: false,
-			carrierInfo: false
-		}
-
-		dialogOpen = false;
-	}
+	let contact: CustomerContactType = $state(createCleanCustomerOrAddressContact(createdContacts));
 </script>
 
 
@@ -86,8 +43,11 @@
 
 
 {#snippet header()}
-	<Dialog.Title class="h-6 sm:h-auto">
-		{ label }
+	<Dialog.Title class="h-5">
+		{ origin === "address"
+			? m.routes_prodej_zakaznici_address_detail_new_contact_label()
+			: m.routes_prodej_zakaznici_customer_detail_new_contact_label()
+		}
 	</Dialog.Title>
 {/snippet}
 
@@ -100,9 +60,13 @@
 	<Dialog.Footer>
 		<Button
 			class="w-full bg-albi-500 font-bold text-background font-bolder"
-			onclick={addContact}
+			onclick={() => {
+				createdContacts.push(contact);
+				contact = createCleanCustomerOrAddressContact(createdContacts);
+				dialogOpen = false;
+			}}
 		>
-			Uložit
+			{m.generics_save()}
 		</Button>
 	</Dialog.Footer>
 {/snippet}
