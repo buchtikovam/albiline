@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {currentPageKey, serverSideTables} from '$lib/runes/table.svelte';
+	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {authDetails, fulltextFilterValue, isMobile} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
@@ -11,7 +11,7 @@
 	import {onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
-		type Column,
+		type Column, type ColumnMovedEvent, type ColumnVisibleEvent,
 		createGrid,
 		type FilterModel,
 		type GetRowIdParams,
@@ -23,7 +23,7 @@
 		type SortChangedEvent,
 		themeQuartz
 	} from 'ag-grid-enterprise';
-	import type {ColumnOrder, ServerSideTable, TableRowRequest} from '$lib/types/components/table/table';
+	import type {ColumnOrder, AgGridTableType, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {languageTag} from "$lib/paraglide/runtime";
@@ -45,7 +45,7 @@
 
 
 	let pageKey: string = currentPageKey.value;
-	let table: ServerSideTable|undefined = $state(serverSideTables[pageKey]);
+	let table: AgGridTableType|undefined = $state(agGridTables[pageKey]);
 
 	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
@@ -179,11 +179,20 @@
 							sort: column.getSort(),
 						})
 					}
-
 				})
+
+				table.presetToSave = event.api.getColumnDefs();
 			}
 		},
 
+
+		onColumnMoved(event: ColumnMovedEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs();
+		},
+
+		onColumnVisible(event: ColumnVisibleEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs();
+		},
 
 		onFilterChanged: () =>  {
 			if (!isInitial) {
@@ -242,6 +251,7 @@
 	}
 
 
+	$inspect(table.filtersToSave)
 
 
 	//  datasource configuration
@@ -259,11 +269,12 @@
 				recentFilters.push(currentFilter);
 			}
 
+			table.filtersToSave = currentFilter;
 
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
 
-			apiServicePostHandled(url, updatedParamsRequest, "CustomersGetList")
+			apiServicePostHandled(url, updatedParamsRequest)
 				.then(httpResponse => httpResponse.data)
 				.then(response => {
 					console.log(response)
@@ -329,12 +340,9 @@
 
 	// runs when component is mounted only
 	onMount(() => {
-		console.log("mount")
-
 		disablePageTabs.value = true;
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
-		table.defaultColDef = finalGridOptions.columnDefs || [];
 
 
 		// overwrite default coldef if user has unsaved preset
@@ -348,9 +356,7 @@
 		}
 
 
-		// gridApi.setGridOption("loading", true)
 		gridApi.setFilterModel(table.filtersToSave);
-		gridApi.setGridOption('serverSideDatasource', datasource);
 
 
 		let colDefs = gridApi.getColumnDefs();
@@ -404,10 +410,17 @@
 	})
 
 
+	$effect(() => {
+		if (table.areInputParamsLoading) {
+			gridApi.setGridOption("loading", true)
+		} else {
+			gridApi.setGridOption("loading", false)
+			gridApi.setGridOption('serverSideDatasource', datasource);
+		}
+	})
+
 
 	$effect(() => {
-		console.log("header translate")
-
 		if (gridApi) {
 			if (languageTag()) {
 				let colDefs = gridApi.getColumnDefs();
@@ -416,6 +429,9 @@
 				colDefs?.forEach((column: ColDef) => {
 					column.headerName = headerTranslations[column.field || ""]();
 				})
+
+				table.defaultColDef = colDefs;
+
 
 				// update grid with updated column defs
 				gridApi.setGridOption("columnDefs", colDefs);
@@ -438,8 +454,6 @@
 	}
 
 	$effect(() => {
-		console.log("fulltext")
-
 		if (fulltextFilterValue.value.length > 1) {
 			debounceFulltext();
 		}
@@ -448,10 +462,7 @@
 
 
 	$effect(() => {
-		console.log("filter")
-
-		if (Object.keys(table.selectedFilters).length > 0) {
-	//
+		if (table.selectedFilters) {
 			gridApi.setFilterModel(table.selectedFilters.filters);
 			// table.selectedFilters = {};
 		}
@@ -459,14 +470,13 @@
 
 
 	$effect(() => {
-		console.log("preset")
-
-		if (table.selectedPreset.length > 0) {
-			const preset = deepcopy(table.selectedPreset);
+		if (table.selectedPreset) {
+			const preset = deepcopy(table.selectedPreset.pagePresetValue);
 			const columnOrder: ColumnOrder = [];
 
 			preset.forEach((column: ColDef) => {
 				columnOrder.push({ colId: column.field })
+				column.hide = column.hide || false;
 				column.headerName = headerTranslations[column.field || ""]();
 			})
 
@@ -476,9 +486,16 @@
 				applyOrder: true
 			});
 
-			table.selectedPreset = [];
+			table.selectedPresetFull = {
+				pagePresetId: table.selectedPreset.pagePresetId,
+				pagePresetName: table.selectedPreset.pagePresetName,
+				pagePresetValue: preset,
+			};
+
+			table.selectedPreset = undefined;
 		}
 	})
+
 
 
 	let excelFileInput: HTMLInputElement;
@@ -523,8 +540,6 @@
 
 
 	$effect(() => {
-		console.log("ribbon")
-
 		if (ribbonAction.value === RibbonActionEnum.DELETE) {
 			console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
@@ -643,7 +658,6 @@
 		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
 			openedRibbonDialog.value = "ribbon-save-preset";
 			table.presetToSave = gridApi.getColumnDefs() || [];
-			console.log(gridApi.getColumnDefs());
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 

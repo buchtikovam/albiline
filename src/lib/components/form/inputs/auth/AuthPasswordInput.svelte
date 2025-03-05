@@ -39,7 +39,6 @@
 				disableSubmit = false;
 
 			} catch (e) {
-				console.log(e);
 				disableSubmit = true;
 				errorMessage = "Heslo musí obsahovat: aspoň 10 znaků, velké písmeno, malé písmeno, číslo, speciální znak";
 			}

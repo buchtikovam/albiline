@@ -1,4 +1,4 @@
-import {serverSideTables} from "$lib/runes/table.svelte";
+import {agGridTables} from "$lib/runes/table.svelte";
 import {i18n} from '$lib/i18n.js'
 import {processRoute} from '$lib/utils/navigation/processRoute';
 import {goto} from '$app/navigation';
@@ -13,7 +13,7 @@ export function changeCustomerRoute(
 	tableKey: string,
 ) {
 	// get active index in unique selected rows
-	const table = $state(serverSideTables[tableKey]);
+	const table = $state(agGridTables[tableKey]);
 
 	if (direction === "right") {
 		const nextIndex = activeIndex + 1;

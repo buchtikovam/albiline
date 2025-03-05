@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
+	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {apiServiceDELETEHandled, apiServiceGETHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import {ribbonFiltersAgGridDef} from "$lib/definitions/components/ribbon/ag-grid/ribbonFiltersAgGridDef";
 	import Save from "lucide-svelte/icons/save";
@@ -87,7 +87,7 @@
 	// if filter was selected, load it in table and close dialog
 	function handleClickSelect(params: ICellRendererParams) {
 		if (!hasUnsavedData) {
-			serverSideTables[pageKey].selectedFilters = params.data;
+			agGridTables[pageKey].selectedFilters = params.data;
 			openedRibbonDialog.value = "empty";
 		}
 	}

@@ -1,8 +1,6 @@
 export function parseStringToDateLong(dateString: string) {
 	const date = new Date(dateString);
 
-	console.log(dateString)
-
 	const day = date.getDate(); // Get the day (UTC)
 	const month = date.getMonth(); // Get the month (UTC, 0-indexed so we add 1)
 	const year = date.getFullYear(); // Get the full year (UTC)

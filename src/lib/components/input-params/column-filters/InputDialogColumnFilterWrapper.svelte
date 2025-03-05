@@ -28,7 +28,6 @@
 
 
 	$effect(() => {
-		console.log("4")
 		if (columnFilter) {
 			columnFilter.filterModel.conditions.forEach((condition) => {
 				if (condition.type !== "between") {

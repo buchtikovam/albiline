@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte.js";
+	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte.js";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import type {StoredPreset} from "$lib/types/components/table/presets";
 	import type {ColDef} from "ag-grid-enterprise";
@@ -18,7 +18,7 @@
 
 
 	async function savePreset() {
-		const strippedPreset: StoredPreset[] = serverSideTables[pageKey].presetToSave.map((preset: ColDef) => {
+		const strippedPreset: StoredPreset[] = agGridTables[pageKey].presetToSave.map((preset: ColDef) => {
 			return {
 				field: preset.field,
 				width: preset.width,

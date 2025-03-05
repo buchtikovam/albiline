@@ -10,7 +10,7 @@ const pageKey = $derived(currentPageKey.value);
 export async function apiServiceGET(
 	endpoint: string,
 ): Promise<Response> {
-	console.log(pageKey);
+	console.log("get", endpoint, pageKey);
 
 	return await fetch(url + endpoint, {
 		method: 'GET',
@@ -66,7 +66,7 @@ export async function apiServicePOST(
 	endpoint: string,
 	body = {},
 ): Promise<Response> {
-	console.log(pageKey);
+	console.log("post", endpoint, pageKey);
 
 	return await fetch(url + endpoint, {
 		method: 'POST',
@@ -86,13 +86,12 @@ export async function apiServicePostHandled(
 	body = {},
 ) {
 	try {
-		let response = await apiServicePOST(endpoint, body)
+		let response = await apiServicePOST(endpoint, body);
 
 		if (response.ok) {
-			const respData = await response.json();
 			return {
 				success: true,
-				data: respData,
+				data: response.json(),
 			}
 		}
 
@@ -126,7 +125,7 @@ export async function apiServicePATCH(
 	endpoint: string,
 	body = {},
 ): Promise<Response> {
-	console.log(pageKey);
+	console.log("patch", endpoint, pageKey);
 
 	return await fetch(url + endpoint, {
 		method: 'PATCH',
@@ -184,7 +183,7 @@ export async function apiServicePUT(
 	id: number,
 	body = {},
 ): Promise<Response> {
-	console.log(pageKey);
+	console.log("put", endpoint, pageKey);
 
 	return await fetch(url + endpoint + "/" + id, {
 		method: 'PUT',
@@ -242,7 +241,7 @@ export async function apiServiceDELETE(
 	endpoint: string,
 	id: number,
 ): Promise<Response> {
-	console.log(pageKey);
+	console.log("delete", endpoint, pageKey);
 
 	return await fetch(url + endpoint + "/" + id, {
 		method: 'DELETE',

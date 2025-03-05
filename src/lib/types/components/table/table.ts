@@ -1,5 +1,5 @@
 import type {FilterModel, IServerSideGetRowsRequest} from "ag-grid-enterprise";
-import type {Preset} from "$lib/types/components/table/presets";
+import type {Preset, StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
 import type {
 	ColDef,
 	ColGroupDef,
@@ -18,12 +18,13 @@ export interface TableRowRequest extends IServerSideGetRowsRequest {
 }
 
 
-export interface ServerSideTables {
-	[pageKey: string]: ServerSideTable
+export interface AgGridTables {
+	[pageKey: string]: AgGridTableType
 }
 
 
-export interface ServerSideTable {
+
+export interface AgGridTableType {
 	// for restoring default table settings and layout
 	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[];
 	// used when setting default colDef - preset
@@ -33,11 +34,13 @@ export interface ServerSideTable {
 	// current filters used in table. Can be saved through ribbon
 	filtersToSave: FilterModel;
 	// used to set filters after user chose filter from ribbon -> my filters
-	selectedFilters: StoredFilters | {};
+	selectedFilters?: StoredFilters;
 	// current presets in the table
-	presetToSave: Preset[];
+	presetToSave: ColDef[]|ColGroupDef[];
 	// used to set presets after user chose preset from ribbon -> my presets
-	selectedPreset: Preset[];
+	selectedPreset?: StoredPresets;
+	// selected preset completed by default col defs
+	selectedPresetFull?: StoredPresets;
 	// current selected table rows
 	selectedRows: Record<string, any>[];
 	// ag grid selection state, runs in combination with selectedRows
@@ -50,6 +53,10 @@ export interface ServerSideTable {
 	lastVisibleRowIndex: number;
 	// keeps track of how many rows data set contains. Used for setting scrollbar height
 	latestRowCount: number;
+	// used for table waiting before data is cached. When response ok, then ag grid registers datasource
+	areInputParamsLoading: boolean;
+	// whether or not show input params dialog
+	hasInputParams: boolean;
 }
 
 

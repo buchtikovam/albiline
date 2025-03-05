@@ -19,14 +19,14 @@ export const allItems: SidebarItem[] = [
 		icon: TableProperties,
 		children: [],
 	},
-	// {
-	// 	field: 'sklad',
-	// 	open: false,
-	// 	hide: false,
-	// 	disabled: false,
-	// 	translation: m.components_sidebar_item_sklad,
-	// 	icon: Warehouse,
-	// 	children: [
+	{
+		field: 'sklad',
+		open: false,
+		hide: false,
+		disabled: false,
+		translation: m.components_sidebar_item_sklad,
+		icon: Warehouse,
+		children: [
 	// 		{
 	// 			field: 'hodinovka',
 	// 			href: '/sklad/hodinovka',
@@ -47,16 +47,16 @@ export const allItems: SidebarItem[] = [
 	// 			icon: null,
 	// 			children: [],
 	// 		},
-	// 		{
-	// 			field: 'stav_skladu',
-	// 			href: '/sklad/stav-skladu',
-	// 			open: false,
-	// 			hide: false,
-	// 			disabled: false,
-	// 			translation: m.components_sidebar_item_sklad_stav_skladu,
-	// 			icon: null,
-	// 			children: [],
-	// 		},
+			{
+				field: 'stav_skladu',
+				href: '/sklad/stav-skladu',
+				open: false,
+				hide: false,
+				disabled: false,
+				translation: m.components_sidebar_item_sklad_stav_skladu,
+				icon: null,
+				children: [],
+			},
 	// 		{
 	// 			field: 'zasilky',
 	// 			href: '/sklad/zasilky',
@@ -67,8 +67,8 @@ export const allItems: SidebarItem[] = [
 	// 			icon: null,
 	// 			children: [],
 	// 		},
-	// 	]
-	// },
+		]
+	},
 	// {
 	// 	field: 'vyroba',
 	// 	open: false,

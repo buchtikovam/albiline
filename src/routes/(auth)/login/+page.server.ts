@@ -17,11 +17,8 @@ export const actions = {
 			const userCode = data.get("userCode")?.toString().trim();
 			const password = data.get("password")?.toString();
 
-			console.log(userCode, password)
-
 			// Input validation
 			if (!userCode || !password) {
-				console.log("input validation fail")
 				return fail(400, {
 					messages: [{
 						title: "Chybějící údaje",

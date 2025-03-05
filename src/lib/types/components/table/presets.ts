@@ -7,7 +7,7 @@ export type StoredPresets = {
 }
 
 export type StoredPreset = {
-	field?: string,
+	field: string,
 	width?: number,
 	rowGroup?: boolean,
 	hide: boolean,
@@ -18,6 +18,7 @@ export type StoredPreset = {
 	pinned?: boolean | 'left' | 'right' | null,
 	sort?: 'asc' | 'desc' | null,
 	sortIndex?: number | null,
+
 }
 
 export type Preset = ColDef<unknown, any> | ColGroupDef<unknown>

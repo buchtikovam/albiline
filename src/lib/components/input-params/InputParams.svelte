@@ -25,7 +25,7 @@
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import {currentPageKey} from "$lib/runes/table.svelte";
+	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 
 
 	interface Props {
@@ -43,7 +43,7 @@
 
 	setContext("endpoint", "userInputParameters");
 
-
+	let table = agGridTables[currentPageKey.value];
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
@@ -53,9 +53,6 @@
 	let editLabel = $state(false);
 	let editedLabel = $state("");
 	let isLoadedParamChanged = $derived.by(() => {
-		console.log("3")
-
-
 		if (JSON.stringify(inputDialog) !== JSON.stringify(selectedParam?.paramValue)) {
 			return true
 		}
@@ -73,20 +70,21 @@
 	// api will keep track of input params, creating a smaller data set for
 	// server side tables.
 	async function loadInputParamsInTable() {
-		console.log(JSON.stringify({
-			fulltext: inputDialog.fulltext,
-			inputs: [],
-			columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
-		}, null, 1));
+		table.areInputParamsLoading = true;
+		table.hasInputParams = true;
+		open = false;
 
-		let response = await apiServicePostHandled("cachedPageData", {
+		const response = await apiServicePostHandled("cachedPageData", {
 				fulltext: inputDialog.fulltext,
 				inputs: [],
 				columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 			}
 		)
 
-		console.log(response);
+		if (response.success) {
+			console.log("success");
+			table.areInputParamsLoading = false;
+		}
 	}
 
 

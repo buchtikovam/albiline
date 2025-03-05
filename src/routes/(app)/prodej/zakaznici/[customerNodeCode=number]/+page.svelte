@@ -7,7 +7,7 @@
 	import {customerDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerDetailFormDef';
 	import {customerPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerPageLayout';
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
-	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
+	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {activeTabIndex, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
 	import {apiSaveCustomerDetail} from "$lib/api/customerService.svelte";
@@ -30,7 +30,7 @@
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import type {ServerSideTable} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 
 
 	interface Props {
@@ -50,7 +50,7 @@
 	// --- initialize variables and state
 	// page
 	let pageKey: string = $derived(currentPageKey.value);
-	let table: ServerSideTable = $state(serverSideTables[pageKey]);
+	let table: AgGridTableType = $state(agGridTables[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeIndex = $state(0);

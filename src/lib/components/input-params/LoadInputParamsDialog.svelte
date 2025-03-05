@@ -41,9 +41,7 @@
 
 	// fetch input parameters on dialog open
 	$effect(() => {
-		console.log("1")
-
-		if (isOpen) getUserInputParams();
+	if (isOpen) getUserInputParams();
 
 		return (() => {
 			idsToDelete = [];
@@ -54,8 +52,6 @@
 
 	// show/hide save button based on user interactions
 	$effect(() => {
-		console.log("2")
-
 		idsToDelete.length > 0 || updatedInputParams.length > 0
 			? hasUnsavedData = true
 			: hasUnsavedData = false;

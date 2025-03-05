@@ -1,13 +1,13 @@
 <script>
 	let isPulsating = $state(true)
-	let pulsate = $state(false)
+	let pulsate = $state(true)
 </script>
 
 
-<div class="text-albi-200" aria-label="signal-zero" role="img" >
+<div class="text-albi-200 overflow-visible !size-1" aria-label="signal-zero" role="img" >
 	<svg xmlns="http://www.w3.org/2000/svg"
-		 width="8"
-		 height="8"
+		 width="4"
+		 height="4"
 		 viewBox="0 0 24 24"
 		 fill="fill"
 		 stroke="currentColor"

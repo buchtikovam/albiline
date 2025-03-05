@@ -17,12 +17,15 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
+	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 
-	let open = $state(false);
+
+	let table = agGridTables[currentPageKey.value];
+	let open = $state(!table.hasInputParams);
 	let inputDialogFinished = $derived(!open);
 
 

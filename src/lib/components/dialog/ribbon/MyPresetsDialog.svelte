@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {pageCompact} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
+	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
 	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
 	import deepcopy from "deepcopy";
@@ -31,6 +31,7 @@
 	let isLoading = $state(true);
 	let pageKey = currentPageKey.value;
 
+
 	$effect(() => {
 		isOpen = true;
 		getPresets()
@@ -42,11 +43,13 @@
 		})
 	})
 
+
 	$effect(() => {
 		if (idsToDelete.length > 0 || editedPresets.length > 0) {
 			hasUnsavedData = true;
 		}
 	})
+
 
 	export const ribbonPresetsAgGridDef: ColDef[] = [
 		{
@@ -91,23 +94,25 @@
 
 
 	function handleClickSelect(params: ICellRendererParams) {
-		let defaultColDefCopy = new Map(
-			deepcopy(serverSideTables[pageKey].defaultColDef).map((col: ColDef) => [col.field, col])
-		);
-
+		let defaultColDefCopy = deepcopy(agGridTables[pageKey].defaultColDef);
 		let clickedPreset = params.data.pagePresetValue;
 
-		clickedPreset.forEach((preset: StoredPreset) => {
-			let column = defaultColDefCopy.get(preset.field);
-			if (column) {
-				Object.keys(column).forEach((key) => {
-					// @ts-ignore
-					preset[key] = preset[key] ?? column[key];
-				});
+		// stored presets are stripped of unnecessary fields, so mapping it to default col def completes it
+		let completedPreset = defaultColDefCopy.map(defCol => {
+			const matchingPreset = clickedPreset.find(preset => preset.field === defCol.field);
+			if (matchingPreset) {
+				return { ...defCol, ...matchingPreset };
+			} else {
+				return defCol;
 			}
 		});
 
-		serverSideTables[pageKey].selectedPreset = clickedPreset;
+		agGridTables[pageKey].selectedPreset = {
+			pagePresetId: params.data.pagePresetId,
+			pagePresetName: params.data.pagePresetName,
+			pagePresetValue: completedPreset,
+		}
+
 		openedRibbonDialog.value = "empty";
 	}
 
@@ -194,7 +199,6 @@
 			{:else }
 				{m.components_ribbon_dialog_my_presets_no_instances_found()}
 			{/if}
-
 		{/if}
 	</div>
 {/snippet}

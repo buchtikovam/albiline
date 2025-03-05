@@ -1,4 +1,4 @@
-import {currentPageKey, serverSideTables} from "$lib/runes/table.svelte";
+import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 import {i18n} from "$lib/i18n";
 import {parseStringToDate} from "$lib/utils/formatting/parseStringToDate";
 import {BooleanFilter} from "$lib/utils/components/ag-grid/column-filters/booleanFilter";
@@ -6,6 +6,7 @@ import {goto} from "$app/navigation";
 import type {ValueFormatterParams, GridOptions} from 'ag-grid-enterprise';
 import type {CellDoubleClickedEvent} from "ag-grid-community";
 import * as m from '$lib/paraglide/messages.js'
+import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
 
 let pageKey = $derived(currentPageKey.value);
 
@@ -50,9 +51,11 @@ export const customerHeaderTranslations = {
 
 
 
+
+
 export const customerGridOptions: GridOptions = {
 	onCellDoubleClicked(event: CellDoubleClickedEvent) {
-		serverSideTables[pageKey].selectedRows = [{
+		agGridTables[pageKey].selectedRows = [{
 			customerAddressCode: event.data.customerAddressCode,
 			customerNodeCode: event.data.customerNodeCode
 		}]
@@ -68,356 +71,34 @@ export const customerGridOptions: GridOptions = {
 
 
 	columnDefs: [
-		{
-			field: "customerAddressCode",
-			cellDataType: "number",
-			editable: false,
-			hide: false,
-			width: 68,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agNumberColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				],
-			},
-		},
-		{
-			field: "name",
-			width: 240,
-			cellDataType: "text",
-			editable: true,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			},
-		},
-		{
-			field: "customerNodeCode",
-			width: 68,
-			cellDataType: "number",
-			editable: true,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agNumberColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "i_Name",
-			width: 240,
-			cellDataType: "text",
-			editable: true,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "street",
-			width: 200,
-			cellDataType: "text",
-			editable: true,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "city",
-			width: 200,
-			cellDataType: "text",
-			editable: true,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "postalCode",
-			width: 66,
-			cellDataType: "text",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "countryCode", // select
-			width: 68,
-			cellDataType: "text",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "customerRank", // select
-			width: 70,
-			cellDataType: "text",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "isBadPayer",
-			width: 68,
-			cellDataType: "boolean",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: BooleanFilter,
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "dealerCode",
-			width: 60,
-			editable: false,
-			cellDataType: "number",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agNumberColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "areaCode",
-			width: 60,
-			editable: false,
-			cellDataType: "text",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "responsiblePerson",
-			width: 78,
-			editable: false,
-			cellDataType: "text",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "i_ICO",
-			width: 85,
-			editable: false,
-			cellDataType: "text",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "i_DIC",
-			width: 135,
-			editable: false,
-			cellDataType: "text",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
+		getAgColumn("customerAddressCode", "number", 68, false, false),
+		getAgColumn("name", "text", 240, false, false),
+		getAgColumn("customerNodeCode", "number", 68, false, false),
+		getAgColumn("i_Name", "text", 240, false, false),
+		getAgColumn("street", "text", 200, false, false),
+		getAgColumn("city", "text", 200, false, false),
+		getAgColumn("postalCode", "text", 66, false, false),
+		getAgColumn("countryCode", "text", 68, false, false), // todo: enum
+		getAgColumn("customerRank", "text", 70, false, false), // todo: enum
+		getAgColumn("isBadPayer", "boolean", 68, false, false),
+		getAgColumn("dealerCode", "number", 60, false, false),
+		getAgColumn("areaCode", "text", 60, false, false),
+		getAgColumn("responsiblePerson", "text", 78, false, false),
+		getAgColumn("i_ICO", "text", 85, false, false),
+		getAgColumn("i_DIC", "text", 135, false, false),
+		getAgColumn("i_IcDph", "text", 135, false, false),
+		getAgColumn("paymentTypeCode", "text", 68, false, false),
+		getAgColumn("dueDays", "number", 68, false, false),
+		getAgColumn("consignmentSaleEnabled", "boolean", 70, false, false),
+		getAgColumn("retailStoreTypeName", "text", 180, false, false), // todo: enum
 
-		},
-		{
-			field: "i_IcDph",
-			width: 135,
-			editable: false,
-			cellDataType: "text",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "paymentTypeCode", // select
-			width: 68,
-			cellDataType: "text",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-
-		{
-			field: "dueDays",
-			width: 68,
-			cellDataType: "number",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agNumberColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-		{
-			field: "consignmentSaleEnabled",
-			width: 70,
-			cellDataType: "boolean",
-			editable: false,
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: BooleanFilter,
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
-
-		{
-			field: "retailStoreTypeName", // select
-			width: 180,
-			editable: false,
-			cellDataType: "text",
-			filter: 'agMultiColumnFilter',
-			filterParams: {
-				filters: [
-					{
-						filter: 'agTextColumnFilter',
-						filterParams: {
-							buttons: ["apply", "reset"],
-						}
-					},
-				]
-			}
-		},
 		{
 			field: "areaId",
 			width: 76,
 			cellDataType: "number",
 			editable: false,
 			filter: 'agMultiColumnFilter',
+			hide: false,
 			filterParams: {
 				filters: [
 					{
@@ -433,6 +114,7 @@ export const customerGridOptions: GridOptions = {
 		{ // bool
 			field: "useAssortedEanCodes",
 			width: 70,
+			hide: false,
 			cellDataType: "boolean",
 			editable: false,
 			filter: 'agMultiColumnFilter',
@@ -451,6 +133,7 @@ export const customerGridOptions: GridOptions = {
 			field: "b2BeshopEnabled",
 			width: 70,
 			cellDataType: "boolean",
+			hide: false,
 			editable: false,
 			filter: 'agMultiColumnFilter',
 			filterParams: {
@@ -469,6 +152,7 @@ export const customerGridOptions: GridOptions = {
 			width: 200,
 			cellDataType: "text",
 			editable: false,
+			hide: false,
 			filter: 'agMultiColumnFilter',
 			filterParams: {
 				filters: [
@@ -486,6 +170,7 @@ export const customerGridOptions: GridOptions = {
 			width: 200,
 			cellDataType: "text",
 			editable: false,
+			hide: false,
 			filter: 'agMultiColumnFilter',
 			filterParams: {
 				filters: [
@@ -504,6 +189,7 @@ export const customerGridOptions: GridOptions = {
 			cellDataType: "text",
 			editable: false,
 			filter: 'agMultiColumnFilter',
+			hide: false,
 			filterParams: {
 				filters: [
 					{
@@ -519,6 +205,7 @@ export const customerGridOptions: GridOptions = {
 			field: "i_CountryCode", // select
 			width: 70,
 			cellDataType: "text",
+			hide: false,
 			editable: false,
 			filter: 'agMultiColumnFilter',
 			filterParams: {
@@ -537,6 +224,7 @@ export const customerGridOptions: GridOptions = {
 			width: 200,
 			cellDataType: "text",
 			editable: false,
+			hide: false,
 			filter: 'agMultiColumnFilter',
 			filterParams: {
 				filters: [
@@ -561,6 +249,7 @@ export const customerGridOptions: GridOptions = {
 				return parseStringToDate(params.value);
 			},
 			editable: true,
+			hide: false,
 			cellClass: ['text-right'],
 			filter: 'agMultiColumnFilter',
 			filterParams: {
@@ -586,6 +275,7 @@ export const customerGridOptions: GridOptions = {
 				return parseStringToDate(params.value);
 			},
 			editable: false,
+			hide: false,
 			cellClass: ['text-right'],
 			filter: 'agMultiColumnFilter',
 			filterParams: {
@@ -610,6 +300,7 @@ export const customerGridOptions: GridOptions = {
 				return parseStringToDate(params.value);
 			},
 			editable: false,
+			hide: false,
 			cellClass: ['text-right'],
 			filter: 'agMultiColumnFilter',
 			filterParams: {
@@ -628,6 +319,7 @@ export const customerGridOptions: GridOptions = {
 			width: 200,
 			cellDataType: "text",
 			editable: false,
+			hide: false,
 			filter: 'agMultiColumnFilter',
 			filterParams: {
 				filters: [

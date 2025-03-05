@@ -2,7 +2,7 @@
 	import {
 		customerAndAddressContactsAgGridDef, customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
-	import {currentPageKey, serverSideTables} from '$lib/runes/table.svelte';
+	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {activeTabIndex, isMobile, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {customerAddressDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressFormDef';
 	import {
@@ -38,7 +38,7 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerAddressesDialog.svelte";
 	import NewCustomerContactDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte";
-	import type {ServerSideTable} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 
 
 	interface Props {
@@ -58,7 +58,7 @@
 	// --- initialize variables and state
 	// page
 	let pageKey: string = $derived(currentPageKey.value);
-	let table: ServerSideTable = $state(serverSideTables[pageKey]);
+	let table: AgGridTableType = $state(agGridTables[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeRoute = $derived({

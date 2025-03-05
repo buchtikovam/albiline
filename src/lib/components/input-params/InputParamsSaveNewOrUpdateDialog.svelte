@@ -31,8 +31,6 @@
 
 
 	$effect(() => {
-		console.log("5")
-
 		showSaveNew = !hasEditedData;
 
 		return(() => {
