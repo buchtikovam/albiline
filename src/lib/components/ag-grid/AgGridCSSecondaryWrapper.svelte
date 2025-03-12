@@ -10,11 +10,7 @@
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {languageTag} from "$lib/paraglide/runtime";
 	import type {ColDef} from "ag-grid-community";
-	import {authDetails, isMobile} from "$lib/runes/page.svelte";
-	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import {isMobile} from "$lib/runes/page.svelte";
 
 	interface Props {
 		rowData: any[];
@@ -25,7 +21,6 @@
 		requiredFields?: string[];
 		hiddenHeader?: boolean;
 		fullHeight?: boolean;
-		selectMultiple?: boolean;
 		sidebar?: boolean;
 		isLoading?: boolean;
 		headerTranslations: Record<string, () => string>;
@@ -39,7 +34,6 @@
 		createdRowData = $bindable(),
 		requiredFields,
 		sidebar,
-		selectMultiple,
 		isLoading,
 		checkboxes,
 		fullHeight,
@@ -48,9 +42,6 @@
 		gridOptionsCustom
 	}: Props = $props();
 
-
-	let pageKey: string = currentPageKey.value;
-	let table: AgGridTableType|undefined = $state(agGridTables[pageKey]);
 
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
@@ -71,7 +62,7 @@
 		},
 
 		rowSelection: checkboxes ? {
-			mode: selectMultiple ? "multiRow" : "singleRow",
+			mode: 'multiRow',
 			// enableClickSelection: true,
 			headerCheckbox: false, // maybe add later ?
 			hideDisabledCheckboxes: true,
@@ -196,11 +187,9 @@
 	})
 
 
-	$inspect(rowData)
-
 	$effect(() => {
 		if (rowData) {
-			console.log("effect")
+			console.log("rowdata effect", rowData)
 			gridApi.setGridOption("rowData", rowData);
 		}
 	})
@@ -238,136 +227,6 @@
 				// update grid with updated column defs
 				gridApi.setGridOption("columnDefs", colDefs);
 			}
-		}
-	})
-
-
-	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.DELETE) {
-			// console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_HEADERS) {
-			// const allColumns = gridApi.getColumns();
-			//
-			// // Exclude the first column
-			// let columnKeys = allColumns?.map(col => col.getColId());
-			//
-			// gridApi.exportDataAsExcel({
-			// 	columnKeys: columnKeys,
-			// 	skipColumnGroupHeaders: false,
-			// 	skipColumnHeaders: false,
-			// 	onlySelected: false,
-			// 	allColumns: true, // whether or not render hidden columns
-			// 	processRowGroupCallback: () => "",
-			// 	processCellCallback: () => "",
-			// 	author: authDetails.userName || "AG Grid",
-			// });
-
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_DATA) {
-			// const allColumns = gridApi.getColumns();
-			//
-			// // Exclude the first column
-			// let columnKeys = allColumns?.map(col => col.getColId());
-			//
-			// gridApi.exportDataAsExcel({
-			// 	columnKeys: columnKeys,
-			// 	skipColumnGroupHeaders: false,
-			// 	skipColumnHeaders: false,
-			// 	allColumns: true, // whether or not render hidden columns
-			// 	author: authDetails.userName || "AG Grid",
-			// 	exportedRows: "all", // determines if export has un/sorted and un/filtered rows
-			// 	freezeRows: "headers", // sticky header row
-			// 	onlySelected: false,
-			// });
-
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.IMPORT) {
-			// excelFileInput.click();
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
-			// const column = gridApi.getFocusedCell()?.column;
-			// const selection = window.getSelection()?.toString().trim();
-			//
-			// if (column && selection) {
-			// 	const cellType = column.getColDef().cellDataType;
-			// 	let currentFilters = gridApi.getFilterModel();
-			// 	let filterModelType;
-			//
-			// 	if (cellType === "text") filterModelType = "contains";
-			//
-			// 	if (cellType === "number" || cellType === "date") filterModelType = "equals";
-			//
-			// 	currentFilters[column.getColId()] = {
-			// 		filterType: "multi",
-			// 		filterModels: [{
-			// 			filterType: cellType,
-			// 			type: filterModelType,
-			// 			filter: selection
-			// 		}, null]
-			// 	}
-			//
-			// 	gridApi.setFilterModel(currentFilters);
-			// 	gridApi.onFilterChanged();
-			// }
-			//
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.FILTER_UNDO) {
-			// recentFilters.pop();
-			//
-			// recentFilters[recentFilters.length - 1]
-			// 	? gridApi.setFilterModel(recentFilters[recentFilters.length - 1])
-			// 	: gridApi.setFilterModel(null);
-			//
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.FILTER_REMOVE) {
-			gridApi.setFilterModel(null);
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
-			openedRibbonDialog.value = "ribbon-my-filters";
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
-			const filters = gridApi.getFilterModel();
-			openedRibbonDialog.value = "ribbon-save-filters";
-			table.filtersToSave = filters;
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
-			openedRibbonDialog.value = "ribbon-save-preset";
-			table.presetToSave = gridApi.getColumnDefs() || [];
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.MY_PRESETS) {
-			openedRibbonDialog.value = "ribbon-my-presets";
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 	})
 </script>

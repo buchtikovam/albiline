@@ -66,6 +66,9 @@ export const actions = {
 				});
 			}
 
+			console.log(resp)
+
+			console.log(responseData)
 
 			// Set session cookie
 			cookies.set("auth", JSON.stringify({

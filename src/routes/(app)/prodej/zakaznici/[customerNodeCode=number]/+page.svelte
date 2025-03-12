@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
-		customerAndAddressContactsAgGridDef, customerAndAddressContactsHeaderTranslations
+		customerAndAddressContactsGridOptions,
+		customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
 	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
@@ -18,7 +19,6 @@
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznci/customers';
-	import type {GridOptions} from 'ag-grid-enterprise';
 	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";
@@ -58,6 +58,7 @@
 		customerNodeCode: Number(page.params.customerNodeCode),
 	})
 
+
 	// autoform
 	let initialFormValues: Record<string, any> = $derived(data.item);
 	let editedFormValues: Record<string, any> = $state({ })
@@ -69,9 +70,6 @@
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
 	let openNewContactDialog: boolean = $state(false);
-	const contactsGridOptions: GridOptions = {
-		columnDefs: customerAndAddressContactsAgGridDef,
-	}
 
 	// get all unique selected rows from table
 	const uniqueSelectedRows = $derived.by(() => {
@@ -172,16 +170,17 @@
 		disableLeft = true;
 		disableRight = true;
 	}
-
 </script>
 
 
 
 
 <svelte:head>
-	<title>
-		Zákazník {initialFormValues.customerNodeCode || ""} | Albiline
-	</title>
+	{#if initialFormValues}
+		<title>
+			Zákazník {initialFormValues.customerNodeCode || ""} | Albiline
+		</title>
+	{/if}
 </svelte:head>
 
 
@@ -192,9 +191,11 @@
 	<div class="mb-3">
 		<!-- header -->
 		<div class="flex justify-between">
+			{#if initialFormValues}
 			<DetailPageLabel
 				label={m.routes_prodej_zakaznici_customer_detail_label() + " " + initialFormValues.customerNodeCode}
 			/>
+			{/if}
 
 			<div class={uniqueSelectedRows.length > 1 ? "flex gap-3" : "hidden"}>
 				<DetailNavButton
@@ -268,7 +269,7 @@
 						rowData={contactValues}
 						fullHeight={false}
 						headerTranslations={customerAndAddressContactsHeaderTranslations}
-						gridOptionsCustom={contactsGridOptions}
+						gridOptionsCustom={customerAndAddressContactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
 					/>

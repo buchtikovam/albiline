@@ -16,7 +16,7 @@ export const agGridTables: AgGridTables = $state({
 		lastVisibleRowIndex: 0,
 		latestRowCount: 100,
 		areInputParamsLoading: false,
-		hasInputParams: false,
+		hasInputParams: true,
 	},
 	"ProductStockInventory" : {
 		defaultColDef: [],
@@ -36,3 +36,5 @@ export const agGridTables: AgGridTables = $state({
 });
 
 export const currentPageKey: { value: string } = $state({ value: ""})
+
+export const sideTableRowData: { value: any[] } = $state({ value: [] })

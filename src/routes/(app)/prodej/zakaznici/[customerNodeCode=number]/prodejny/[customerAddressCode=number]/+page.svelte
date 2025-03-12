@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
-		customerAndAddressContactsAgGridDef, customerAndAddressContactsHeaderTranslations
+		customerAndAddressContactsGridOptions,
+		customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
 	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {activeTabIndex, isMobile, responseDialogMessages} from '$lib/runes/page.svelte';
@@ -16,7 +17,6 @@
 	import {changeCustomerAddressRoute} from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute.svelte';
 	import {apiGetCustomerAddresses, apiSaveCustomerAddressDetail} from "$lib/api/customerService.svelte";
 	import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
-	import {getContext} from 'svelte';
 	import {flipItems} from '$lib/utils/flipItems';
 	import {flip} from 'svelte/animate';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
@@ -27,7 +27,6 @@
 		CustomerAddressType,
 		CustomerContactType,
 	} from '$lib/types/routes/prodej/zakaznci/customers';
-	import type {GridOptions} from 'ag-grid-enterprise';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
@@ -81,9 +80,6 @@
 	let editedContactValues: any[] = $state([]);
 	let createdContacts: CustomerContactType[] = $state([]);
 	let openNewContactDialog: boolean = $state(false);
-	const contactsGridOptions: GridOptions = {
-		columnDefs: customerAndAddressContactsAgGridDef,
-	}
 
 
 
@@ -307,7 +303,7 @@
 						fullHeight={false}
 						hiddenHeader={false}
 						headerTranslations={customerAndAddressContactsHeaderTranslations}
-						gridOptionsCustom={contactsGridOptions}
+						gridOptionsCustom={customerAndAddressContactsGridOptions}
 						bind:createdRowData={createdContacts}
 						bind:editedRowData={editedContactValues}
 					/>

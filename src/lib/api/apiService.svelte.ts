@@ -9,6 +9,7 @@ const pageKey = $derived(currentPageKey.value);
 
 export async function apiServiceGET(
 	endpoint: string,
+	pageKeyCustom?: string,
 ): Promise<Response> {
 	console.log("get", endpoint, pageKey);
 
@@ -18,7 +19,7 @@ export async function apiServiceGET(
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
 			'Accept-Language' : languageTag(),
-			'Page-Code' : pageKey,
+			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 	});
 }
@@ -26,10 +27,11 @@ export async function apiServiceGET(
 
 export async function apiServiceGETHandled(
 	endpoint: string,
+	pageKeyCustom?: string,
 ) {
 
 	try {
-		let response = await apiServiceGET(endpoint)
+		let response = await apiServiceGET(endpoint, pageKeyCustom)
 
 		if (response.ok) {
 			return {
@@ -65,6 +67,7 @@ export async function apiServiceGETHandled(
 export async function apiServicePOST(
 	endpoint: string,
 	body = {},
+	pageKeyCustom?: string,
 ): Promise<Response> {
 	console.log("post", endpoint, pageKey);
 
@@ -74,7 +77,7 @@ export async function apiServicePOST(
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
 			'Accept-Language' : languageTag(),
-			'Page-Code' : pageKey,
+			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
@@ -84,9 +87,10 @@ export async function apiServicePOST(
 export async function apiServicePostHandled(
 	endpoint: string,
 	body = {},
+	pageKeyCustom?: string,
 ) {
 	try {
-		let response = await apiServicePOST(endpoint, body);
+		let response = await apiServicePOST(endpoint, body, pageKeyCustom);
 
 		if (response.ok) {
 			return {

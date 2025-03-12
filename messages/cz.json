@@ -148,11 +148,15 @@
 	"routes_login_form_submit_button": "Přihlásit se",
 
 
+
+
 	"routes_zmena_hesla_label" : "Změna hesla",
 	"routes_zmena_hesla_form_user_code" : "Uživatelský kód",
 	"routes_zmena_hesla_form_old_password" : "Staré heslo",
 	"routes_zmena_hesla_form_new_password" : "Nové heslo",
 	"routes_zmena_hesla_form_sumbmit_button" : "Potvrdit změnu",
+
+
 
 
 	"routes_prodej_zakaznici_tabs_list" : "Seznam",
@@ -323,7 +327,48 @@
 	"routes_prodej_zakaznici_detail_contacts_input_csv_delivery_note" : "DL emailem v CSV",
 	"routes_prodej_zakaznici_detail_contacts_input_consignment_return_info" : "AZ o svozu zásilky",
 	"routes_prodej_zakaznici_detail_contacts_input_consignment_info" : "AZ o expedici zásilky",
-	"routes_prodej_zakaznici_detail_contacts_input_carrier_info" : "Kontakt pro přepravce"
+	"routes_prodej_zakaznici_detail_contacts_input_carrier_info" : "Kontakt pro přepravce",
+
+
+
+
+	"routes_sklad_stav_skladu_table_column_group_vyrobek" : "Výrobek",
+	"routes_sklad_stav_skladu_table_column_product_code" : "KSP",
+	"routes_sklad_stav_skladu_table_column_product_name" : "Název",
+	"routes_sklad_stav_skladu_table_column_cost_level_code" : "KLP",
+	"routes_sklad_stav_skladu_table_column_expected_quantity" : "Očekávané",
+	"routes_sklad_stav_skladu_table_column_quantity" : "Skladem",
+	"routes_sklad_stav_skladu_table_column_quantity_available" : "K dispozici",
+	"routes_sklad_stav_skladu_table_column_quantity_reservation" : "Blokováno",
+	"routes_sklad_stav_skladu_table_column_quantity_after_reservation" : "Po blokacích",
+	"routes_sklad_stav_skladu_table_column_group_expedice" : "Expedice",
+	"routes_sklad_stav_skladu_table_column_group_krabicovy_sklad" : "Krabicový sklad",
+	"routes_sklad_stav_skladu_table_column_group_paletovy_sklad" : "Paletový sklad",
+	"routes_sklad_stav_skladu_table_column_group_externi_sklady" : "Externí sklady",
+	"routes_sklad_stav_skladu_table_column_group_akcni_sklad" : "Akční sklad",
+	"routes_sklad_stav_skladu_table_column_group_mezisklad" : "Mezisklad",
+	"routes_sklad_stav_skladu_table_column_supplier_order_quantity" : "Objednáno",
+	"routes_sklad_stav_skladu_table_column_enabled_cz" : "CZ",
+	"routes_sklad_stav_skladu_table_column_enabled_sk" : "SK",
+	"routes_sklad_stav_skladu_table_column_enabled_pl" : "PL",
+	"routes_sklad_stav_skladu_table_column_is_for_export" : "Export",
+	"routes_sklad_stav_skladu_table_column_division_name" : "Divize",
+	"routes_sklad_stav_skladu_table_column_cost_level_name" : "Listovací položka",
+	"routes_sklad_stav_skladu_table_column_product_group_name" : "Skupina",
+	"routes_sklad_stav_skladu_table_column_conception_name" : "Koncepce",
+	"routes_sklad_stav_skladu_table_column_product_type_name" : "Typ",
+	"routes_sklad_stav_skladu_table_column_season_code" : "Sezóna",
+	"routes_sklad_stav_skladu_table_column_phase_code" : "Fáze",
+	"routes_sklad_stav_skladu_table_column_preference_code" : "Preference",
+	"routes_sklad_stav_skladu_table_column_release_date" : "Uvedení na trh",
+	"routes_sklad_stav_skladu_table_column_export_country_string_agg" : "Export",
+
+	"routes_sklad_stav_skladu_side_table_column_location_code" : "Pozice",
+	"routes_sklad_stav_skladu_side_table_column_quantity" : "Ks",
+	"routes_sklad_stav_skladu_side_table_column_expected_quantity_change" : "Očekávané ks",
+	"routes_sklad_stav_skladu_side_table_column_stock_code" : "Číslo skladu"
+
+
 }
 
 

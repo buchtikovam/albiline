@@ -1,5 +1,132 @@
-import type {ColDef} from "ag-grid-enterprise";
+import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
+import type {GridOptions} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
+
+
+export const customerAndAddressContactsGridOptions: GridOptions = {
+	columnDefs: [
+		getAgColumn(
+			"isDefault", // Výchozí
+			"boolean", 64,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"enabled", // Aktivní
+			"boolean", 60,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"name", // Jméno
+			"text", 120,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"surname", // Příjmení
+			"text", 170,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"mobile", // Telefon
+			"text", 140,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"phone", // Pevná linka
+			"text", 140,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"email", // Email
+			"text", 200,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"note", // Poznámka
+			"text", 140,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"pdfInvoice", // FA emailem v PDF
+			"boolean", 82,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"pdfDeliveryNote", // DL emailem v PDF
+			"boolean", 84,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"csvInvoice", // FA emailem v CSV
+			"boolean", 82,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"csvDeliveryNote", // DL emailem v CSV
+			"boolean", 94,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"consignmentReturnInfo", // AZ o svozu zásilky
+			"boolean", 82,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"consignmentInfo", // AZ o expedici zásilky
+			"boolean", 94,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+
+		getAgColumn(
+			"carrierInfo", // Kontakt pro přepravce
+			"boolean", 82,
+			true, false, false,
+			[],
+			{ filter: false },
+		),
+	]
+}
+
 
 
 export const customerAndAddressContactsHeaderTranslations = {
@@ -19,82 +146,3 @@ export const customerAndAddressContactsHeaderTranslations = {
 	consignmentInfo: m.routes_prodej_zakaznici_detail_contacts_input_consignment_info,
 	carrierInfo: m.routes_prodej_zakaznici_detail_contacts_input_carrier_info,
 }
-
-
-export const customerAndAddressContactsAgGridDef: ColDef<any, any>[] = [
-	{
-		field: "isDefault",
-		cellDataType: "boolean",
-		width: 64,
-	},
-	{
-		field: "enabled",
-		cellDataType: "boolean",
-		width: 56,
-	},
-	{
-		field: "name",
-		cellDataType: "text",
-		width: 120,
-	},
-	{
-		field: "surname",
-		cellDataType: "text",
-		width: 170,
-	},
-	{
-		field: "mobile",
-		cellDataType: "text",
-		width: 140,
-	},
-	{
-		field: "phone",
-		cellDataType: "text",
-		width: 140,
-	},
-	{
-		field: "email",
-		cellDataType: "text",
-		width: 200,
-	},
-	{
-		field: "note",
-		cellDataType: "text",
-		width: 140,
-	},
-	{
-		field: "pdfInvoice",
-		cellDataType: "boolean",
-		width: 82,
-	},
-	{
-		field: "pdfDeliveryNote",
-		cellDataType: "boolean",
-		width: 84,
-	},
-	{
-		field: "csvInvoice",
-		cellDataType: "boolean",
-		width: 82,
-	},
-	{
-		field: "csvDeliveryNote",
-		cellDataType: "boolean",
-		width: 84,
-	},
-	{
-		field: "consignmentReturnInfo",
-		cellDataType: "boolean",
-		width: 82,
-	},
-	{
-		field: "consignmentInfo",
-		cellDataType: "boolean",
-		width: 94,
-	},
-	{
-		field: "carrierInfo",
-		cellDataType: "boolean",
-		width: 82,
-	},
-]

@@ -1,93 +1,394 @@
-import type {GridOptions} from "ag-grid-enterprise";
+import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
+import type {GridOptions, RowSelectedEvent} from "ag-grid-enterprise";
+import * as m from '$lib/paraglide/messages.js'
+import {sideTableRowData} from "$lib/runes/table.svelte";
 
 
+let fetchRun = 0;
 
 export const productStockInventoryAgGridDef: GridOptions = {
+	onRowSelected: async (event: RowSelectedEvent<any>) => {
+		const selectedRows = event.api.getSelectedRows();
+
+		if (selectedRows.length > 0 && event.node.isSelected()) {
+			console.log(fetchRun)
+			fetchRun++;
+
+			const result = await apiServicePostHandled(
+				'pageData',
+					{
+						fulltext: null,
+						inputs: [{
+							field: "productId",
+							type: "number",
+							value: event.data.productId
+						}],
+						columnFilters: []
+					},
+					'ProductStockInventoryItem'
+				)
+
+			const resultData = await result.data;
+
+			sideTableRowData.value = resultData.items;
+		} else {
+			sideTableRowData.value = [];
+
+		}
+	},
+
 	columnDefs: [
 		{
-			headerName: "Výrobek",
+			field: "group_vyrobek", // Výrobek
 			children: [
-				getAgColumn("productCode", "text", 100, false, false), // KSP
-				getAgColumn("productName", "text", 100, false, false), // Název
-				getAgColumn("costLevelCode", "text", 100, false, false), // KLP
+				getAgColumn(
+					"productCode", // KSP
+					"number", 68,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"productName", // Název
+					"text", 300,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"costLevelCode", // KLP
+					"text", 68,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
-		getAgColumn("quantity", "number", 100, false, false), // Skladem
-		getAgColumn("quantityAvailable", "number", 100, false, false), // K dispozici
-		getAgColumn("qunatityReservation", "number", 100, false, false), // Blokováno
-		getAgColumn("quantityAfterReservation", "number", 100, false, false), // Po blokacích
+		getAgColumn(
+			"quantity", // Skladem
+			"number", 90,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"quantityAvailable", // K dispozici
+			"number", 90,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"quantityReservation", // Blokováno
+			"number", 96,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"quantityAfterReservation", // Po blokacích
+			"number", 96,
+			false, false, false,
+			[],
+		),
 
 		{
-			headerName: "Expedice",
+			field: "group_expedice", // Expedice
 			children: [
-				getAgColumn("quantity_997", "number", 100, false, false), // Skladem
-				getAgColumn("expectedQuantity_997", "number", 100, false, false), // Očekávané
+				getAgColumn(
+					"quantity_997", // Skladem
+					"number", 80,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"expectedQuantity_997", // Očekávané
+					"number", 80,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
 		{
-			headerName: "Krabicový sklad",
+			field: "group_krabicovy_sklad", // Krabicový sklad
 			children: [
-				getAgColumn("quantity_996", "number", 100, false, false), // Skladem
-				getAgColumn("expectedQuantity_996", "number", 100, false, false), // Očekávané
+				getAgColumn(
+					"quantity_996", // Skladem
+					"number", 80,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"expectedQuantity_996", // Očekávané
+					"number", 80,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
 		{
-			headerName: "Paletový sklad",
+			field: "group_paletovy_sklad", // Paletový sklad
 			children: [
-				getAgColumn("quantity_999", "number", 100, false, false), // Skladem
-				getAgColumn("expectedQuantity_999", "number", 100, false, false), // Očekávané
+				getAgColumn(
+					"quantity_999", // Skladem
+					"number", 80,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"expectedQuantity_999", // Očekávané
+					"number", 80,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
 		{
-			headerName: "Externí sklady",
+			field: "group_externi_sklady", // Externí sklady
 			children: [
-				getAgColumn("quantity_ExternalWH", "number", 100, false, false), // Skladem
-				getAgColumn("expectedQuantity_ExternalWH", "number", 100, false, false), // Očekávané
+				getAgColumn(
+					"quantity_ExternalWH", // Skladem
+					"number", 80,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"expectedQuantity_ExternalWH", // Očekávané
+					"number", 80,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
 		{
-			headerName: "Akční sklad",
+			field: "group_akcni_sklad", // Akční sklad
 			children: [
-				getAgColumn("quantity_840", "number", 100, false, false), // Skladem
-				getAgColumn("expectedQuantity_840", "number", 100, false, false), // Očekávané
+				getAgColumn(
+					"quantity_840", // Skladem
+					"number", 80,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"expectedQuantity_840", // Očekávané
+					"number", 80,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
 		{
-			headerName: "Mezisklad",
+			field: "group_mezisklad", // Mezisklad
 			children: [
-				getAgColumn("quantity_InterimWH", "number", 100, false, false), // Skladem
-				getAgColumn("expectedQuantity_InterimWH", "number", 100, false, false), // Očekávané
+				getAgColumn(
+					"quantity_InterimWH", // Skladem
+					"number", 80,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"expectedQuantity_InterimWH", // Očekávané
+					"number", 80,
+					false, false, false,
+					[],
+				),
 			]
 		},
 
-		getAgColumn("supplierOrderQuantity", "number", 100, false, false), // Objednáno
-		getAgColumn("enabledCz", "boolean", 100, false, false), // CZ
-		getAgColumn("enabledSk", "boolean", 100, false, false), // SK
-		getAgColumn("enabledPl", "boolean", 100, false, false), // PL
-		getAgColumn("isForExport", "boolean", 100, false, false), // Export
+		getAgColumn(
+			"supplierOrderQuantity", // Objednáno
+			"number", 100,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"enabledCZ", // CZ
+			"boolean", 60,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"enabledSK", // SK
+			"boolean", 60,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"enabledPL", // PL
+			"boolean", 60,
+			false, false, false,
+			[],
+		),
+
+		getAgColumn(
+			"isForExport", // Export
+			"boolean", 80,
+			false, false, false,
+			[],
+		),
 
 		{
-			headerName: "Výrobek",
+			field: "group_vyrobek", // Výrobek
 			children: [
-				getAgColumn("divisionName", "text", 100, false, false), // Divize
-				getAgColumn("costLevelName", "text", 100, false, false), // Listovací položka
-				getAgColumn("productGroupName", "text", 100, false, false), // Skupina
-				getAgColumn("conceptionName", "text", 100, false, false), // Koncepce
-				getAgColumn("productTypeName", "text", 100, false, false), // Typ
-				getAgColumn("seasonCode", "text", 100, false, false), // Sezóna
-				getAgColumn("phaseCode", "text", 100, false, false), // Fáze
-				getAgColumn("preferenceCode", "text", 100, false, false), // Preference
+				getAgColumn(
+					"divisionName", // Divize
+					"text", 130,
+					false, false, true,
+					[],
+				),
+
+				getAgColumn(
+					"costLevelName", // Listovací položka
+					"text", 230,
+					false, false, false,
+					[],
+				),
+
+				getAgColumn(
+					"productGroupName", // Skupina
+					"text", 200,
+					false, false, true,
+					[],
+				),
+
+				getAgColumn(
+					"conceptionName", // Koncepce
+					"text", 230,
+					false, false, true,
+					[],
+				),
+
+				getAgColumn(
+					"productTypeName", // Typ
+					"text", 120,
+					false, false, true,
+					[],
+				),
+
+				getAgColumn(
+					"seasonCode", // Sezóna
+					"text", 80,
+					false, false, true,
+					[],
+				),
+
+				getAgColumn(
+					"phaseCode", // Fáze
+					"text", 80,
+					false, false, true,
+					[],
+				),
+
+				getAgColumn(
+					"preferenceCode", // Preference
+					"text", 80,
+					false, false, true,
+					[],
+				),
+
 			]
 		},
 
-		getAgColumn("releaseDate", "date", 100, false, true), // Uvedení na trh
-		getAgColumn("exportCountryStringAgg", "text", 100, false, true), // Export
+		getAgColumn(
+			"releaseDate", // Uvedení na trh
+			"date", 110,
+			false, true, false,
+			[],
+		),
+
+		getAgColumn(
+			"exportCountryStringAgg", // Export
+			"text", 80,
+			false, true, false,
+			[],
+		),
 	]
+}
+
+
+export const productStockInventoryDetailGridOptions = {
+	columnDefs: [
+		getAgColumn("locationCode", "text", 80, false, false, false, [], { filter: false }),
+		getAgColumn("quantity", "number", 60, false, false, false, [], { filter: false }),
+		getAgColumn("expectedQuantityChange", "number", 60, false, false, false, [], { filter: false }),
+		getAgColumn("stockCode", "text", 60, false, false, false, [], { filter: false }),
+	]
+}
+
+
+export const productStockInventoryDetailHeaderTranslations = {
+	locationCode: m.routes_sklad_stav_skladu_side_table_column_location_code,
+	quantity: m.routes_sklad_stav_skladu_side_table_column_quantity,
+	expectedQuantityChange: m.routes_sklad_stav_skladu_side_table_column_expected_quantity_change,
+	stockCode: m.routes_sklad_stav_skladu_side_table_column_stock_code
+};
+
+
+export const productStockInventoryHeaderTranslations = {
+	group_vyrobek: m.routes_sklad_stav_skladu_table_column_group_vyrobek,
+	productCode: m.routes_sklad_stav_skladu_table_column_product_code,
+	productName: m.routes_sklad_stav_skladu_table_column_product_code,
+	costLevelCode: m.routes_sklad_stav_skladu_table_column_cost_level_code,
+
+	quantity: m.routes_sklad_stav_skladu_table_column_quantity,
+	quantityAvailable: m.routes_sklad_stav_skladu_table_column_quantity_available,
+	quantityReservation: m.routes_sklad_stav_skladu_table_column_quantity_reservation,
+	quantityAfterReservation: m.routes_sklad_stav_skladu_table_column_quantity_after_reservation,
+
+	group_expedice: m.routes_sklad_stav_skladu_table_column_group_expedice,
+	quantity_997: m.routes_sklad_stav_skladu_table_column_quantity,
+	expectedQuantity_997: m.routes_sklad_stav_skladu_table_column_expected_quantity,
+
+	group_krabicovy_sklad: m.routes_sklad_stav_skladu_table_column_group_krabicovy_sklad,
+	quantity_996: m.routes_sklad_stav_skladu_table_column_quantity,
+	expectedQuantity_996: m.routes_sklad_stav_skladu_table_column_expected_quantity,
+
+	group_paletovy_sklad: m.routes_sklad_stav_skladu_table_column_group_paletovy_sklad,
+	quantity_999: m.routes_sklad_stav_skladu_table_column_quantity,
+	expectedQuantity_999: m.routes_sklad_stav_skladu_table_column_expected_quantity,
+
+	group_externi_sklady: m.routes_sklad_stav_skladu_table_column_group_externi_sklady,
+	quantity_ExternalWH: m.routes_sklad_stav_skladu_table_column_quantity,
+	expectedQuantity_ExternalWH: m.routes_sklad_stav_skladu_table_column_expected_quantity,
+
+	group_akcni_sklad: m.routes_sklad_stav_skladu_table_column_group_akcni_sklad,
+	quantity_840: m.routes_sklad_stav_skladu_table_column_quantity,
+	expectedQuantity_840: m.routes_sklad_stav_skladu_table_column_expected_quantity,
+
+	group_mezisklad: m.routes_sklad_stav_skladu_table_column_group_mezisklad,
+	quantity_InterimWH: m.routes_sklad_stav_skladu_table_column_quantity,
+	expectedQuantity_InterimWH: m.routes_sklad_stav_skladu_table_column_expected_quantity,
+
+	supplierOrderQuantity: m.routes_sklad_stav_skladu_table_column_supplier_order_quantity,
+	enabledCZ: m.routes_sklad_stav_skladu_table_column_enabled_cz,
+	enabledSK: m.routes_sklad_stav_skladu_table_column_enabled_sk,
+	enabledPL: m.routes_sklad_stav_skladu_table_column_enabled_pl,
+	isForExport: m.routes_sklad_stav_skladu_table_column_is_for_export,
+
+	divisionName: m.routes_sklad_stav_skladu_table_column_division_name,
+	costLevelName: m.routes_sklad_stav_skladu_table_column_cost_level_name,
+	productGroupName: m.routes_sklad_stav_skladu_table_column_product_group_name,
+	conceptionName: m.routes_sklad_stav_skladu_table_column_conception_name,
+	productTypeName: m.routes_sklad_stav_skladu_table_column_product_type_name,
+	seasonCode: m.routes_sklad_stav_skladu_table_column_season_code,
+	phaseCode: m.routes_sklad_stav_skladu_table_column_phase_code,
+	preferenceCode: m.routes_sklad_stav_skladu_table_column_preference_code,
+
+	releaseDate: m.routes_sklad_stav_skladu_table_column_release_date,
+	exportCountryStringAgg: m.routes_sklad_stav_skladu_table_column_export_country_string_agg,
 }

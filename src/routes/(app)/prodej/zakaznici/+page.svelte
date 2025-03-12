@@ -18,6 +18,7 @@
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 
 
 	activeTabIndex.value = 0;
