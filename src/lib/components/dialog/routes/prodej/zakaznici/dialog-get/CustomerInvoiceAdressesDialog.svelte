@@ -6,7 +6,7 @@
 	import {apiGetCustomerInvoiceAddresses} from "$lib/api/customerService.svelte";
 	import {onMount} from "svelte";
 	import type {CustomerInvoiceAddressType} from "$lib/types/routes/prodej/zakaznci/customers";
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -47,7 +47,7 @@
 {/snippet}
 
 {#snippet content()}
-	<AgGridCSWrapper
+	<AgGridCSSecondaryWrapper
 		fullHeight={true}
 		rowData={invoiceAddresses}
 		gridOptionsCustom={customerInvoiceAddressCustomGridOptions}

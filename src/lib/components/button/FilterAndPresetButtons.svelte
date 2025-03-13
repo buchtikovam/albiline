@@ -5,14 +5,14 @@
 	import Columns3 from "lucide-svelte/icons/columns-3";
 	import Circle from "lucide-svelte/icons/circle";
 	import Dot from "lucide-svelte/icons/dot";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import type {StoredFilters} from "$lib/types/components/table/filters";
 	import type {FilterModel} from "ag-grid-enterprise";
 	import type {Preset, StoredPresets} from "$lib/types/components/table/presets";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
 	interface Props {
-		table: AgGridTableType;
+		table: AgGridSSTableType;
 	}
 
 	let { table = $bindable() }: Props = $props();

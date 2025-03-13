@@ -13,7 +13,7 @@ export function changeCustomerRoute(
 	tableKey: string,
 ) {
 	// get active index in unique selected rows
-	const table = $state(agGridTables[tableKey]);
+	const table = $state(agGridTables.value[tableKey]);
 
 	if (direction === "right") {
 		const nextIndex = activeIndex + 1;

@@ -23,7 +23,7 @@
 		type SortChangedEvent,
 		themeQuartz
 	} from 'ag-grid-enterprise';
-	import type {ColumnOrder, AgGridTableType, TableRowRequest} from '$lib/types/components/table/table';
+	import type {ColumnOrder, AgGridSSTableType, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {languageTag} from "$lib/paraglide/runtime";
@@ -45,7 +45,7 @@
 
 
 	let pageKey: string = currentPageKey.value;
-	let table: AgGridTableType|undefined = $state(agGridTables[pageKey]);
+	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
 
 	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
@@ -344,6 +344,7 @@
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
 
+		console.log("mount")
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {

@@ -9,6 +9,4 @@ export const ribbonAction: { value: RibbonActionEnum } = $state({ value: RibbonA
 
 export const openedRibbonDialog: { value: GlobalDialogOptions } = $state({ value: "empty" });
 
-export const isEditAllowed: { value: boolean } = $state({ value: false });
-
 export const visibleRibbonItems: { value: string[] } = $state({ value: [] });

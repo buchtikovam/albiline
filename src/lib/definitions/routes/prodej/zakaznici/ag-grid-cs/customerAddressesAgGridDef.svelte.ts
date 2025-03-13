@@ -125,7 +125,7 @@ function onAddressClick(params: ICellRendererParams) {
 	}
 
 	let match = false;
-	let table = agGridTables[currentPageKey.value];
+	let table = agGridTables.value[currentPageKey.value];
 	let storedRows = table.selectedRows;
 
 	// check if is already in stored rows

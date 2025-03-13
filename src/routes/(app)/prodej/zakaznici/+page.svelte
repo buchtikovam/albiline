@@ -18,14 +18,12 @@
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
-	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 
-
-	let table = agGridTables[currentPageKey.value];
+	let table = agGridTables.value[currentPageKey.value];
 	let open = $state(!table.hasInputParams);
 	let inputDialogFinished = $derived(!open);
 
@@ -68,6 +66,7 @@
 {#if !inputDialogFinished}
 	<InputParams
 		bind:open
+		type="serverSide"
 		defaultInputDialog={InputParamsZakaznici}
 		selectOptions={InputParamsZakazniciSelectOptions}
 	/>

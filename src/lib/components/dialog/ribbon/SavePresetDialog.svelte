@@ -18,7 +18,7 @@
 
 
 	async function savePreset() {
-		const strippedPreset: StoredPreset[] = agGridTables[pageKey].presetToSave.map((preset: ColDef) => {
+		const strippedPreset: StoredPreset[] = agGridTables.value[pageKey].presetToSave.map((preset: ColDef) => {
 			return {
 				field: preset.field,
 				width: preset.width,

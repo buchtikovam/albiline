@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-	import type { ColumnFilter, InputParamsSelectOption } from "$lib/types/components/input-params/inputParams";
+	import {Button} from "$lib/components/ui/button";
+	import {isMobile} from "$lib/runes/page.svelte";
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import type {
+		ColumnFilter,
+		InputParamsOptions,
+		InputParamsSelectOption
+	} from "$lib/types/components/input-params/inputParams";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
-	import {isMobile} from "$lib/runes/page.svelte";
 
 
 	interface Props {
 		columnFilter: ColumnFilter;
-		selectOptions: InputParamsSelectOption[]
+		selectOptions: InputParamsOptions[]
 	}
 
 	let {
@@ -33,6 +37,14 @@
 		let label = "...";
 
 		selectOptions.forEach(option => {
+			if (option.children) {
+				option.children.forEach(child => {
+					if (child.field === columnFilter.columnName) {
+						label = child.label();
+					}
+				})
+			}
+
 			if (option.field === columnFilter.columnName) {
 				label = option.label();
 			}
@@ -43,6 +55,8 @@
 
 
 	function updateItem(option: InputParamsSelectOption) {
+		console.log(option);
+
 		open = false;
 		columnFilter.columnName = option.field;
 
@@ -113,19 +127,31 @@
 
 				</Command.Empty>
 
-
-				<Command.Group>
-					{#each selectOptions as option}
+				{#each selectOptions as option}
+					{#if !option.children}
 						<Command.Item
 							onSelect={() => {
 								updateItem(option);
 							}}
-							value={ option.label() }
+							value={ option.label() + option.field }
 						>
-							{ option.label() }
+							{ option.label()  }
 						</Command.Item>
-					{/each}
-				</Command.Group>
+					{:else }
+						<Command.Group heading={option.label()}>
+							{#each option.children as child}
+								<Command.Item
+									onSelect={() => {
+									updateItem(child);
+								}}
+									value={ child.label() + child.field }
+								>
+									{ child.label() }
+								</Command.Item>
+							{/each}
+						</Command.Group>
+					{/if}
+				{/each}
 			</Command.List>
 		</Command.Root>
 	</Popover.Content>

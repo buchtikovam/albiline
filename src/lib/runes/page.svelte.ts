@@ -2,6 +2,15 @@ import { LocalStore, localStore } from '$lib/utils/browser-storage/localStorage.
 import type { ResponseDialogMessage } from "$lib/types/components/response";
 
 
+interface Page {
+	activePageTab: string;
+	disablePageTabs: boolean;
+	showFulltextSearch: boolean;
+	fulltextFilterValue: string;
+	activeTabIndex: number;
+}
+
+
 export const isMobile: { value: boolean } = $state({ value: false });
 
 export const disableInputs: { value: boolean } = $state({ value: false });

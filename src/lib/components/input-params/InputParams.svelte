@@ -15,7 +15,7 @@
 	import type {
 		InputParamsType,
 		InputParamsSelectOption,
-		FetchedInputParam
+		FetchedInputParam, InputParamsOptions
 	} from "$lib/types/components/input-params/inputParams";
 	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 	import InputDialogColumnFilterWrapper
@@ -26,16 +26,21 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import CheckboxWrapper from "$lib/components/form/inputs/CheckboxWrapper.svelte";
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
+	import {Checkbox} from "$lib/components/ui/checkbox";
 
 
 	interface Props {
 		open: boolean,
+		type: 'serverSide'|'clientSide',
 		defaultInputDialog: InputParamsType,
-		selectOptions: InputParamsSelectOption[]
+		selectOptions: InputParamsOptions[]
 	}
 
 	let {
 		open = $bindable(),
+		type,
 		defaultInputDialog,
 		selectOptions
 	}: Props = $props();
@@ -43,7 +48,7 @@
 
 	setContext("endpoint", "userInputParameters");
 
-	let table = agGridTables[currentPageKey.value];
+	let table = agGridTables.value[currentPageKey.value];
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
@@ -67,23 +72,39 @@
 	});
 
 
+	$inspect(inputDialog.inputs)
+
 	// api will keep track of input params, creating a smaller data set for
 	// server side tables.
 	async function loadInputParamsInTable() {
 		table.areInputParamsLoading = true;
 		table.hasInputParams = true;
-		open = false;
 
-		const response = await apiServicePostHandled("cachedPageData", {
+		if (type === "clientSide") {
+			table.loadedInputParams = {
 				fulltext: inputDialog.fulltext,
-				inputs: [],
+				inputs: inputDialog.inputs,
 				columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 			}
-		)
+		}
 
-		if (response.success) {
-			console.log("success");
-			table.areInputParamsLoading = false;
+
+		if (type === "serverSide") {
+			open = false;
+
+			const response = await apiServicePostHandled(
+				"cachedPageData",
+				{
+					fulltext: inputDialog.fulltext,
+					inputs: inputDialog.inputs,
+					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+				}
+			)
+
+			if (response.success) {
+				console.log("success");
+				table.areInputParamsLoading = false;
+			}
 		}
 	}
 
@@ -96,6 +117,7 @@
 				paramName: saveLabel,
 				paramValue: {
 					fulltext: inputDialog.fulltext,
+					inputs: inputDialog.inputs,
 					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 				},
 			}
@@ -157,6 +179,7 @@
 
 <DialogWrapper
 	bind:isOpen={open}
+	onChange={() => table.hasInputParams = true}
 	{header}
 	{content}
 	size="md"
@@ -222,7 +245,7 @@
 {#snippet content()}
 	<div class="overflow-auto pb-2">
 		{#if inputDialog.fulltext !== undefined}
-			<p class="mb-1 text-albi-500 text-sm font-bold">
+			<p class="mb-2 text-albi-500 text-sm font-bold">
 				{ m.components_input_params_section_fulltext() }
 			</p>
 
@@ -234,6 +257,33 @@
 			/>
 		{/if}
 
+
+		{#if inputDialog.inputs !== undefined}
+			<p class="mb-2 text-albi-500 text-sm font-bold">
+				Hledat podle parametrů
+			</p>
+
+			<div class="mb-4">
+				{#if defaultInputDialog?.inputs}
+					{#each defaultInputDialog.inputs as paramInput, i}
+						{#if paramInput.type === "boolean"}
+							<div class="flex items-center gap-2">
+								<Checkbox
+									class={"focus-visible:border-albi-500"}
+									bind:checked={inputDialog.inputs[i].value}
+								/>
+
+								<InputLabelWithContext
+									contextMenuField={paramInput.field}
+									label={paramInput.label()}
+								/>
+							</div>
+						{/if}
+					{/each}
+				{/if}
+			</div>
+
+		{/if}
 
 		{#if inputDialog.columnFilters !== undefined}
 			<p class="text-albi-500 text-sm font-bold">

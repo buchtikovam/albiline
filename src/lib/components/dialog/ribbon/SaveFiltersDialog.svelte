@@ -19,7 +19,7 @@
 	async function saveFilters() {
 		const saveObj = {
 			filterName: inputValue,
-			filters: agGridTables[pageKey].filtersToSave
+			filters: agGridTables.value[pageKey].filtersToSave
 		}
 
 		const response = await apiServicePostHandled("userfilters", saveObj);

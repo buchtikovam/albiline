@@ -11,7 +11,6 @@
 	import type {
 		ICellRendererParams
 	} from "ag-grid-community";
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -21,6 +20,7 @@
 		apiServicePUTHandled
 	} from "$lib/api/apiService.svelte";
 	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
 
 
 	let isOpen: boolean = $state(false);
@@ -94,7 +94,7 @@
 
 
 	function handleClickSelect(params: ICellRendererParams) {
-		let defaultColDefCopy = deepcopy(agGridTables[pageKey].defaultColDef);
+		let defaultColDefCopy = deepcopy(agGridTables.value[pageKey].defaultColDef);
 		let clickedPreset = params.data.pagePresetValue;
 
 		// stored presets are stripped of unnecessary fields, so mapping it to default col def completes it
@@ -107,7 +107,7 @@
 			}
 		});
 
-		agGridTables[pageKey].selectedPreset = {
+		agGridTables.value[pageKey].selectedPreset = {
 			pagePresetId: params.data.pagePresetId,
 			pagePresetName: params.data.pagePresetName,
 			pagePresetValue: completedPreset,
@@ -186,7 +186,7 @@
 			<TableSkeletonSmall/>
 		{:else}
 			{#if fetchedPresets.length > 0}
-				<AgGridCSWrapper
+				<AgGridCSSecondaryWrapper
 					rowData={fetchedPresets}
 					requiredFields={["pagePresetId"]}
 					bind:editedRowData={editedPresets}

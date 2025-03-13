@@ -26,11 +26,11 @@
 	import NewCustomerContactDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
-	import AgGridCSWrapper from '$lib/components/ag-grid/AgGridCSWrapper.svelte';
+	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 
 
 	interface Props {
@@ -50,7 +50,7 @@
 	// --- initialize variables and state
 	// page
 	let pageKey: string = $derived(currentPageKey.value);
-	let table: AgGridTableType = $state(agGridTables[pageKey]);
+	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeIndex = $state(0);
@@ -264,7 +264,7 @@
 					</div>
 
 
-					<AgGridCSWrapper
+					<AgGridCSSecondaryWrapper
 						requiredFields={["customerPersonCode"]}
 						rowData={contactValues}
 						fullHeight={false}

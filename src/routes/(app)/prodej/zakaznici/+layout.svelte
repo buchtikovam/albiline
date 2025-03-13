@@ -1,11 +1,11 @@
 <script lang="ts">
 	import {activeTabIndex, fulltextFilterValue, showFulltextSearch} from '$lib/runes/page.svelte';
-	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
+	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {Input} from '$lib/components/ui/input';
 	import {i18n} from '$lib/i18n.js'
 	import {goto} from '$app/navigation';
-	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
 	import * as m from '$lib/paraglide/messages.js'
@@ -21,17 +21,17 @@
 	currentPageKey.value = "CustomersGetList";
 
 	let activeTab = $derived(activeTabIndex.value.toString());
-	let table: AgGridTableType = $state(agGridTables["CustomersGetList"]);
+	let table: AgGridSSTableType = $state(agGridTables.value["CustomersGetList"]);
 	let customerAddressCode = $state(0);
 	let customerNodeCode = $state(0);
 
 
 	// for navigation to detail pages
 	$effect(() => {
-		if (agGridTables["CustomersGetList"].selectedRows) {
-			if (agGridTables["CustomersGetList"].selectedRows[agGridTables["CustomersGetList"].activeSelectedRowIndex]) {
-				customerNodeCode = agGridTables["CustomersGetList"].selectedRows[agGridTables["CustomersGetList"].activeSelectedRowIndex].customerNodeCode;
-				customerAddressCode = agGridTables["CustomersGetList"].selectedRows[agGridTables["CustomersGetList"].activeSelectedRowIndex].customerAddressCode;
+		if (table.selectedRows) {
+			if (table.selectedRows[table.activeSelectedRowIndex]) {
+				customerNodeCode = table.selectedRows[table.activeSelectedRowIndex].customerNodeCode;
+				customerAddressCode = table.selectedRows[table.activeSelectedRowIndex].customerAddressCode;
 			}
 		}
 

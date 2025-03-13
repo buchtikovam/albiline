@@ -5,11 +5,11 @@
 	import {Input} from "$lib/components/ui/input";
 	import {i18n} from "$lib/i18n";
 	import {goto} from "$app/navigation";
-	import TabSeparator from "$lib/components/tabs/TabSeparator.svelte";
-	import * as Tabs from "$lib/components/ui/tabs/index.js";
-	import * as m from "$lib/paraglide/messages";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
+	import TabSeparator from "$lib/components/tabs/TabSeparator.svelte";
+	import * as m from "$lib/paraglide/messages";
+	import * as Tabs from "$lib/components/ui/tabs/index.js";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -17,7 +17,7 @@
 
 	currentPageKey.value = "ProductStockInventory";
 
-	let table: AgGridTableType = $state(agGridTables[currentPageKey.value]);
+	let table: AgGridSSTableType = $state(agGridTables.value[currentPageKey.value]);
 
 	let { children }: Props = $props();
 	let activeTab = $derived(activeTabIndex.value.toString());
@@ -43,10 +43,8 @@
 			>
 				Seznam
 			</Tabs.Trigger>
+
 			<TabSeparator color="primary"/>
-
-
-
 		</Tabs.List>
 	</Tabs.Root>
 

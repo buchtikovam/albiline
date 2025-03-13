@@ -9,7 +9,7 @@ export function changeCustomerAddressRoute(
 	routeId: string,
 	tableKey: string,
 ) {
-	const table = $state(agGridTables[tableKey]);
+	const table = $state(agGridTables.value[tableKey]);
 
 	if (direction === "right") {
 		// get new route

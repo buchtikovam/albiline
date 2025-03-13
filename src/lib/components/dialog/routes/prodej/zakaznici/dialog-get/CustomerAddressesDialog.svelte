@@ -5,7 +5,7 @@
 	import type {CustomerAddressType} from "$lib/types/routes/prodej/zakaznci/customers";
 	import type {GridOptions} from "ag-grid-enterprise";
 	import NewCustomerAddressDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from "$lib/components/ui/dialog";
@@ -67,7 +67,7 @@
 {/snippet}
 
 {#snippet content()}
-	<AgGridCSWrapper
+	<AgGridCSSecondaryWrapper
 		rowData={rowData}
 		gridOptionsCustom={gridOptionsCustom}
 		fullHeight={true}

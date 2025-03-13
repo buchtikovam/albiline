@@ -10,19 +10,21 @@
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {languageTag} from "$lib/paraglide/runtime";
 	import type {ColDef} from "ag-grid-community";
-	import {isMobile} from "$lib/runes/page.svelte";
+	import {authDetails, isMobile} from "$lib/runes/page.svelte";
+	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 
 	interface Props {
 		rowData: any[];
 		returnWholeRowOnEdit?: boolean;
 		editedRowData?:	any[];
-		checkboxes?: boolean;
 		createdRowData?: any[];
 		requiredFields?: string[];
+		totalRow?: boolean;
 		hiddenHeader?: boolean;
 		fullHeight?: boolean;
-		sidebar?: boolean;
-		isLoading?: boolean;
 		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
 	}
@@ -33,15 +35,16 @@
 		editedRowData = $bindable(),
 		createdRowData = $bindable(),
 		requiredFields,
-		sidebar,
-		isLoading,
-		checkboxes,
+		totalRow,
 		fullHeight,
 		hiddenHeader,
 		headerTranslations,
 		gridOptionsCustom
 	}: Props = $props();
 
+
+	let pageKey: string = currentPageKey.value;
+	let table: AgGridSSTableType|undefined = $state(agGridTables.value[pageKey]);
 
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
@@ -56,17 +59,10 @@
 		theme: themeQuartz.withParams(themeParams),
 		localeText: getAgGridLocale(),
 
-		sideBar: {
-			toolPanels: ["columns", "filters"],
-			hiddenByDefault: !sidebar,
-		},
+		groupTotalRow: totalRow === true ? "bottom" : undefined,
+		grandTotalRow: totalRow === true ? "bottom" : undefined,
 
-		rowSelection: checkboxes ? {
-			mode: 'multiRow',
-			// enableClickSelection: true,
-			headerCheckbox: false, // maybe add later ?
-			hideDisabledCheckboxes: true,
-		} : false,
+		rowSelection: false,
 
 		defaultColDef: {
 			sortable: true,
@@ -189,20 +185,11 @@
 
 	$effect(() => {
 		if (rowData) {
-			console.log("rowdata effect", rowData)
 			gridApi.setGridOption("rowData", rowData);
 		}
 	})
 
-	$effect(() => {
-		isLoading
-			? gridApi.setGridOption("loading", true)
-			: gridApi.setGridOption("loading", false)
-	})
 
-	function emptyString() {
-		return "";
-	}
 
 	$effect(() => {
 		if (languageTag()) {
@@ -276,6 +263,13 @@
 	:global(.ag-filter-body-wrapper) {
 		padding: 6px 6px 0 6px;
 	}
+
+
+	:global(.ag-row-footer) {
+		background-color: #fff7ed;
+	}
+
+
 
 
 

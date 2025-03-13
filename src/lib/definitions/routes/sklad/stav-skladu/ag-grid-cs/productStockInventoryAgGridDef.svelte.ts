@@ -3,18 +3,28 @@ import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
 import type {GridOptions, RowSelectedEvent} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
 import {sideTableRowData} from "$lib/runes/table.svelte";
+import {CustomStatsToolPanel} from "$lib/components/ag-grid/customToolPanelWrapper";
 
-
-let fetchRun = 0;
 
 export const productStockInventoryAgGridDef: GridOptions = {
+	sideBar: {
+		toolPanels: [
+			"columns",
+			"filters",
+			{
+				id: "customToolPanel",
+				labelKey: "customPanel",
+				labelDefault: "Pozice",
+				iconKey: "menu",
+				toolPanel: CustomStatsToolPanel
+			}
+		],
+	},
+
 	onRowSelected: async (event: RowSelectedEvent<any>) => {
 		const selectedRows = event.api.getSelectedRows();
 
 		if (selectedRows.length > 0 && event.node.isSelected()) {
-			console.log(fetchRun)
-			fetchRun++;
-
 			const result = await apiServicePostHandled(
 				'pageData',
 					{
@@ -34,7 +44,6 @@ export const productStockInventoryAgGridDef: GridOptions = {
 			sideTableRowData.value = resultData.items;
 		} else {
 			sideTableRowData.value = [];
-
 		}
 	},
 
@@ -323,12 +332,40 @@ export const productStockInventoryAgGridDef: GridOptions = {
 
 export const productStockInventoryDetailGridOptions = {
 	columnDefs: [
-		getAgColumn("locationCode", "text", 80, false, false, false, [], { filter: false }),
-		getAgColumn("quantity", "number", 60, false, false, false, [], { filter: false }),
-		getAgColumn("expectedQuantityChange", "number", 60, false, false, false, [], { filter: false }),
-		getAgColumn("stockCode", "text", 60, false, false, false, [], { filter: false }),
+		getAgColumn(
+			"locationCode",
+			"text", 120,
+			false, false, false,
+			[],
+			{ filter: false }
+		),
+
+		getAgColumn(
+			"quantity",
+			"number", 60,
+			false, false, false,
+			[],
+			{ filter: false, aggFunc: "sum" }
+		),
+
+		getAgColumn(
+			"expectedQuantityChange",
+			"number", 60,
+			false, false, false,
+			[],
+			{ filter: false, aggFunc: "sum" }
+		),
+
+		getAgColumn(
+			"stockCode",
+			"text", 60,
+			false, false, false,
+			[],
+			{ filter: false }
+		),
 	]
 }
+
 
 
 export const productStockInventoryDetailHeaderTranslations = {
@@ -339,10 +376,11 @@ export const productStockInventoryDetailHeaderTranslations = {
 };
 
 
+
 export const productStockInventoryHeaderTranslations = {
 	group_vyrobek: m.routes_sklad_stav_skladu_table_column_group_vyrobek,
 	productCode: m.routes_sklad_stav_skladu_table_column_product_code,
-	productName: m.routes_sklad_stav_skladu_table_column_product_code,
+	productName: m.routes_sklad_stav_skladu_table_column_product_name,
 	costLevelCode: m.routes_sklad_stav_skladu_table_column_cost_level_code,
 
 	quantity: m.routes_sklad_stav_skladu_table_column_quantity,

@@ -2,7 +2,7 @@
 	import { Input } from "$lib/components/ui/input";
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
 	import type {
-		ColumnFilter,
+		ColumnFilter, InputParamsOptions,
 		InputParamsSelectOption
 	} from "$lib/types/components/input-params/inputParams";
 	import InputDialogColumnFilterActionButtons
@@ -17,7 +17,7 @@
 
 
 	interface Props {
-		selectOptions: InputParamsSelectOption[],
+		selectOptions: InputParamsOptions[],
 		columnFilter: ColumnFilter,
 	}
 

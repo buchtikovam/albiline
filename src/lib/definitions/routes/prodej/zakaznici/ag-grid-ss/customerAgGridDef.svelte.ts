@@ -12,7 +12,7 @@ let pageKey = $derived(currentPageKey.value);
 
 export const customerGridOptions: GridOptions = {
 	onCellDoubleClicked(event: CellDoubleClickedEvent) {
-		agGridTables[pageKey].selectedRows = [{
+		agGridTables.value[pageKey].selectedRows = [{
 			customerAddressCode: event.data.customerAddressCode,
 			customerNodeCode: event.data.customerNodeCode
 		}]

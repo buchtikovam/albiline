@@ -1,65 +1,36 @@
 <script lang="ts">
-	import { themeAlbiBlueParams } from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
-	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
-	import {
-		type CellValueChangedEvent,
-		createGrid,
-		type GridApi,
-		type GridOptions, themeQuartz
-	} from 'ag-grid-enterprise';
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import {createGrid, type GridApi, type GridOptions, themeQuartz} from 'ag-grid-enterprise';
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {languageTag} from "$lib/paraglide/runtime";
 	import type {ColDef} from "ag-grid-community";
-	import {authDetails, isMobile} from "$lib/runes/page.svelte";
-	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import {agGridTables} from "$lib/runes/table.svelte";
+	import type {AgGridCSTableType} from "$lib/types/components/table/table";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
+	import {beforeNavigate, onNavigate} from "$app/navigation";
 
 	interface Props {
-		rowData: any[];
-		returnWholeRowOnEdit?: boolean;
-		editedRowData?:	any[];
-		checkboxes?: boolean;
-		createdRowData?: any[];
+		pageKey: string;
 		requiredFields?: string[];
-		hiddenHeader?: boolean;
-		fullHeight?: boolean;
-		selectMultiple?: boolean;
-		sidebar?: boolean;
-		isLoading?: boolean;
 		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
 	}
 
 	let {
-		rowData,
-		returnWholeRowOnEdit,
-		editedRowData = $bindable(),
-		createdRowData = $bindable(),
+		pageKey,
 		requiredFields,
-		sidebar,
-		selectMultiple,
-		isLoading,
-		checkboxes,
-		fullHeight,
-		hiddenHeader,
 		headerTranslations,
 		gridOptionsCustom
 	}: Props = $props();
 
 
-	let pageKey: string = currentPageKey.value;
-	let table: AgGridTableType|undefined = $state(agGridTables[pageKey]);
-
+	let table: AgGridCSTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
 
-
-	if (hiddenHeader) {
-		themeParams.headerHeight = 0;
-	}
 
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
@@ -67,25 +38,24 @@
 
 		sideBar: {
 			toolPanels: ["columns", "filters"],
-			hiddenByDefault: !sidebar,
 		},
 
-		rowSelection: checkboxes ? {
-			mode: selectMultiple ? "multiRow" : "singleRow",
+		rowSelection:{
+			mode: "singleRow",
 			// enableClickSelection: true,
-			headerCheckbox: false, // maybe add later ?
 			hideDisabledCheckboxes: true,
-		} : false,
+		},
 
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
-			editable: editedRowData !== undefined,
+			editable: false,
 			minWidth: 50,
 			maxWidth: 400,
 			hide: false,
 			filter: false,
 			suppressHeaderMenuButton: true,
+			enableRowGroup: true,
 		},
 
 		rowData: [],
@@ -116,104 +86,56 @@
 			];
 		},
 
-		// function to update editedRowData store,
-
-		// if returnWholeRowOnEdit, return whole row, then it gets updated on its own because of svelte state
-		// if record already exists, is added to editedRowData
-		// if record was created during runtime, has not been saved and is being edited, gets added to createdRowData
-
-		// checks created x edited by unique field, that only existing records have
-		onCellValueChanged(event: CellValueChangedEvent<any>) {
-			if (requiredFields) {
-				let isInitialColumn = requiredFields.every((field) => {
-					return event.data[field] !== null;
-				})
-
-				if (event.oldValue !== event.newValue) {
-					if (returnWholeRowOnEdit && editedRowData) {
-						let match = false;
-
-						editedRowData.forEach((row) => {
-							requiredFields.forEach((field) => {
-								if (row[field] === event.data[field]) {
-									match = true;
-								}
-							})
-						})
-
-						if (!match) {
-							editedRowData.push(event.data)
-						}
-					}
-
-					if (editedRowData && createdRowData) {
-						if (isInitialColumn) {
-							addToEditedTableData(
-								event,
-								requiredFields,
-								editedRowData,
-							)
-						} else {
-							addToEditedTableData(
-								event,
-								["createdRowId"],
-								createdRowData,
-							)
-						}
-					}
-				}
-			}
-		},
-
-		domLayout: fullHeight ? "normal" : "autoHeight",
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
 	}
 
 
-	let createdRowAmount: number = $state(0);
+	let destroyed = $state(false);
+	$inspect(destroyed);
 
+	beforeNavigate(() => {
+		destroyed = true;
+		gridApi.destroy();
 
-
-	$effect(() => {
-		if (createdRowData) {
-			if (createdRowData.length > 0 && createdRowAmount < createdRowData.length) {
-				createdRowAmount++;
-
-				gridApi.applyTransaction({
-					add: [createdRowData[createdRowData.length - 1]],
-					addIndex: 0,
-				})
-			}
-		}
 	})
-
 
 
 	$effect(() => {
 		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
+
+		return(() => {
+			gridApi.destroy();
+		})
 	})
 
 
-	$inspect(rowData)
-
 	$effect(() => {
-		if (rowData) {
-			console.log("effect")
-			gridApi.setGridOption("rowData", rowData);
+		if (table.hasInputParams) {
+			getData()
 		}
 	})
 
+
 	$effect(() => {
-		isLoading
+		table.areInputParamsLoading
 			? gridApi.setGridOption("loading", true)
-			: gridApi.setGridOption("loading", false)
+			: gridApi.setGridOption("loading", false);
 	})
 
-	function emptyString() {
-		return "";
+
+	async function getData() {
+		if (table.type === "clientSide" && !destroyed) {
+			table.areInputParamsLoading = true;
+			const response = await apiServicePostHandled("pageData", table.loadedInputParams)
+			const data = await response.data;
+			table.areInputParamsLoading = false;
+			gridApi.setGridOption("rowData", data.items)
+		}
+
 	}
+
 
 	$effect(() => {
 		if (languageTag()) {
@@ -243,130 +165,9 @@
 
 
 	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.DELETE) {
-			// console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
 
-
-		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_HEADERS) {
-			// const allColumns = gridApi.getColumns();
-			//
-			// // Exclude the first column
-			// let columnKeys = allColumns?.map(col => col.getColId());
-			//
-			// gridApi.exportDataAsExcel({
-			// 	columnKeys: columnKeys,
-			// 	skipColumnGroupHeaders: false,
-			// 	skipColumnHeaders: false,
-			// 	onlySelected: false,
-			// 	allColumns: true, // whether or not render hidden columns
-			// 	processRowGroupCallback: () => "",
-			// 	processCellCallback: () => "",
-			// 	author: authDetails.userName || "AG Grid",
-			// });
-
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_DATA) {
-			// const allColumns = gridApi.getColumns();
-			//
-			// // Exclude the first column
-			// let columnKeys = allColumns?.map(col => col.getColId());
-			//
-			// gridApi.exportDataAsExcel({
-			// 	columnKeys: columnKeys,
-			// 	skipColumnGroupHeaders: false,
-			// 	skipColumnHeaders: false,
-			// 	allColumns: true, // whether or not render hidden columns
-			// 	author: authDetails.userName || "AG Grid",
-			// 	exportedRows: "all", // determines if export has un/sorted and un/filtered rows
-			// 	freezeRows: "headers", // sticky header row
-			// 	onlySelected: false,
-			// });
-
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.IMPORT) {
-			// excelFileInput.click();
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
-			// const column = gridApi.getFocusedCell()?.column;
-			// const selection = window.getSelection()?.toString().trim();
-			//
-			// if (column && selection) {
-			// 	const cellType = column.getColDef().cellDataType;
-			// 	let currentFilters = gridApi.getFilterModel();
-			// 	let filterModelType;
-			//
-			// 	if (cellType === "text") filterModelType = "contains";
-			//
-			// 	if (cellType === "number" || cellType === "date") filterModelType = "equals";
-			//
-			// 	currentFilters[column.getColId()] = {
-			// 		filterType: "multi",
-			// 		filterModels: [{
-			// 			filterType: cellType,
-			// 			type: filterModelType,
-			// 			filter: selection
-			// 		}, null]
-			// 	}
-			//
-			// 	gridApi.setFilterModel(currentFilters);
-			// 	gridApi.onFilterChanged();
-			// }
-			//
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.FILTER_UNDO) {
-			// recentFilters.pop();
-			//
-			// recentFilters[recentFilters.length - 1]
-			// 	? gridApi.setFilterModel(recentFilters[recentFilters.length - 1])
-			// 	: gridApi.setFilterModel(null);
-			//
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.FILTER_REMOVE) {
-			gridApi.setFilterModel(null);
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
-			openedRibbonDialog.value = "ribbon-my-filters";
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
-			const filters = gridApi.getFilterModel();
-			openedRibbonDialog.value = "ribbon-save-filters";
-			table.filtersToSave = filters;
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
-			openedRibbonDialog.value = "ribbon-save-preset";
-			table.presetToSave = gridApi.getColumnDefs() || [];
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.MY_PRESETS) {
-			openedRibbonDialog.value = "ribbon-my-presets";
+		if (ribbonAction.value === RibbonActionEnum.LOAD) {
+			table.hasInputParams = false;
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 	})
@@ -417,7 +218,6 @@
 	:global(.ag-filter-body-wrapper) {
 		padding: 6px 6px 0 6px;
 	}
-
 
 
 	/* SIDEBAR FILTER PANEL */
@@ -509,6 +309,10 @@
 		overflow: visible !important;
 		outline: none !important;
 		box-shadow: none !important;
+	}
+
+	:global(.ag-tool-panel-horizontal-resize) {
+		background-color: var(--albi-500);
 	}
 
 

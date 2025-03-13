@@ -14,7 +14,7 @@
 	import type {
 		ICellRendererParams
 	} from "ag-grid-community";
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -143,7 +143,7 @@
 			<TableSkeletonSmall/>
 		{:else}
 			{#if fetchedInputParams.length > 0}
-				<AgGridCSWrapper
+				<AgGridCSSecondaryWrapper
 					rowData={fetchedInputParams}
 					requiredFields={["paramId"]}
 					returnWholeRowOnEdit={true}

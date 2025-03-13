@@ -1,6 +1,8 @@
 import type { Icon as IconType } from "lucide-svelte";
 
 
+export type InputParamsOptions = InputParamsSelectOptionGroup|InputParamsSelectOption;
+
 
 // SELECT OPTIONS
 export type InputParamsSelectOption = {
@@ -9,6 +11,11 @@ export type InputParamsSelectOption = {
 	type: ColumnFilterType;
 }
 
+
+export type InputParamsSelectOptionGroup = {
+	label: () => string;
+	children: InputParamsSelectOption[];
+}
 
 
 // INPUT PARAMS
@@ -35,6 +42,7 @@ type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|InputDate
 
 type InputString = {
 	field: string;
+	label: () => string;
 	type: "text";
 	value: string,
 }
@@ -42,17 +50,20 @@ type InputString = {
 type InputNumber = {
 	field: string;
 	type: "number";
+	label: () => string;
 	value: number,
 }
 
 type InputBoolean = {
 	field: string;
+	label: () => string;
 	type: "boolean";
 	value: boolean,
 }
 
 type InputDate = {
 	field: string;
+	label: () => string;
 	type: "date";
 	value: string, // v domluveném datumovém formátu
 }
@@ -60,6 +71,7 @@ type InputDate = {
 type InputDateRange = {
 	field: string;
 	type: "date";
+	label: () => string;
 	value: string, // v domluveném datumovém formátu
 	endValue: string, // v domluveném datumovém formátu
 }

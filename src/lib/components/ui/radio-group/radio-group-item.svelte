@@ -13,7 +13,7 @@
 <RadioGroupPrimitive.Item
 	bind:ref
 	class={cn(
-		"border-primary text-primary ring-offset-background focus-visible:ring-ring aspect-square size-4 rounded-full border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+		"border-primary text-primary ring-offset-background focus-visible:ring-ring aspect-square size-3 rounded-full border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
 		className
 	)}
 	{...restProps}
@@ -21,7 +21,7 @@
 	{#snippet children({ checked })}
 		<div class="flex items-center justify-center">
 			{#if checked}
-				<Circle class="size-2.5 fill-current text-current" />
+				<Circle class="size-2 fill-current text-current" />
 			{/if}
 		</div>
 	{/snippet}
