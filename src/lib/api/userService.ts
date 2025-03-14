@@ -1,6 +1,4 @@
 import type { RequestEvent } from "@sveltejs/kit"
-// import { PUBLIC_API_ROUTE } from "$env/static/public";
-
 
 export const authenticateUser = (event: RequestEvent) => {
 	const { cookies } = event;

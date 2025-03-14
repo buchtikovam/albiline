@@ -1,6 +1,22 @@
 <script lang="ts">
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
-	import {createGrid, type GridApi, type GridOptions, themeQuartz} from 'ag-grid-enterprise';
+	import {
+		type BodyScrollEndEvent, type BodyScrollEvent,
+		type ColumnMovedEvent,
+		type ColumnPinnedEvent,
+		type ColumnVisibleEvent,
+		createGrid,
+		type FilterChangedEvent,
+		type FilterModel,
+		type GetRowIdParams,
+		type GridApi,
+		type GridOptions,
+		type GridReadyEvent,
+		type RowDataUpdatedEvent,
+		type SelectionChangedEvent,
+		type SortChangedEvent,
+		themeQuartz
+	} from 'ag-grid-enterprise';
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {languageTag} from "$lib/paraglide/runtime";
 	import type {ColDef} from "ag-grid-community";
@@ -9,11 +25,14 @@
 	import {agGridTables} from "$lib/runes/table.svelte";
 	import type {AgGridCSTableType} from "$lib/types/components/table/table";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
-	import {beforeNavigate, onNavigate} from "$app/navigation";
+	import {beforeNavigate} from "$app/navigation";
+	import {onMount} from "svelte";
+	import {disablePageTabs} from "$lib/runes/navigation.svelte";
 
 	interface Props {
 		pageKey: string;
 		requiredFields?: string[];
+		rowNumberIdentificationKey: string,
 		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
 	}
@@ -21,6 +40,7 @@
 	let {
 		pageKey,
 		requiredFields,
+		rowNumberIdentificationKey,
 		headerTranslations,
 		gridOptionsCustom
 	}: Props = $props();
@@ -30,6 +50,8 @@
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
+	let rowBuffer = 100;
+	let recentFilters: FilterModel[] = $state([]);
 
 
 	const gridOptions: GridOptions = {
@@ -59,6 +81,62 @@
 		},
 
 		rowData: [],
+
+		onFilterChanged(event: FilterChangedEvent<any>) {
+			const currentFilter = event.api.getFilterModel();
+			table.filtersToSave = currentFilter;
+			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
+
+			if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
+				recentFilters.push(currentFilter);
+			}
+		},
+
+		onColumnMoved(event: ColumnMovedEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs() || [];
+		},
+
+		onColumnVisible(event: ColumnVisibleEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs() || [];
+		},
+
+		onColumnPinned(event: ColumnPinnedEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs() || [];
+		},
+
+		onSortChanged(event: SortChangedEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs() || [];
+		},
+
+		getRowId: (params: GetRowIdParams) => {
+			return String(params.data[rowNumberIdentificationKey]);
+		},
+
+		onBodyScroll(event: BodyScrollEvent<any>) {
+			if (event.top > -1) {
+				table.lastVisibleRowIndex = event.api.getFirstDisplayedRowIndex();
+			}
+		},
+
+		onRowDataUpdated(event: RowDataUpdatedEvent<any>) {
+			setTimeout(() => {
+				table.lastVisibleRowIndex < 10
+					? event.api.ensureIndexVisible(table.lastVisibleRowIndex, "top")
+					: event.api.ensureIndexVisible(table.lastVisibleRowIndex + 10, "top");
+			}, 300)
+
+			if (table.selectedRows.length > 0) {
+				table.selectedRows.forEach((row) => {
+					let node = gridApi.getRowNode(String(row[rowNumberIdentificationKey]));
+					node?.setSelected(true)
+				});
+			}
+		},
+
+		onSelectionChanged(event: SelectionChangedEvent<any>) {
+			table.selectedRows = event.api.getSelectedRows();
+		},
+
 
 		getMainMenuItems: (event) => {
 			return [
@@ -93,20 +171,33 @@
 
 
 	let destroyed = $state(false);
-	$inspect(destroyed);
 
+	// prevent fetching data on navigation
 	beforeNavigate(() => {
 		destroyed = true;
 		gridApi.destroy();
-
 	})
 
 
-	$effect(() => {
-		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
+	// initiate grid
+	onMount(() => {
+		disablePageTabs.value = true;
+
+		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
+
+		// overwrite default coldef if user has unsaved preset
+		if (table.presetToSave.length > 0) {
+			finalGridOptions.columnDefs = table.presetToSave;
+		}
+
+		gridApi = createGrid(gridContainer, finalGridOptions);
+		gridApi.setFilterModel(table.filtersToSave);
+
 
 		return(() => {
-			gridApi.destroy();
+			table.activeSelectedRowIndex = 0;
+			table.createdTableData = [];
+			table.deletedTableData = [];
 		})
 	})
 
@@ -128,10 +219,10 @@
 	async function getData() {
 		if (table.type === "clientSide" && !destroyed) {
 			table.areInputParamsLoading = true;
-			const response = await apiServicePostHandled("pageData", table.loadedInputParams)
+			const response = await apiServicePostHandled("pageData", table.loadedInputParams);
 			const data = await response.data;
 			table.areInputParamsLoading = false;
-			gridApi.setGridOption("rowData", data.items)
+			gridApi.setGridOption("rowData", data.items);
 		}
 
 	}
@@ -164,10 +255,106 @@
 	})
 
 
+	$inspect(table.createdTableData);
+
+
 	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.NEW) {
+			const rowToAdd = {};
+
+			rowToAdd[rowNumberIdentificationKey] = table.createdTableData.length * -1;
+
+			table.createdTableData.push(rowToAdd);
+
+			gridApi.applyTransaction({
+				addIndex: 0,
+				add: [rowToAdd]
+			})
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.DELETE) {
+			const rowsToDelete = gridApi.getSelectedRows();
+			const rowsToDeleteStripped: any[] = []
+
+			console.log(rowsToDelete)
+
+			rowsToDelete.map((row) => {
+				const strippedRow = {};
+
+				if (requiredFields) {
+					requiredFields.forEach((field) => {
+						strippedRow[field] = row[field];
+					})
+				} else {
+					strippedRow[rowNumberIdentificationKey] = row[rowNumberIdentificationKey];
+				}
+
+				rowsToDeleteStripped.push(strippedRow)
+			})
+
+			table.deletedTableData.push(...rowsToDeleteStripped);
+
+			gridApi.applyTransaction({
+				remove: rowsToDelete,
+			})
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
 
 		if (ribbonAction.value === RibbonActionEnum.LOAD) {
 			table.hasInputParams = false;
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
+			const column = gridApi.getFocusedCell();
+			const selection = window.getSelection()?.toString().trim();
+
+			if (column && selection) {
+				const cellType = column.column.getColDef().cellDataType;
+				let currentFilters = gridApi.getFilterModel();
+				let filterModelType;
+
+				if (cellType === "text") filterModelType = "contains";
+
+				if (cellType === "number" || cellType === "date") filterModelType = "equals";
+
+				currentFilters[column.column.getColId()] = {
+					filterType: "multi",
+					filterModels: [{
+						filterType: cellType,
+						type: filterModelType,
+						filter: selection
+					}, null]
+				}
+
+				gridApi.setFilterModel(currentFilters);
+				gridApi.onFilterChanged();
+			}
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.FILTER_UNDO) {
+			recentFilters.pop();
+
+			recentFilters[recentFilters.length - 1]
+				? gridApi.setFilterModel(recentFilters[recentFilters.length - 1])
+				: gridApi.setFilterModel(null);
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.FILTER_REMOVE) {
+			gridApi.setFilterModel(null);
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 	})
@@ -312,7 +499,7 @@
 	}
 
 	:global(.ag-tool-panel-horizontal-resize) {
-		background-color: var(--albi-500);
+		background-color: var(--albi-200);
 	}
 
 

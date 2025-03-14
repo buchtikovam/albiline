@@ -49,6 +49,7 @@
 		"svelte-check": "^4.0.0",
 		"svelte-dnd-action": "^0.9.51",
 		"svelte-flag-icons": "^2.0.1",
+		"svelte-render-scan": "^1.0.5",
 		"svelte-sonner": "^0.3.28",
 		"sveltekit-adapter-iis": "^1.4.1",
 		"sveltekit-superforms": "^2.21.1",

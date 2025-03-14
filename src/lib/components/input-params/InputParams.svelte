@@ -48,6 +48,7 @@
 
 	setContext("endpoint", "userInputParameters");
 
+
 	let table = agGridTables.value[currentPageKey.value];
 	let inputDialog: InputParamsType = $state(defaultInputDialog);
 	let isLoadDialogOpen = $state(false)
@@ -72,13 +73,13 @@
 	});
 
 
-	$inspect(inputDialog.inputs)
-
 	// api will keep track of input params, creating a smaller data set for
 	// server side tables.
 	async function loadInputParamsInTable() {
 		table.areInputParamsLoading = true;
 		table.hasInputParams = true;
+		table.selectedRows = [];
+		table.selectionState = null;
 
 		if (type === "clientSide") {
 			table.loadedInputParams = {
@@ -102,7 +103,6 @@
 			)
 
 			if (response.success) {
-				console.log("success");
 				table.areInputParamsLoading = false;
 			}
 		}
@@ -116,8 +116,8 @@
 			{
 				paramName: saveLabel,
 				paramValue: {
-					fulltext: inputDialog.fulltext,
-					inputs: inputDialog.inputs,
+					fulltext: deepcopy(inputDialog.fulltext),
+					inputs: deepcopy(inputDialog.inputs),
 					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 				},
 			}
@@ -125,6 +125,18 @@
 
 		if (response.success) {
 			isSaveDialogOpen = false;
+
+			selectedParam = {
+				paramId: null, // TODO get obj from api
+				paramName: saveLabel,
+				paramValue: {
+					fulltext: inputDialog.fulltext,
+					inputs: inputDialog.inputs,
+					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+				},
+			};
+
+			editedLabel = saveLabel;
 			saveLabel = "";
 
 			setTimeout(() => {
@@ -167,7 +179,6 @@
 					},
 				}
 
-				editedLabel = "";
 				isSaveDialogOpen = false;
 			}
 		}

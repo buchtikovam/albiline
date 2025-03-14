@@ -11,7 +11,7 @@ export async function apiServiceGET(
 	endpoint: string,
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	console.log("get", endpoint, pageKey);
+	console.log("get", endpoint, pageKey, pageKeyCustom);
 
 	return await fetch(url + endpoint, {
 		method: 'GET',
@@ -69,7 +69,7 @@ export async function apiServicePOST(
 	body = {},
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	console.log("post", endpoint, pageKey);
+	console.log("post", endpoint, pageKey, pageKeyCustom);
 
 	return await fetch(url + endpoint, {
 		method: 'POST',

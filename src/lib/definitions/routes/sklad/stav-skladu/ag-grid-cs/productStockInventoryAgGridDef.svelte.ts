@@ -13,6 +13,9 @@ export const productStockInventoryAgGridDef: GridOptions = {
 			"filters",
 			{
 				id: "customToolPanel",
+				width: 350,
+				maxWidth: 500,
+				minWidth: 180,
 				labelKey: "customPanel",
 				labelDefault: "Pozice",
 				iconKey: "menu",
@@ -53,7 +56,7 @@ export const productStockInventoryAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"productCode", // KSP
-					"number", 68,
+					"text", 68,
 					false, false, false,
 					[],
 				),
@@ -334,7 +337,7 @@ export const productStockInventoryDetailGridOptions = {
 	columnDefs: [
 		getAgColumn(
 			"locationCode",
-			"text", 120,
+			"text", 150,
 			false, false, false,
 			[],
 			{ filter: false }
@@ -342,7 +345,7 @@ export const productStockInventoryDetailGridOptions = {
 
 		getAgColumn(
 			"quantity",
-			"number", 60,
+			"number", 80,
 			false, false, false,
 			[],
 			{ filter: false, aggFunc: "sum" }

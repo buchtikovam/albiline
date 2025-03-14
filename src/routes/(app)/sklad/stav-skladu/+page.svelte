@@ -41,6 +41,7 @@
 	<AgGridCSWrapper
 		requiredFields={["productId"]}
 		pageKey="ProductStockInventory"
+		rowNumberIdentificationKey="productId"
 		gridOptionsCustom={productStockInventoryAgGridDef}
 		headerTranslations={productStockInventoryHeaderTranslations}
 	/>

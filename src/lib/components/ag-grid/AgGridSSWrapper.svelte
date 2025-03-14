@@ -11,7 +11,7 @@
 	import {onMount, tick} from 'svelte';
 	import {
 		type CellValueChangedEvent,
-		type Column, type ColumnMovedEvent, type ColumnVisibleEvent,
+		type Column, type ColumnMovedEvent, type ColumnPinnedEvent, type ColumnVisibleEvent,
 		createGrid,
 		type FilterModel,
 		type GetRowIdParams,
@@ -74,7 +74,6 @@
 
 		sideBar: {
 			toolPanels: ["columns", "filters"],
-			hiddenByDefault: isMobile.value,
 		},
 
 		cellSelection: {
@@ -187,11 +186,15 @@
 
 
 		onColumnMoved(event: ColumnMovedEvent<any>) {
-			table.presetToSave = event.api.getColumnDefs();
+			table.presetToSave = event.api.getColumnDefs() || [];
 		},
 
 		onColumnVisible(event: ColumnVisibleEvent<any>) {
-			table.presetToSave = event.api.getColumnDefs();
+			table.presetToSave = event.api.getColumnDefs() || [];
+		},
+
+		onColumnPinned(event: ColumnPinnedEvent<any>) {
+			table.presetToSave = event.api.getColumnDefs() || [];
 		},
 
 		onFilterChanged: () =>  {
@@ -596,11 +599,11 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
-			const column = gridApi.getFocusedCell()?.column;
+			const column = gridApi.getFocusedCell();
 			const selection = window.getSelection()?.toString().trim();
 
 			if (column && selection) {
-				const cellType = column.getColDef().cellDataType;
+				const cellType = column.column.getColDef().cellDataType;
 				let currentFilters = gridApi.getFilterModel();
 				let filterModelType;
 
@@ -608,7 +611,7 @@
 
 				if (cellType === "number" || cellType === "date") filterModelType = "equals";
 
-				currentFilters[column.getColId()] = {
+				currentFilters[column.column.getColId()] = {
 					filterType: "multi",
 					filterModels: [{
 						filterType: cellType,
@@ -756,6 +759,11 @@
 	:global(.ag-filter-toolpanel-instance-filter) {
 		width: 100%;
 		margin-right: 40px;
+	}
+
+
+	:global(.ag-tool-panel-horizontal-resize) {
+		background-color: var(--albi-200);
 	}
 
 

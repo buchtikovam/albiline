@@ -59,6 +59,9 @@ export interface AgGridSSTableType {
 	areInputParamsLoading: boolean;
 	// whether or not show input params dialog
 	hasInputParams: boolean;
+
+	loadedInputParams?: InputParamsType
+
 }
 
 
@@ -68,8 +71,12 @@ export interface AgGridCSTableType {
 	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[];
 	// used when setting default colDef - preset
 	setColDefToDefault: boolean;
+	// created by applying transactions
+	createdTableData: any[];
 	// used for disabling tabs and saving edits
 	editedTableData: any[];
+	// array of required fields and values
+	deletedTableData: any[];
 	// current filters used in table. Can be saved through ribbon
 	filtersToSave: FilterModel;
 	// used to set filters after user chose filter from ribbon -> my filters
@@ -81,7 +88,7 @@ export interface AgGridCSTableType {
 	// selected preset completed by default col defs
 	selectedPresetFull?: StoredPresets;
 	// current selected table rows
-	selectedRows: Record<string, any>[];
+	selectedRows: any[];
 	// ag grid selection state, runs in combination with selectedRows
 	selectionState: IServerSideSelectionState|IServerSideGroupSelectionState|null;
 	// current sort state of table

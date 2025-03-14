@@ -105,7 +105,7 @@
 				   <div
 					   use:dragHandle
 					   aria-label="drag-handle"
-					   class="handle"
+					   class="handle hidden sm:block"
 				   >
 					   <Grip class="size-4 text-slate-300"/>
 				   </div>

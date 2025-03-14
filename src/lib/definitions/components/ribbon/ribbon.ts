@@ -50,26 +50,18 @@ export const ribbonItems: RibbonType = [
 		type: RibbonTypeEnum.SEPARATOR,
 	},
 
-	{
-		field: "fill_down",
-		type: RibbonTypeEnum.ITEM,
-		icon: ArrowDownWideNarrow,
-		hide: false,
-		translation: m.components_ribbon_item_fill_down,
-		action: RibbonActionEnum.FILL_DOWN,
-	},
-	{
-		type: RibbonTypeEnum.SEPARATOR,
-	},
+	// {
+	// 	field: "fill_down",
+	// 	type: RibbonTypeEnum.ITEM,
+	// 	icon: ArrowDownWideNarrow,
+	// 	hide: false,
+	// 	translation: m.components_ribbon_item_fill_down,
+	// 	action: RibbonActionEnum.FILL_DOWN,
+	// },
+	// {
+	// 	type: RibbonTypeEnum.SEPARATOR,
+	// },
 
-	{
-		field: "save",
-		type: RibbonTypeEnum.ITEM,
-		icon: Save,
-		hide: false,
-		translation: m.components_ribbon_item_save,
-		action: RibbonActionEnum.SAVE,
-	},
 	{
 		field: "load",
 		type: RibbonTypeEnum.ITEM,
@@ -77,6 +69,14 @@ export const ribbonItems: RibbonType = [
 		hide: false,
 		translation: m.components_ribbon_item_load,
 		action: RibbonActionEnum.LOAD,
+	},
+	{
+		field: "save",
+		type: RibbonTypeEnum.ITEM,
+		icon: Save,
+		hide: false,
+		translation: m.components_ribbon_item_save,
+		action: RibbonActionEnum.SAVE,
 	},
 	{
 		type: RibbonTypeEnum.SEPARATOR,
@@ -134,22 +134,22 @@ export const ribbonItems: RibbonType = [
 		action: RibbonActionEnum.FILTER_QUICK,
 	},
 	
-	{
-		field: "filter_in_range",
-		type: RibbonTypeEnum.ITEM,
-		icon: Scan,
-		hide: false,
-		translation: m.components_ribbon_item_filter_in_range,
-		action: RibbonActionEnum.FILTER_IN_RANGE,
-	},
-	{
-		field: "filter_out_of_range",
-		type: RibbonTypeEnum.ITEM,
-		icon: Filter,
-		hide: false,
-		translation: m.components_ribbon_item_filter_out_of_range,
-		action: RibbonActionEnum.FILTER_OUT_OF_RANGE,
-	},
+	// {
+	// 	field: "filter_in_range",
+	// 	type: RibbonTypeEnum.ITEM,
+	// 	icon: Scan,
+	// 	hide: false,
+	// 	translation: m.components_ribbon_item_filter_in_range,
+	// 	action: RibbonActionEnum.FILTER_IN_RANGE,
+	// },
+	// {
+	// 	field: "filter_out_of_range",
+	// 	type: RibbonTypeEnum.ITEM,
+	// 	icon: Filter,
+	// 	hide: false,
+	// 	translation: m.components_ribbon_item_filter_out_of_range,
+	// 	action: RibbonActionEnum.FILTER_OUT_OF_RANGE,
+	// },
 	{
 		field: "filter_undo",
 		type: RibbonTypeEnum.ITEM,

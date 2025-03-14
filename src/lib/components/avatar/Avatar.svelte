@@ -13,6 +13,7 @@
 	import * as Select from "$lib/components/ui/select/index.js";
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import {goto} from "$app/navigation";
+	import {agGridTables} from "$lib/runes/table.svelte";
 
 
 	let userName = $derived(authDetails.userName);
@@ -137,7 +138,9 @@
 
 		<DropdownMenu.Group>
 			<form action="/logout" method="POST">
-				<button class="w-full">
+				<button class="w-full" onclick={() => {
+					agGridTables.value = {};
+				}}>
 					<DropdownMenu.Item
 						class="flex items-center"
 					>

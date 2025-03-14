@@ -9,6 +9,7 @@
 	import Response from "$lib/components/response/Response.svelte";
 	import {browser} from "$app/environment";
 	import {initializeJSPM} from "$lib/api/printerService.svelte";
+	// import { RenderScan } from 'svelte-render-scan';
 
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
 
@@ -54,6 +55,7 @@
 
 <svelte:window bind:innerWidth/>
 
+<!--<RenderScan initialEnabled={false} />-->
 
 <Toaster
 	position={isMobile.value ? "top-center" : "bottom-right"}

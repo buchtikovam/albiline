@@ -41,7 +41,7 @@ export const InputParamsProductStockInventorySelectOptions: InputParamsOptions[]
 			{
 				field: "productCode", // KSP
 				label: m.routes_sklad_stav_skladu_table_column_product_code,
-				type: "number",
+				type: "text",
 			},
 			{
 				field: "productName", // Název

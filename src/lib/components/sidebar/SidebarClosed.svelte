@@ -22,7 +22,7 @@
 
 
 <div class="flex-1">
-	<nav class="flex flex-col gap-2 justify-center">
+	<nav class="flex flex-col gap-1 justify-center pt-0.5">
 		<Tooltip.Root>
 			<button onclick={() => isSidebarCommandOpen = !isSidebarCommandOpen}>
 				<Tooltip.Trigger>
@@ -38,7 +38,7 @@
 		</Tooltip.Root>
 
 
-		<Separator class="mx-auto w-8 bg-albi-200 h-[2px]"/>
+		<Separator class="mx-auto w-8 bg-albi-200 h-[2px] my-1"/>
 
 
 		{#each filteredItems as item}
@@ -55,7 +55,9 @@
 								</div>
 							</Popover.Trigger>
 
-							<Popover.Content side="right" class="flex flex-col p-1 text-sm w-fit">
+							<Popover.Content
+								side="right"
+								class="flex flex-col p-1 text-sm w-fit">
 								{#each item.children as child}
 									<a
 										href={child.href}
@@ -85,12 +87,12 @@
 						{item.translation()}
 					</Tooltip.Content>
 				</Tooltip.Root>
-
 				<!-- item bez children položek. Po najetí myši ukáže tooltip -->
 			{:else }
 				<Tooltip.Root >
 					<Tooltip.Trigger class="flex justify-center">
 						{@const Icon = item.icon}
+
 						<a
 							href={item.href}
 							class="flex text-sm font-medium  items-center gap-3 rounded-lg p-2 text-albi-950 hover:text-black hover:bg-muted/50"
