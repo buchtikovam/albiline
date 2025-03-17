@@ -215,7 +215,7 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "checkbox",
 							field: "consignmentSaleEnabled",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_consignment_sale_enabled,
-							schema: z.boolean(),
+							schema: z.string(),
 						},
 						{
 							type: "checkbox",

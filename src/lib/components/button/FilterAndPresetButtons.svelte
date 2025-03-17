@@ -10,6 +10,9 @@
 	import type {FilterModel} from "ag-grid-enterprise";
 	import type {Preset, StoredPresets} from "$lib/types/components/table/presets";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import {apiServicePUTHandled} from "$lib/api/apiService.svelte";
+	import * as m from '$lib/paraglide/messages.js'
+
 
 	interface Props {
 		table: AgGridSSTableType;
@@ -47,7 +50,7 @@
 
 
 
-<div class="flex gap-2">
+<div class="hidden sm:flex gap-2">
 	{#if selectedTableFilter}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
@@ -79,23 +82,41 @@
 
 					<DropdownMenu.Separator />
 					{#if activeTableFilter && JSON.stringify(activeTableFilter) !== JSON.stringify(selectedTableFilter.filters)}
-						<DropdownMenu.Item>
-							Uložit jako aktuální
+						<DropdownMenu.Item
+							onclick={async () => {
+								if (selectedTableFilter) {
+									let response = await apiServicePUTHandled("userfilters", selectedTableFilter.filterId, {
+										filterId: selectedTableFilter.filterId,
+										filterName: selectedTableFilter.filterName,
+										filters: activeTableFilter
+									});
+
+									if (response.success) {
+										selectedTableFilter = {
+											filterId: selectedTableFilter.filterId,
+											filterName: selectedTableFilter.filterName,
+											filters: activeTableFilter
+										}
+									}
+								}
+							}}
+						>
+							{m.components_filter_and_preset_buttons_action_save_as_current()}
 						</DropdownMenu.Item>
 
 						<DropdownMenu.Item onclick={() => {
-										ribbonAction.value = RibbonActionEnum.SAVE_FILTERS;
-									}}>
-							Uložit jako nový
+							ribbonAction.value = RibbonActionEnum.SAVE_FILTERS;
+						}}>
+							{m.components_filter_and_preset_buttons_action_save_as_new()}
 						</DropdownMenu.Item>
 					{/if}
 
 					<DropdownMenu.Item onclick={() => {
-									ribbonAction.value = RibbonActionEnum.FILTER_REMOVE
-									table.selectedFilters = undefined;
-									selectedTableFilter = undefined;
-								}}>
-						Odstranit z tabulky
+						ribbonAction.value = RibbonActionEnum.FILTER_REMOVE
+						table.selectedFilters = undefined;
+						selectedTableFilter = undefined;
+					}}>
+						{m.components_filter_and_preset_buttons_action_remove_from_table()}
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
@@ -133,23 +154,42 @@
 
 					<DropdownMenu.Separator />
 					{#if JSON.stringify(activeTablePreset) !== JSON.stringify(selectedTablePreset.pagePresetValue)}
-						<DropdownMenu.Item>
-							Uložit jako aktuální
+						<DropdownMenu.Item
+							onclick={async () => {
+								if (selectedTablePreset) {
+									let response = await apiServicePUTHandled("userpresets", selectedTablePreset.pagePresetId, {
+										pagePresetId: selectedTablePreset.pagePresetId,
+										pagePresetName: selectedTablePreset.pagePresetName,
+										pagePresetValue: activeTablePreset
+									});
+
+									if (response.success) {
+										selectedTablePreset = {
+											pagePresetId: selectedTablePreset.pagePresetId,
+											pagePresetName: selectedTablePreset.pagePresetName,
+											pagePresetValue: activeTablePreset
+										}
+									}
+								}
+							}}
+						>
+							{m.components_filter_and_preset_buttons_action_save_as_current()}
 						</DropdownMenu.Item>
 
 						<DropdownMenu.Item onclick={() => {
 							ribbonAction.value = RibbonActionEnum.SAVE_PRESET;
 						}}>
-							Uložit jako nový
+							{m.components_filter_and_preset_buttons_action_save_as_new()}
 						</DropdownMenu.Item>
 					{/if}
 
 					<DropdownMenu.Item onclick={() => {
-						ribbonAction.value = RibbonActionEnum.FILTER_REMOVE
-						table.selectedFilters = undefined;
-						selectedTableFilter = undefined;
+						table.setColDefToDefault = true;
+						table.selectedPreset = undefined;
+						table.selectedPresetFull = undefined;
+						selectedTablePreset = undefined;
 					}}>
-						Odstranit z tabulky
+						{m.components_filter_and_preset_buttons_action_remove_from_table()}
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>

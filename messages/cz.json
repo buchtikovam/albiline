@@ -5,12 +5,37 @@
 	"generics_save" : "Uložit",
 
 
+
+
+	"zod_string_error_default" : "Text je ve špatném formátu: {validation_code}",
+	"zod_string_error_invalid_email" : "Email je ve špatném formátu",
+	"zod_string_error_too_big" : "Text může obsahovat maximálně {length} znaků",
+	"zod_string_error_too_small" : "Text musí obsahovat alespoň {length} znaků",
+	"zod_string_error_includes" : "Text musí obsahovat \"{text_include}\"",
+	"zod_string_error_starts_with" : "Text musí začínat na \"{text_start}\"",
+	"zod_string_error_ends_with" : "Text musí končit na \"{text_end}\"",
+	"zod_string_error_invalid_type" : "Špatný datový typ. Očekáváno: {expected_type}",
+	"zod_string_error_regex" : "Text musí být ve formátu {regex}",
+
+	"zod_number_error_invalid_type" : "Špatný datový typ. Očekáváno: {expected_type}",
+	"zod_number_error_too_small" : "Číslo musí mít hodnotu alespoň {minimum}",
+	"zod_number_error_too_big" : "Číslo nesmí být větší než {maximum}",
+	"zod_number_error_not_multiple_of" : "Číslo musí být dělitelné {multiplier}",
+	"zod_number_error_default" : "Text je ve špatném formátu: {validation_code}",
+
+	"zod_boolean_error_invalid_type" : "Špatný datový typ. Očekáváno: {expected_type}",
+
+
+
+
 	"components_response_title_info" : "Informace",
 	"components_response_title_warning" : "Varování",
 	"components_response_title_critical" : "Kritická chyba",
 	"components_response_title_success" : "Úspěch",
 
 	"components_response_dialog_make_changes_before_action" : "Nejdříve proveď změny",
+
+
 
 
 	"components_avatar_profile": "Profil",
@@ -20,8 +45,9 @@
 	"components_avatar_view_compact" : "Kompaktní",
 	"components_avatar_logout": "Odhlásit se",
 
-
 	"components_header_search_placeholder": "Hledat...",
+
+
 
 
 	"components_sidebar_category_all" : "Všechny",
@@ -32,7 +58,6 @@
 	"components_sidebar_command_empty" : "Tady je prázdno",
 	"components_sidebar_context_menu_add_to_favorites" : "Přidat do oblíbených",
 	"components_sidebar_context_menu_remove_from_favorites" : "Odebrat z oblíbených",
-
 
 	"components_sidebar_item_pruvodni_list" : "Průvodní list",
 	"components_sidebar_item_sklad" : "Sklad",
@@ -50,6 +75,8 @@
 	"components_sidebar_item_prodej_zakaznici_sk" : "Zákazníci SK",
 	"components_sidebar_item_prodej_prehledy" : "Přehledy",
 	"components_sidebar_item_prodej_analyza_prodeju": "Analýza prodejů",
+
+
 
 
 	"components_ribbon_item_new" : "Nový",
@@ -91,6 +118,8 @@
 	"components_ribbon_dialog_my_filters_no_instances_found" : "Nemáš žádné uložené filtry",
 
 
+
+
 	"components_operators_or" : "NEBO",
 	"components_operators_and" : "A",
 	"components_operators_comparator" : "Podmínka",
@@ -109,6 +138,8 @@
 	"components_operators_false" : "Nepravda",
 	"components_operators_before" : "Před",
 	"components_operators_after" : "Po",
+
+
 
 
 	"components_input_params_label" : "Vstupní parametry",
@@ -133,11 +164,11 @@
 	"components_input_params_load_dialog_no_instances_found" : "Nemáš žádné uložené vstupní parametry",
 
 
-	"components_autoform_string_error_invalid_email" : "Email je ve špatném formátu",
 
 
-
-
+	"components_filter_and_preset_buttons_action_save_as_current" : "Uložit jako aktuální",
+	"components_filter_and_preset_buttons_action_save_as_new" : "Uložit jako nový",
+	"components_filter_and_preset_buttons_action_remove_from_table" : "Odstranit z tabulky",
 
 
 
@@ -199,7 +230,6 @@
 	"routes_prodej_zakaznici_table_column_customer_store_ean" : "EAN zákazníka",
 	"routes_prodej_zakaznici_table_column_customer_store_code" : "ID zákazníka dle zákazníka",
 	"routes_prodej_zakaznici_table_column_split_order_by_food" : "Food/NonFood",
-
 
 	"routes_prodej_zakaznici_customer_detail_label" : "Detail zákazníka",
 	"routes_prodej_zakaznici_customer_detail_form_section_fakturacni_adresa" : "Fakturační adresa",
@@ -265,6 +295,8 @@
 	"routes_prodej_zakaznici_customer_detail_new_contact_label" : "Nový kontakt zákazníka",
 
 
+
+
 	"routes_prodej_zakaznici_address_detail_label" : "Prodejny zákazníka {customerName} ({customerAddressCode})",
 	"routes_prodej_zakaznici_address_detail_label_mobile" : "Prodejny zákazníka {customerAddressCode}",
 	"routes_prodej_zakaznici_address_detail_form_section_address_detail" : "Detail adresy",
@@ -310,7 +342,6 @@
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_country_code" : "Země",
 
 	"routes_prodej_zakaznici_address_detail_new_contact_label" : "Nový kontakt prodejny",
-
 
 	"routes_prodej_zakaznici_detail_contacts_label" : "Kontakty",
 	"routes_prodej_zakaznici_detail_contacts_input_name" : "Jméno",
@@ -367,8 +398,6 @@
 	"routes_sklad_stav_skladu_side_table_column_quantity" : "Ks",
 	"routes_sklad_stav_skladu_side_table_column_expected_quantity_change" : "Očekávané ks",
 	"routes_sklad_stav_skladu_side_table_column_stock_code" : "Číslo skladu"
-
-
 }
 
 

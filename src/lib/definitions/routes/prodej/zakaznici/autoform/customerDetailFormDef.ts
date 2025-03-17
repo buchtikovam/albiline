@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { AutoFormType } from '$lib/types/components/form/autoform';
 import Repeat from 'lucide-svelte/icons/repeat';
 import * as m from '$lib/paraglide/messages.js'
+import {dateRegex} from "$lib/regex/dateRegex";
 
 
 export const customerDetailFormDef: AutoFormType = {
@@ -228,7 +229,9 @@ export const customerDetailFormDef: AutoFormType = {
 							type: "date",
 							field: "lastPaymentDate",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_last_payment_date,
-							schema: z.date(),
+							schema: z.string().regex(dateRegex, {
+								message: "dd.mm.yyyy hh:mm:ss:ms"
+							}),
 						},
 						{
 							type: "text",

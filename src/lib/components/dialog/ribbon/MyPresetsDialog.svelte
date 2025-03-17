@@ -7,7 +7,7 @@
 	import deepcopy from "deepcopy";
 	import Save from "lucide-svelte/icons/save";
 	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
-	import type {StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
+	import type {StoredPresets} from "$lib/types/components/table/presets";
 	import type {
 		ICellRendererParams
 	} from "ag-grid-community";
@@ -97,13 +97,20 @@
 		let defaultColDefCopy = deepcopy(agGridTables.value[pageKey].defaultColDef);
 		let clickedPreset = params.data.pagePresetValue;
 
-		// stored presets are stripped of unnecessary fields, so mapping it to default col def completes it
-		let completedPreset = defaultColDefCopy.map(defCol => {
-			const matchingPreset = clickedPreset.find(preset => preset.field === defCol.field);
-			if (matchingPreset) {
-				return { ...defCol, ...matchingPreset };
-			} else {
-				return defCol;
+		// Create a Set for quick lookup of preset fields
+		const presetFields = new Set(clickedPreset.map(p => p.field));
+
+		// 1. Merge preset columns with defaults, preserving clicked preset order
+		let completedPreset = clickedPreset.map(preset => {
+			// Find matching default column (should always exist based on data structure)
+			const defaultCol = defaultColDefCopy.find(def => def.field === preset.field);
+			return { ...defaultCol, ...preset }; // preset properties override defaults
+		});
+
+		// 2. Add remaining default columns not in preset (original default order)
+		defaultColDefCopy.forEach(def => {
+			if (!presetFields.has(def.field)) {
+				completedPreset.push(def);
 			}
 		});
 
@@ -111,7 +118,7 @@
 			pagePresetId: params.data.pagePresetId,
 			pagePresetName: params.data.pagePresetName,
 			pagePresetValue: completedPreset,
-		}
+		};
 
 		openedRibbonDialog.value = "empty";
 	}

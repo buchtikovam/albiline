@@ -15,6 +15,7 @@
 		hasError?: boolean;
 		label?: string;
 		field?: string;
+		onchange?: () => void;
 	}
 
 	let {
@@ -25,13 +26,16 @@
 	}: Props = $props();
 
 
-	let value: DateValue = $state();
+	let value: DateValue|undefined = $state();
 
-	// $effect(() => {
+
+	$effect(() => {
 		if (dateValue) {
 			value = parseStringToDateValue(dateValue);
+		} else {
+			value = undefined;
 		}
-	// })
+	})
 
 
 	$effect(() => {

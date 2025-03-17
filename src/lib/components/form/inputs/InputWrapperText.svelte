@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {validateStringSchema} from "$lib/utils/components/autoform/validateStringSchema";
 	import type {AutoFormInput} from "$lib/types/components/form/autoform";
 	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import * as m from "$lib/paraglide/messages.js"
@@ -21,37 +22,24 @@
 	let errorMessage = $state("");
 	let hasError: boolean = $state(false);
 
+
 	if (value !== null) {
 		value = String(value).trim();
 	}
 
 
-	function validateTextSchema(ev: InputEvent) {  // <-- Add event type
-		const inputValue = (ev.target as HTMLInputElement).value; // <-- Cast to HTMLInputElement
+	function validateTextSchema(ev: InputEvent) {
+		const inputValue = (ev.target as HTMLInputElement).value;
 
-		try {
-			formInput.schema.parse(inputValue);
-			errorMessage = "";
-			hasError = false;
-			addToEditedFormData(inputValue, value);
-		} catch (err: any) {
-			console.log(err);
-			addToEditedFormData(inputValue, value);
-			hasError = true;
-			errorMessage = err.issues[0].code;
+		const validateResult = validateStringSchema(
+			inputValue,
+			value,
+			formInput.schema,
+			addToEditedFormData
+		);
 
-			switch (err.issues[0].code) {
-				case "invalid_string":
-					switch (err.issues[0].validation) {
-						case "email":
-							errorMessage = m.components_autoform_string_error_invalid_email();
-							break;
-						// default:
-							// errorMessage = $_('zod_errors.string.invalid_string.default', {values: { format: e.issues[0].validation, field: label }});
-					}
-					break;
-			}
-		}
+		errorMessage = validateResult.errorMessage;
+		hasError = validateResult.hasError;
 	}
 </script>
 

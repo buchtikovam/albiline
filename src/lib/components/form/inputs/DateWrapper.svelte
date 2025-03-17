@@ -1,6 +1,7 @@
 <script lang="ts">
-	import DatePicker from '$lib/components/date/DatePicker.svelte';
+	import {validateStringSchema} from "$lib/utils/components/autoform/validateStringSchema";
 	import type {AutoFormInput} from "$lib/types/components/form/autoform";
+	import DatePicker from '$lib/components/date/DatePicker.svelte';
 
 	interface Props {
 		value: string|undefined;
@@ -16,36 +17,36 @@
 		addToEditedFormData
 	}: Props = $props();
 
-	let dateValue = $state(value);
 	let hasError = $state(false);
 	let errorMessage = $state("");
 
+
 	$effect(() => {
-		if (dateValue) {
-			validateDateSchema(dateValue)
+		if (value) {
+			validateDate()
 		}
 	})
 
-	function validateDateSchema(newValue: string) {
-		// try {
-		// 	schema.parse(newValue);
-		// 	errorMessage = "";
-		// 	hasError = false;
-			addToEditedFormData(newValue, value);
-		// } catch (e) {
-		// 	console.log(e);
-		// 	errorMessage = e.issues[0].code;
-		// 	hasError = true;
-		// 	addToEditedFormData(newValue, value);
-		// 	return false;
-		// }
+
+	function validateDate() {
+		const validateResult = validateStringSchema(
+			value || "",
+			null,
+			formInput.schema,
+			addToEditedFormData
+		);
+
+		errorMessage = validateResult.errorMessage;
+		hasError = validateResult.hasError;
 	}
 </script>
+
+
 
 <div class="w-full">
 	<DatePicker
 		hasError={hasError}
-		bind:dateValue={dateValue}
+		bind:dateValue={value}
 		label={formInput.translation()}
 		field={formInput.field}
 	/>

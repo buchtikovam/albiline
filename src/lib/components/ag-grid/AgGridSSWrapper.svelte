@@ -348,6 +348,7 @@
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
 
 		console.log("mount")
+		table.defaultColDef = finalGridOptions.columnDefs;
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
@@ -434,7 +435,6 @@
 					column.headerName = headerTranslations[column.field || ""]();
 				})
 
-				table.defaultColDef = colDefs;
 
 
 				// update grid with updated column defs
@@ -443,6 +443,26 @@
 		}
 	})
 
+
+	$effect(() => {
+		if (table.setColDefToDefault) {
+			const columnOrder: ColumnOrder = [];
+
+			table.defaultColDef.forEach((column: ColDef) => {
+				columnOrder.push({ colId: column.field })
+				column.hide = column.hide || false;
+				column.headerName = headerTranslations[column.field || ""]();
+			})
+
+			gridApi.setGridOption("columnDefs", table.defaultColDef);
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+
+			table.setColDefToDefault = false;
+		}
+	})
 
 
 	// listening to fulltext filter changes from layout, refresh grid with delay
@@ -484,6 +504,7 @@
 				column.headerName = headerTranslations[column.field || ""]();
 			})
 
+			console.log(columnOrder);
 			gridApi.setGridOption("columnDefs", preset);
 			gridApi.applyColumnState({
 				state: columnOrder,

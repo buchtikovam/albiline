@@ -12,7 +12,10 @@
 	let { items, isSidebarCommandOpen = $bindable() }: Props = $props();
 
 
-	function handleClick(item: SidebarItem, treeDepth: number): void {
+	function handleClick(
+		item: SidebarItem,
+		treeDepth: number
+	): void {
 		isSidebarCommandOpen = !isSidebarCommandOpen;
 		handleTabClick(item, treeDepth);
 	}
@@ -20,8 +23,13 @@
 
 
 
-<Command.Dialog bind:open={isSidebarCommandOpen} class="p-0">
-	<Command.Input placeholder={m.components_sidebar_search_placeholder()} />
+<Command.Dialog
+	bind:open={isSidebarCommandOpen}
+	class="p-0 min-w-[300px] hidden sm:block"
+>
+	<Command.Input
+		placeholder={m.components_sidebar_search_placeholder()}
+	/>
 
 	<Command.List>
 		<Command.Empty class="-mt-2">
@@ -36,7 +44,10 @@
 				<Command.Group heading={item.translation()}>
 					{#each item.children as child}
 						<Command.Item class="">
-							<a href={child.href} onclick={() => handleClick(child, 1)}>
+							<a
+								href={child.href}
+								onclick={() => handleClick(child, 1)}
+							>
 								{child.translation()}
 							</a>
 						</Command.Item>
@@ -44,8 +55,11 @@
 						{#if child.children}
 							{#each child.children as secondChild}
 								<Command.Item>
-									<a href={secondChild.href} class="text-sm pl-4"
-									   onclick={() => handleClick(secondChild, 2)}>
+									<a
+										href={secondChild.href}
+										class="text-sm pl-4"
+										onclick={() => handleClick(secondChild, 2)}
+									>
 										{secondChild.translation()}
 									</a>
 								</Command.Item>
@@ -57,7 +71,10 @@
 				<!-- items bez children položek -->
 				<Command.Group>
 					<Command.Item>
-						<a href={item.href} onclick={() => handleClick(item, 0)}>
+						<a
+							href={item.href}
+							onclick={() => handleClick(item, 0)}
+						>
 							{item.translation()}
 						</a>
 					</Command.Item>

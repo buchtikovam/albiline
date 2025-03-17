@@ -51,11 +51,11 @@
 
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="h-full block md:hidden border-none ">
+	<Dialog.Content class="h-[96%] block md:hidden border-none w-[92%] ">
 		<div class="bg-none h-full flex flex-col bg-white items-center rounded-lg ">
 			<div class="h-9">
 
-				<CategoryButton color="primary" />
+				<CategoryButton />
 			</div>
 
 

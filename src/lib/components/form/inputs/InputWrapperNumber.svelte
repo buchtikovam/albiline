@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { z } from "zod";
-	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
+	import {validateNumberSchema} from "$lib/utils/components/autoform/validateNumberSchema";
 	import type {AutoFormInput} from "$lib/types/components/form/autoform";
+	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 
 	interface Props {
 		value: number;
@@ -22,29 +22,18 @@
 	let hasError: boolean = $state(false);
 
 
-	function validateNumberSchema(ev) {
-		const inputValue = Number(ev.target?.value);
+	function validateNumber(ev: InputEvent) {
+		const inputValue = (ev.target as HTMLInputElement).value;
 
-		try {
-			formInput.schema.parse(inputValue);
-			errorMessage = "";
-			hasError = false;
-			addToEditedFormData(inputValue, value);
-		} catch (e) {
-			console.log(e);
-			addToEditedFormData(inputValue, value);
-			hasError = true;
-			errorMessage = e.issues[0].code;
+		const validateResult = validateNumberSchema(
+			Number(inputValue),
+			value,
+			formInput.schema,
+			addToEditedFormData
+		);
 
-			switch (e.issues[0].code) {
-				case "too_small":
-					// errorMessage = $_('zod_errors.number.too_small', {values: { min: e.issues[0].minimum }});
-					break;
-				case "too_big":
-					// errorMessage = $_('zod_errors.number.too_big', {values: { max: e.issues[0].maximum }});
-					break;
-			}
-		}
+		errorMessage = validateResult.errorMessage;
+		hasError = validateResult.hasError;
 	}
 </script>
 
@@ -59,7 +48,7 @@
 
 		<input
 			type="number"
-			oninput={(e) => validateNumberSchema(e)}
+			oninput={(e) => validateNumber(e)}
 			value={value}
 			disabled={disable}
 			class={`${hasError ? "focus-visible:border-red-500 " : ""} disabled:bg-slate-50 h-[36px] w-full disabled:cursor-not-allowed border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`}
