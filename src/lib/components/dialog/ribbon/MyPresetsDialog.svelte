@@ -6,21 +6,21 @@
 	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
 	import deepcopy from "deepcopy";
 	import Save from "lucide-svelte/icons/save";
-	import type {ColDef, GetRowIdParams, GridOptions} from "ag-grid-enterprise";
+	import {
+		apiServicePUTHandled,
+		apiServiceGETHandled,
+		apiServiceDELETEHandled
+	} from "$lib/api/apiService.svelte";
+	import type {GetRowIdParams, GridOptions} from "ag-grid-enterprise";
 	import type {StoredPresets} from "$lib/types/components/table/presets";
 	import type {
 		ICellRendererParams
 	} from "ag-grid-community";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
+	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {
-		apiServiceDELETEHandled,
-		apiServiceGETHandled,
-		apiServicePUTHandled
-	} from "$lib/api/apiService.svelte";
-	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
-	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
 
 
 	let isOpen: boolean = $state(false);
@@ -34,8 +34,8 @@
 
 	$effect(() => {
 		isOpen = true;
-		getPresets()
 		isLoading = true;
+		getPresets();
 
 		return (() => {
 			isOpen = false;
@@ -51,35 +51,32 @@
 	})
 
 
-	export const ribbonPresetsAgGridDef: ColDef[] = [
-		{
-			field: "pagePresetName",
-			editable: true,
-			flex: 1,
-		},
-		{
-			field: "select",
-			pinned: "right",
-			width: pageCompact.value ? 28 : 36,
-			minWidth: pageCompact.value ? 28 : 36,
-			cellRenderer: (params: ICellRendererParams) => selectButton(params, handleClickSelect),
-		},
-		{
-			field: "delete",
-			pinned: "right",
-			width: pageCompact.value ? 28 : 36,
-			minWidth: pageCompact.value ? 28 : 36,
-			cellRenderer: (params: ICellRendererParams) => deleteButton(params, handleDelete),
-		},
-	]
-
-
 	const customGridOptions: GridOptions = {
-		columnDefs: ribbonPresetsAgGridDef,
-
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data.pagePresetId);
 		},
+
+		columnDefs: [
+			{
+				field: "pagePresetName",
+				editable: true,
+				flex: 1,
+			},
+			{
+				field: "select",
+				pinned: "right",
+				width: pageCompact.value ? 28 : 36,
+				minWidth: pageCompact.value ? 28 : 36,
+				cellRenderer: (params: ICellRendererParams) => selectButton(params, handleClickSelect),
+			},
+			{
+				field: "delete",
+				pinned: "right",
+				width: pageCompact.value ? 28 : 36,
+				minWidth: pageCompact.value ? 28 : 36,
+				cellRenderer: (params: ICellRendererParams) => deleteButton(params, handleDelete),
+			},
+		],
 	}
 
 
@@ -97,22 +94,60 @@
 		let defaultColDefCopy = deepcopy(agGridTables.value[pageKey].defaultColDef);
 		let clickedPreset = params.data.pagePresetValue;
 
-		// Create a Set for quick lookup of preset fields
-		const presetFields = new Set(clickedPreset.map(p => p.field));
+		// Recursive function to get all field names including children
+		const getAllFields = (columns: any[]): Set<string> => {
+			const fields = new Set<string>();
+			const process = (col: any) => {
+				if (col.field) fields.add(col.field);
+				if (col.children) col.children.forEach(process);
+			};
+			columns.forEach(process);
+			return fields;
+		};
 
-		// 1. Merge preset columns with defaults, preserving clicked preset order
-		let completedPreset = clickedPreset.map(preset => {
-			// Find matching default column (should always exist based on data structure)
-			const defaultCol = defaultColDefCopy.find(def => def.field === preset.field);
-			return { ...defaultCol, ...preset }; // preset properties override defaults
-		});
+		// Recursive merge function for columns with children
+		const mergeColumns = (presetCols: any[], defaultCols: any[]): any[] => {
+			const merged: any[] = [];
 
-		// 2. Add remaining default columns not in preset (original default order)
-		defaultColDefCopy.forEach(def => {
-			if (!presetFields.has(def.field)) {
-				completedPreset.push(def);
-			}
-		});
+			// Merge preset columns with defaults
+			presetCols.forEach(preset => {
+				// Find matching default column (could be in children)
+				const findInHierarchy = (cols: any[]): any => {
+					for (const col of cols) {
+						if (col.field === preset.field) return col;
+						if (col.children) {
+							const found = findInHierarchy(col.children);
+							if (found) return found;
+						}
+					}
+				};
+
+				const defaultCol = findInHierarchy(defaultCols) || {};
+				const mergedCol = { ...defaultCol, ...preset };
+
+				// Recursively merge children
+				if (preset.children) {
+					mergedCol.children = mergeColumns(
+						preset.children,
+						defaultCol.children || []
+					);
+				}
+
+				merged.push(mergedCol);
+			});
+
+			// Add remaining default columns not in preset
+			defaultCols.forEach(def => {
+				if (!getAllFields([def]).has(def.field)) {
+					merged.push(def);
+				}
+			});
+
+			return merged;
+		};
+
+		// Perform the merge
+		const completedPreset = mergeColumns(clickedPreset, defaultColDefCopy);
 
 		agGridTables.value[pageKey].selectedPreset = {
 			pagePresetId: params.data.pagePresetId,
@@ -133,7 +168,11 @@
 		}
 
 		for (const preset of editedPresets) {
-			let response = await apiServicePUTHandled("userpresets", preset.pagePresetId, preset);
+			let response = await apiServicePUTHandled(
+				"userpresets",
+				preset.pagePresetId,
+				preset
+			);
 			if (!response.success) hasFailed = true;
 		}
 

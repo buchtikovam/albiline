@@ -11,7 +11,7 @@
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {activeTabIndex, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
-	import {apiSaveCustomerDetail} from "$lib/api/customerService.svelte";
+	import {apiSaveCustomerDetail} from "$lib/api/routes/customerService.svelte.js";
 	import {changeCustomerRoute} from '$lib/utils/navigation/zakaznici/changeCustomerRoute.svelte';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {flipItems} from '$lib/utils/flipItems';

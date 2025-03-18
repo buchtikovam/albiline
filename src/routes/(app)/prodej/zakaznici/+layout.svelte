@@ -92,7 +92,10 @@
 
 
 	<div class="flex gap-2">
-		<FilterAndPresetButtons bind:table={table}/>
+		<FilterAndPresetButtons
+			bind:table={table}
+			routeId="/(app)/prodej/zakaznici"
+		/>
 
 		{#if showFulltextSearch.value === true}
 			<div

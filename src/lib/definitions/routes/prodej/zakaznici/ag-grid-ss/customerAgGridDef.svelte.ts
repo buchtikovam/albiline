@@ -1,5 +1,10 @@
 import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 import {i18n} from "$lib/i18n";
+import {getDeliveryCountryCodes, getInvoiceCountryCodes} from "$lib/utils/dropdowns/countryCodes";
+import {getRetailStoreTypeName} from "$lib/utils/dropdowns/retailStoreType";
+import {getPaymentTypeCode} from "$lib/utils/dropdowns/paymentTypeCode";
+import {getCustomerRanks} from "$lib/utils/dropdowns/customerRank";
+import {getAgColumnEnum} from "$lib/utils/components/ag-grid/getAgColumnEnum";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
 import {goto} from "$app/navigation";
 import type {CellDoubleClickedEvent} from "ag-grid-community";
@@ -7,7 +12,9 @@ import type {GridOptions} from 'ag-grid-enterprise';
 import * as m from '$lib/paraglide/messages.js'
 
 
+
 let pageKey = $derived(currentPageKey.value);
+
 
 
 export const customerGridOptions: GridOptions = {
@@ -77,19 +84,28 @@ export const customerGridOptions: GridOptions = {
 			[]
 		),
 
-		getAgColumn( // todo: enum
+		getAgColumnEnum(
 			"countryCode",
-			"text", 68,
-			false, false, false,
-			[]
+			68,
+			true, false,
+			'serverSide',
+			[],
+			{},
+			[],
+			getDeliveryCountryCodes
 		),
 
-		getAgColumn( // todo: enum
+		getAgColumnEnum(
 			"customerRank",
-			"text", 70,
-			false, false, false,
-			[]
+			70,
+			true, false,
+			'serverSide',
+			[],
+			{},
+			[],
+			getCustomerRanks
 		),
+
 
 		getAgColumn(
 			"isBadPayer",
@@ -140,11 +156,13 @@ export const customerGridOptions: GridOptions = {
 			[]
 		),
 
-		getAgColumn(
+		getAgColumnEnum(
 			"paymentTypeCode",
-			"text", 68,
-			false, false, false,
-			[]
+			68,
+			true, false,
+			'serverSide',
+			[], {}, [],
+			getPaymentTypeCode
 		),
 
 		getAgColumn(
@@ -161,11 +179,13 @@ export const customerGridOptions: GridOptions = {
 			[]
 		),
 
-		getAgColumn( // todo: enum
+		getAgColumnEnum(
 			"retailStoreTypeName",
-			"text", 180,
-			false, false, false,
-			[]
+			180,
+			true, false,
+			'serverSide',
+			[], {}, [],
+			getRetailStoreTypeName
 		),
 
 		getAgColumn(
@@ -210,12 +230,15 @@ export const customerGridOptions: GridOptions = {
 			[]
 		),
 
-		getAgColumn( // todo: enum
+		getAgColumnEnum(
 			"i_CountryCode",
-			"text", 70,
-			false, false, false,
-			[]
+			70,
+			true, false,
+			'serverSide',
+			[], {}, [],
+			getInvoiceCountryCodes
 		),
+
 
 		getAgColumn(
 			"note",

@@ -22,6 +22,7 @@ export const load: LayoutLoad = async () => {
 			lastVisibleRowIndex: 0,
 			areInputParamsLoading: false,
 			hasInputParams: false,
+			loadedInputParams: {}
 		}
 	}
 };

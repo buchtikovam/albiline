@@ -8,7 +8,7 @@
 	import {Toaster} from "svelte-sonner";
 	import Response from "$lib/components/response/Response.svelte";
 	import {browser} from "$app/environment";
-	import {initializeJSPM} from "$lib/api/printerService.svelte";
+	import {initializeJSPM} from "$lib/api/documents/printerService.svelte.js";
 	// import { RenderScan } from 'svelte-render-scan';
 
 	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');

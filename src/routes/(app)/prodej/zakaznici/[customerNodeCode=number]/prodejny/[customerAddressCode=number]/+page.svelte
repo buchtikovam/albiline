@@ -15,7 +15,7 @@
 	import {ribbonAction} from '$lib/runes/ribbon.svelte';
 	import {page} from '$app/state';
 	import {changeCustomerAddressRoute} from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute.svelte';
-	import {apiGetCustomerAddresses, apiSaveCustomerAddressDetail} from "$lib/api/customerService.svelte";
+	import {apiGetCustomerAddresses, apiSaveCustomerAddressDetail} from "$lib/api/routes/customerService.svelte.js";
 	import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
 	import {flipItems} from '$lib/utils/flipItems';
 	import {flip} from 'svelte/animate';

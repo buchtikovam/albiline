@@ -1,6 +1,6 @@
 import * as JSPM from 'jsprintmanager'
 import {browser} from "$app/environment";
-import {availablePrinters, jspmError, jspmInitialized} from '$lib/runes/printer.svelte';
+import {availablePrinters, jspmError, jspmInitialized} from '$lib/runes/printer.svelte.js';
 
 
 

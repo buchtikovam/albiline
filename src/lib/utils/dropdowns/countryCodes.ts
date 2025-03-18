@@ -1,0 +1,30 @@
+import {apiServiceGETHandled} from "$lib/api/apiService.svelte";
+
+
+interface CountryCode {
+	countryId: number;
+	countryName: string;
+	countryCode: string;
+}
+
+
+export async function getDeliveryCountryCodes() {
+	try {
+		const response = await apiServiceGETHandled('dropdowns/deliveryCountryCodes');
+		return response.data.items.map((item: CountryCode) => item.countryCode);
+	} catch (error) {
+		console.error('Error fetching delivery country codes:', error);
+		return [];
+	}
+}
+
+
+export async function getInvoiceCountryCodes() {
+	try {
+		const response = await apiServiceGETHandled('dropdowns/invoiceCountryCodes');
+		return response.data.items.map((item: CountryCode) => item.countryCode);
+	} catch (error) {
+		console.error('Error fetching invoice country codes:', error);
+		return [];
+	}
+}

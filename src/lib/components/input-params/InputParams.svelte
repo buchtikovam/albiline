@@ -82,10 +82,12 @@
 		table.selectionState = null;
 
 		if (type === "clientSide") {
-			table.loadedInputParams = {
-				fulltext: inputDialog.fulltext,
-				inputs: inputDialog.inputs,
-				columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+			if ("loadedInputParams" in table) {
+				table.loadedInputParams = {
+					fulltext: inputDialog.fulltext,
+					inputs: inputDialog.inputs,
+					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
+				}
 			}
 		}
 
@@ -106,6 +108,8 @@
 				table.areInputParamsLoading = false;
 			}
 		}
+
+		table.hasInputParams = true;
 	}
 
 
@@ -190,7 +194,6 @@
 
 <DialogWrapper
 	bind:isOpen={open}
-	onChange={() => table.hasInputParams = true}
 	{header}
 	{content}
 	size="md"

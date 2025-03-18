@@ -12,13 +12,21 @@
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import {apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import * as m from '$lib/paraglide/messages.js'
+	import {page} from "$app/state";
 
 
 	interface Props {
 		table: AgGridSSTableType;
+		routeId: string;
 	}
 
-	let { table = $bindable() }: Props = $props();
+	let {
+		table = $bindable(),
+		routeId
+	}: Props = $props();
+
+
+	let hideButtons = $derived(page.route.id !== routeId);
 
 	let selectedTableFilter: StoredFilters|undefined = $state();
 	let activeTableFilter: FilterModel|undefined = $state({});
@@ -50,7 +58,7 @@
 
 
 
-<div class="hidden sm:flex gap-2">
+<div class={`hidden gap-2 ${hideButtons ? "sm:hidden" : "sm:flex"}`}>
 	{#if selectedTableFilter}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
@@ -153,15 +161,20 @@
 					</DropdownMenu.GroupHeading>
 
 					<DropdownMenu.Separator />
+
 					{#if JSON.stringify(activeTablePreset) !== JSON.stringify(selectedTablePreset.pagePresetValue)}
 						<DropdownMenu.Item
 							onclick={async () => {
 								if (selectedTablePreset) {
-									let response = await apiServicePUTHandled("userpresets", selectedTablePreset.pagePresetId, {
-										pagePresetId: selectedTablePreset.pagePresetId,
-										pagePresetName: selectedTablePreset.pagePresetName,
-										pagePresetValue: activeTablePreset
-									});
+									let response = await apiServicePUTHandled(
+										"userpresets",
+										selectedTablePreset.pagePresetId,
+										{
+											pagePresetId: selectedTablePreset.pagePresetId,
+											pagePresetName: selectedTablePreset.pagePresetName,
+											pagePresetValue: activeTablePreset
+										}
+									);
 
 									if (response.success) {
 										selectedTablePreset = {

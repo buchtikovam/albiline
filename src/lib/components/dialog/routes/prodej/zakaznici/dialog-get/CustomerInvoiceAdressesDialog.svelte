@@ -3,7 +3,7 @@
 		customerInvoiceAddressCustomGridOptions, customerInvoiceAddressHeaderTranslations,
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerInvoiceAddressesAgGridDef';
 	import {openedRibbonDialog} from '$lib/runes/ribbon.svelte.js';
-	import {apiGetCustomerInvoiceAddresses} from "$lib/api/customerService.svelte";
+	import {apiGetCustomerInvoiceAddresses} from "$lib/api/routes/customerService.svelte.js";
 	import {onMount} from "svelte";
 	import type {CustomerInvoiceAddressType} from "$lib/types/routes/prodej/zakaznci/customers";
 	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";

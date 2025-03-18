@@ -15,9 +15,9 @@ export async function apiServiceGET(
 
 	return await fetch(url + endpoint, {
 		method: 'GET',
-		headers: 	{
+		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': authDetails.sessionKey || "",
+			'Session-Key': authDetails.sessionKey,
 			'Accept-Language' : languageTag(),
 			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
@@ -29,7 +29,6 @@ export async function apiServiceGETHandled(
 	endpoint: string,
 	pageKeyCustom?: string,
 ) {
-
 	try {
 		let response = await apiServiceGET(endpoint, pageKeyCustom)
 

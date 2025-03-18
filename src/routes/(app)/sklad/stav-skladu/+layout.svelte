@@ -15,11 +15,12 @@
 		children?: import('svelte').Snippet;
 	}
 
+	let { children }: Props = $props();
+
+
 	currentPageKey.value = "ProductStockInventory";
 
 	let table: AgGridSSTableType = $state(agGridTables.value[currentPageKey.value]);
-
-	let { children }: Props = $props();
 	let activeTab = $derived(activeTabIndex.value.toString());
 </script>
 
@@ -50,7 +51,10 @@
 
 
 	<div class="flex gap-2">
-		<FilterAndPresetButtons bind:table={table}/>
+		<FilterAndPresetButtons
+			bind:table={table}
+			routeId="/(app)/sklad/stav-skladu"
+		/>
 
 		{#if showFulltextSearch.value === true}
 			<div

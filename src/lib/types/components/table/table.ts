@@ -59,9 +59,6 @@ export interface AgGridSSTableType {
 	areInputParamsLoading: boolean;
 	// whether or not show input params dialog
 	hasInputParams: boolean;
-
-	loadedInputParams?: InputParamsType
-
 }
 
 
@@ -101,8 +98,8 @@ export interface AgGridCSTableType {
 	areInputParamsLoading: boolean;
 	// whether or not show input params dialog
 	hasInputParams: boolean;
-
-	loadedInputParams?: InputParamsType
+	// used to fetch data limited by user input params
+	loadedInputParams: InputParamsType
 }
 
 

@@ -18,6 +18,7 @@ export type StoredPreset = {
 	pinned?: boolean | 'left' | 'right' | null,
 	sort?: 'asc' | 'desc' | null,
 	sortIndex?: number | null,
+	children?: StoredPreset[],
 
 }
 

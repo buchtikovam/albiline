@@ -31,6 +31,21 @@
 				pinned: preset.pinned,
 				sort: preset.sort,
 				sortIndex: preset.sortIndex,
+				children: preset.children.map((preset: ColDef) => {
+					return {
+						field: preset.field,
+						width: preset.width,
+						hide: preset.hide || false,
+						rowGroup: preset.rowGroup,
+						rowGroupIndex: preset.rowGroupIndex,
+						pivot: preset.pivot,
+						pivotIndex: preset.pivotIndex,
+						aggFunc: preset.aggFunc,
+						pinned: preset.pinned,
+						sort: preset.sort,
+						sortIndex: preset.sortIndex,
+					}
+				})
 			};
 		});
 

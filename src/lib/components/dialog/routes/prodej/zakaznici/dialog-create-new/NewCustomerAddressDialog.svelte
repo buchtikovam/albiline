@@ -1,6 +1,6 @@
 comp<script lang="ts">
 	import {Button} from '$lib/components/ui/button';
-	import {createCleanCustomerAddress} from "$lib/api/customerService.svelte";
+	import {createCleanCustomerAddress} from "$lib/api/routes/customerService.svelte.js";
 	import type {CustomerAddressType} from '$lib/types/routes/prodej/zakaznci/customers';
 	import type {AutoFormSimpleType} from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';

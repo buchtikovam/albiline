@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
 	import {
-		type BodyScrollEndEvent, type BodyScrollEvent,
+		type BodyScrollEvent,
 		type ColumnMovedEvent,
 		type ColumnPinnedEvent,
 		type ColumnVisibleEvent,
@@ -11,23 +11,24 @@
 		type GetRowIdParams,
 		type GridApi,
 		type GridOptions,
-		type GridReadyEvent,
 		type RowDataUpdatedEvent,
-		type SelectionChangedEvent,
+		type SelectionChangedEvent, type ShouldRowBeSkippedParams,
 		type SortChangedEvent,
 		themeQuartz
 	} from 'ag-grid-enterprise';
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {languageTag} from "$lib/paraglide/runtime";
-	import type {ColDef} from "ag-grid-community";
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
+	import type {ColDef, ColGroupDef} from "ag-grid-community";
+	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {agGridTables} from "$lib/runes/table.svelte";
-	import type {AgGridCSTableType} from "$lib/types/components/table/table";
+	import type {AgGridCSTableType, ColumnOrder} from "$lib/types/components/table/table";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {beforeNavigate} from "$app/navigation";
 	import {onMount} from "svelte";
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
+	import deepcopy from "deepcopy";
+	import {authDetails} from "$lib/runes/page.svelte";
 
 	interface Props {
 		pageKey: string;
@@ -50,7 +51,6 @@
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
-	let rowBuffer = 100;
 	let recentFilters: FilterModel[] = $state([]);
 
 
@@ -164,19 +164,19 @@
 			];
 		},
 
+		getContextMenuItems: () => {
+			return [
+				'copy',
+				'copyWithHeaders',
+				'cut',
+				'paste',
+			];
+		},
+
 		maintainColumnOrder: true,
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
 	}
-
-
-	let destroyed = $state(false);
-
-	// prevent fetching data on navigation
-	beforeNavigate(() => {
-		destroyed = true;
-		gridApi.destroy();
-	})
 
 
 	// initiate grid
@@ -184,6 +184,8 @@
 		disablePageTabs.value = true;
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
+
+		table.defaultColDef = finalGridOptions.columnDefs;
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
@@ -202,11 +204,13 @@
 	})
 
 
+
 	$effect(() => {
 		if (table.hasInputParams) {
-			getData()
+			getData();
 		}
 	})
+
 
 
 	$effect(() => {
@@ -216,16 +220,80 @@
 	})
 
 
-	async function getData() {
-		if (table.type === "clientSide" && !destroyed) {
-			table.areInputParamsLoading = true;
-			const response = await apiServicePostHandled("pageData", table.loadedInputParams);
-			const data = await response.data;
-			table.areInputParamsLoading = false;
-			gridApi.setGridOption("rowData", data.items);
+	$effect(() => {
+		if (table.selectedFilters) {
+			gridApi.setFilterModel(table.selectedFilters.filters);
 		}
+	})
 
+
+	$effect(() => {
+		if (table.setColDefToDefault) {
+			const columnOrder: ColumnOrder = [];
+			const preset = deepcopy(table.defaultColDef);
+
+			const processColumns = (cols: any[]) => {
+				cols.forEach(col => {
+					col.headerName = headerTranslations[col.field || ""]();
+					columnOrder.push({ colId: col.field });
+					if (col.children) processColumns(col.children);
+				});
+			};
+
+			processColumns(preset);
+
+			gridApi.setGridOption("columnDefs", preset);
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+
+			table.setColDefToDefault = false;
+		}
+	})
+
+
+
+	$effect(() => {
+		if (table.selectedPreset) {
+			const preset = deepcopy(table.selectedPreset.pagePresetValue);
+			const columnOrder: ColumnOrder = [];
+
+			const processColumns = (cols: any[]) => {
+				cols.forEach(col => {
+					col.headerName = headerTranslations[col.field || ""]();
+					columnOrder.push({ colId: col.field });
+					if (col.children) processColumns(col.children);
+				});
+			};
+
+			processColumns(preset);
+
+			gridApi.setGridOption("columnDefs", preset);
+			gridApi.applyColumnState({
+				state: columnOrder,
+				applyOrder: true
+			});
+
+			table.selectedPresetFull = {
+				pagePresetId: table.selectedPreset.pagePresetId,
+				pagePresetName: table.selectedPreset.pagePresetName,
+				pagePresetValue: preset,
+			};
+
+			table.selectedPreset = undefined;
+		}
+	})
+
+
+	async function getData() {
+		table.areInputParamsLoading = true;
+		const response = await apiServicePostHandled("pageData", table.loadedInputParams);
+		const data = await response.data;
+		table.areInputParamsLoading = false;
+		gridApi.setGridOption("rowData", data.items);
 	}
+
 
 
 	$effect(() => {
@@ -255,24 +323,21 @@
 	})
 
 
-	$inspect(table.createdTableData);
-
 
 	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.NEW) {
-			const rowToAdd = {};
-
-			rowToAdd[rowNumberIdentificationKey] = table.createdTableData.length * -1;
-
-			table.createdTableData.push(rowToAdd);
-
-			gridApi.applyTransaction({
-				addIndex: 0,
-				add: [rowToAdd]
-			})
+			// const rowToAdd = {};
+			//
+			// rowToAdd[rowNumberIdentificationKey] = table.createdTableData.length * -1;
+			//
+			// table.createdTableData.push(rowToAdd);
+			//
+			// gridApi.applyTransaction({
+			// 	addIndex: 0,
+			// 	add: [rowToAdd]
+			// })
 
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-
 		}
 
 
@@ -308,6 +373,49 @@
 
 		if (ribbonAction.value === RibbonActionEnum.LOAD) {
 			table.hasInputParams = false;
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_HEADERS) {
+			const allColumns = gridApi.getAllDisplayedColumns();
+
+			// Exclude the first column
+			let columnKeys = allColumns?.map(col => col.getColId());
+			columnKeys.splice(0,1);
+
+			gridApi.exportDataAsExcel({
+				columnKeys: columnKeys,
+				skipColumnGroupHeaders: false,
+				skipColumnHeaders: false,
+				onlySelected: false,
+				shouldRowBeSkipped(): boolean {
+					return true;
+				},
+				author: authDetails.userName || "AG Grid",
+			});
+
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_DATA) {
+			const allColumns = gridApi.getAllDisplayedColumns();
+
+			// Exclude the first column
+			let columnKeys = allColumns?.map(col => col.getColId());
+			columnKeys.splice(0,1);
+
+			gridApi.exportDataAsExcel({
+				columnKeys: columnKeys,
+				skipColumnGroupHeaders: false,
+				skipColumnHeaders: false,
+				author: authDetails.userName || "AG Grid",
+				exportedRows: "all", // determines if export has un/sorted and un/filtered rows
+				freezeRows: "headers", // sticky header row
+				onlySelected: false,
+			});
+
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
@@ -357,6 +465,31 @@
 			gridApi.setFilterModel(null);
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.MY_FILTERS) {
+			openedRibbonDialog.value = "ribbon-my-filters";
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
+			openedRibbonDialog.value = "ribbon-save-filters"
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
+			openedRibbonDialog.value = "ribbon-save-preset";
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
+		if (ribbonAction.value === RibbonActionEnum.MY_PRESETS) {
+			openedRibbonDialog.value = "ribbon-my-presets";
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
 	})
 </script>
 

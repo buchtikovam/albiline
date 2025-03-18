@@ -19,7 +19,7 @@
 		type GridOptions,
 		type IServerSideDatasource,
 		type IServerSideGetRowsParams,
-		type SelectionChangedEvent,
+		type SelectionChangedEvent, type ShouldRowBeSkippedParams,
 		type SortChangedEvent,
 		themeQuartz
 	} from 'ag-grid-enterprise';
@@ -488,7 +488,6 @@
 	$effect(() => {
 		if (table.selectedFilters) {
 			gridApi.setFilterModel(table.selectedFilters.filters);
-			// table.selectedFilters = {};
 		}
 	})
 
@@ -572,19 +571,20 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_HEADERS) {
-			const allColumns = gridApi.getColumns();
+			const allColumns = gridApi.getAllDisplayedColumns();
 
 			// Exclude the first column
 			let columnKeys = allColumns?.map(col => col.getColId());
+			columnKeys.splice(0,1);
 
 			gridApi.exportDataAsExcel({
 				columnKeys: columnKeys,
 				skipColumnGroupHeaders: false,
 				skipColumnHeaders: false,
 				onlySelected: false,
-				allColumns: true, // whether or not render hidden columns
-				processRowGroupCallback: () => "",
-				processCellCallback: () => "",
+				shouldRowBeSkipped(): boolean {
+					return true;
+				},
 				author: authDetails.userName || "AG Grid",
 			});
 
@@ -593,16 +593,16 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.EXPORT_EXCEL_DATA) {
-			const allColumns = gridApi.getColumns();
+			const allColumns = gridApi.getAllDisplayedColumns();
 
 			// Exclude the first column
 			let columnKeys = allColumns?.map(col => col.getColId());
+			columnKeys.splice(0,1);
 
 			gridApi.exportDataAsExcel({
 				columnKeys: columnKeys,
 				skipColumnGroupHeaders: false,
 				skipColumnHeaders: false,
-				allColumns: true, // whether or not render hidden columns
 				author: authDetails.userName || "AG Grid",
 				exportedRows: "all", // determines if export has un/sorted and un/filtered rows
 				freezeRows: "headers", // sticky header row
