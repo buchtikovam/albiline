@@ -17,6 +17,7 @@
 	import * as Command from "$lib/components/ui/command";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Tooltip from "$lib/components/ui/tooltip";
+	import {enumOperators} from "$lib/definitions/components/input-params/operators/enumOperators.js";
 
 	interface Props {
 		disabled?: boolean;
@@ -40,6 +41,7 @@
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
+
 	let operators = $derived.by(() => {
 		if (type === "text") {
 			return stringOperators;
@@ -57,7 +59,9 @@
 			return dateOperators;
 		}
 
-		return stringOperators;
+		if (type === "enum") {
+			return enumOperators;
+		}
 	})
 
 

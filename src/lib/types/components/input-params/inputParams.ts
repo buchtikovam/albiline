@@ -9,6 +9,8 @@ export type InputParamsSelectOption = {
 	field: string;
 	label: () => string;
 	type: ColumnFilterType;
+	dropdownOptions?: string[];
+	asyncDropdownOptions?: () => Promise<string[]>;
 }
 
 
@@ -38,7 +40,7 @@ export type FetchedInputParam = {
 
 
 // Input params -- INPUTS
-type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange;
+type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange|InputEnum;
 
 type InputString = {
 	field: string;
@@ -76,6 +78,15 @@ type InputDateRange = {
 	endValue: string, // v domluveném datumovém formátu
 }
 
+
+type InputEnum= {
+	field: string;
+	type: "enum";
+	label: () => string;
+	value: string,
+}
+
+
 // Input params -- COLUMN FILTERS
 export type ColumnFilter = {
 	id: number;
@@ -104,7 +115,8 @@ export type ColumnFilterModelCondition = (
 	FilterModelConditionText |
 	FilterModelConditionNumber |
 	FilterModelConditionBoolean |
-	FilterModelConditionDate
+	FilterModelConditionDate |
+	FilterModelConditionEnum
 )
 
 
@@ -130,6 +142,13 @@ type FilterModelConditionDate = {
 	value: string|null;
 	endValue?: string|null;
 }
+
+type FilterModelConditionEnum = {
+	type: ConditionTypesEnum|null,
+	value: string;
+}
+
+
 // --- conditions end ---
 
 
@@ -160,6 +179,10 @@ export type ConditionTypesDate = (
 	"between"
 )
 
+
+export type ConditionTypesEnum = (
+	"equals" | "not-equals"
+)
 
 
 

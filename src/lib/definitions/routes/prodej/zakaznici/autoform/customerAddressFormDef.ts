@@ -2,6 +2,10 @@ import { z } from "zod";
 import type { AutoFormType } from '$lib/types/components/form/autoform';
 import { v4 as uuidv4 } from 'uuid';
 import * as m from '$lib/paraglide/messages.js'
+import {getDeliveryCountryCodes, getDeliveryCountryCodesWithName} from "$lib/utils/dropdowns/countryCodes";
+import {getPaymentTypeCode, getPaymentTypeWithName} from "$lib/utils/dropdowns/paymentTypeCode";
+import {getCustomerRanks, getCustomerRanksWithDescription} from "$lib/utils/dropdowns/customerRank";
+import {getRetailStoreTypeIdWithName} from "$lib/utils/dropdowns/retailStoreType";
 
 
 export const customerAddressDetailFormDef: AutoFormType = {
@@ -70,8 +74,8 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "dropdown",
 							field: "countryCode",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_country_code,
-							dropdownOptions: ["CZ", "SK", "PL"],
-							schema: z.enum(["CZ", "SK", "PL"]),
+							schema: z.string(),
+							asyncDropdownOptions: getDeliveryCountryCodesWithName,
 						},
 					]
 				}
@@ -132,8 +136,8 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "dropdown",
 							field: "paymentTypeCode",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_payment_type_code,
-							dropdownOptions: ["V", "A", "B", "C"],
-							schema: z.enum(["V", "A", "B", "C"]),
+							asyncDropdownOptions: getPaymentTypeWithName,
+							schema: z.string(),
 						},
 						{
 							type: "number",
@@ -167,15 +171,15 @@ export const customerAddressDetailFormDef: AutoFormType = {
 							type: "dropdown",
 							field: "customerRank",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_customer_rank,
-							dropdownOptions: ["A", "B", "C", "D", "E", "F"],
-							schema: z.enum(["A", "B", "C", "D", "E", "F"]),
+							asyncDropdownOptions: getCustomerRanksWithDescription,
+							schema: z.string(),
 						},
 						{
 							type: "dropdown",
 							field: "retailStoreTypeId",
 							translation: m.routes_prodej_zakaznici_address_detail_form_input_retail_store_type_id,
-							dropdownOptions: ["1", "2", "3", "4", "5"],
-							schema: z.enum(["1", "2", "3", "4", "5"]),
+							asyncDropdownOptions: getRetailStoreTypeIdWithName,
+							schema: z.string(),
 						},
 					]
 				},

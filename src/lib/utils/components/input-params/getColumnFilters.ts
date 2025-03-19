@@ -78,6 +78,12 @@ export function getColumnFilters(columnFilters: ColumnFilter[]|undefined) {
 					})
 				}
 
+				if (columnFilter.type === "enum") {
+					columnFilter.filterModel.conditions.forEach((condition) => {
+						cleanedConditions.push(condition);
+					})
+				}
+
 				if (cleanedConditions.length > 0) {
 					let cleanedColumnFilter = columnFilter;
 

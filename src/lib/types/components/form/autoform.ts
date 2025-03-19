@@ -34,6 +34,7 @@ export type AutoFormInput = {
 	translation: () => string;
 	type: "text" | "number" | "checkbox" | "date" | "dropdown",
 	dropdownOptions?: string[],
+	asyncDropdownOptions?: () => Promise<string[]>,
 	schema: z.ZodType
 }
 

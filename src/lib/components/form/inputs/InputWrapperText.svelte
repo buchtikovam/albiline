@@ -59,7 +59,7 @@
 			disabled={disable}
 			class={`
 				${hasError ? "focus-visible:border-red-600 " : ""}
-				h-[36px] disabled:bg-slate-50 disabled:cursor-not-allowed w-full border border-border rounded-md text-sm px-2 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`
+				h-10 disabled:bg-slate-50 disabled:cursor-not-allowed w-full border border-border rounded-md text-sm px-3 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-albi-500`
 			}
 		>
 

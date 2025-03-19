@@ -4,6 +4,8 @@ import type { AutoFormType } from '$lib/types/components/form/autoform';
 import Repeat from 'lucide-svelte/icons/repeat';
 import * as m from '$lib/paraglide/messages.js'
 import {dateRegex} from "$lib/regex/dateRegex";
+import {getInvoiceCountryCodesWithName} from "$lib/utils/dropdowns/countryCodes";
+import {getPaymentTypeWithName} from "$lib/utils/dropdowns/paymentTypeCode";
 
 
 export const customerDetailFormDef: AutoFormType = {
@@ -58,8 +60,8 @@ export const customerDetailFormDef: AutoFormType = {
 							field: "countryCode",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_country_code,
 							type: "dropdown",
-							dropdownOptions: ["CZ", "SK", "PL"],
-							schema: z.enum(["CZ", "SK", "PL"]),
+							asyncDropdownOptions: getInvoiceCountryCodesWithName,
+							schema: z.string(),
 						},
 					]
 				},
@@ -112,8 +114,8 @@ export const customerDetailFormDef: AutoFormType = {
 							type: "dropdown",
 							field: "paymentTypeCode",
 							translation: m.routes_prodej_zakaznici_customer_detail_form_input_payment_type_code,
-							dropdownOptions: ["V", "A", "B", "C"],
-							schema: z.enum(["V", "A", "B", "C"]),
+							asyncDropdownOptions: getPaymentTypeWithName,
+							schema: z.string(),
 						},
 						{
 							type: "number",

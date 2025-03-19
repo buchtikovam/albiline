@@ -15,89 +15,59 @@
 
 	interface Props {
 		value: string;
-		formInput: AutoFormInput;
-		addToEditedFormData: (newValue: any, initialValue: any) => void;
+		asyncDropdownOptions?: () => Promise<string[]>; // Optional async function
+		dropdownOptions?: string[]; // Corrected type to string[]
 	}
-
 
 	let {
-		value,
-		formInput,
-		addToEditedFormData
+		value = $bindable(),
+		asyncDropdownOptions,
+		dropdownOptions
 	}: Props = $props();
 
+	let dropdownValue = $state(value);
+	let options: string[] = $state([]); // Initialize options as an empty array
 
-	let dropdownValue = $state("");
-	let hasError = $state(false);
-	let errorMessage = $state("");
-	let options: string[] = $state([]);
-	let changed = $state(false)
-
-
+	// Initialize dropdownValue if value is empty
 	if (!value) {
-		dropdownValue = "‎"
+		dropdownValue = "‎";
 	}
 
+	// Fetch options on mount
+	onMount(async () => {
+		console.log("mount");
 
+		if (typeof asyncDropdownOptions === "function") {
+			try {
+				options = await asyncDropdownOptions(); // Resolve the promise
+			} catch (error) {
+				console.error("Failed to fetch async options:", error);
+			}
+		} else if (dropdownOptions) {
+			options = dropdownOptions; // Use static options
+		}
+	});
+
+
+	// Effect to handle dropdownValue changes
 	$effect(() => {
 		if (dropdownValue) {
 			value = dropdownValue;
 
-			if (formInput.asyncDropdownOptions) {
-				value = dropdownValue.split("-")[0]
-			} else {
-				value = dropdownValue;
+			if (typeof asyncDropdownOptions === "function") {
+				value = dropdownValue.split("-")[0]; // Handle async case
 			}
 
-			if (changed) validateDropdownSchema(value);
-
-		}
-
-	})
-
-
-	onMount(async () => {
-		if (formInput.asyncDropdownOptions) {
-			options = await formInput.asyncDropdownOptions();
-		}
-
-		if (formInput.dropdownOptions) {
-			options = formInput.dropdownOptions;
-		}
-	})
-
-
-
-	function validateDropdownSchema(selectedValue: any) {
-		try {
-			if (formInput.asyncDropdownOptions) {
-				if (options.length > 0) {
-					console.log(selectedValue)
-
-					const strippedOptions = options.map((option: any) => option.split("-")[0])
-
-					z.enum(strippedOptions).parse(selectedValue);
-				}
-			} else {
-				formInput.schema.parse(selectedValue);
+			if (dropdownOptions) {
+				value = dropdownValue; // Handle static case
 			}
-
-			hasError = false;
-			errorMessage = "";
-			addToEditedFormData(selectedValue, value);
-		} catch (e) {
-			console.log(e)
-			hasError = true;
-			errorMessage = e.issues[0].message;
-			addToEditedFormData(selectedValue, value);
-			console.log(e);
 		}
-	}
+	});
 
 
+	// Popover logic
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
-
 
 	function closeAndFocusTrigger() {
 		open = false;
@@ -106,7 +76,7 @@
 		});
 	}
 
-
+	// Dynamic width logic
 	let buttonWidth = $state(0);
 
 	$effect(() => {
@@ -116,10 +86,10 @@
 			};
 
 			updateWidth();
-			window.addEventListener('resize', updateWidth);
+			window.addEventListener("resize", updateWidth);
 
 			return () => {
-				window.removeEventListener('resize', updateWidth);
+				window.removeEventListener("resize", updateWidth);
 			};
 		}
 	});
@@ -127,18 +97,13 @@
 
 
 
-<div class="w-full flex flex-col">
-	<InputLabelWithContext
-		contextMenuField={formInput.field}
-		label={formInput.translation()}
-	/>
-
+<div class="w-full ">
 	<Popover.Root bind:open>
 		<Popover.Trigger bind:ref={triggerRef}>
 			{#snippet child({ props })}
 				<Button
 					variant="outline"
-					class={`w-full !h-10 justify-between font-normal px-3 hover:bg-muted/50 ${hasError ? "border-red-500 " : ""}`}
+					class={`w-full !h-10 justify-between font-normal px-3 hover:bg-muted/50`}
 					{...props}
 					role="combobox"
 					aria-expanded={open}
@@ -170,7 +135,6 @@
 									value={option}
 									onSelect={() => {
 										dropdownValue = option;
-										changed = true;
 										closeAndFocusTrigger();
 									}}
 								>
@@ -187,8 +151,4 @@
 			</Popover.Content>
 		{/if}
 	</Popover.Root>
-
-	<p class="text-xs text-red-700 w-full">
-		{errorMessage}
-	</p>
 </div>

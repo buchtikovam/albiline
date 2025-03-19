@@ -16,3 +16,13 @@ export async function getRetailStoreTypeName() {
 		return [];
 	}
 }
+
+export async function getRetailStoreTypeIdWithName() {
+	try {
+		const response = await apiServiceGETHandled('dropdowns/retailStoreType');
+		return response.data.items.map((item: RetailStoreType) => item.retailStoreTypeId + " - " + item.retailStoreTypeName);
+	} catch (error) {
+		console.error('Error fetching retail store type name:', error);
+		return [];
+	}
+}

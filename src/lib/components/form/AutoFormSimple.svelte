@@ -4,6 +4,9 @@
 	import CheckboxWrapper from '$lib/components/form/inputs/CheckboxWrapper.svelte';
 	import InputWrapperText from '$lib/components/form/inputs/InputWrapperText.svelte';
 	import InputWrapperNumber from '$lib/components/form/inputs/InputWrapperNumber.svelte';
+	import DropdownWrapper from "$lib/components/form/inputs/DropdownWrapper.svelte";
+	import DateWrapper from "$lib/components/form/inputs/DateWrapper.svelte";
+	import EmptyField from "$lib/components/form/inputs/EmptyField.svelte";
 
 	interface Props {
 		autoform: AutoFormSimpleType;
@@ -55,6 +58,43 @@
 									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
 								}
 							/>
+						{/if}
+
+						{#if input.type === "dropdown"}
+							<DropdownWrapper
+								formInput={input}
+								value={formValues[input.field]}
+								addToEditedFormData={
+									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+								}
+							/>
+						{/if}
+
+
+						{#if input.type === "date"}
+							<DateWrapper
+								formInput={input}
+								value={formValues[input.field]}
+								addToEditedFormData={
+									(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+								}
+							/>
+						{/if}
+
+						{#if input.type === "checkbox"}
+							<div class="mt-5 w-full">
+								<CheckboxWrapper
+									formInput={input}
+									value={formValues[input.field]}
+									addToEditedFormData={
+										(newValue, initialValue) => updateFormValues(newValue, initialValue, input.field)
+									}
+								/>
+							</div>
+						{/if}
+
+						{#if input.type === "empty"}
+							<EmptyField/>
 						{/if}
 					{/each}
 				</FormInputSection>

@@ -8,7 +8,7 @@ interface CountryCode {
 }
 
 
-export async function getDeliveryCountryCodes() {
+export async function getDeliveryCountryCodes(): Promise<string[]> {
 	try {
 		const response = await apiServiceGETHandled('dropdowns/deliveryCountryCodes');
 		return response.data.items.map((item: CountryCode) => item.countryCode);
@@ -19,12 +19,35 @@ export async function getDeliveryCountryCodes() {
 }
 
 
-export async function getInvoiceCountryCodes() {
+export async function getDeliveryCountryCodesWithName(): Promise<string[]> {
+	try {
+		const response = await apiServiceGETHandled('dropdowns/deliveryCountryCodes');
+		return response.data.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
+	} catch (error) {
+		console.error('Error fetching delivery country codes:', error);
+		return [];
+	}
+}
+
+
+
+export async function getInvoiceCountryCodes(): Promise<string[]> {
 	try {
 		const response = await apiServiceGETHandled('dropdowns/invoiceCountryCodes');
 		return response.data.items.map((item: CountryCode) => item.countryCode);
 	} catch (error) {
 		console.error('Error fetching invoice country codes:', error);
+		return [];
+	}
+}
+
+
+export async function getInvoiceCountryCodesWithName(): Promise<string[]> {
+	try {
+		const response = await apiServiceGETHandled('dropdowns/invoiceCountryCodes');
+		return response.data.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
+	} catch (error) {
+		console.error('Error fetching delivery country codes:', error);
 		return [];
 	}
 }

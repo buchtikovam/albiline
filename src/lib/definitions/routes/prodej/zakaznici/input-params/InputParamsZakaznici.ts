@@ -1,5 +1,7 @@
 import type {InputParamsSelectOption, InputParamsType} from "$lib/types/components/input-params/inputParams";
 import * as m from '$lib/paraglide/messages.js'
+import {getDeliveryCountryCodesWithName} from "$lib/utils/dropdowns/countryCodes";
+import {getCustomerRanksWithDescription} from "$lib/utils/dropdowns/customerRank";
 
 
 export const InputParamsZakaznici: InputParamsType = {
@@ -64,12 +66,14 @@ export const InputParamsZakazniciSelectOptions: InputParamsSelectOption[] = [
 	{
 		field: "countryCode",
 		label: m.routes_prodej_zakaznici_table_column_country_code,
-		type: "text",
+		type: "enum",
+		asyncDropdownOptions: getDeliveryCountryCodesWithName,
 	},
 	{
 		field: "customerRank",
 		label: m.routes_prodej_zakaznici_table_column_customer_rank,
-		type: "text",
+		type: "enum",
+		asyncDropdownOptions: getCustomerRanksWithDescription,
 	},
 	{
 		field: "isBadPayer",
@@ -109,7 +113,7 @@ export const InputParamsZakazniciSelectOptions: InputParamsSelectOption[] = [
 	{
 		field: "paymentTypeCode",
 		label: m.routes_prodej_zakaznici_table_column_payment_type_code,
-		type: "text",
+		type: "enum",
 	},
 	{
 		field: "dueDays",
@@ -124,7 +128,7 @@ export const InputParamsZakazniciSelectOptions: InputParamsSelectOption[] = [
 	{
 		field: "retailStoreTypeName",
 		label: m.routes_prodej_zakaznici_table_column_retail_store_type_name,
-		type: "text",
+		type: "enum",
 	},
 	{
 		field: "areaId",
@@ -159,7 +163,7 @@ export const InputParamsZakazniciSelectOptions: InputParamsSelectOption[] = [
 	{
 		field: "i_CountryCode",
 		label: m.routes_prodej_zakaznici_table_column_i_country_code,
-		type: "text",
+		type: "enum",
 	},
 	{
 		field: "note",

@@ -14,6 +14,7 @@
 	import DateRangePicker from "$lib/components/date/DateRangePicker.svelte";
 	import ColumnFilterTypeNumber from "$lib/components/input-params/column-filters/ColumnFilterTypeNumber.svelte";
 	import {isMobile} from "$lib/runes/page.svelte.js";
+	import ColumnFilterTypeEnum from "$lib/components/input-params/column-filters/ColumnFilterTypeEnum.svelte";
 
 
 	interface Props {
@@ -26,6 +27,9 @@
 		columnFilter = $bindable()
 	}: Props = $props();
 
+
+	let dropdownOptions: string[]|undefined = $state();
+	let asyncDropdownOptions: (() => Promise<string[]>)|undefined = $state();
 
 	$effect(() => {
 		if (columnFilter) {
@@ -52,6 +56,8 @@
 					<InputDialogColumnFilterFieldSelect
 						bind:columnFilter={columnFilter}
 						selectOptions={selectOptions}
+						bind:dropdownOptions={dropdownOptions}
+						bind:asyncDropdownOptions={asyncDropdownOptions}
 					/>
 
 					{#if columnFilter.filterModel.operator}
@@ -66,6 +72,8 @@
 				<InputDialogColumnFilterFieldSelect
 					bind:columnFilter={columnFilter}
 					selectOptions={selectOptions}
+					bind:dropdownOptions={dropdownOptions}
+					bind:asyncDropdownOptions={asyncDropdownOptions}
 				/>
 			{/if}
 		</div>
@@ -145,7 +153,11 @@
 
 				{#if columnFilter.type === "enum"}
 					<div class="w-full">
-						.
+						<ColumnFilterTypeEnum
+							bind:value={condition.value}
+							dropdownOptions={dropdownOptions}
+							asyncDropdownOptions={asyncDropdownOptions}
+						/>
 					</div>
 				{/if}
 			</div>
@@ -155,7 +167,7 @@
 				bind:columnFilter={columnFilter}
 				index={i}
 			/>
-		{:else }
+		{:else}
 			<div class="flex gap-1.5">
 				<div class="min-w-10">
 					<InputDialogOperatorSelect
@@ -218,7 +230,11 @@
 
 					{#if columnFilter.type === "enum"}
 						<div class="w-full">
-							.
+							<ColumnFilterTypeEnum
+								value={condition.value}
+								dropdownOptions={dropdownOptions}
+								asyncDropdownOptions={asyncDropdownOptions}
+							/>
 						</div>
 					{/if}
 				</div>

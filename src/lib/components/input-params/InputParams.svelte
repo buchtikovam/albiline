@@ -260,7 +260,7 @@
 	<div class="overflow-auto pb-2">
 		{#if inputDialog.fulltext !== undefined}
 			<p class="mb-2 text-albi-500 text-sm font-bold">
-				{ m.components_input_params_section_fulltext() }
+				{m.components_input_params_section_fulltext()}
 			</p>
 
 			<Input
@@ -296,7 +296,6 @@
 					{/each}
 				{/if}
 			</div>
-
 		{/if}
 
 		{#if inputDialog.columnFilters !== undefined}
