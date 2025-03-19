@@ -97,5 +97,8 @@
 
 
 
-<SidebarCommand items={allItems} bind:isSidebarCommandOpen />
+<SidebarCommand
+	items={allItems}
+	bind:isSidebarCommandOpen 
+/>
 
