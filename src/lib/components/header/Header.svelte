@@ -13,7 +13,7 @@
 
 
 <div
-	class="flex justify-between px-4 pt-4 pb-2 md:pt-2 "
+	class="h-8 "
 >
 	<HeaderTabs/>
 
@@ -40,7 +40,7 @@
 			</div>
 		{/if}
 
-		<Avatar />
+<!--		<Avatar />-->
 	</div>
 </div>
 

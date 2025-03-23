@@ -142,13 +142,19 @@
 	::-webkit-scrollbar {
 		width: 8px;
 		height: 8px;
+		@apply border-2 border-slate-300;
+
 	}
 
 	/* Track */
+	::-webkit-scrollbar-track {
+		@apply bg-slate-50;
 
+	}
 	/* Handle */
 	::-webkit-scrollbar-thumb {
-		background: #ccd1d9;
+		background: var(--albi-500);
+		border-radius: 8px;
 	}
 }
 
@@ -158,6 +164,7 @@
 
 @media screen and (max-width: 768px) {
 	::-webkit-scrollbar {
-		height: 0px;
+		height: 0;
+		width: 0;
 	}
 }

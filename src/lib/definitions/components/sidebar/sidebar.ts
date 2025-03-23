@@ -9,16 +9,16 @@ import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 
 
 export const allItems: SidebarItem[] = [
-	{
-		field: 'pruvodni_list',
-		href: '/pruvodni-list',
-		open: false,
-		hide: false,
-		disabled: false,
-		translation: m.components_sidebar_item_pruvodni_list,
-		icon: TableProperties,
-		children: [],
-	},
+	// {
+	// 	field: 'pruvodni_list',
+	// 	href: '/pruvodni-list',
+	// 	open: false,
+	// 	hide: false,
+	// 	disabled: false,
+	// 	translation: m.components_sidebar_item_pruvodni_list,
+	// 	icon: TableProperties,
+	// 	children: [],
+	// },
 	{
 		field: 'sklad',
 		open: false,

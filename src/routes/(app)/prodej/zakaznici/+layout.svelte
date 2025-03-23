@@ -50,9 +50,9 @@
 >
 	<Tabs.Root
 		value={activeTab}
-		class="w-full h-8 overflow-auto rounded-md md:w-fit mb-2"
+		class="w-full h-8 overflow-auto  md:w-fit mb-2"
 	>
-		<Tabs.List class="h-8">
+		<Tabs.List class="h-8 bg-white border border-slate-300">
 			<Tabs.Trigger
 				class="font-bold"
 				disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
@@ -63,7 +63,6 @@
 			>
 				{m.routes_prodej_zakaznici_tabs_list()}
 			</Tabs.Trigger>
-			<TabSeparator color="primary"/>
 
 			<Tabs.Trigger
 				class="font-bold"
@@ -75,7 +74,6 @@
 			>
 				{m.routes_prodej_zakaznici_tabs_address_detail()}
 			</Tabs.Trigger>
-			<TabSeparator color="primary"/>
 
 			<Tabs.Trigger
 				class="font-bold"
@@ -102,7 +100,7 @@
 				class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible"
 			>
 				<Input
-					class="xl:w-80 lg:w-60 w-40 h-[31px] border border-white focus-visible:border-albi-500"
+					class="xl:w-80 lg:w-60 w-40 h-[31px] border border-slate-300 focus-visible:border-albi-500"
 					placeholder={m.components_header_search_placeholder()}
 					type="search"
 					bind:value={fulltextFilterValue.value}
@@ -113,7 +111,7 @@
 
 </div>
 
-<div class="h-full bg-white rounded-lg">
+<div class="h-full bg-white rounded-lg border border-slate-300">
 	{@render children?.()}
 </div>
 

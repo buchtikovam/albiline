@@ -7,7 +7,7 @@
 	import Header from '$lib/components/header/Header.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import BetterSidebar from "$lib/components/sidebar/BetterSidebar.svelte";
+	import BetterSidebar from "$lib/components/sidebar/better/BetterSidebar.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
@@ -36,33 +36,33 @@
 
 <div>
 	<Tooltip.Provider delayDuration={300}>
-		<div class="h-dvh w-dvh bg-albi-50">
-			<div class="flex h-dvh flex-col mt-2">
-<!--				<header class="">-->
-<!--					<Header />-->
-<!--				</header>-->
+		<div class="h-dvh w-dvh bg-slate-100">
+			<Sidebar.Provider>
+				<BetterSidebar />
 
-				<div class="flex flex-row flex-1 pb-4">
-					<div class="hidden md:block pl-4">
-<!--						<Sidebar/>-->
+				<div
+					class="py-2 pr-2 flex flex-col gap-2 flex-1"
+				>
+					<div
+						class="flex items-center gap-2"
+					>
+						<Sidebar.Trigger
+							class="bg-white size-8 border border-slate-300"
+						/>
 
-						<Sidebar.Provider>
-							<BetterSidebar />
-							<Sidebar.Trigger />
-						</Sidebar.Provider>
+						<Header/>
 					</div>
 
-					<main class="flex flex-1 flex-col rounded-l-md">
-						<div>
-							<Ribbon />
-						</div>
+					<div>
+						<Ribbon />
+					</div>
 
-						<div class="flex flex-col flex-1 rounded-lg md:p-2 md:pr-4 md:pb-0 px-4">
-							{@render children?.()}
-						</div>
+					<main class=" w-full flex-1 rounded-lg">
+						{@render children?.()}
 					</main>
 				</div>
-			</div>
+
+			</Sidebar.Provider>
 		</div>
 	</Tooltip.Provider>
 

@@ -24,8 +24,8 @@
 
 
 <div class={`
-	${ribbonOpen.value ? "h-[58px]" : "h-8"} mx-4 mb-2 p-1.5 rounded-lg bg-white flex justify-between
-	md:mx-2 md:my-0 md:p-2 md:mr-4 transition-all duration-300
+	${ribbonOpen.value ? "h-[58px]" : "h-8"} p-1.5 rounded-lg bg-white flex border border-slate-300 justify-between
+	transition-all duration-300
 `}>
 	<div class="flex gap-0.5 items-center w-full overflow-x-auto">
 		{#each filteredRibbonItems as ribbonItem}
@@ -51,7 +51,7 @@
 						(ribbonOpen.value
 							? "min-h-[20px]"
 							: "min-h-[12px]")
-							+ " mx-1.5 md:mx-2.5 bg-albi-200 w-[2px]"
+							+ " mx-1.5 md:mx-2.5 bg-albi-500 w-[2px]"
 						}
 					/>
 				{/if}

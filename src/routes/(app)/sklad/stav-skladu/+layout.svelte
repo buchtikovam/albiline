@@ -31,9 +31,9 @@
 >
 	<Tabs.Root
 		value={activeTab}
-		class="w-full h-8 overflow-auto rounded-md md:w-fit mb-2"
+		class="w-full h-8 overflow-auto  md:w-fit mb-2"
 	>
-		<Tabs.List class="h-8">
+		<Tabs.List class="h-8 bg-white border border-slate-300">
 			<Tabs.Trigger
 				class="font-bold"
 				disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
@@ -44,8 +44,6 @@
 			>
 				Seznam
 			</Tabs.Trigger>
-
-			<TabSeparator color="primary"/>
 		</Tabs.List>
 	</Tabs.Root>
 
