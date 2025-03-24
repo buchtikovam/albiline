@@ -15,7 +15,7 @@
 </script>
 
 
-<div class="w-full h-full rounded-lg bg-white p-4">
+<div class="w-full h-full rounded-lg bg-white border border-slate-300 p-4">
 	<Button
 		class="w-fit"
 		onclick={() => openChangePasswordDialog = true}

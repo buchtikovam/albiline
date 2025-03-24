@@ -39,7 +39,9 @@
 				</button>
 			</Tooltip.Trigger>
 
-			<Tooltip.Content>
+			<Tooltip.Content
+				side="bottom"
+			>
 				{'components.ribbon.' + ribbonItem.field}
 			</Tooltip.Content>
 		</Tooltip.Root>

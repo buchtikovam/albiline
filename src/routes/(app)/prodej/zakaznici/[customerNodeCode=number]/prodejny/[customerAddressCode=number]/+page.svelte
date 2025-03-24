@@ -38,6 +38,7 @@
 	import NewCustomerContactDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte";
 	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
 
 	interface Props {
@@ -187,11 +188,10 @@
 
 
 
-
-<MaxWidthScrollableDetailContainer>
-	<div class="flex flex-col mb-3">
+<div class="p-4 ">
+	<div class="flex flex-col ">
 		<!-- header -->
-		<div class="flex justify-between">
+		<div class="flex justify-between mb-2">
 			<!-- page label + get addresses button -->
 			<div class="flex gap-1.5">
 				{#if isMobile.value}
@@ -253,65 +253,74 @@
 
 
 	<!-- page content -->
-	{#each pageLayout as item (item.id)}
-		<div animate:flip={{ duration: 300 }} >
-			<!-- address detail form -->
-			{#if item.type === "form"}
-				<div
-					class={(item.isLast ? "-mb-2" : "")}
-				>
-					<AutoForm
-						bind:formDef={autoformDef}
-						allowCrossColumnDND={true}
-						bind:editedFormValues={editedFormValues}
-						initialFormValues={initialFormValues}
-					/>
-				</div>
-			{/if}
-
-			<!-- address contacts table: display all, add new, move table up/down -->
-			{#if item.type === "contacts"}
-				<div
-					class={(item.isLast ? "mb-2" : "mb-4")}
-				>
-					<div class="flex gap-2 pb-2">
-						<SectionLabel
-							label={m.routes_prodej_zakaznici_detail_contacts_label()}
+	<div class="">
+		{#each pageLayout as item (item.id)}
+			<div animate:flip={{ duration: 300 }} >
+				<!-- address detail form -->
+				{#if item.type === "form"}
+					<div
+						class={(item.isLast ? "-mb-2" : "")}
+					>
+						<AutoForm
+							bind:formDef={autoformDef}
+							allowCrossColumnDND={true}
+							bind:editedFormValues={editedFormValues}
+							initialFormValues={initialFormValues}
 						/>
-
-						<button
-							id="contacts"
-							onclick={() => pageLayout = flipItems(pageLayout)}
-						>
-							<ArrowUpDown class="size-4 text-albi-500"/>
-						</button>
-
-						<button
-							onclick={() => openNewContactDialog = true}
-						>
-							<Plus
-								strokeWidth={2.5}
-								class="text-albi-500 size-4"
-							/>
-						</button>
 					</div>
+				{/if}
 
-					<!-- contacts table -->
-					<AgGridCSSecondaryWrapper
-						requiredFields={["customerPersonCode"]}
-						rowData={contactValues}
-						fullHeight={false}
-						hiddenHeader={false}
-						headerTranslations={customerAndAddressContactsHeaderTranslations}
-						gridOptionsCustom={customerAndAddressContactsGridOptions}
-						bind:createdRowData={createdContacts}
-						bind:editedRowData={editedContactValues}
-					/>
-				</div>
-			{/if}
-		</div>
-	{/each}
-</MaxWidthScrollableDetailContainer>
+				<!-- address contacts table: display all, add new, move table up/down -->
+				{#if item.type === "contacts"}
+					<div
+						class={(item.isLast ? "mb-2" : "mb-4")}
+					>
+						<div class="flex gap-2 pb-2">
+							<SectionLabel
+								label={m.routes_prodej_zakaznici_detail_contacts_label()}
+							/>
+
+							<button
+								id="contacts"
+								onclick={() => pageLayout = flipItems(pageLayout)}
+							>
+								<ArrowUpDown class="size-4 text-albi-500"/>
+							</button>
+
+							<button
+								onclick={() => openNewContactDialog = true}
+							>
+								<Plus
+									strokeWidth={2.5}
+									class="text-albi-500 size-4"
+								/>
+							</button>
+						</div>
+
+						<!-- contacts table -->
+						<AgGridCSSecondaryWrapper
+							requiredFields={["customerPersonCode"]}
+							rowData={contactValues}
+							fullHeight={false}
+							hiddenHeader={false}
+							headerTranslations={customerAndAddressContactsHeaderTranslations}
+							gridOptionsCustom={customerAndAddressContactsGridOptions}
+							bind:createdRowData={createdContacts}
+							bind:editedRowData={editedContactValues}
+						/>
+					</div>
+				{/if}
+			</div>
+		{/each}
+	</div>
+
+
+</div>
+
+
+
+
+
 
 
 <!-- display all customer addresses, select new active -->

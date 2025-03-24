@@ -2,7 +2,7 @@
 	import FormContainer from "$lib/components/form/containers/FormContainer.svelte";
 </script>
 
-<div class="w-full h-full rounded-lg bg-white p-4">
+<div class="w-full h-full rounded-lg bg-white border border-slate-300 p-4">
 	<div class="w-1/2">
 		<p>Výchozí zobrazení</p>
 

@@ -12,7 +12,7 @@
 </script>
 
 
-<div class="max-h-[22px] w-7 flex items-center rounded border ">
+<div class="max-h-[18px] w-6 flex items-center rounded border ">
 	{#if language === "cz"}
 		<Cz class="w-7  "/>
 	{/if}

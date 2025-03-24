@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {sidebarCategory} from "$lib/runes/sidebar.svelte";
 	import {useSidebar} from "$lib/components/ui/sidebar";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import Clock2 from "lucide-svelte/icons/clock-2";
@@ -8,7 +9,7 @@
 	import * as Collapsible from "$lib/components/ui/collapsible";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 
-	let categories: { name: string; value: string, icon: any}[] = [
+	let categories: { name: string; value: "all"|"recent"|"favorite", icon: any}[] = [
 		{
 			name: "Všechny",
 			value: "all",
@@ -26,7 +27,19 @@
 		}
 	];
 
-	let activeCategory = $state(categories[0])
+
+	let activeCategory = $derived.by(() => {
+		let foundCategory;
+
+		categories.forEach(category => {
+			if (category.value === sidebarCategory.value) {
+				foundCategory = category;
+			}
+		})
+
+		return foundCategory ? foundCategory : categories[0];
+	})
+
 	const sidebar = useSidebar();
 </script>
 
@@ -41,18 +54,24 @@
 						size="lg"
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
-						<div
-							class="bg-sidebar-primary text-white flex aspect-square size-8 min-w-8 bg-albi-500 items-center justify-center rounded-lg"
-						>
-							<activeCategory.icon class="size-4" />
-						</div>
+						{@const Icon = activeCategory.icon}
+
+						{#key activeCategory.icon}
+							<div
+								class="bg-sidebar-primary text-white flex aspect-square size-8 min-w-8 bg-albi-500 items-center justify-center rounded-lg"
+							>
+								<Icon class="size-4" />
+							</div>
+						{/key}
 
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">
 								Albiline 2.0
 							</span>
 
-							<span class="truncate text-xs">{activeCategory.name}</span>
+							<span class="truncate text-xs">
+								{activeCategory.name}
+							</span>
 						</div>
 
 						<ChevronsUpDown class="ml-auto" />
@@ -73,15 +92,17 @@
 					Zobrazit
 				</DropdownMenu.Label>
 
-				{#each categories as category (category.name)}
+				{#each categories as category}
 					<DropdownMenu.Item
-						onSelect={() => (activeCategory = category)}
+						onSelect={() => (sidebarCategory.value = category.value)}
 						class="gap-2 p-2"
 					>
+						{@const Icon = category.icon}
+
 						<div
 							class="flex size-6 items-center justify-center rounded-sm border"
 						>
-							<category.icon class="size-4 shrink-0" />
+							<Icon class="size-4 shrink-0" />
 						</div>
 
 						{category.name}

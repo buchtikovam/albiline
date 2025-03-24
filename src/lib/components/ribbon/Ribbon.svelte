@@ -24,8 +24,7 @@
 
 
 <div class={`
-	${ribbonOpen.value ? "h-[58px]" : "h-8"} p-1.5 rounded-lg bg-white flex border border-slate-300 justify-between
-	transition-all duration-300
+	${ribbonOpen.value ? "h-[58px]" : "h-8"} p-1.5 rounded-lg bg-white flex border border-slate-300 justify-between transition-all duration-200 ease-linear
 `}>
 	<div class="flex gap-0.5 items-center w-full overflow-x-auto">
 		{#each filteredRibbonItems as ribbonItem}
@@ -49,9 +48,9 @@
 				{#if ribbonItem.type === RibbonTypeEnum.SEPARATOR}
 					<Separator orientation="vertical" class={
 						(ribbonOpen.value
-							? "min-h-[20px]"
-							: "min-h-[12px]")
-							+ " mx-1.5 md:mx-2.5 bg-albi-500 w-[2px]"
+							? "min-h-[20px] "
+							: "min-h-[12px] ")
+							+ "mx-1.5 md:mx-2.5 bg-slate-200 w-[2px] transition-all duration-200 ease-linear"
 						}
 					/>
 				{/if}
@@ -65,9 +64,13 @@
 		class="overflow-visible"
 	>
 		{#if ribbonOpen.value}
-			<ChevronUp class="size-4 bg-background text-albi-500" />
+			<ChevronUp
+				class="size-4 bg-background text-albi-500"
+			/>
 		{:else}
-			<ChevronDown class="size-4 bg-background text-albi-500" />
+			<ChevronDown
+				class="size-4 bg-background text-albi-500"
+			/>
 		{/if}
 	</button>
 </div>

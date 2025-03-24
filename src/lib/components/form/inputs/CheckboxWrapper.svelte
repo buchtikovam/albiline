@@ -44,7 +44,7 @@
 <div class="w-full flex flex-col">
 	<div class="flex items-center gap-1.5">
 		<Checkbox
-			class={(hasError ? "data-[state=checked]:border-red-600" : "data-[state=checked]:border-border") + " focus-visible:border-albi-500"}
+			class={(hasError ? "data-[state=checked]:border-red-600" : "data-[state=checked]:border-slate-300") + " focus-visible:border-albi-500"}
 			bind:checked={checkedValue}
 			disabled={disable}
 			onclick={() => validateBoolean()}

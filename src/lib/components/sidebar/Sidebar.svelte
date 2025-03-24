@@ -76,7 +76,7 @@
 
 		<div class="flex-1 flex flex-col">
 			<Input
-				class="h-8 mb-2 focus-visible:ring-0 border-border"
+				class="h-8 mb-2 focus-visible:ring-0 border-slate-300"
 				placeholder={m.components_sidebar_search_placeholder()}
 				type="search"
 				bind:value={searchTerm}

@@ -34,7 +34,7 @@
 			<Icon class="size-4 mx-auto muted-foreground" />
 		</Tooltip.Trigger>
 
-		<Tooltip.Content side="top">
+		<Tooltip.Content side="bottom">
 			{ ribbonItem.translation() }
 		</Tooltip.Content>
 	</Tooltip.Root>

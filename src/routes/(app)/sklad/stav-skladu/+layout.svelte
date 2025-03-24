@@ -10,6 +10,9 @@
 	import TabSeparator from "$lib/components/tabs/TabSeparator.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
+	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
+	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -26,50 +29,50 @@
 
 
 
-<div
-	class="w-full flex items-center justify-between"
->
-	<Tabs.Root
-		value={activeTab}
-		class="w-full h-8 overflow-auto  md:w-fit mb-2"
-	>
-		<Tabs.List class="h-8 bg-white border border-slate-300">
-			<Tabs.Trigger
-				class="font-bold"
-				disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
-				value={"0"}
-				onclick={() => {
-					goto(i18n.resolveRoute("/sklad/stav-skladu"))
-				}}
-			>
-				Seznam
-			</Tabs.Trigger>
-		</Tabs.List>
-	</Tabs.Root>
+<PageWrapper>
+	<TabFulltextWrapper>
+		<Tabs.Root
+			value={activeTab}
+			class="w-full md:w-fit"
+		>
+			<Tabs.List class="rounded-md border !border-slate-300">
+				<Tabs.Trigger
+					class="font-bold"
+					disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
+					value={"0"}
+					onclick={() => {
+						goto(i18n.resolveRoute("/sklad/stav-skladu"))
+					}}
+				>
+					Seznam
+				</Tabs.Trigger>
+			</Tabs.List>
+		</Tabs.Root>
 
 
-	<div class="flex gap-2">
-		<FilterAndPresetButtons
-			bind:table={table}
-			routeId="/(app)/sklad/stav-skladu"
-		/>
+		<div class="flex gap-2 items-center">
+			<FilterAndPresetButtons
+				bind:table={table}
+				routeId="/(app)/sklad/stav-skladu"
+			/>
 
-		{#if showFulltextSearch.value === true}
-			<div
-				class="hidden md:flex items-center pb-2 pr-[1px] overflow-visible"
-			>
-				<Input
-					class="xl:w-80 lg:w-60 w-40 h-[31px] border border-white focus-visible:border-albi-500"
-					placeholder={m.components_header_search_placeholder()}
-					type="search"
-					bind:value={fulltextFilterValue.value}
-				/>
-			</div>
-		{/if}
-	</div>
-</div>
+			{#if showFulltextSearch.value === true}
+				<div
+					class="hidden md:flex items-center h-8"
+				>
+					<Input
+						class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
+						placeholder={m.components_header_search_placeholder()}
+						type="search"
+						bind:value={fulltextFilterValue.value}
+					/>
+				</div>
+			{/if}
+		</div>
+	</TabFulltextWrapper>
 
 
-<div class="h-full bg-white rounded-lg">
-	{@render children?.()}
-</div>
+	<MainContentWrapper>
+		{@render children?.()}
+	</MainContentWrapper>
+</PageWrapper>

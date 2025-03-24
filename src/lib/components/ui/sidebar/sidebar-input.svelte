@@ -16,7 +16,7 @@
 	bind:value
 	data-sidebar="input"
 	class={cn(
-		"bg-background focus-visible:ring-sidebar-ring h-8 w-full shadow-none focus-visible:ring-2",
+		"bg-background h-8 w-full shadow-none border-slate-300 focus-visible:border-albi-500",
 		className
 	)}
 	{...restProps}

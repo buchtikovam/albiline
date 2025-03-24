@@ -1,4 +1,4 @@
-comp<script lang="ts">
+<script lang="ts">
 	import {Button} from '$lib/components/ui/button';
 	import {createCleanCustomerAddress} from "$lib/api/routes/customerService.svelte.js";
 	import type {CustomerAddressType} from '$lib/types/routes/prodej/zakaznci/customers';

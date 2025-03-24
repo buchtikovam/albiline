@@ -130,16 +130,7 @@
 		if (response.success) {
 			isSaveDialogOpen = false;
 
-			selectedParam = {
-				paramId: null, // TODO get obj from api
-				paramName: saveLabel,
-				paramValue: {
-					fulltext: inputDialog.fulltext,
-					inputs: inputDialog.inputs,
-					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
-				},
-			};
-
+			selectedParam = await response.data;
 			editedLabel = saveLabel;
 			saveLabel = "";
 
@@ -267,7 +258,7 @@
 				type="text"
 				bind:value={inputDialog.fulltext}
 				placeholder={m.components_input_params_fulltext_placeholder()}
-				class="border-border mb-4"
+				class="border-slate-300 mb-4"
 			/>
 		{/if}
 

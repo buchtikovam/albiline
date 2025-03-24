@@ -59,13 +59,13 @@
 	</div>
 
 	{#if inputType === "auth"}
-		<div class={`flex w-full rounded-lg border bg-albi-50 ${isFocused ? "border-albi-500 " : "border-white "}`}>
+		<div class={`flex w-full rounded-lg border bg-white ${isFocused ? "border-albi-500 " : "border-slate-300 "}`}>
 			<Input
 				oninput={(e) => validatePassword(e)}
 				onfocus={() => isFocused = true}
-				bind:value
 				onfocusout={() => isFocused = false}
-				class="bg-albi-50 placeholder:text-albi-300 h-12 font-bold text-albi-950 border-none"
+				bind:value
+				class="bg-white placeholder:text-slate-300 h-12 font-bold text-albi-950 border-none"
 				name={name}
 				type={visible ? "text" : "password"}
 				autocomplete="off"
@@ -79,9 +79,9 @@
 				onclick={() => visible = !visible}
 			>
 				{#if visible}
-					<EyeOff class="size-4 text-albi-300"/>
+					<EyeOff class="size-4 text-albi-500"/>
 				{:else }
-					<Eye class="size-4 text-albi-300"/>
+					<Eye class="size-4 text-albi-500"/>
 				{/if}
 			</button>
 		</div>
@@ -94,13 +94,13 @@
 	{:else}
 
 		<div
-			class={`flex w-full rounded-lg border bg-[#faffff]	${isFocused ? "border-albi-500 " : "border-border"}`}
+			class={`flex w-full rounded-lg border bg-white	${isFocused ? "border-albi-500 " : "border-slate-300"}`}
 		>
 			<Input
 				oninput={(e) => validatePassword(e)}
 				onfocus={() => isFocused = true}
 				onfocusout={() => isFocused = false}
-				class="bg-[#faffff] h-12 font-bold placeholder:text-slate-300 text-albi-950 border-none"
+				class="bg-white h-12 font-bold placeholder:text-slate-300 text-albi-950 border-none"
 				name={name}
 				type={visible ? "text" : "password"}
 				autocomplete="off"

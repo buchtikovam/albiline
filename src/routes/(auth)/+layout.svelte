@@ -10,6 +10,6 @@
 
 
 
-<div class="bg-albi-50 h-dvh w-dvh">
+<div class="bg-slate-100 h-dvh w-dvh">
 	{@render children?.()}
 </div>

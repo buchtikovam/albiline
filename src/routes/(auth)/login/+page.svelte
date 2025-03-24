@@ -32,7 +32,7 @@
 		<AlbiLogo />
 	</div>
 
-	<div class="w-full bg-[#faffff] rounded-2xl shadow max-w-lg">
+	<div class="w-full bg-white border border-slate-300 rounded-2xl shadow max-w-lg">
 		<div class="p-6 sm:p-8">
 			<h1 class="text-xl font-bold ">
 				{ m.routes_login_form_label() }
@@ -59,7 +59,7 @@
 				<div>
 					<Button
 						type="submit"
-						class="w-full bg-albi-500 rounded-lg h-12 text-[#faffff] font-bold"
+						class="w-full bg-albi-500 rounded-lg h-12 text-white font-bold"
 					>
 						{ m.routes_login_form_submit_button() }
 					</Button>

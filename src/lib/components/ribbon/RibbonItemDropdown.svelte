@@ -73,7 +73,7 @@
 						{@const Icon = ribbonItem.icon}
 
 						<Icon
-							class="size-4 "
+							class="size-4"
 						/>
 
 						<ChevronDown class="size-2 mr-0.5" />
@@ -97,7 +97,9 @@
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
-			<Tooltip.Content>
+			<Tooltip.Content
+				side="bottom"
+			>
 				{ ribbonItem.translation() }
 			</Tooltip.Content>
 		</Tooltip.Root>

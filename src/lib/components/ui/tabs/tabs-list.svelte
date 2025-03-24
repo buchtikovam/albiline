@@ -12,7 +12,8 @@
 <TabsPrimitive.List
 	bind:ref
 	class={cn(
-		"bg-albi-500 text-white inline-flex h-8 items-center justify-center rounded-md ",
+		"bg-white text-albi-950 inline-flex h-8 px-1 items-center justify-center rounded-md ",
+		// "bg-white text-albi-950 inline-flex h-8 px-0 items-center justify-center rounded-md ",
 		className
 	)}
 	{...restProps}

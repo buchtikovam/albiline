@@ -56,13 +56,13 @@
 		class="w-full h-8 overflow-auto  md:w-fit mb-2"
 		value={pathName}
 	>
-		<Tabs.List class="h-8 bg-white border border-slate-300">
+		<Tabs.List class="h-8 bg-white rounded-md border border-slate-300">
 			<Tabs.Trigger
 				value="/"
 				disabled={disabled}
 				onclick={() => goto(i18n.resolveRoute("/"))}
 			>
-				<Home class="size-4" />
+				<Home strokeWidth="2.5" class="size-4" />
 			</Tabs.Trigger>
 
 			{#each openedTabs.value as tab}
@@ -78,15 +78,17 @@
 					goto(i18n.resolveRoute(tab.url));
 				}}
 					onauxclick={(ev) => {
-					ev.preventDefault();
-					checkActiveTab();
-					if (ev.button === 1) {
-						deleteTab(tab);
-					}
-				}}
-					class="flex h-6 items-center font-bold"
+						ev.preventDefault();
+						checkActiveTab();
+
+						if (ev.button === 1) {
+							deleteTab(tab);
+						}
+					}}
+					class="flex items-center font-bold"
 				>
 					{ tab.label }
+
 					{#if (tab.closingState === 'block')}
 						<button transition:slide={{ axis: "x" }}>
 							<X

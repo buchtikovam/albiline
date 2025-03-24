@@ -70,7 +70,7 @@
 	<div
 		class={
 			`flex h-10 w-full md:pl-3 sm:pr-2 px-2 py-2 select-none items-center rounded-input border
-			${hasError ? "border-red-600" : "border-border"}
+			${hasError ? "border-red-600" : "border-slate-300"}
 			rounded-md bg-background px-2 py-3 text-sm tracking-[0.01em] text-foreground
 			focus-within:border-border-input-hover focus-within:shadow-date-field-focus
 			hover:border-border-input-hover`

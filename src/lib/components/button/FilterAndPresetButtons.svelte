@@ -62,7 +62,7 @@
 	{#if selectedTableFilter}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
-				class="size-8 border-none text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md"
+				class="size-8 text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md border border-slate-300"
 			>
 				<Filter
 					strokeWidth={2}
@@ -93,18 +93,18 @@
 						<DropdownMenu.Item
 							onclick={async () => {
 								if (selectedTableFilter) {
-									let response = await apiServicePUTHandled("userfilters", selectedTableFilter.filterId, {
-										filterId: selectedTableFilter.filterId,
-										filterName: selectedTableFilter.filterName,
-										filters: activeTableFilter
-									});
-
-									if (response.success) {
-										selectedTableFilter = {
+									let response = await apiServicePUTHandled(
+										"userfilters",
+										 selectedTableFilter.filterId,
+										 {
 											filterId: selectedTableFilter.filterId,
 											filterName: selectedTableFilter.filterName,
 											filters: activeTableFilter
-										}
+										 }
+									);
+
+									if (response.success) {
+										selectedTableFilter = await response.data;
 									}
 								}
 							}}
@@ -134,7 +134,7 @@
 	{#if selectedTablePreset}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
-				class="size-8 border-none text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md"
+				class="size-8 text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md border border-slate-300"
 			>
 				<Columns3
 					strokeWidth={2}

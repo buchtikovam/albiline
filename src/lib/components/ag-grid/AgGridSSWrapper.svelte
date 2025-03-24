@@ -784,7 +784,7 @@
 
 
 	:global(.ag-tool-panel-horizontal-resize) {
-		background-color: var(--albi-200);
+		background-color: var(--slate-300);
 	}
 
 
