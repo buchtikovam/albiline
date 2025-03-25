@@ -1,8 +1,8 @@
 import { authenticateUserLogin } from "$lib/api/userService";
 import { apiServiceGET, apiServicePOST } from "$lib/api/apiService.svelte";
-import type { Actions, PageServerLoad } from './$types';
-import { sha512 } from 'js-sha512';
 import { error, fail, redirect } from "@sveltejs/kit";
+import { sha512 } from 'js-sha512';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ cookies }) => {
 	if (cookies.get('auth') && authenticateUserLogin(cookies.get('auth'))) {
@@ -22,7 +22,7 @@ export const actions = {
 				return fail(400, {
 					messages: [{
 						title: "Chybějící údaje",
-						content: "Vyplňte všechna povinná pole.",
+						content: "Vyplň všechna povinná pole",
 						type: "Warning",
 					}],
 					userCode: userCode,
@@ -67,20 +67,29 @@ export const actions = {
 			}
 
 			console.log(resp)
-
 			console.log(responseData)
 
-			// Set session cookie
-			cookies.set("auth", JSON.stringify({
-				sessionKey: responseData.sessionKey,
-				userName: responseData.userName
-			}), {
-				path: "/",
-				httpOnly: true,
-				sameSite: "strict",
-				secure: process.env.NODE_ENV === "production",
-				maxAge: 60 * 60 * 24 * 7,
-			});
+			if (responseData.sessionKey) {
+				// Set session cookie
+				cookies.set("auth", JSON.stringify({
+					sessionKey: responseData.sessionKey,
+					userName: responseData.userName
+				}), {
+					httpOnly: true,
+					path: "/",
+					secure: false,
+					maxAge: 60 * 60 * 24 * 7,
+				});
+			} else {
+				return fail(resp.status, {
+					messages: [{
+						title: "Kritická chyba",
+						content: "Nepovedlo se přihlásit",
+						type: "Critical",
+				}],
+					userCode: userCode,
+				});
+			}
 
 			redirect(303, "/");
 		} catch (e) {

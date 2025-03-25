@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {formatDateValueToString} from "$lib/utils/formatting/formatDateValueToString";
 	import {parseStringToDateValue} from "$lib/utils/formatting/parseStringToDateValue";
-	import {languageTag} from "$lib/paraglide/runtime";
+	import {getLocale} from "$lib/paraglide/runtime";
 	import {cn} from "$lib/utils";
 	import CalendarRange from "lucide-svelte/icons/calendar-range";
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
@@ -56,7 +56,7 @@
 	bind:value
 	weekdayFormat="short"
 	fixedWeeks={true}
-	locale={languageTag()}
+	locale={getLocale()}
 >
 	{#if label}
 		<DateRangePicker.Label

@@ -1,38 +1,28 @@
 <script lang="ts">
-    import { ParaglideJS } from "@inlang/paraglide-sveltekit"
-    import { i18n } from "$lib/i18n"
-	// import { pwaAssetsHead } from "virtual:pwa-assets/head";
-	// import { pwaInfo } from "virtual:pwa-info";
-	import {onMount, type Snippet} from 'svelte';
+	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import {type Snippet} from 'svelte';
 	import {isMobile} from "$lib/runes/page.svelte";
 	import {Toaster} from "svelte-sonner";
 	import Response from "$lib/components/response/Response.svelte";
-	import {browser} from "$app/environment";
-	import {initializeJSPM} from "$lib/api/documents/printerService.svelte.js";
-	// import { RenderScan } from 'svelte-render-scan';
-
-	// let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
+	import { page } from '$app/state';
 
 	let { children }: { children?: Snippet } = $props();
 
-
 	let innerWidth: number = $state(0);
+
 
 	$effect(() => {
 		isMobile.value = innerWidth < 640;
 	});
-	//
-	// onMount(async () => {
-	// 	if (browser) {
-	// 		await initializeJSPM();
-	// 	}
-	// })
-
 </script>
+
+
 
 <svelte:head>
 	<meta name="theme-color" content="#dbfeff" />
 </svelte:head>
+
+<svelte:window bind:innerWidth/>
 
 
 <!--<svelte:head>-->
@@ -53,9 +43,7 @@
 <!--	<ReloadPrompt />-->
 <!--{/await}-->
 
-<svelte:window bind:innerWidth/>
 
-<!--<RenderScan initialEnabled={false} />-->
 
 <Toaster
 	position={isMobile.value ? "top-center" : "bottom-right"}
@@ -63,8 +51,14 @@
 />
 
 
-<ParaglideJS {i18n}>
-	{@render children?.()}
-</ParaglideJS>
+<div style="display:none">
+	{#each locales as locale}
+		<a href={localizeHref(page.url.pathname, { locale })}>{locale}</a>
+	{/each}
+</div>
+
+
+{@render children?.()}
+
 
 <Response/>

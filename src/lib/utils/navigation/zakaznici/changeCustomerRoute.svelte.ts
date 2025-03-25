@@ -1,8 +1,7 @@
 import {agGridTables} from "$lib/runes/table.svelte";
-import {i18n} from '$lib/i18n.js'
 import {processRoute} from '$lib/utils/navigation/processRoute';
 import {goto} from '$app/navigation';
-
+import {localizeHref} from "$lib/paraglide/runtime";
 
 
 export function changeCustomerRoute(
@@ -28,7 +27,8 @@ export function changeCustomerRoute(
 			{ customerNodeCode: uniqueSelectedRows[nextIndex].customerNodeCode }
 		)
 
-		goto(i18n.resolveRoute(newRoute)).then(() => {})
+		goto(localizeHref(newRoute));
+
 		return;
 	}
 
@@ -45,7 +45,8 @@ export function changeCustomerRoute(
 			{ customerNodeCode: uniqueSelectedRows[prevIndex].customerNodeCode }
 		)
 
-		goto(i18n.resolveRoute(newRoute)).then(() => {});
+		goto(localizeHref(newRoute));
+
 		return;
 	}
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {disableNavigation, disablePageTabs} from "$lib/runes/navigation.svelte";
-	import {i18n} from "$lib/i18n";
+	// import {i18n} from "$lib/i18n";
 	import {goto} from "$app/navigation";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 
@@ -28,13 +28,13 @@
 </div>
 
 
-<Tabs.Trigger
-	class="font-bold"
-	disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
-	value={value}
-	onclick={() => {
-		goto(i18n.resolveRoute(url));
-	}}
->
-	{label()}
-</Tabs.Trigger>
+<!--<Tabs.Trigger-->
+<!--	class="font-bold"-->
+<!--	disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}-->
+<!--	value={value}-->
+<!--	onclick={() => {-->
+<!--		goto(i18n.resolveRoute(url));-->
+<!--	}}-->
+<!--&gt;-->
+<!--	{label()}-->
+<!--</Tabs.Trigger>-->

@@ -188,7 +188,7 @@
 
 
 
-<div class="p-4 ">
+<div class="p-4 max-w-[1600px]">
 	<div class="flex flex-col ">
 		<!-- header -->
 		<div class="flex justify-between mb-2">

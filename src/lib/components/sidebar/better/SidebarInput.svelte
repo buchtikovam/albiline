@@ -6,7 +6,7 @@
 	import SidebarCommand from "$lib/components/sidebar/SidebarCommand.svelte";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import * as Sidebar from "$lib/components/ui/sidebar";
-	import {useSidebar} from "$lib/components/ui/sidebar";
+
 
 	interface Props {
 		searchTerm: string;
@@ -34,14 +34,13 @@
 			<Search
 				class="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50"
 			/>
-
 		{:else}
 			<button
 				onclick={() => commandOpen = true}
 				class="size-8"
 			>
 				<Search
-					class="size-4  "
+					class="size-4"
 				/>
 			</button>
 		{/if}

@@ -1,5 +1,4 @@
 import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
-import {i18n} from "$lib/i18n";
 import {getDeliveryCountryCodes, getInvoiceCountryCodes} from "$lib/utils/dropdowns/countryCodes";
 import {getRetailStoreTypeName} from "$lib/utils/dropdowns/retailStoreType";
 import {getPaymentTypeCode} from "$lib/utils/dropdowns/paymentTypeCode";
@@ -25,11 +24,11 @@ export const customerGridOptions: GridOptions = {
 		}]
 
 		if (event.column.getColId() === "customerAddressCode") {
-			goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`));
+			// goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`));
 		}
 
 		if (event.column.getColId() === "customerNodeCode") {
-			goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}`));
+			// goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}`));
 		}
 	},
 

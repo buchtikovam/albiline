@@ -1,6 +1,5 @@
 import {agGridTables, currentPageKey} from '$lib/runes/table.svelte.js';
 import {page} from '$app/state';
-import {i18n} from "$lib/i18n";
 import {selectButtonWithUrl} from "$lib/utils/components/ag-grid/cell-renderers/selectButtonWithUrl.svelte";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
 import type {ICellRendererParams, CellClassParams} from 'ag-grid-community';
@@ -78,11 +77,11 @@ export const customerAddressCustomGridOptions: GridOptions = {
 			pinned: "left",
 			minWidth: 40,
 			width: 40,
-			cellRenderer: (params: ICellRendererParams) => selectButtonWithUrl(
-				params,
-				i18n.resolveRoute("/prodej/zakaznici/" + params.data.customerNodeCode + "/prodejny/" +  params.data.customerAddressCode),
-				onAddressClick
-			),
+			// cellRenderer: (params: ICellRendererParams) => selectButtonWithUrl(
+			// 	params,
+			// 	i18n.resolveRoute("/prodej/zakaznici/" + params.data.customerNodeCode + "/prodejny/" +  params.data.customerAddressCode),
+			// 	onAddressClick
+			// ),
 			cellStyle: (params: CellClassParams) => {
 				if (
 					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&

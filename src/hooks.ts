@@ -1,7 +1,9 @@
-import { i18n } from '$lib/i18n.js';
-import type { Transport } from '@sveltejs/kit';
+import type {Reroute, Transport} from '@sveltejs/kit';
+import { deLocalizeUrl } from '$lib/paraglide/runtime';
 
-export const reroute = i18n.reroute();
+export const reroute: Reroute = (request) => {
+	return deLocalizeUrl(request.url).pathname;
+};
 
 export const transport: Transport = {
 	//

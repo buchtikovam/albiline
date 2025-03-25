@@ -1,6 +1,6 @@
 import type { PageLoad } from "./$types";
 import {authDetails} from "$lib/runes/page.svelte";
-import {languageTag} from "$lib/paraglide/runtime";
+import {getLocale} from "$lib/paraglide/runtime";
 
 // export const prerender = false;
 
@@ -9,7 +9,7 @@ export const load: PageLoad = async ({ params, fetch}) => {
 		headers: {
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
-			'Accept-Language' : languageTag(),
+			'Accept-Language' : getLocale(),
 			'Page-Code' : "",
 		}
 	})

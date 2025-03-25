@@ -17,7 +17,7 @@
 		themeQuartz
 	} from 'ag-grid-enterprise';
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import {languageTag} from "$lib/paraglide/runtime";
+	import {getLocale} from "$lib/paraglide/runtime";
 	import type {ColDef, ColGroupDef} from "ag-grid-community";
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
@@ -25,7 +25,7 @@
 	import type {AgGridCSTableType, ColumnOrder} from "$lib/types/components/table/table";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {beforeNavigate} from "$app/navigation";
-	import {onMount} from "svelte";
+	import {onMount, tick} from "svelte";
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
 	import deepcopy from "deepcopy";
 	import {authDetails} from "$lib/runes/page.svelte";
@@ -297,7 +297,7 @@
 
 
 	$effect(() => {
-		if (languageTag()) {
+		if (getLocale()) {
 			if (Object.keys(headerTranslations).length > 0) {
 				let colDefs = gridApi.getColumnDefs();
 
@@ -322,6 +322,14 @@
 		}
 	})
 
+
+	$effect(() => {
+		if (table.fulltextFilterValue.length > 1) {
+			gridApi.setGridOption("quickFilterText", table.fulltextFilterValue);
+		} else {
+			gridApi.setGridOption("quickFilterText", "");
+		}
+	})
 
 
 	$effect(() => {

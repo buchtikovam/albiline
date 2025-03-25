@@ -87,7 +87,9 @@
 						<DropdownMenu.Item
 							class="w-full"
 						>
-							<button onclick={() => {
+							<button
+								class="w-full text-start"
+								onclick={() => {
 								ribbonAction.value = ribbonChild.action;
 							}}>
 								{ ribbonChild.translation() }

@@ -48,7 +48,7 @@
 
 {#each columnFilter.filterModel.conditions as condition, i (i)}
 	<div
-		class={`w-full sm:h-10 flex flex-col sm:flex-row gap-0.5 sm:gap-1 mt-1.5 sm:mt-2 sm:mb-0`}
+		class={`w-full sm:h-10 flex flex-col sm:flex-row gap-0.5 sm:gap-1  sm:mb-0`}
 	>
 		<div class="w-full">
 			{#if isMobile.value && i < 1}

@@ -1,5 +1,5 @@
 import {authDetails} from "$lib/runes/page.svelte";
-import {languageTag} from "$lib/paraglide/runtime";
+import {getLocale} from "$lib/paraglide/runtime";
 import type {CustomerAddressType, CustomerContactType} from "$lib/types/routes/prodej/zakaznci/customers";
 import type {LoadEvent} from "@sveltejs/kit";
 import type {PageLoad} from './$types';
@@ -18,7 +18,7 @@ export const load: PageLoad = async (
 			headers: {
 				'Content-Type': 'application/json',
 				'Session-Key': authDetails.sessionKey || '',
-				'Accept-Language': languageTag(),
+				'Accept-Language': getLocale(),
 				'Page-Code': currentPageKey.value,
 			}
 		}

@@ -8,11 +8,8 @@
 		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import {languageTag} from "$lib/paraglide/runtime";
+	import {getLocale} from "$lib/paraglide/runtime";
 	import type {ColDef} from "ag-grid-community";
-	import {authDetails, isMobile} from "$lib/runes/page.svelte";
-	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
 	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 
@@ -44,7 +41,7 @@
 
 
 	let pageKey: string = currentPageKey.value;
-	let table: AgGridSSTableType|undefined = $state(agGridTables.value[pageKey]);
+	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
 
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
@@ -62,7 +59,7 @@
 		groupTotalRow: totalRow === true ? "bottom" : undefined,
 		grandTotalRow: totalRow === true ? "bottom" : undefined,
 
-		rowSelection: false,
+		rowSelection: undefined,
 
 		defaultColDef: {
 			sortable: true,
@@ -192,7 +189,7 @@
 
 
 	$effect(() => {
-		if (languageTag()) {
+		if (getLocale()) {
 			if (Object.keys(headerTranslations).length > 0) {
 				let colDefs = gridApi.getColumnDefs();
 

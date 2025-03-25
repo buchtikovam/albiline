@@ -32,13 +32,16 @@
 		<AlbiLogo />
 	</div>
 
-	<div class="w-full bg-white border border-slate-300 rounded-2xl shadow max-w-lg">
+	<div class="w-full bg-white border border-slate-300 rounded-2xl max-w-lg">
 		<div class="p-6 sm:p-8">
-			<h1 class="text-xl font-bold ">
+			<h1 class="text-xl font-bold">
 				{ m.routes_login_form_label() }
 			</h1>
 
-			<form method="POST" autocomplete="off" class="">
+			<form
+				method="POST"
+				autocomplete="off"
+			>
 				<div class="mt-3 md:mt-4 mb-6 md:mb-8 flex flex-col gap-2 md:gap-3 ">
 					<AuthInput
 						label={ m.routes_login_form_user_code }

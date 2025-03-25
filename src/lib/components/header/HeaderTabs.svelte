@@ -1,7 +1,10 @@
 <script lang="ts">
 	import {activePageTab, disableNavigation, openedTabs} from "$lib/runes/navigation.svelte";
-	import {i18n} from '$lib/i18n.js'
+	import {allItems} from "$lib/definitions/components/sidebar/sidebar";
 	import {page} from "$app/state";
+	import {getSidebarItemByField} from "$lib/utils/components/sidebar/getSidebarItemByField";
+	import {getLocale, localizeHref} from "$lib/paraglide/runtime";
+	import deepcopy from "deepcopy";
 	import {deleteTab} from '$lib/utils/navigation/deleteTab.svelte';
 	import {slide} from 'svelte/transition';
 	import {goto} from '$app/navigation';
@@ -9,10 +12,6 @@
 	import X from 'lucide-svelte/icons/x';
 	import TabSeparator from '../tabs/TabSeparator.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import {languageTag} from "$lib/paraglide/runtime";
-	import {allItems} from "$lib/definitions/components/sidebar/sidebar";
-	import deepcopy from "deepcopy";
-	import {getSidebarItemByField} from "$lib/utils/components/sidebar/getSidebarItemByField";
 
 
 	let pathName = $state(page.url.pathname);
@@ -36,7 +35,7 @@
 
 
 	$effect(() => {
-		if (languageTag()) {
+		if (getLocale()) {
 			openedTabs.value.forEach((tab) => {
 				const foundTab = getSidebarItemByField(deepcopy(allItems), tab.field)
 
@@ -46,6 +45,8 @@
 			})
 		}
 	})
+
+	$inspect(pathName);
 </script>
 
 
@@ -60,27 +61,29 @@
 			<Tabs.Trigger
 				value="/"
 				disabled={disabled}
-				onclick={() => goto(i18n.resolveRoute("/"))}
+				onclick={() => goto(localizeHref("/"))}
 			>
-				<Home strokeWidth="2.5" class="size-4" />
+				<Home
+					strokeWidth="2.5"
+					class="size-4"
+				/>
 			</Tabs.Trigger>
 
 			{#each openedTabs.value as tab}
 				<TabSeparator/>
 
 				<Tabs.Trigger
-					value={i18n.resolveRoute(tab.url)}
+					value={localizeHref(tab.url)}
 					disabled={disabled && tab.url !== pathName}
 					onmouseenter={() => tab.closingState = 'block'}
 					onmouseleave={() => tab.closingState = 'hidden'}
 					onclick={(ev) => {
-					ev.preventDefault();
-					goto(i18n.resolveRoute(tab.url));
-				}}
+						ev.preventDefault();
+						goto(localizeHref(tab.url));
+					}}
 					onauxclick={(ev) => {
 						ev.preventDefault();
 						checkActiveTab();
-
 						if (ev.button === 1) {
 							deleteTab(tab);
 						}

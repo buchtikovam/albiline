@@ -4,12 +4,12 @@ import {
 	AG_GRID_LOCALE_PL,
 	AG_GRID_LOCALE_SK
 } from "@ag-grid-community/locale";
-import { languageTag } from "$lib/paraglide/runtime";
+import { getLocale } from "$lib/paraglide/runtime";
 
 
 export function getAgGridLocale() {
-	if (languageTag() === "cz") return AG_GRID_LOCALE_CZ;
-	if (languageTag() === "pl") return AG_GRID_LOCALE_PL;
-	if (languageTag() === "sk") return AG_GRID_LOCALE_SK;
+	if (getLocale() === "cz") return AG_GRID_LOCALE_CZ;
+	if (getLocale() === "pl") return AG_GRID_LOCALE_PL;
+	if (getLocale() === "sk") return AG_GRID_LOCALE_SK;
 	return AG_GRID_LOCALE_EN;
 }

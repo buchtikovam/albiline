@@ -29,6 +29,7 @@
 	import CheckboxWrapper from "$lib/components/form/inputs/CheckboxWrapper.svelte";
 	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import {Checkbox} from "$lib/components/ui/checkbox";
+	import Upload from "lucide-svelte/icons/upload";
 
 
 	interface Props {
@@ -89,6 +90,8 @@
 					columnFilters: getColumnFilters(deepcopy(inputDialog.columnFilters)),
 				}
 			}
+
+			table.areInputParamsLoading = false;
 		}
 
 
@@ -294,37 +297,56 @@
 				{ m.components_input_params_section_columns() }
 			</p>
 
-			{#each inputDialog.columnFilters as columnFilter, i}
-				<div
-					class={
+			<div class="flex flex-col gap-2 mt-2">
+
+				{#each inputDialog.columnFilters as columnFilter, i}
+					<div
+						class={
 						columnFilter.filterModel.conditions.length > 1
-							? "rounded-lg border bg-slate-50 p-2 pt-0 sm:pt-2 flex flex-col mt-1.5 sm:mt-2 "
+							? "rounded-lg border bg-slate-50 p-2 pt-0 flex flex-col mt-1.5  "
 							: "bg-white p-0"
 					}
-				>
-					{#if columnFilter.filterModel.conditions.length > 1}
-						<p class="hidden sm:block text-xs font-bold text-slate-400">
-							{columnFilter.filterModel.operator}
-						</p>
-					{/if}
+					>
+						{#if columnFilter.filterModel.conditions.length > 1}
+							<p class="hidden sm:block text-xs font-bold text-slate-400">
+								{columnFilter.filterModel.operator}
+							</p>
+						{/if}
 
-					<InputDialogColumnFilterWrapper
-						selectOptions={selectOptions}
-						bind:columnFilter={inputDialog.columnFilters[i]}
-					/>
+						<InputDialogColumnFilterWrapper
+							selectOptions={selectOptions}
+							bind:columnFilter={inputDialog.columnFilters[i]}
+						/>
+					</div>
+				{/each}
+
+				<div class="ml-auto w-full flex gap-3 h-10">
+					{#if inputDialog.columnFilters !== undefined}
+						<Button
+							type="button"
+							onclick={() => {
+								addColumnFilter(inputDialog)
+							}}
+							class="size-10"
+							variant="secondary"
+						>
+							<Plus strokeWidth={3} />
+						</Button>
+					{/if}
 				</div>
-			{/each}
+			</div>
 		{/if}
 
 
 		<Dialog.Footer class="w-full mt-6">
 			<div class="w-full flex justify-between">
-				<div class="flex gap-1.5 sm:gap-2">
-					<Button
-						type="button"
-						class="size-10"
-						variant="secondary"
-						onclick={() => {
+				<div>
+					<div class="flex gap-1.5 sm:gap-2">
+						<Button
+							type="button"
+							class="size-10"
+							variant="secondary"
+							onclick={() => {
 							if (
 								JSON.stringify(defaultInputDialog) === JSON.stringify(inputDialog) ||
 								!isLoadedParamChanged
@@ -338,22 +360,29 @@
 								isSaveDialogOpen = true;
 							}
 						}}
-					>
-						<Save
-							strokeWidth="2.5"
-							class="!size-[18px]"
-						/>
-					</Button>
+						>
+							<Save
+								strokeWidth="2.5"
+								class="!size-[18px]"
+							/>
+						</Button>
 
-					<Button
-						type="button"
-						class="bg-white"
-						variant="secondary"
-						onclick={() => isLoadDialogOpen = true}
-					>
-						{m.components_input_params_button_load_input_params()}
-					</Button>
+						<Button
+							type="button"
+							class="bg-white size-10"
+							variant="secondary"
+							onclick={() => isLoadDialogOpen = true}
+						>
+							<!--{m.components_input_params_button_load_input_params()}-->
+							<Upload
+								strokeWidth="2.5"
+								class="!size-[18px]"
+							/>
+						</Button>
+					</div>
 				</div>
+
+
 
 				<div class="flex items-center gap-1.5 sm:gap-2">
 					<Button
@@ -362,17 +391,6 @@
 					>
 						{m.components_input_params_button_filter()}
 					</Button>
-
-					{#if inputDialog.columnFilters !== undefined}
-						<Button
-							type="button"
-							onclick={() => addColumnFilter(inputDialog)}
-							class="size-10"
-							variant="secondary"
-						>
-							<Plus strokeWidth={3} />
-						</Button>
-					{/if}
 				</div>
 			</div>
 		</Dialog.Footer>

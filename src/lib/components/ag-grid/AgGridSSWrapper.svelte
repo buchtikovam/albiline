@@ -26,7 +26,7 @@
 	import type {ColumnOrder, AgGridSSTableType, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
-	import {languageTag} from "$lib/paraglide/runtime";
+	import {getLocale} from "$lib/paraglide/runtime";
 	import deepcopy from "deepcopy";
 
 	interface Props {
@@ -277,12 +277,19 @@
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
 
+
+			console.time("datasource")
 			apiServicePostHandled(url, updatedParamsRequest)
 				.then(httpResponse => httpResponse.data)
 				.then(response => {
+					console.timeEnd("datasource");
+
+
 					console.log(response)
 
 					params.success({ rowData: response.items });
+
+
 					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
 
 					if (response.items.length > 0) {
@@ -427,7 +434,7 @@
 
 	$effect(() => {
 		if (gridApi) {
-			if (languageTag()) {
+			if (getLocale()) {
 				let colDefs = gridApi.getColumnDefs();
 
 				// const colDefs =
@@ -478,7 +485,7 @@
 	}
 
 	$effect(() => {
-		if (fulltextFilterValue.value.length > 1) {
+		if (table.fulltextFilterValue.length > 1) {
 			debounceFulltext();
 		}
 	})

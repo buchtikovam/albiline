@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ribbonAction, ribbonOpen } from '$lib/runes/ribbon.svelte';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import type {RibbonItemType} from "$lib/types/components/ribbon/ribbon";
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	let { ribbonItem }: {
 		ribbonItem: RibbonItemType;

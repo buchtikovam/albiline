@@ -2,17 +2,18 @@
 	import { ribbonItems } from '$lib/definitions/components/ribbon/ribbon';
 	import { ribbonOpen, visibleRibbonItems } from '$lib/runes/ribbon.svelte';
 	import { Separator } from '$lib/components/ui/separator';
+	import { filterRibbonItems } from '$lib/utils/components/ribbon/filterRibbonItems';
 	import { RibbonTypeEnum } from '$lib/enums/ribbon/ribbonType';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import ChevronUp from 'lucide-svelte/icons/chevron-up';
+	import type { RibbonType } from '$lib/types/components/ribbon/ribbon';
 	import RibbonDropdownItem from '$lib/components/ribbon/RibbonItemDropdown.svelte';
 	import RibbonItemsNarrow from '$lib/components/ribbon/RibbonItemsNarrow.svelte';
 	import RibbonItem from '$lib/components/ribbon/RibbonItem.svelte';
-	import type { RibbonType } from '$lib/types/components/ribbon/ribbon';
-	import { filterRibbonItems } from '$lib/utils/components/ribbon/filterRibbonItems';
 
 
 	let filteredRibbonItems: RibbonType = $state([])
+
 
 	$effect(() => {
 		visibleRibbonItems.value.length > 0

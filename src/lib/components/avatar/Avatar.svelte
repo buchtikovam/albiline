@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { authDetails, pageCompact } from '$lib/runes/page.svelte';
-	import { i18n } from '$lib/i18n.js';
 	import { page } from '$app/state';
-	import { languageTag, availableLanguageTags } from "$lib/paraglide/runtime.js";
+	import { getLocale, locales } from "$lib/paraglide/runtime.js";
 	import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
 	import FoldVertical from 'lucide-svelte/icons/fold-vertical';
 	import Settings from 'lucide-svelte/icons/settings';
@@ -17,7 +16,7 @@
 
 
 	let userName = $derived(authDetails.userName);
-	let language = $state(languageTag());
+	let language = $state(getLocale());
 </script>
 
 
@@ -54,11 +53,12 @@
 
 
 				<Select.Content class="mr-7 min-w-fit overflow-visible! !z-50">
-					{#each availableLanguageTags as lang}
+					{#each locales as lang}
+						// TODO: fix i18n.route(page.url.pathname)
 						<a
-							href={i18n.route(page.url.pathname)}
+							href={""}
 							hreflang={lang}
-							aria-current={lang === languageTag() ? "page" : undefined}
+							aria-current={lang === getLocale() ? "page" : undefined}
 						>
 							<Select.Item
 								hideCheck={false}
@@ -78,17 +78,18 @@
 
 
 		<DropdownMenu.Group>
-			<DropdownMenu.Item
-				class="flex w-full items-center"
-				onclick={() => goto(i18n.resolveRoute("profil"))}
-			>
-				<User class="size-5" />
-				{m.components_avatar_profile()}
-			</DropdownMenu.Item>
+<!--			<DropdownMenu.Item-->
+<!--				class="flex w-full items-center"-->
+<!--				onclick={() => goto(i18n.resolveRoute("profil"))}-->
+<!--			>-->
+<!--				<User class="size-5" />-->
+<!--				{m.components_avatar_profile()}-->
+<!--			</DropdownMenu.Item>-->
 
+			// TODO: fix i18n.resolveRoute("nastaveni")
 			<DropdownMenu.Item
 				class="flex w-full items-center"
-				onclick={() => goto(i18n.resolveRoute("nastaveni"))}
+				onclick={() => goto("")}
 			>
 				<Settings class="size-5" />
 				{m.components_avatar_settings()}

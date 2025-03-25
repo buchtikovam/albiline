@@ -10,7 +10,7 @@
 
 
 <div
-	class="h-full w-full flex flex-col gap-[7px]"
+	class="h-full w-full flex flex-col gap-[7px] "
 >
 	{@render children()}
 </div>

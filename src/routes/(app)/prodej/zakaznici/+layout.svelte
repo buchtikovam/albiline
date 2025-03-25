@@ -3,16 +3,16 @@
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {Input} from '$lib/components/ui/input';
-	import {i18n} from '$lib/i18n.js'
+	import {localizeHref} from "$lib/paraglide/runtime";
 	import {goto} from '$app/navigation';
 	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
-	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
-	import * as m from '$lib/paraglide/messages.js'
-	import * as Tabs from "$lib/components/ui/tabs/index.js";
-	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
+	import TabSeparator from '$lib/components/tabs/TabSeparator.svelte';
+	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
+	import * as m from '$lib/paraglide/messages.js'
+	import * as Tabs from "$lib/components/ui/tabs/index.js";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -38,12 +38,14 @@
 			}
 		}
 
-		activePageTab.value = i18n.resolveRoute("/prodej/zakaznici");
+		// activePageTab.value = i18n.resolveRoute("/prodej/zakaznici");
 
 		return (() => {
 			activePageTab.value = "";
 		})
 	})
+
+
 </script>
 
 
@@ -60,8 +62,8 @@
 					disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
 					value={"0"}
 					onclick={() => {
-					goto(i18n.resolveRoute("/prodej/zakaznici"))
-				}}
+						goto(localizeHref("/prodej/zakaznici"))
+					}}
 				>
 					{m.routes_prodej_zakaznici_tabs_list()}
 				</Tabs.Trigger>
@@ -72,8 +74,8 @@
 					disabled={activeTab !== "1" && (disableNavigation.value || disablePageTabs.value)}
 					value={"1"}
 					onclick={() => {
-					goto(i18n.resolveRoute(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`))
-				}}
+						goto(localizeHref(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`))
+					}}
 				>
 					{m.routes_prodej_zakaznici_tabs_address_detail()}
 				</Tabs.Trigger>
@@ -84,8 +86,8 @@
 					disabled={activeTab !== "2" && (disableNavigation.value || disablePageTabs.value)}
 					value={"2"}
 					onclick={() => {
-					goto(i18n.resolveRoute(`/prodej/zakaznici/${customerNodeCode}`))}
-				}
+						goto(localizeHref(`/prodej/zakaznici/${customerNodeCode}`))
+					}}
 				>
 					{m.routes_prodej_zakaznici_tabs_customer_detail()}
 				</Tabs.Trigger>
@@ -107,7 +109,7 @@
 						class="xl:w-80 lg:w-60 w-40 h-8  border border-slate-300 focus-visible:border-albi-500"
 						placeholder={m.components_header_search_placeholder()}
 						type="search"
-						bind:value={fulltextFilterValue.value}
+						bind:value={table.fulltextFilterValue}
 					/>
 				</div>
 			{/if}

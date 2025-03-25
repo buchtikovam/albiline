@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import SaveWithLabelDialog from "$lib/components/dialog/save/SaveWithLabelDialog.svelte";
 	import * as m from "$lib/paraglide/messages";

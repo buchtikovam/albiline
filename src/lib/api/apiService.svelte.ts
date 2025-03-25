@@ -1,6 +1,6 @@
 import {authDetails, responseDialogMessages} from '$lib/runes/page.svelte';
-import {languageTag} from "$lib/paraglide/runtime";
 import {currentPageKey} from "$lib/runes/table.svelte";
+import {getLocale} from "$lib/paraglide/runtime";
 
 
 const url = "http://10.2.2.10/albiline.test/api/v1/";
@@ -17,8 +17,8 @@ export async function apiServiceGET(
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'Session-Key': authDetails.sessionKey,
-			'Accept-Language' : languageTag(),
+			'Session-Key': authDetails.sessionKey ? authDetails.sessionKey : "",
+			'Accept-Language' : getLocale(),
 			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 	});
@@ -75,7 +75,7 @@ export async function apiServicePOST(
 		headers: 	{
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
-			'Accept-Language' : languageTag(),
+			'Accept-Language' : getLocale(),
 			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 		body: body ? JSON.stringify(body) : undefined
@@ -135,7 +135,7 @@ export async function apiServicePATCH(
 		headers: {
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
-			'Accept-Language' : languageTag(),
+			'Accept-Language' : getLocale(),
 			'Page-Code' : pageKey,
 		},
 		body: body ? JSON.stringify(body) : undefined
@@ -193,7 +193,7 @@ export async function apiServicePUT(
 		headers: {
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
-			'Accept-Language' : languageTag(),
+			'Accept-Language' : getLocale(),
 			'Page-Code' : pageKey,
 		},
 		body: body ? JSON.stringify(body) : undefined
@@ -251,7 +251,7 @@ export async function apiServiceDELETE(
 		headers: {
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
-			'Accept-Language' : languageTag(),
+			'Accept-Language' : getLocale(),
 			'Page-Code' : pageKey,
 		},
 	});

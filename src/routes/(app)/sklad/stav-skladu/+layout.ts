@@ -15,6 +15,7 @@ export const load: LayoutLoad = async () => {
 			deletedTableData: [],
 			filtersToSave: {},
 			presetToSave: [],
+			fulltextFilterValue: "",
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],

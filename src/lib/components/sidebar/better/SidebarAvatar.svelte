@@ -1,40 +1,28 @@
 <script lang="ts">
-	import * as Sidebar from "$lib/components/ui/sidebar";
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
-	import * as m from '$lib/paraglide/messages.js'
-
-	import * as Collapsible from "$lib/components/ui/collapsible";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-	import BadgeCheck from "lucide-svelte/icons/badge-check";
-	import Bell from "lucide-svelte/icons/bell";
-	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-	import CreditCard from "lucide-svelte/icons/credit-card";
-	import LogOut from "lucide-svelte/icons/log-out";
-	import Sparkles from "lucide-svelte/icons/sparkles";
-	import {useSidebar} from "$lib/components/ui/sidebar";
-	import {availableLanguageTags, languageTag} from "$lib/paraglide/runtime";
-	import {i18n} from "$lib/i18n";
-	import {page} from "$app/state";
-	import CountryFlag from "$lib/components/icons/CountryFlag.svelte";
-	import * as Select from "$lib/components/ui/select/index.js";
-	import User from "lucide-svelte/icons/user";
-	import {goto} from "$app/navigation";
-	import Settings from "lucide-svelte/icons/settings";
 	import {agGridTables} from "$lib/runes/table.svelte";
+	import {useSidebar} from "$lib/components/ui/sidebar";
+	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
+	import LogOut from "lucide-svelte/icons/log-out";
+	import * as m from '$lib/paraglide/messages.js'
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import * as Collapsible from "$lib/components/ui/collapsible";
+	import * as Sidebar from "$lib/components/ui/sidebar";
+	import * as Select from "$lib/components/ui/select/index.js";
+	import * as Avatar from "$lib/components/ui/avatar/index.js";
+	import User from "lucide-svelte/icons/user";
+	import Settings from "lucide-svelte/icons/settings";
+	import {localizeHref} from "$lib/paraglide/runtime";
+	import {goto} from "$app/navigation";
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = {
 		user: {
-			name: "MBUC",
-			email: "monika.buchtikova@albi.cz",
-			avatar: "MB",
+			name: "Jan Novák",
+			email: "jan.novak@albi.cz",
+			avatar: "JN",
 		},
 	}
 
 	const sidebar = useSidebar();
-
-
-	let language = $state(languageTag());
-
 </script>
 
 <Sidebar.Menu>
@@ -54,7 +42,7 @@
 <!--							/>-->
 
 							<Avatar.Fallback class="rounded-lg">
-								MB
+								{user.avatar}
 							</Avatar.Fallback>
 
 
@@ -91,7 +79,7 @@
 <!--							/>-->
 
 							<Avatar.Fallback class="rounded-lg ">
-								MB
+								{user.avatar}
 							</Avatar.Fallback>
 						</Avatar.Root>
 
@@ -111,7 +99,7 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Item
 						class="flex w-full items-center"
-						onclick={() => goto(i18n.resolveRoute("profil"))}
+						onclick={() => goto(localizeHref("profil"))}
 					>
 						<User />
 						{m.components_avatar_profile()}
@@ -119,7 +107,7 @@
 
 					<DropdownMenu.Item
 						class="flex w-full items-center"
-						onclick={() => goto(i18n.resolveRoute("nastaveni"))}
+						onclick={() => goto(localizeHref("nastaveni"))}
 					>
 						<Settings />
 						{m.components_avatar_settings()}

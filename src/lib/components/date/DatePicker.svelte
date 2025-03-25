@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {formatDateValueToString} from "$lib/utils/formatting/formatDateValueToString";
 	import {parseStringToDateValue} from "$lib/utils/formatting/parseStringToDateValue";
-	import {languageTag} from '$lib/paraglide/runtime.js'
+	import {getLocale} from '$lib/paraglide/runtime.js'
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import CalendarRange from 'lucide-svelte/icons/calendar-range';
@@ -53,7 +53,7 @@
 	weekStartsOn={1}
 	disabled={false}
 	bind:value={value}
-	locale={languageTag()}
+	locale={getLocale()}
 >
 	<div class="flex w-full flex-col">
 		{#if label}

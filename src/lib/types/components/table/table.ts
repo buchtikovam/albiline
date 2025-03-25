@@ -35,6 +35,8 @@ export interface AgGridSSTableType {
 	editedTableData: any[];
 	// current filters used in table. Can be saved through ribbon
 	filtersToSave: FilterModel;
+	// value to used for fulltext filtering
+	fulltextFilterValue: string;
 	// used to set filters after user chose filter from ribbon -> my filters
 	selectedFilters?: StoredFilters;
 	// current presets in the table
@@ -76,6 +78,8 @@ export interface AgGridCSTableType {
 	deletedTableData: any[];
 	// current filters used in table. Can be saved through ribbon
 	filtersToSave: FilterModel;
+	// value to used for fulltext filtering
+	fulltextFilterValue: string;
 	// used to set filters after user chose filter from ribbon -> my filters
 	selectedFilters?: StoredFilters;
 	// current presets in the table

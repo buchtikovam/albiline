@@ -187,7 +187,7 @@
 
 <!-- autoform + contacts -->
 <div class="p-4">
-	<div class="mb-3">
+	<div class="mb-2">
 		<!-- header -->
 		<div class="flex justify-between">
 			{#if initialFormValues}

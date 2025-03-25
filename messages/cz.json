@@ -143,11 +143,10 @@
 
 
 	"components_input_params_label" : "Vstupní parametry",
-	"components_input_params_fulltext_placeholder" : "Id, název, město, ...",
+	"components_input_params_fulltext_placeholder" : " ...",
 	"components_input_params_section_fulltext" : "Hledat všude",
 	"components_input_params_section_columns" : "Hledat podle sloupce",
-	"components_input_params_button_load_input_params" : "Načíst",
-	"components_input_params_button_filter" : "Filtrovat",
+	"components_input_params_button_filter" : "Načíst",
 
 	"components_input_params_save_dialog_label" : "Uložit vstupní parametry",
 	"components_input_params_save_dialog_input_label" : "Název",

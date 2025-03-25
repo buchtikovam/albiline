@@ -1,18 +1,15 @@
+import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import { SvelteKitPWA } from '@vite-pwa/sveltekit'
-import { paraglide } from '@inlang/paraglide-sveltekit/vite';
 const env = process.env;
 
 export default defineConfig({
 	plugins: [
-		paraglide({
-			//recommended
-			project: "./project.inlang",
-			outdir: "./src/lib/paraglide",
-		}),
-
 		sveltekit(),
+		paraglideVitePlugin({
+			project: './project.inlang',
+			outdir: './src/lib/paraglide',
+		}),
 
 		// SvelteKitPWA({
 		// 	srcDir: './src',
@@ -22,7 +19,7 @@ export default defineConfig({
 		// 	base: '/',
 		// 	scope: '/',
 		// 	selfDestroying: env.ENVIRONMENT === 'development',
-		// 	pwaAssets: {
+	// 	pwaAssets: {
 		// 		config: true,
 		// 	},
 		// 	manifest: {

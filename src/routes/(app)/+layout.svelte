@@ -1,17 +1,16 @@
 <script lang="ts">
 	import {authDetails, isMobile} from "$lib/runes/page.svelte";
+	import {sidebarOpen} from "$lib/runes/sidebar.svelte";
+	import {ribbonOpen} from "$lib/runes/ribbon.svelte";
 	import type { LayoutData } from './$types';
 	import {type Snippet} from 'svelte';
 	import './../../app.pcss';
+	import BetterSidebar from "$lib/components/sidebar/better/BetterSidebar.svelte";
 	import RibbonDialog from '$lib/components/dialog/RibbonDialog.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import BetterSidebar from "$lib/components/sidebar/better/BetterSidebar.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import {useSidebar} from "$lib/components/ui/sidebar/index.js";
-	import {ribbonOpen} from "$lib/runes/ribbon.svelte";
-	import {sidebarOpen} from "$lib/runes/sidebar.svelte";
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
