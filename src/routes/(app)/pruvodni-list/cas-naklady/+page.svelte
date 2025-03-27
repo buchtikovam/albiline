@@ -1,1 +1,0 @@
-// časové náklady

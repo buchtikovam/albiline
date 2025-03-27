@@ -13,6 +13,7 @@
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
+	currentPageKey.value = "CustomersGetList";
 
 	let table = agGridTables.value[currentPageKey.value];
 	let open = $state(!table.hasInputParams);

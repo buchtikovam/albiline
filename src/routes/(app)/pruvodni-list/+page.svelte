@@ -1,2 +1,0 @@
-// průvodní list
-
