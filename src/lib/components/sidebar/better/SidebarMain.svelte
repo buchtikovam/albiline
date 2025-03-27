@@ -2,8 +2,10 @@
 	import type {SidebarItem} from "$lib/types/components/sidebar/sidebar";
 	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import ContextMenuFavorite from "$lib/components/sidebar/ContextMenuFavorite.svelte";
 	import * as Collapsible from "$lib/components/ui/collapsible";
 	import * as Sidebar from "$lib/components/ui/sidebar";
+	import * as ContextMenu from '$lib/components/ui/context-menu';
 
 	interface Props {
 		sidebarItems: SidebarItem[];
@@ -47,21 +49,27 @@
 							{#if item.children.length > 0}
 								<Sidebar.MenuSub>
 									{#each item.children as subItem (subItem.field)}
-										<Sidebar.MenuSubItem>
-											<Sidebar.MenuSubButton>
-												{#snippet child({ props })}
-													<a
-														href={subItem.href}
-														onclick={() => {handleTabClick(subItem, 1);}}
-														{...props}
-													>
-														<span>
-															{subItem.translation()}
-														</span>
-													</a>
-												{/snippet}
-											</Sidebar.MenuSubButton>
-										</Sidebar.MenuSubItem>
+										<ContextMenu.Root>
+											<ContextMenu.Trigger>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a
+																href={subItem.href}
+																onclick={() => {handleTabClick(subItem, 1);}}
+																{...props}
+															>
+																<span>
+																	{subItem.translation()}
+																</span>
+															</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</ContextMenu.Trigger>
+
+											<ContextMenuFavorite field={subItem.field} />
+										</ContextMenu.Root>
 									{/each}
 								</Sidebar.MenuSub>
 							{/if}
