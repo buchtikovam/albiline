@@ -41,6 +41,8 @@
 	})
 
 	const sidebar = useSidebar();
+
+	$inspect(activeCategory)
 </script>
 
 
@@ -48,6 +50,8 @@
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
+
+
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
 						{...props}
@@ -56,13 +60,12 @@
 					>
 						{@const Icon = activeCategory.icon}
 
-						{#key activeCategory.icon}
-							<div
-								class="bg-sidebar-primary text-white flex aspect-square size-8 min-w-8 bg-albi-500 items-center justify-center rounded-lg"
-							>
-								<Icon class="size-4" />
-							</div>
-						{/key}
+
+						<div
+							class="bg-sidebar-primary text-white flex aspect-square size-8 min-w-8 bg-albi-500 items-center justify-center rounded-lg"
+						>
+							<Icon class="size-4" />
+						</div>
 
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">
@@ -94,7 +97,9 @@
 
 				{#each categories as category}
 					<DropdownMenu.Item
-						onSelect={() => (sidebarCategory.value = category.value)}
+						onSelect={() => {
+							sidebarCategory.value = category.value
+						}}
 						class="gap-2 p-2"
 					>
 						{@const Icon = category.icon}

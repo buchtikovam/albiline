@@ -19,6 +19,8 @@
 
 	let table: AgGridCSTableType = agGridTables.value["ProductStockInventory"];
 	let open = $derived(!table.hasInputParams);
+
+	let tableData
 </script>
 
 
