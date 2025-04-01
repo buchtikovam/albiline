@@ -58,6 +58,7 @@ export const productStockInventoryAgGridDef: GridOptions = {
 					"productCode", // KSP
 					"text", 68,
 					false, false, false,
+					false, false, false,
 					[],
 				),
 

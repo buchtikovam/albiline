@@ -15,7 +15,7 @@
 	import {ribbonAction} from '$lib/runes/ribbon.svelte';
 	import {page} from '$app/state';
 	import {changeCustomerAddressRoute} from '$lib/utils/navigation/zakaznici/changeCustomerAddressRoute.svelte';
-	import {apiGetCustomerAddresses, apiSaveCustomerAddressDetail} from "$lib/api/routes/customerService.svelte.js";
+	import {apiGetCustomerAddresses, apiSaveCustomerAddressDetail} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
 	import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
 	import {flipItems} from '$lib/utils/flipItems';
 	import {flip} from 'svelte/animate';
@@ -26,7 +26,7 @@
 	import type {
 		CustomerAddressType,
 		CustomerContactType,
-	} from '$lib/types/routes/prodej/zakaznci/customers';
+	} from '$lib/types/routes/prodej/zakaznici/customers';
 	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';

@@ -4,7 +4,7 @@ import type {
 	CustomerContactType,
 	CustomerDetailSaveObjectType,
 	CustomerInvoiceAddressType
-} from "$lib/types/routes/prodej/zakaznci/customers";
+} from "$lib/types/routes/prodej/zakaznici/customers";
 import {apiServiceGETHandled} from "$lib/api/apiService.svelte.js";
 import {page} from "$app/state";
 

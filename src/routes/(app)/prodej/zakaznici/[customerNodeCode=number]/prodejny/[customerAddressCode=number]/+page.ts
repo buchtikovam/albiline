@@ -1,6 +1,6 @@
 import {authDetails} from "$lib/runes/page.svelte";
 import {getLocale} from "$lib/paraglide/runtime";
-import type {CustomerAddressType, CustomerContactType} from "$lib/types/routes/prodej/zakaznci/customers";
+import type {CustomerAddressType, CustomerContactType} from "$lib/types/routes/prodej/zakaznici/customers";
 import type {LoadEvent} from "@sveltejs/kit";
 import type {PageLoad} from './$types';
 import {currentPageKey} from "$lib/runes/table.svelte";

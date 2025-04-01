@@ -11,14 +11,14 @@
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {activeTabIndex, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
-	import {apiSaveCustomerDetail} from "$lib/api/routes/customerService.svelte.js";
+	import {apiSaveCustomerDetail} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
 	import {changeCustomerRoute} from '$lib/utils/navigation/zakaznici/changeCustomerRoute.svelte';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {flipItems} from '$lib/utils/flipItems';
 	import {flip} from 'svelte/animate';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznci/customers';
+	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznici/customers';
 	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";

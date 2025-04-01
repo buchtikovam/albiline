@@ -2,7 +2,7 @@
 	import {newCustomerAddressFormDef} from "$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerAddressFormDef";
 	import {onNavigate} from "$app/navigation";
 	import Plus from 'lucide-svelte/icons/plus';
-	import type {CustomerAddressType} from "$lib/types/routes/prodej/zakaznci/customers";
+	import type {CustomerAddressType} from "$lib/types/routes/prodej/zakaznici/customers";
 	import type {GridOptions} from "ag-grid-enterprise";
 	import NewCustomerAddressDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressDialog.svelte';
 	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";

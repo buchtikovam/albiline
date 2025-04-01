@@ -791,9 +791,8 @@
 
 
 	:global(.ag-tool-panel-horizontal-resize) {
-		background-color: var(--slate-300);
+		@apply bg-slate-300;
 	}
-
 
 	/* SIDEBAR COLUMN PANEL */
 

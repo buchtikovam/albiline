@@ -22,13 +22,14 @@
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {agGridTables} from "$lib/runes/table.svelte";
-	import type {AgGridCSTableType, ColumnOrder} from "$lib/types/components/table/table";
+	import type {AgGridCSTableType, AgGridSSTableType, ColumnOrder} from "$lib/types/components/table/table";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {beforeNavigate} from "$app/navigation";
 	import {onMount, tick} from "svelte";
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
 	import deepcopy from "deepcopy";
 	import {authDetails} from "$lib/runes/page.svelte";
+	import {cacheTableData, getCacheAge, getCachedTableData} from "$lib/cacheManager";
 
 	interface Props {
 		pageKey: string;
@@ -64,7 +65,7 @@
 
 		rowSelection:{
 			mode: "singleRow",
-			// enableClickSelection: true,
+			enableClickSelection: true,
 			hideDisabledCheckboxes: true,
 		},
 
@@ -185,7 +186,9 @@
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
 
-		table.defaultColDef = finalGridOptions.columnDefs;
+		if (finalGridOptions.columnDefs) {
+			table.defaultColDef = finalGridOptions.columnDefs
+		}
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
@@ -204,20 +207,77 @@
 	})
 
 
+	let cacheAge: number | null = null;
+	let error: string | null = null;
+
 
 	$effect(() => {
-		if (table.hasInputParams) {
+		if (Object.keys(table.loadedInputParams).length > 0) {
 			getData();
 		}
 	})
 
 
+	async function getData() {
+		try {
+			const cached = await getCachedTableData(pageKey);
+
+			if (cached) {
+				gridApi.setGridOption("rowData", cached);
+				cacheAge = await getCacheAge(pageKey);
+			} else {
+				await fetchAndCache();
+			}
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to load cached data';
+		}
+	}
+
+
+	async function fetchAndCache() {
+		try {
+			gridApi.setGridOption("loading", true)
+			const response = await apiServicePostHandled('pageData', table.loadedInputParams);
+			const data = await response.data;
+
+			gridApi.setGridOption("loading", false);
+			gridApi.setGridOption("rowData", data.items);
+
+			await cacheTableData(pageKey, data.items);
+			cacheAge = await getCacheAge(pageKey);
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to fetch and cache data';
+		}
+	}
+
+
 
 	$effect(() => {
-		table.areInputParamsLoading
-			? gridApi.setGridOption("loading", true)
-			: gridApi.setGridOption("loading", false);
+		if (getLocale()) {
+			if (Object.keys(headerTranslations).length > 0) {
+				let colDefs = gridApi.getColumnDefs();
+
+				// const colDefs =
+				colDefs?.forEach((column: ColDef) => {
+					if (headerTranslations[column.field]) {
+						column.headerName = headerTranslations[column.field]();
+					}
+
+					if (column.children) {
+						column.children.forEach((child: ColDef) => {
+							if (headerTranslations[child.field]) {
+								child.headerName = headerTranslations[child.field]();
+							}
+						})
+					}
+				})
+
+				// update grid with updated column defs
+				gridApi.setGridOption("columnDefs", colDefs);
+			}
+		}
 	})
+
 
 
 	$effect(() => {
@@ -253,7 +313,6 @@
 	})
 
 
-
 	$effect(() => {
 		if (table.selectedPreset) {
 			const preset = deepcopy(table.selectedPreset.pagePresetValue);
@@ -286,41 +345,6 @@
 	})
 
 
-	async function getData() {
-		table.areInputParamsLoading = true;
-		const response = await apiServicePostHandled("pageData", table.loadedInputParams);
-		const data = await response.data;
-		table.areInputParamsLoading = false;
-		gridApi.setGridOption("rowData", data.items);
-	}
-
-
-
-	$effect(() => {
-		if (getLocale()) {
-			if (Object.keys(headerTranslations).length > 0) {
-				let colDefs = gridApi.getColumnDefs();
-
-				// const colDefs =
-				colDefs?.forEach((column: ColDef) => {
-					if (headerTranslations[column.field]) {
-						column.headerName = headerTranslations[column.field]();
-					}
-
-					if (column.children) {
-						column.children.forEach((child: ColDef) => {
-							if (headerTranslations[child.field]) {
-								child.headerName = headerTranslations[child.field]();
-							}
-						})
-					}
-				})
-
-				// update grid with updated column defs
-				gridApi.setGridOption("columnDefs", colDefs);
-			}
-		}
-	})
 
 
 	$effect(() => {
@@ -640,7 +664,7 @@
 	}
 
 	:global(.ag-tool-panel-horizontal-resize) {
-		background-color: var(--slate-300);
+		@apply bg-slate-300;
 	}
 
 

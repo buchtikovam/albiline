@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {Button} from '$lib/components/ui/button';
-	import {createCleanCustomerAddress} from "$lib/api/routes/customerService.svelte.js";
-	import type {CustomerAddressType} from '$lib/types/routes/prodej/zakaznci/customers';
+	import {createCleanCustomerAddress} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
+	import type {CustomerAddressType} from '$lib/types/routes/prodej/zakaznici/customers';
 	import type {AutoFormSimpleType} from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";

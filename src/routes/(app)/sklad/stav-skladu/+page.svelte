@@ -19,8 +19,6 @@
 
 	let table: AgGridCSTableType = agGridTables.value["ProductStockInventory"];
 	let open = $derived(!table.hasInputParams);
-
-	let tableData
 </script>
 
 
@@ -31,20 +29,19 @@
 </svelte:head>
 
 
-
 {#if open}
 	<InputParams
-		open={open}
+		open={true}
 		defaultInputDialog={InputParamsProductStockInventory}
 		type="clientSide"
 		selectOptions={InputParamsProductStockInventorySelectOptions}
 	/>
-{:else}
-	<AgGridCSWrapper
-		requiredFields={["productId"]}
-		pageKey="ProductStockInventory"
-		rowNumberIdentificationKey="productId"
-		gridOptionsCustom={productStockInventoryAgGridDef}
-		headerTranslations={productStockInventoryHeaderTranslations}
-	/>
 {/if}
+
+<AgGridCSWrapper
+	requiredFields={["productId"]}
+	pageKey="ProductStockInventory"
+	rowNumberIdentificationKey="productId"
+	gridOptionsCustom={productStockInventoryAgGridDef}
+	headerTranslations={productStockInventoryHeaderTranslations}
+/>

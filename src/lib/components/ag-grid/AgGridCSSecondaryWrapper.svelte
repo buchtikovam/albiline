@@ -354,6 +354,10 @@
 		box-shadow: none !important;
 	}
 
+	:global(.ag-tool-panel-horizontal-resize) {
+		@apply bg-slate-300 !important;
+	}
+
 	:global(.ag-checkbox) {
 		margin-left: 4px;
 		overflow: visible !important;
