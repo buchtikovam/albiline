@@ -15,7 +15,12 @@
 	import type {
 		InputParamsType,
 		InputParamsSelectOption,
-		FetchedInputParam, InputParamsOptions
+		FetchedInputParam,
+		InputParamsOptions,
+		ColumnFilterModelCondition,
+		ColumnFilterType,
+		FilterModelConditionText,
+		FilterModelConditionNumber, FilterModelConditionBoolean, FilterModelConditionDate, FilterModelConditionEnum
 	} from "$lib/types/components/input-params/inputParams";
 	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/InputParamsSaveNewOrUpdateDialog.svelte";
 	import InputDialogColumnFilterWrapper
@@ -30,6 +35,7 @@
 	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import {Checkbox} from "$lib/components/ui/checkbox";
 	import Upload from "lucide-svelte/icons/upload";
+	import { isEqual } from "lodash-es";
 
 
 	interface Props {
@@ -180,6 +186,68 @@
 			}
 		}
 	}
+
+	$effect(() => {
+		const currentColumnFilters = inputDialog.columnFilters;
+		if (!currentColumnFilters) return;
+
+		const cleaned = cleanUpColumnFilters(deepcopy(inputDialog));
+		if (!isEqual(cleaned, inputDialog)) {
+			inputDialog = cleaned;
+		}
+	})
+
+	function cleanUpColumnFilters(inputParams: InputParamsType): InputParamsType {
+		if (!inputParams.columnFilters) {
+			return inputParams;
+		}
+
+		// const isValidCondition = (condition: ColumnFilterModelCondition, filterType: ColumnFilterType): boolean => {
+		// 	switch (filterType) {
+		// 		case 'text': {
+		// 			const textCondition = condition as FilterModelConditionText;
+		// 			return textCondition.type !== null && textCondition.value !== null;
+		// 		}
+		// 		case 'number': {
+		// 			const numberCondition = condition as FilterModelConditionNumber;
+		// 			if (numberCondition.type === null || numberCondition.value === null) return false;
+		// 			if (numberCondition.type === 'between') return numberCondition.endValue !== null;
+		// 			return true;
+		// 		}
+		// 		case 'boolean': {
+		// 			const booleanCondition = condition as FilterModelConditionBoolean;
+		// 			return booleanCondition.type !== null && booleanCondition.value !== null;
+		// 		}
+		// 		case 'date': {
+		// 			const dateCondition = condition as FilterModelConditionDate;
+		// 			if (dateCondition.type === null || dateCondition.value === null) return false;
+		// 			if (dateCondition.type === 'between') return dateCondition.endValue !== null;
+		// 			return true;
+		// 		}
+		// 		case 'enum': {
+		// 			const enumCondition = condition as FilterModelConditionEnum;
+		// 			return enumCondition.type !== null && enumCondition.value !== null;
+		// 		}
+		// 		default:
+		// 			return false;
+		// 	}
+		// };
+
+		const filteredColumnFilters = inputParams.columnFilters.filter(columnFilter => {
+			const conditions = columnFilter.filterModel.conditions;
+			return conditions.length > 0
+			// 	&& conditions.some(condition =>
+			// 	isValidCondition(condition, columnFilter.type)
+			// );
+		});
+
+		return {
+			...inputParams,
+			columnFilters: filteredColumnFilters.length > 0 ? filteredColumnFilters : undefined
+		};
+	}
+
+	$inspect(inputDialog.columnFilters)
 </script>
 
 
@@ -294,23 +362,24 @@
 			</div>
 		{/if}
 
+
 		{#if inputDialog.columnFilters !== undefined}
 			<p class="text-albi-500 text-sm font-bold">
 				{ m.components_input_params_section_columns() }
 			</p>
 
-			<div class="flex flex-col gap-2 mt-2">
+			<div class="flex flex-col gap-0">
 
 				{#each inputDialog.columnFilters as columnFilter, i}
 					<div
 						class={
 						columnFilter.filterModel.conditions.length > 1
-							? "rounded-lg border bg-slate-50 p-2 pt-0 flex flex-col mt-1.5  "
+							? "rounded-lg border bg-slate-50 p-2 flex flex-col mt-1.5  "
 							: "bg-white p-0"
 					}
 					>
 						{#if columnFilter.filterModel.conditions.length > 1}
-							<p class="hidden sm:block text-xs font-bold text-slate-400">
+							<p class="hidden sm:block text-xs font-bold text-slate-400 ">
 								{columnFilter.filterModel.operator}
 							</p>
 						{/if}
@@ -322,7 +391,7 @@
 					</div>
 				{/each}
 
-				<div class="ml-auto w-full flex gap-3 h-10">
+				<div class="ml-auto w-full flex gap-3 h-10 mt-2">
 					{#if inputDialog.columnFilters !== undefined}
 						<Button
 							type="button"

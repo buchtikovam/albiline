@@ -121,7 +121,7 @@ export type ColumnFilterModelCondition = (
 
 
 // --- conditions ---
-type FilterModelConditionText = {
+export type FilterModelConditionText = {
 	type: ConditionTypesText|null,
 	value: string|null;
 }
@@ -132,18 +132,18 @@ export type FilterModelConditionNumber = {
 	endValue?: number|null;
 }
 
-type FilterModelConditionBoolean = {
+export type FilterModelConditionBoolean = {
 	type: ConditionTypesBoolean|null,
 	value: boolean|null,
 }
 
-type FilterModelConditionDate = {
+export type FilterModelConditionDate = {
 	type: ConditionTypesDate|null,
 	value: string|null;
 	endValue?: string|null;
 }
 
-type FilterModelConditionEnum = {
+export type FilterModelConditionEnum = {
 	type: ConditionTypesEnum|null,
 	value: string;
 }
