@@ -81,6 +81,7 @@
 		table.hasInputParams = true;
 		table.selectedRows = [];
 		table.selectionState = null;
+		table.lastVisibleRowIndex = 0;
 
 		if (type === "clientSide") {
 			if ("loadedInputParams" in table) {
@@ -111,8 +112,6 @@
 				table.areInputParamsLoading = false;
 			}
 		}
-
-		table.hasInputParams = true;
 	}
 
 
@@ -188,6 +187,9 @@
 
 <DialogWrapper
 	bind:isOpen={open}
+	onChange={() => {
+		table.areInputParamsLoading = false;
+	}}
 	{header}
 	{content}
 	size="md"

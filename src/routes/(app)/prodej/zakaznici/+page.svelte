@@ -16,8 +16,9 @@
 	currentPageKey.value = "CustomersGetList";
 
 	let table = agGridTables.value[currentPageKey.value];
-	let open = $state(!table.hasInputParams);
-	let inputDialogFinished = $derived(!open);
+	let open = $derived.by(() => {
+		if (!table.hasInputParams) return true;
+	});
 
 
 	// open input dialog on ctrl+I
@@ -55,21 +56,22 @@
 
 
 
-{#if !inputDialogFinished}
+{#if open}
 	<InputParams
 		bind:open
 		type="serverSide"
 		defaultInputDialog={InputParamsZakaznici}
 		selectOptions={InputParamsZakazniciSelectOptions}
 	/>
-{:else}
-	<AgGridSSWrapper
-		gridOptionsCustom={customerGridOptions}
-		requiredFields={["customerNodeCode", "customerAddressCode"]}
-		url="customers"
-		headerTranslations={customerHeaderTranslations}
-	/>
 {/if}
+
+
+<AgGridSSWrapper
+	gridOptionsCustom={customerGridOptions}
+	requiredFields={["customerNodeCode", "customerAddressCode"]}
+	url="customers"
+	headerTranslations={customerHeaderTranslations}
+/>
 
 
 

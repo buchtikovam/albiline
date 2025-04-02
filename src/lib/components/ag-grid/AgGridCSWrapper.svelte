@@ -29,7 +29,7 @@
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
 	import deepcopy from "deepcopy";
 	import {authDetails} from "$lib/runes/page.svelte";
-	import {cacheTableData, getCacheAge, getCachedTableData} from "$lib/cacheManager";
+	import {cacheTableData, clearCache, getCacheAge, getCachedTableData} from "$lib/cacheManager";
 
 	interface Props {
 		pageKey: string;
@@ -207,29 +207,40 @@
 	})
 
 
-	let cacheAge: number | null = null;
-	let error: string | null = null;
-
+	let lastInputParams = $state(table.loadedInputParams);
+	$inspect(lastInputParams)
 
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0) {
+			if (JSON.stringify(table.loadedInputParams) !== JSON.stringify(lastInputParams)) {
+				clearCache(pageKey);
+				getData();
+			} else {
+				getData();
+			}
+		} else {
+			clearCache(pageKey);
 			getData();
 		}
+
+
+		lastInputParams = table.loadedInputParams;
 	})
 
 
 	async function getData() {
 		try {
+			// gridApi.setGridOption("loading", true)
 			const cached = await getCachedTableData(pageKey);
 
 			if (cached) {
 				gridApi.setGridOption("rowData", cached);
-				cacheAge = await getCacheAge(pageKey);
+				// gridApi.setGridOption("loading", false)
 			} else {
 				await fetchAndCache();
 			}
 		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load cached data';
+			console.log("Get data error: ", e instanceof Error ? e.message : "");
 		}
 	}
 
@@ -244,9 +255,8 @@
 			gridApi.setGridOption("rowData", data.items);
 
 			await cacheTableData(pageKey, data.items);
-			cacheAge = await getCacheAge(pageKey);
 		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to fetch and cache data';
+			console.log("Fetch and cache error: ", e instanceof Error ? e.message : "");
 		}
 	}
 
@@ -404,7 +414,8 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.LOAD) {
-			table.hasInputParams = false;
+			table.areInputParamsLoading = true;
+			console.log("load", pageKey)
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 

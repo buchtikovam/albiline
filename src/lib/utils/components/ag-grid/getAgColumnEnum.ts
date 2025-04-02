@@ -33,19 +33,34 @@ export function getAgColumnEnum(
 		setFilter = {
 			filter: 'agSetColumnFilter',
 			filterParams: {
-				values: async (params: SetFilterValuesFuncParams) => {
-					const values = await getOptions();
-					params.success(values);
+				values: (params: SetFilterValuesFuncParams) => {
+					// Start loading the options
+					getOptions().then(values => {
+						// Pass the loaded values to the grid using the success callback
+						params.success(values);
+					}).catch(error => {
+						// Handle errors appropriately
+						console.error('Failed to load filter options:', error);
+						params.success([]); // Fallback to empty array
+					});
 				},
 				buttons: ["apply", "reset"],
 			}
 		};
 
+		// For cell editor values
 		cellEditorParams = {
-			values: new Promise(resolve => {
-				setTimeout(() => resolve(getOptions()), 1000);
-			}),
-		}
+			values: () => {
+				return new Promise((resolve) => {
+					getOptions().then(values => {
+						resolve(values);
+					}).catch(error => {
+						console.error('Failed to load editor options:', error);
+						resolve([]); // Fallback to empty array
+					});
+				});
+			}
+		};
 	}
 
 	return {

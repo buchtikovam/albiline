@@ -1,6 +1,8 @@
 import {authDetails, responseDialogMessages} from '$lib/runes/page.svelte';
 import {currentPageKey} from "$lib/runes/table.svelte";
 import {getLocale} from "$lib/paraglide/runtime";
+import {triggerLogout} from "$lib/utils/lifecycle/triggerLogout";
+import Cookies from 'js-cookie'
 
 
 const url = "http://10.2.2.10/albiline.test/api/v1/";
@@ -13,7 +15,7 @@ export async function apiServiceGET(
 ): Promise<Response> {
 	console.log("get", endpoint, pageKey, pageKeyCustom);
 
-	return await fetch(url + endpoint, {
+	const response = await fetch(url + endpoint, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -22,6 +24,13 @@ export async function apiServiceGET(
 			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 	});
+
+	if (response.status === 401) {
+		await triggerLogout();
+		throw new Error("Access denied");
+	}
+
+	return response;
 }
 
 
@@ -63,6 +72,7 @@ export async function apiServiceGETHandled(
 
 
 
+
 export async function apiServicePOST(
 	endpoint: string,
 	body = {},
@@ -70,9 +80,9 @@ export async function apiServicePOST(
 ): Promise<Response> {
 	console.log("post", endpoint, pageKey, pageKeyCustom);
 
-	return await fetch(url + endpoint, {
+	const response = await fetch(url + endpoint, {
 		method: 'POST',
-		headers: 	{
+		headers: {
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
 			'Accept-Language' : getLocale(),
@@ -80,6 +90,13 @@ export async function apiServicePOST(
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
+
+	if (response.status === 401) {
+		await triggerLogout();
+		throw new Error("Access denied");
+	}
+
+	return response;
 }
 
 
@@ -127,28 +144,37 @@ export async function apiServicePostHandled(
 export async function apiServicePATCH(
 	endpoint: string,
 	body = {},
+	pageKeyCustom?: string,
 ): Promise<Response> {
 	console.log("patch", endpoint, pageKey);
 
-	return await fetch(url + endpoint, {
+	const response = await fetch(url + endpoint, {
 		method: 'PATCH',
-		headers: {
+		headers: 	{
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
 			'Accept-Language' : getLocale(),
-			'Page-Code' : pageKey,
+			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
+
+	if (response.status === 401) {
+		await triggerLogout();
+		throw new Error("Access denied");
+	}
+
+	return response;
 }
 
 
 export async function apiServicePatchHandled(
 	endpoint: string,
 	body = {},
+	pageKeyCustom?: string,
 ) {
 	try {
-		let response = await apiServicePATCH(endpoint, body)
+		let response = await apiServicePATCH(endpoint, body, pageKeyCustom)
 
 		if (response.ok) {
 			return {
@@ -178,6 +204,7 @@ export async function apiServicePatchHandled(
 		};
 	}
 }
+
 
 
 
@@ -185,19 +212,27 @@ export async function apiServicePUT(
 	endpoint: string,
 	id: number,
 	body = {},
+	pageKeyCustom?: string,
 ): Promise<Response> {
 	console.log("put", endpoint, pageKey);
 
-	return await fetch(url + endpoint + "/" + id, {
+	const response = await fetch(url + endpoint, {
 		method: 'PUT',
-		headers: {
+		headers: 	{
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
 			'Accept-Language' : getLocale(),
-			'Page-Code' : pageKey,
+			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 		body: body ? JSON.stringify(body) : undefined
 	});
+
+	if (response.status === 401) {
+		await triggerLogout();
+		throw new Error("Access denied");
+	}
+
+	return response;
 }
 
 
@@ -205,9 +240,10 @@ export async function apiServicePUTHandled(
 	endpoint: string,
 	id: number,
 	body = {},
+	pageKeyCustom?: string,
 ) {
 	try {
-		let response = await apiServicePUT(endpoint, id, body)
+		let response = await apiServicePUT(endpoint, id, body, pageKeyCustom)
 
 		if (response.ok) {
 			return {
@@ -240,30 +276,40 @@ export async function apiServicePUTHandled(
 
 
 
+
 export async function apiServiceDELETE(
 	endpoint: string,
 	id: number,
+	pageKeyCustom?: string,
 ): Promise<Response> {
 	console.log("delete", endpoint, pageKey);
 
-	return await fetch(url + endpoint + "/" + id, {
+	const response = await fetch(url + endpoint, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
 			'Session-Key': authDetails.sessionKey || "",
 			'Accept-Language' : getLocale(),
-			'Page-Code' : pageKey,
+			'Page-Code' : pageKeyCustom ? pageKeyCustom : pageKey,
 		},
 	});
+
+	if (response.status === 401) {
+		await triggerLogout();
+		throw new Error("Access denied");
+	}
+
+	return response;
 }
 
 
 export async function apiServiceDELETEHandled(
 	endpoint: string,
 	id: number,
+	pageKeyCustom?: string,
 ) {
 	try {
-		let response = await apiServiceDELETE(endpoint, id);
+		let response = await apiServiceDELETE(endpoint, id, pageKeyCustom);
 
 		if (response.ok) {
 			if (response.ok) {

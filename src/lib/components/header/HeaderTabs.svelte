@@ -45,9 +45,9 @@
 			})
 		}
 	})
-
-	$inspect(pathName);
 </script>
+
+
 
 
 <div

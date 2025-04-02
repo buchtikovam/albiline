@@ -13,6 +13,7 @@
 	import Settings from "lucide-svelte/icons/settings";
 	import {localizeHref} from "$lib/paraglide/runtime";
 	import {goto} from "$app/navigation";
+	import {clearCache} from "$lib/cacheManager";
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = {
 		user: {
@@ -118,10 +119,14 @@
 
 
 				<DropdownMenu.Group>
-					<form action="/logout" method="POST">
+					<form
+						action="/logout"
+						method="POST"
+					>
 						<button
 							class="w-full"
-							onclick={() => {
+							onclick={async () => {
+								await clearCache();
 								agGridTables.value = {};
 							}}
 						>

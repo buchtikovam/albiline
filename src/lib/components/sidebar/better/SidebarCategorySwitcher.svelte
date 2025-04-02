@@ -41,8 +41,6 @@
 	})
 
 	const sidebar = useSidebar();
-
-	$inspect(activeCategory)
 </script>
 
 

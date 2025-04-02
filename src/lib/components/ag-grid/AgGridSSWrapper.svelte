@@ -275,21 +275,15 @@
 			table.filtersToSave = currentFilter;
 
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
-
-
-
 			console.time("datasource")
+
 			apiServicePostHandled(url, updatedParamsRequest)
 				.then(httpResponse => httpResponse.data)
 				.then(response => {
 					console.timeEnd("datasource");
-
-
 					console.log(response)
 
 					params.success({ rowData: response.items });
-
-
 					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
 
 					if (response.items.length > 0) {
@@ -354,8 +348,9 @@
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
 
-		console.log("mount")
-		table.defaultColDef = finalGridOptions.columnDefs;
+		if (finalGridOptions.columnDefs) {
+			table.defaultColDef = finalGridOptions.columnDefs
+		}
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
@@ -422,6 +417,7 @@
 	})
 
 
+	// used for waiting for API to cache data based on new input params
 	$effect(() => {
 		if (table.areInputParamsLoading) {
 			gridApi.setGridOption("loading", true)
@@ -510,7 +506,6 @@
 				column.headerName = headerTranslations[column.field || ""]();
 			})
 
-			console.log(columnOrder);
 			gridApi.setGridOption("columnDefs", preset);
 			gridApi.applyColumnState({
 				state: columnOrder,

@@ -4,8 +4,6 @@ import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
 export const load: LayoutLoad = async () => {
 	currentPageKey.value = "CustomersGetList";
 
-	console.log("yyyay")
-
 	if (!agGridTables.value[currentPageKey.value]) {
 		agGridTables.value[currentPageKey.value] = {
 			type: "serverSide",

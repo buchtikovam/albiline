@@ -3,7 +3,7 @@ import Dexie from 'dexie';
 export interface CompressedDataEntry {
 	id: string;
 	data: Blob;
-	timestamp?: number;
+	timestamp: number; // Always store timestamp
 }
 
 class AppDatabase extends Dexie {
@@ -12,17 +12,9 @@ class AppDatabase extends Dexie {
 	constructor() {
 		super('CompressedDataDB');
 
-		this.version(1).stores({
+		this.version(3).stores({
 			compressedData: 'id, timestamp'
 		});
-
-		this.version(2).upgrade(trans => {
-			trans.table('compressedData').toCollection().modify(entry => {
-				entry.timestamp = Date.now();
-			});
-		});
-
-		console.log("db constructor")
 	}
 }
 

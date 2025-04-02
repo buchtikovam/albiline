@@ -1,7 +1,4 @@
 export async function compressData(data: unknown): Promise<Blob> {
-	console.log("compressData start");
-
-
 	const jsonString = JSON.stringify(data);
 	const stream = new ReadableStream({
 		start(controller) {
@@ -21,16 +18,11 @@ export async function compressData(data: unknown): Promise<Blob> {
 		if (value) chunks.push(value);
 	}
 
-	console.log("compressData end");
-
-
 	return new Blob(chunks, { type: 'application/gzip' });
 }
 
 
 export async function decompressData(blob: Blob): Promise<unknown> {
-	console.log("decompressData start");
-
 	// Create a streaming decompression pipeline
 	const decompressionStream = blob.stream()
 		.pipeThrough(new DecompressionStream('gzip'))

@@ -7,7 +7,7 @@ interface ProductStockInventoryType {
 	quantity: number; // Skladem
 	quantityAvailable: number; // K dispozici
 
-	quanatityReservation: number; // Blokováno
+	quantityReservation: number; // Blokováno
 	quantityAfterReservation: number; // Po blokacích
 
 	quantity_997: number; // Expedice : Skladem

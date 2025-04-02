@@ -11,14 +11,35 @@
 	import type {AgGridCSTableType} from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
+	import {ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {onMount} from "svelte";
 
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 	currentPageKey.value = "ProductStockInventory";
 
-	let table: AgGridCSTableType = agGridTables.value["ProductStockInventory"];
-	let open = $derived(!table.hasInputParams);
+	let table: AgGridCSTableType = $state(agGridTables.value["ProductStockInventory"]);
+
+	let isInitial = $derived(!table.hasInputParams);
+	let open = $derived(table.areInputParamsLoading);
+
+
+	onMount(() => {
+		if (isInitial) {
+			open = true;
+		}
+	})
+
+	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.LOAD) {
+			table = { ...table, areInputParamsLoading: true };
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+	})
+
+	$inspect(open)
 </script>
 
 
@@ -31,9 +52,9 @@
 
 {#if open}
 	<InputParams
-		open={true}
-		defaultInputDialog={InputParamsProductStockInventory}
+		bind:open={open}
 		type="clientSide"
+		defaultInputDialog={InputParamsProductStockInventory}
 		selectOptions={InputParamsProductStockInventorySelectOptions}
 	/>
 {/if}

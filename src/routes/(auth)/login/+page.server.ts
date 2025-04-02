@@ -35,8 +35,6 @@ export const actions = {
 			const saltResp = await getSalt.json().catch(() => null);
 
 			if (!getSalt.ok || !saltResp?.passwordSalt) {
-				console.log("salt fail")
-
 				return fail(getSalt.status, {
 					messages: saltResp?.messages,
 					userCode: userCode,
@@ -59,15 +57,11 @@ export const actions = {
 			const responseData = await resp.json().catch(() => null);
 
 			if (!resp.ok) {
-				console.log("login fail")
 				return fail(resp.status, {
 					messages: responseData?.messages,
 					userCode: userCode,
 				});
 			}
-
-			console.log(resp)
-			console.log(responseData)
 
 			if (responseData.sessionKey) {
 				// Set session cookie
@@ -97,8 +91,6 @@ export const actions = {
 			if (e.status === 303 && e.location) {
 				throw e;
 			}
-
-			console.error("Unexpected error:", e);
 
 			throw error(500, {
 				message: "Internal server error",
