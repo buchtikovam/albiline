@@ -88,6 +88,8 @@
 		table.selectedRows = [];
 		table.selectionState = null;
 		table.lastVisibleRowIndex = 0;
+		table.sortState = [];
+		table.filtersToSave = {};
 
 		if (type === "clientSide") {
 			if ("loadedInputParams" in table) {
@@ -391,7 +393,7 @@
 					</div>
 				{/each}
 
-				<div class="ml-auto w-full flex gap-3 h-10 mt-2">
+				<div class="w-full flex justify-end gap-3 h-10 mt-2">
 					{#if inputDialog.columnFilters !== undefined}
 						<Button
 							type="button"

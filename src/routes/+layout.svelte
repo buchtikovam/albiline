@@ -5,11 +5,13 @@
 	import {Toaster} from "svelte-sonner";
 	import Response from "$lib/components/response/Response.svelte";
 	import { page } from '$app/state';
+	import { pwaInfo } from 'virtual:pwa-info';
+	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
 
 	let { children }: { children?: Snippet } = $props();
 
 	let innerWidth: number = $state(0);
-
+	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
 
 	$effect(() => {
 		isMobile.value = innerWidth < 640;
@@ -18,30 +20,26 @@
 
 
 
-<svelte:head>
-	<meta name="theme-color" content="#dbfeff" />
-</svelte:head>
-
 <svelte:window bind:innerWidth/>
 
 
-<!--<svelte:head>-->
-<!--	{#if pwaAssetsHead.themeColor}-->
-<!--		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />-->
-<!--	{/if}-->
+<svelte:head>
+	{#if pwaAssetsHead.themeColor}
+		<meta name="theme-color" content={pwaAssetsHead.themeColor.content} />
+	{/if}
 
-<!--	{#each pwaAssetsHead.links as link}-->
-<!--		<link {...link} />-->
-<!--	{/each}-->
+	{#each pwaAssetsHead.links as link}
+		<link {...link} />
+	{/each}
 
-<!--	{@html webManifest}-->
-<!--</svelte:head>-->
+	{@html webManifestLink}
+</svelte:head>
 
 
 
-<!--{#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}-->
-<!--	<ReloadPrompt />-->
-<!--{/await}-->
+{#await import('$lib/PWAReloadPrompt.svelte') then { default: ReloadPrompt }}
+	<ReloadPrompt />
+{/await}
 
 
 
