@@ -5,7 +5,7 @@
 	import type { LayoutData } from './$types';
 	import {type Snippet} from 'svelte';
 	import './../../app.pcss';
-	import BetterSidebar from "$lib/components/sidebar/better/BetterSidebar.svelte";
+	import BetterSidebar from "$lib/components/sidebar/BetterSidebar.svelte";
 	import RibbonDialog from '$lib/components/dialog/RibbonDialog.svelte';
 	import Header from '$lib/components/header/Header.svelte';
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';

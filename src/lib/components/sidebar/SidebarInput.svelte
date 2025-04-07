@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {sidebarOpen} from "$lib/runes/sidebar.svelte";
+	import {sidebarOpen} from "$lib/runes/sidebar.svelte.js";
 	import {allItems} from "$lib/definitions/components/sidebar/sidebar";
 	import {Input} from "$lib/components/ui/input";
 	import Search from "lucide-svelte/icons/search";

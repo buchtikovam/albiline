@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {sidebarCategory} from "$lib/runes/sidebar.svelte";
+	import {sidebarCategory} from "$lib/runes/sidebar.svelte.js";
 	import {useSidebar} from "$lib/components/ui/sidebar";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import Clock2 from "lucide-svelte/icons/clock-2";

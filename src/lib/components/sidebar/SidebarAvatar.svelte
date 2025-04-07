@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {agGridTables} from "$lib/runes/table.svelte";
+	import {agGridTables} from "$lib/runes/table.svelte.js";
 	import {useSidebar} from "$lib/components/ui/sidebar";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import LogOut from "lucide-svelte/icons/log-out";
@@ -7,8 +7,8 @@
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 	import * as Collapsible from "$lib/components/ui/collapsible";
 	import * as Sidebar from "$lib/components/ui/sidebar";
-	import * as Select from "$lib/components/ui/select/index.js";
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
+	import * as Select from "$lib/components/ui/select";
+	import * as Avatar from "$lib/components/ui/avatar";
 	import User from "lucide-svelte/icons/user";
 	import Settings from "lucide-svelte/icons/settings";
 	import {localizeHref} from "$lib/paraglide/runtime";
@@ -25,6 +25,9 @@
 
 	const sidebar = useSidebar();
 </script>
+
+
+
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
@@ -45,8 +48,6 @@
 							<Avatar.Fallback class="rounded-lg">
 								{user.avatar}
 							</Avatar.Fallback>
-
-
 						</Avatar.Root>
 
 						<div class="grid flex-1 text-left text-sm leading-tight">

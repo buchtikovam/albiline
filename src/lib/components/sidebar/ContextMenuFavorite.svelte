@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { favoriteItems, sidebarCategory } from '$lib/runes/sidebar.svelte';
+	import { favoriteItems, sidebarCategory } from '$lib/runes/sidebar.svelte.js';
 	import HeartCrack from 'lucide-svelte/icons/heart-crack';
 	import Heart from 'lucide-svelte/icons/heart';
 	import * as m from "$lib/paraglide/messages.js";

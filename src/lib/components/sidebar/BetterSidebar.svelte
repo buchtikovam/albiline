@@ -1,14 +1,14 @@
 <script lang="ts">
-	import {favoriteItems, recentItems, sidebarCategory} from "$lib/runes/sidebar.svelte";
+	import {favoriteItems, recentItems, sidebarCategory} from "$lib/runes/sidebar.svelte.js";
 	import {allItems} from "$lib/definitions/components/sidebar/sidebar";
 	import {filterItemsCategory} from "$lib/utils/components/sidebar/filterItemsCategory";
 	import {filterItemsSearch} from "$lib/utils/components/sidebar/filterItemsSearch";
 	import deepcopy from "deepcopy";
 	import type {SidebarItem} from "$lib/types/components/sidebar/sidebar";
-	import SidebarCategorySwitcher from "$lib/components/sidebar/better/SidebarCategorySwitcher.svelte";
-	import SidebarAvatar from "$lib/components/sidebar/better/SidebarAvatar.svelte";
-	import SidebarInput from "$lib/components/sidebar/better/SidebarInput.svelte";
-	import SidebarMain from "$lib/components/sidebar/better/SidebarMain.svelte";
+	import SidebarCategorySwitcher from "$lib/components/sidebar/SidebarCategorySwitcher.svelte";
+	import SidebarAvatar from "$lib/components/sidebar/SidebarAvatar.svelte";
+	import SidebarInput from "$lib/components/sidebar/SidebarInput.svelte";
+	import SidebarMain from "$lib/components/sidebar/SidebarMain.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 
 

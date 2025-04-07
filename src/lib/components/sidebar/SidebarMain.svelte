@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {sidebarOpen} from "$lib/runes/sidebar.svelte";
-	import {isMobile} from "$lib/runes/page.svelte";
+	import {sidebarOpen} from "$lib/runes/sidebar.svelte.js";
+	import {isMobile} from "$lib/runes/page.svelte.js";
 	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 	import {onMount} from "svelte";
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
@@ -8,7 +8,7 @@
 	import ContextMenuFavorite from "$lib/components/sidebar/ContextMenuFavorite.svelte";
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import * as Collapsible from "$lib/components/ui/collapsible";
-	import * as Popover from "$lib/components/ui/popover/index.js";
+	import * as Popover from "$lib/components/ui/popover";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
 
