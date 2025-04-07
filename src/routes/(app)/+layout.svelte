@@ -16,22 +16,6 @@
 
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;
-
-
-	// const table = $state(serverSideTables[pageCode.value])
-
-	// beforeNavigate(({ cancel }) => {
-	// 	if (table) {
-	// 		if (table.editedTableData.length > 0) {
-	// 			if (!confirm('Opravdu chcete opustit tuhle stránku? Vaše neuložená data budou ztracena.')) {
-	// 				cancel();
-	// 			} else {
-	// 				table.editedTableData = [];
-	// 				disableNavigation.value = false;
-	// 			}
-	// 		}
-	// 	}
-	// })
 </script>
 
 

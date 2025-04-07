@@ -61,6 +61,8 @@ export interface AgGridSSTableType {
 	areInputParamsLoading: boolean;
 	// whether or not show input params dialog
 	hasInputParams: boolean;
+	// used to fetch data limited by user input params
+	loadedInputParams: InputParamsType
 }
 
 

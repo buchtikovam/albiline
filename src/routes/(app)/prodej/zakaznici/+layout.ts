@@ -21,6 +21,7 @@ export const load: LayoutLoad = async () => {
 			latestRowCount: 100,
 			areInputParamsLoading: false,
 			hasInputParams: false,
+			loadedInputParams: {}
 		}
 	}
 };

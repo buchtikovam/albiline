@@ -57,7 +57,7 @@
 
 	<Sidebar.Content class="bg-white">
 		<SidebarMain
-			sidebarItems={filteredItems}
+			bind:sidebarItems={filteredItems}
 		/>
 	</Sidebar.Content>
 

@@ -26,6 +26,7 @@ export const allItems: SidebarItem[] = [
 		disabled: false,
 		translation: m.components_sidebar_item_sklad,
 		icon: Warehouse,
+		popoverOpen: false,
 		children: [
 	// 		{
 	// 			field: 'hodinovka',
@@ -55,6 +56,7 @@ export const allItems: SidebarItem[] = [
 				disabled: false,
 				translation: m.components_sidebar_item_sklad_stav_skladu,
 				icon: null,
+				popoverOpen: false,
 				children: [],
 			},
 	// 		{
@@ -126,6 +128,7 @@ export const allItems: SidebarItem[] = [
 		disabled: false,
 		translation: m.components_sidebar_item_prodej,
 		icon: HandCoins,
+		popoverOpen: false,
 		children: [
 			{
 				field: 'zakaznici',
@@ -133,6 +136,7 @@ export const allItems: SidebarItem[] = [
 				open: false,
 				hide: false,
 				disabled: false,
+				popoverOpen: false,
 				translation: m.components_sidebar_item_prodej_zakaznici,
 				icon: null,
 				children: [],

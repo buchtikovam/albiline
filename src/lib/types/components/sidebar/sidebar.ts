@@ -7,6 +7,7 @@ export type SidebarItem = {
 	open: boolean;
 	hide: boolean;
 	disabled: boolean
+	popoverOpen: boolean;
 	translation: () => string;
 	icon: null|typeof IconType;
 	children: SidebarItem[];

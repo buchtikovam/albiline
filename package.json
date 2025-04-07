@@ -27,6 +27,7 @@
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/eslint": "^8.56.0",
 		"@types/js-cookie": "^3.0.6",
+		"@types/lodash-es": "^4.17.12",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
 		"@vite-pwa/assets-generator": "^0.2.6",

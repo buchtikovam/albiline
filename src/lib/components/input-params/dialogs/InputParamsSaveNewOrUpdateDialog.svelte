@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {Button} from "$lib/components/ui/button/index.js";
+	import {Button} from "$lib/components/ui/button";
 	import {Label} from "$lib/components/ui/label";
 	import {Input} from "$lib/components/ui/input";
 	import type {FetchedInputParam} from "$lib/types/components/input-params/inputParams";

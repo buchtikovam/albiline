@@ -1,7 +1,4 @@
 import type {ColumnFilter, ColumnFilterModelCondition} from "$lib/types/components/input-params/inputParams";
-import {parseStringToDateLong} from "$lib/utils/formatting/parseStringToDateLong";
-
-
 
 
 export function getColumnFilters(columnFilters: ColumnFilter[]|undefined) {

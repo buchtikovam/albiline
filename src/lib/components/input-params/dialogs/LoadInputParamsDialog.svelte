@@ -1,11 +1,11 @@
 <script lang="ts">
-	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte.js";
 	import {getContext} from "svelte";
 	import {
 		apiServiceDELETEHandled,
 		apiServiceGETHandled,
 		apiServicePUTHandled
-	} from "$lib/api/apiService.svelte";
+	} from "$lib/api/apiService.svelte.js";
 	import {
 		inputParamsCustomGridOptions
 	} from "$lib/definitions/components/input-params/ag-grid/inputParamsAgGridDef";
@@ -123,6 +123,7 @@
 	customCss={"!h-[360px] md:!w-[500px]"}
 />
 
+
 {#snippet header()}
 	<Dialog.Title class="h-6 flex pr-4 gap-2 items-center">
 		{m.components_input_params_load_dialog_label()}
@@ -136,6 +137,7 @@
 		{/if}
 	</Dialog.Title>
 {/snippet}
+
 
 {#snippet content()}
 	<div class="h-full">

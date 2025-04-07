@@ -60,7 +60,7 @@
 	<InputParams
 		bind:open
 		type="serverSide"
-		defaultInputDialog={InputParamsZakaznici}
+		defaultInputParams={InputParamsZakaznici}
 		selectOptions={InputParamsZakazniciSelectOptions}
 	/>
 {/if}

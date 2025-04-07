@@ -52,9 +52,9 @@
 
 {#if open}
 	<InputParams
-		bind:open={open}
+		bind:open
 		type="clientSide"
-		defaultInputDialog={InputParamsProductStockInventory}
+		defaultInputParams={InputParamsProductStockInventory}
 		selectOptions={InputParamsProductStockInventorySelectOptions}
 	/>
 {/if}

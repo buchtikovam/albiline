@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { locales, localizeHref } from '$lib/paraglide/runtime';
-	import {type Snippet} from 'svelte';
+	import {pwaAssetsHead} from 'virtual:pwa-assets/head';
+	import {locales, localizeHref} from '$lib/paraglide/runtime';
 	import {isMobile} from "$lib/runes/page.svelte";
+	import {pwaInfo} from 'virtual:pwa-info';
+	import {page} from '$app/state';
 	import {Toaster} from "svelte-sonner";
+	import {type Snippet} from 'svelte';
 	import Response from "$lib/components/response/Response.svelte";
-	import { page } from '$app/state';
-	import { pwaInfo } from 'virtual:pwa-info';
-	import { pwaAssetsHead } from 'virtual:pwa-assets/head';
 
 	let { children }: { children?: Snippet } = $props();
 
+
 	let innerWidth: number = $state(0);
 	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
+
 
 	$effect(() => {
 		isMobile.value = innerWidth < 640;
