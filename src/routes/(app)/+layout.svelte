@@ -22,7 +22,7 @@
 
 <div class="h-dvh w-dvh bg-slate-100">
 	<Sidebar.Provider
-		style="--sidebar-width: 260px; --sidebar-width-mobile: 200px"
+		style="--sidebar-width: 280px; --sidebar-width-mobile: 200px"
 		class="!h-full py-2 pr-2 w-full"
 		bind:open={sidebarOpen.value}
 	>
@@ -35,7 +35,7 @@
 			<div
 				class={
 					sidebarOpen.value
-						? "w-[260px] max-w-[260px] min-w-[260px] transition-all duration-200 ease-linear"
+						? "w-[280px] max-w-[280px] min-w-[280px] transition-all duration-200 ease-linear"
 						: "w-[66px] max-w-[66px] min-w-[66px] transition-all duration-200 ease-linear"
 				}
 			>

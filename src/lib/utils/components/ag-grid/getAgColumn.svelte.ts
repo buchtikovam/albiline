@@ -1,6 +1,11 @@
+import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+import {parseStringToDate} from "$lib/utils/formatting/parseStringToDate";
 import {BooleanFilter} from "$lib/utils/components/ag-grid/column-filters/booleanFilter";
 import type {ValueFormatterParams} from "ag-grid-enterprise";
-import {parseStringToDate} from "$lib/utils/formatting/parseStringToDate";
+
+
+let table = $derived(agGridTables.value[currentPageKey.value])
+
 
 export function getAgColumn(
 	field: string,
@@ -13,7 +18,16 @@ export function getAgColumn(
 	custom?: Record<string, any>,
 ) {
 	let filters: any[] = [];
+	let filterButtons: string[] = [];
 
+	if (!table) {
+		filterButtons = [];
+	} else {
+		table.type === 'serverSide'
+			? filterButtons = ['apply', 'reset']
+			: filterButtons = []
+	}
+	
 	if (type === 'text') {
 		if (setFilter) {
 			filters = [
@@ -23,7 +37,7 @@ export function getAgColumn(
 				{
 					filter: 'agSetColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -32,7 +46,7 @@ export function getAgColumn(
 				{
 					filter: 'agTextColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -48,7 +62,7 @@ export function getAgColumn(
 				{
 					filter: 'agSetColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -57,7 +71,7 @@ export function getAgColumn(
 				{
 					filter: 'agNumberColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -73,7 +87,7 @@ export function getAgColumn(
 				{
 					filter: 'agSetColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -82,7 +96,7 @@ export function getAgColumn(
 				{
 					filter: BooleanFilter,
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -98,7 +112,7 @@ export function getAgColumn(
 				{
 					filter: 'agSetColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
@@ -107,11 +121,12 @@ export function getAgColumn(
 				{
 					filter: 'agDateColumnFilter',
 					filterParams: {
-						buttons: ["apply", "reset"],
+						buttons: filterButtons,
 					}
 				},
 			]
-		}	}
+		}
+	}
 	
 	return {
 		field: field,

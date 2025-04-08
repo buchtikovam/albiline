@@ -17,7 +17,10 @@
 
 
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
-	function search(searchTerm: string, category: "all"|"recent"|"favorite"): void {
+	function search(
+		searchTerm: string,
+		category: "all"|"recent"|"favorite"
+	): void {
 		if (category === 'all') {
 			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
 		}
@@ -42,6 +45,7 @@
 		search(searchTerm, sidebarCategory.value);
 	})
 </script>
+
 
 
 

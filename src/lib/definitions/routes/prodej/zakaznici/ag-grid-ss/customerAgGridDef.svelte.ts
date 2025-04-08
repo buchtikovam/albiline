@@ -4,7 +4,7 @@ import {getRetailStoreTypeName} from "$lib/utils/dropdowns/retailStoreType";
 import {getPaymentTypeCode} from "$lib/utils/dropdowns/paymentTypeCode";
 import {getCustomerRanks} from "$lib/utils/dropdowns/customerRank";
 import {getAgColumnEnum} from "$lib/utils/components/ag-grid/getAgColumnEnum";
-import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
+import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import {goto} from "$app/navigation";
 import type {CellDoubleClickedEvent} from "ag-grid-community";
 import type {GridOptions} from 'ag-grid-enterprise';

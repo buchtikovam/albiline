@@ -1,19 +1,19 @@
 <script lang="ts">
 	import {agGridTables} from "$lib/runes/table.svelte.js";
+	import {localizeHref} from "$lib/paraglide/runtime";
+	import {clearCache} from "$lib/cacheManager";
 	import {useSidebar} from "$lib/components/ui/sidebar";
+	import {goto} from "$app/navigation";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
+	import Settings from "lucide-svelte/icons/settings";
 	import LogOut from "lucide-svelte/icons/log-out";
+	import User from "lucide-svelte/icons/user";
+	import Bug from "lucide-svelte/icons/bug";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-	import * as Collapsible from "$lib/components/ui/collapsible";
 	import * as Sidebar from "$lib/components/ui/sidebar";
-	import * as Select from "$lib/components/ui/select";
 	import * as Avatar from "$lib/components/ui/avatar";
-	import User from "lucide-svelte/icons/user";
-	import Settings from "lucide-svelte/icons/settings";
-	import {localizeHref} from "$lib/paraglide/runtime";
-	import {goto} from "$app/navigation";
-	import {clearCache} from "$lib/cacheManager";
+
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = {
 		user: {
@@ -99,6 +99,12 @@
 				<DropdownMenu.Separator />
 
 				<DropdownMenu.Group>
+<!--					<DropdownMenu.Label-->
+<!--						class="text-muted-foreground text-xs"-->
+<!--					>-->
+<!--						Uživatel-->
+<!--					</DropdownMenu.Label>-->
+
 					<DropdownMenu.Item
 						class="flex w-full items-center"
 						onclick={() => goto(localizeHref("profil"))}
@@ -107,6 +113,19 @@
 						{m.components_avatar_profile()}
 					</DropdownMenu.Item>
 
+
+				</DropdownMenu.Group>
+				<DropdownMenu.Separator />
+
+
+
+				<DropdownMenu.Group>
+<!--					<DropdownMenu.Label-->
+<!--						class="text-muted-foreground text-xs"-->
+<!--					>-->
+<!--						Aplikace-->
+<!--					</DropdownMenu.Label>-->
+
 					<DropdownMenu.Item
 						class="flex w-full items-center"
 						onclick={() => goto(localizeHref("nastaveni"))}
@@ -114,6 +133,20 @@
 						<Settings />
 						{m.components_avatar_settings()}
 					</DropdownMenu.Item>
+
+					<DropdownMenu.Item
+						class="flex w-full items-center"
+					>
+						<Bug/>
+						Nahlásit chybu
+					</DropdownMenu.Item>
+
+<!--					<DropdownMenu.Item-->
+<!--						class="flex w-full items-center"-->
+<!--						onclick={() => goto(localizeHref("nastaveni"))}-->
+<!--					>-->
+
+<!--					</DropdownMenu.Item>-->
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
 

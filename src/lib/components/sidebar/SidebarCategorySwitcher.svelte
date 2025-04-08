@@ -48,22 +48,37 @@
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
-
-
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
 						{...props}
 						size="lg"
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
-						{@const Icon = activeCategory.icon}
-
-
 						<div
 							class="bg-sidebar-primary text-white flex aspect-square size-8 min-w-8 bg-albi-500 items-center justify-center rounded-lg"
 						>
-							<Icon class="size-4" />
+							{#if activeCategory.value === "all"}
+								<Rows3
+									strokeWidth="2.5"
+									class="size-4"
+								/>
+							{/if}
+
+							{#if activeCategory.value === "recent"}
+								<Clock2
+									strokeWidth="3"
+									class="size-4"
+								/>
+							{/if}
+
+							{#if activeCategory.value === "favorite"}
+								<Heart
+									strokeWidth="3"
+									class="size-4"
+								/>
+							{/if}
 						</div>
+
 
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">
@@ -82,7 +97,7 @@
 
 
 			<DropdownMenu.Content
-				class="w-[var(--bits-dropdown-menu-anchor-width)] min-w-56 rounded-lg"
+				class="w-[var(--bits-dropdown-menu-anchor-width)] min-w-40 rounded-lg"
 				align="start"
 				side={sidebar.isMobile ? "bottom" : "right"}
 				sideOffset={4}
@@ -98,7 +113,7 @@
 						onSelect={() => {
 							sidebarCategory.value = category.value
 						}}
-						class="gap-2 p-2"
+						class="gap-2"
 					>
 						{@const Icon = category.icon}
 

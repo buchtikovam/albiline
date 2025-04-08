@@ -28,7 +28,7 @@ export interface AgGridTables {
 export interface AgGridSSTableType {
 	type: "serverSide";
 	// for restoring default table settings and layout
-	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[];
+	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[]; // TODO: delete ?
 	// used when setting default colDef - preset
 	setColDefToDefault: boolean;
 	// used for disabling tabs and saving edits

@@ -59,7 +59,7 @@ export async function apiServiceGETHandled(
 
 		responseDialogMessages.value = [{
 			title: "Upozornění",
-			content: "Nastala kritická FE chyba" + error,
+			content: "Nastala kritická chyba: " + error,
 			type: "Critical",
 		}];
 
@@ -127,7 +127,7 @@ export async function apiServicePostHandled(
 
 		responseDialogMessages.value = [{
 			title: "Upozornění",
-			content: "Nastala kritická FE chyba" + error,
+			content: "Nastala kritická chyba: " + error,
 			type: "Critical",
 		}];
 
@@ -194,7 +194,7 @@ export async function apiServicePatchHandled(
 
 		responseDialogMessages.value = [{
 			title: "Upozornění",
-			content: "Nastala kritická FE chyba" + error,
+			content: "Nastala kritická chyba: " + error,
 			type: "Critical",
 		}];
 
@@ -216,7 +216,7 @@ export async function apiServicePUT(
 ): Promise<Response> {
 	console.log("put", endpoint, pageKey);
 
-	const response = await fetch(url + endpoint, {
+	const response = await fetch(url + endpoint + "/" +  id, {
 		method: 'PUT',
 		headers: 	{
 			'Content-Type': 'application/json',
@@ -263,7 +263,7 @@ export async function apiServicePUTHandled(
 
 		responseDialogMessages.value = [{
 			title: "Upozornění",
-			content: "Nastala kritická FE chyba" + error,
+			content: "Nastala kritická chyba: " + error,
 			type: "Critical",
 		}];
 
@@ -284,7 +284,7 @@ export async function apiServiceDELETE(
 ): Promise<Response> {
 	console.log("delete", endpoint, pageKey);
 
-	const response = await fetch(url + endpoint, {
+	const response = await fetch(url + endpoint + "/" + id, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
@@ -322,6 +322,7 @@ export async function apiServiceDELETEHandled(
 
 		let respData = await response.json();
 		responseDialogMessages.value = respData.messages;
+
 		return {
 			success: false,
 			data: {},
@@ -331,7 +332,7 @@ export async function apiServiceDELETEHandled(
 
 		responseDialogMessages.value = [{
 			title: "Upozornění",
-			content: "Nastala kritická FE chyba" + error,
+			content: "Nastala kritická chyba: " + error,
 			type: "Critical",
 		}];
 

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {isEqual} from "lodash-es";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 	import {cleanUpColumnFilters} from "$lib/utils/components/input-params/cleanUpColumnFilters";
-	import {apiServicePUTHandled} from "$lib/api/apiService.svelte";
+	import {apiServicePostHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import {getColumnFilters} from "$lib/utils/components/input-params/getColumnFilters";
 	import {setContext} from "svelte";
 	import deepcopy from "deepcopy";
@@ -72,6 +73,31 @@
 
 
 
+	async function saveInputParam() {
+		let response = await apiServicePostHandled(
+			"userInputParameters",
+			{
+				paramName: saveLabel,
+				paramValue: {
+					fulltext: deepcopy(inputParams.fulltext),
+					inputs: deepcopy(inputParams.inputs),
+					columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
+				},
+			}
+		);
+
+		if (response.success) {
+			isSaveDialogOpen = false;
+
+			selectedParam = await response.data;
+			editedLabel = saveLabel;
+			saveLabel = "";
+
+			setTimeout(() => {
+				openedRibbonDialog.value = "empty";
+			}, 200)
+		}
+	}
 
 
 	// load selected input param into InputParam component
@@ -194,31 +220,7 @@
 <InputParamsSaveNewOrUpdateDialog
 	bind:isOpen={isSaveDialogOpen}
 	bind:inputValue={saveLabel}
-	onsubmit={async () => {
-		// let response = await apiServicePostHandled(
-		// 	"userInputParameters",
-		// 	{
-		// 		paramName: saveLabel,
-		// 		paramValue: {
-		// 			fulltext: deepcopy(inputParams.fulltext),
-		// 			inputs: deepcopy(inputParams.inputs),
-		// 			columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
-		// 		},
-		// 	}
-		// );
-		//
-		// if (response.success) {
-		// 	isSaveDialogOpen = false;
-		//
-		// 	selectedParam = await response.data;
-		// 	editedLabel = saveLabel;
-		// 	saveLabel = "";
-		//
-		// 	setTimeout(() => {
-		// 		openedRibbonDialog.value = "empty";
-		// 	}, 200)
-		// }
-	}}
+	onsubmit={saveInputParam}
 	onupdate={updateInputParam}
 	{selectedParam}
 	hasEditedData={isLoadedParamChanged}

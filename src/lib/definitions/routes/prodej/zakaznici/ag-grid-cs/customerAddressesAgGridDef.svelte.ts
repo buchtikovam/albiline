@@ -1,7 +1,7 @@
 import {agGridTables, currentPageKey} from '$lib/runes/table.svelte.js';
 import {page} from '$app/state';
 import {selectButtonWithUrl} from "$lib/utils/components/ag-grid/cell-renderers/selectButtonWithUrl.svelte";
-import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
+import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import type {ICellRendererParams, CellClassParams} from 'ag-grid-community';
 import type {GridOptions} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'

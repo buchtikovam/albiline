@@ -53,7 +53,7 @@
 	let rowBufferSize = 100;
 	let isInitial = $state(true);
 	let themeParams = $state(themeAlbiBlueParams);
-
+	let defaultColDef: ColDef[] = $state([])
 
 	// grid configuration
 	const gridOptions: GridOptions = {
@@ -345,16 +345,30 @@
 	// runs when component is mounted only
 	onMount(() => {
 		disablePageTabs.value = true;
-
-		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
-
-		if (finalGridOptions.columnDefs) {
-			table.defaultColDef = finalGridOptions.columnDefs
-		}
+		const finalGridOptions = { ...gridOptions, ...gridOptionsCustom };
+		defaultColDef = finalGridOptions.columnDefs || [];
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
-			finalGridOptions.columnDefs = table.presetToSave;
+			const parsedPreset: ColDef[] = []
+
+			table.presetToSave.forEach(presetColumnDef => {
+				if (finalGridOptions.columnDefs) {
+					finalGridOptions.columnDefs.forEach(columnDef => {
+						// @ts-ignore
+						if (presetColumnDef.field === columnDef.field) {
+							// @ts-ignore
+							if (columnDef.filterParams) presetColumnDef.filterParams = columnDef.filterParams;
+							// @ts-ignore
+							if (columnDef.cellEditorParams) presetColumnDef.cellEditorParams = columnDef.cellEditorParams;
+
+							parsedPreset.push(presetColumnDef)
+						}
+					})
+				}
+			})
+
+			finalGridOptions.columnDefs = parsedPreset;
 		}
 
 		// initialize grid
@@ -362,10 +376,7 @@
 			gridApi = createGrid(gridContainer, finalGridOptions);
 		}
 
-
 		gridApi.setFilterModel(table.filtersToSave);
-
-
 		let colDefs = gridApi.getColumnDefs();
 
 		// const colDefs =
@@ -375,7 +386,6 @@
 
 		// update grid with updated column defs
 		gridApi.setGridOption("columnDefs", colDefs);
-
 
 		return (() => {
 			table.selectionState = gridApi.getServerSideSelectionState();
@@ -438,8 +448,6 @@
 					column.headerName = headerTranslations[column.field || ""]();
 				})
 
-
-
 				// update grid with updated column defs
 				gridApi.setGridOption("columnDefs", colDefs);
 			}
@@ -451,13 +459,13 @@
 		if (table.setColDefToDefault) {
 			const columnOrder: ColumnOrder = [];
 
-			table.defaultColDef.forEach((column: ColDef) => {
+			defaultColDef.forEach((column: ColDef) => {
 				columnOrder.push({ colId: column.field })
 				column.hide = column.hide || false;
 				column.headerName = headerTranslations[column.field || ""]();
 			})
 
-			gridApi.setGridOption("columnDefs", table.defaultColDef);
+			gridApi.setGridOption("columnDefs", defaultColDef);
 			gridApi.applyColumnState({
 				state: columnOrder,
 				applyOrder: true

@@ -34,7 +34,7 @@
 						/>
 						<ChevronDown class="size-2 " />
 					</span>
-					{ ribbonItem.translation() }
+					{ribbonItem.translation()}
 				</button>
 			</DropdownMenu.Trigger>
 		</div>
@@ -45,15 +45,11 @@
 			{#each children as ribbonChild}
 				<DropdownMenu.Item
 					class="w-full"
+					onclick={() => {
+						ribbonAction.value = ribbonChild.action;
+					}}
 				>
-					<button
-						class="w-full text-start"
-						onclick={() => {
-							ribbonAction.value = ribbonChild.action;
-						}}
-					>
-						{ ribbonChild.translation() }
-					</button>
+					{ribbonChild.translation()}
 				</DropdownMenu.Item>
 			{/each}
 		</DropdownMenu.Content>
@@ -86,14 +82,11 @@
 					{#each children as ribbonChild}
 						<DropdownMenu.Item
 							class="w-full"
-						>
-							<button
-								class="w-full text-start"
-								onclick={() => {
+							onclick={() => {
 								ribbonAction.value = ribbonChild.action;
-							}}>
-								{ ribbonChild.translation() }
-							</button>
+							}}
+						>
+							{ribbonChild.translation()}
 						</DropdownMenu.Item>
 					{/each}
 				</DropdownMenu.Content>
@@ -102,7 +95,7 @@
 			<Tooltip.Content
 				side="bottom"
 			>
-				{ ribbonItem.translation() }
+				{ribbonItem.translation()}
 			</Tooltip.Content>
 		</Tooltip.Root>
 	</div>

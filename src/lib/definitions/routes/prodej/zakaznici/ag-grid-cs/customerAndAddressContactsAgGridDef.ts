@@ -1,4 +1,4 @@
-import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn";
+import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import type {GridOptions} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
 

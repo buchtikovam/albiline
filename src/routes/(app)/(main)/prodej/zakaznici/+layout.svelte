@@ -108,7 +108,7 @@
 					<Input
 						class="xl:w-80 lg:w-60 w-40 h-8  border border-slate-300 focus-visible:border-albi-500"
 						placeholder={m.components_header_search_placeholder()}
-						type="search"
+						type="text"
 						bind:value={table.fulltextFilterValue}
 					/>
 				</div>
