@@ -3,7 +3,7 @@ import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import type {GridOptions, RowSelectedEvent} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
 import {sideTableRowData} from "$lib/runes/table.svelte";
-import {CustomStatsToolPanel} from "$lib/components/ag-grid/customToolPanelWrapper";
+import {CustomStatsToolPanel} from "$lib/utils/components/ag-grid/customToolPanelWrapper";
 
 
 export const productStockInventoryAgGridDef: GridOptions = {

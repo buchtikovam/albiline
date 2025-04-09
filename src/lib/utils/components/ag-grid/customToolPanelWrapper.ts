@@ -1,4 +1,4 @@
-import CustomToolPanel from "./CustomToolPanel.svelte";
+import CustomToolPanel from "../../../components/ag-grid/tool-panels/CustomToolPanel.svelte";
 import {hydrate} from "svelte";
 import type {IToolPanelComp, IToolPanelParams} from "ag-grid-community";
 

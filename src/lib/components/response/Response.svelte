@@ -11,6 +11,8 @@
 	let dialogOpen: boolean = $state(false);
 	let messages = $derived(responseDialogMessages.value);
 
+	$inspect(messages)
+
 	let dialogMessages = $derived.by(() => {
 		if (messages) {
 			return messages.filter((message) => {

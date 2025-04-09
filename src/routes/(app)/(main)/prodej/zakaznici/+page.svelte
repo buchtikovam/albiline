@@ -5,6 +5,8 @@
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {parseUrlErrors} from "$lib/utils/navigation/parseUrlErrors.svelte";
+	import {onMount} from "svelte";
 	import NewCustomerOrAddressDecisionDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
@@ -43,6 +45,11 @@
 			open = true;
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
+	})
+
+
+	onMount(() => {
+		parseUrlErrors();
 	})
 </script>
 

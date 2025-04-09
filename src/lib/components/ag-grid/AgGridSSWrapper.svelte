@@ -1,33 +1,29 @@
 <script lang="ts">
 	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
-	import {authDetails, fulltextFilterValue, isMobile} from '$lib/runes/page.svelte';
+	import {authDetails} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
-	import * as XLSX from "xlsx";
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
+	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import {onMount, tick} from 'svelte';
-	import {
-		type CellValueChangedEvent,
-		type Column, type ColumnMovedEvent, type ColumnPinnedEvent, type ColumnVisibleEvent,
-		createGrid,
-		type FilterModel,
-		type GetRowIdParams,
-		type GridApi,
-		type GridOptions,
-		type IServerSideDatasource,
-		type IServerSideGetRowsParams,
-		type SelectionChangedEvent, type ShouldRowBeSkippedParams,
-		type SortChangedEvent,
-		themeQuartz
-	} from 'ag-grid-enterprise';
+	import {debounceFn} from "$lib/utils/general/debounce.svelte";
+	import {getLocale} from "$lib/paraglide/runtime";
+	import {onMount} from 'svelte';
 	import type {ColumnOrder, AgGridSSTableType, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
-	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
-	import {getLocale} from "$lib/paraglide/runtime";
-	import deepcopy from "deepcopy";
+	import {
+		createGrid, themeQuartz,
+		type CellValueChangedEvent,
+		type Column, type ColumnMovedEvent,
+		type ColumnPinnedEvent, type ColumnVisibleEvent,
+		type FilterModel, type GetRowIdParams,
+		type GridApi, type GridOptions,
+		type IServerSideDatasource, type IServerSideGetRowsParams,
+		type SelectionChangedEvent, type SortChangedEvent
+	} from 'ag-grid-enterprise';
 
 	interface Props {
 		url: string;
@@ -44,16 +40,19 @@
 	}: Props = $props();
 
 
+	// page settings
 	let pageKey: string = currentPageKey.value;
 	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
+
 
 	// create grid
 	let gridContainer: HTMLElement|undefined = $state(undefined);
 	let gridApi: GridApi<unknown>;
+	let excelFileInput: HTMLInputElement;
 	let rowBufferSize = 100;
 	let isInitial = $state(true);
 	let themeParams = $state(themeAlbiBlueParams);
-	let defaultColDef: ColDef[] = $state([])
+
 
 	// grid configuration
 	const gridOptions: GridOptions = {
@@ -85,8 +84,8 @@
 
 		rowSelection: {
 			mode: 'multiRow',
-			// enableClickSelection: true,
-			headerCheckbox: false, // maybe add later ?
+			enableClickSelection: true,
+			headerCheckbox: false,
 			hideDisabledCheckboxes: true,
 		},
 
@@ -104,15 +103,11 @@
 			suppressHeaderMenuButton: true,
 		},
 
-
 		getMainMenuItems: (event) => {
 			return [
 				'pinSubMenu',
 				'separator',
-				'valueAggSubMenu',
-				'autoSizeThis',
-				'columnChooser',
-				'resetColumns',
+				'valueAggSubMenu', 'autoSizeThis', 'columnChooser', 'resetColumns',
 				'separator',
 				'sortUnSort',
 				'separator',
@@ -131,7 +126,6 @@
 			];
 		},
 
-
 		getContextMenuItems: () => {
 			return [
 				'copy',
@@ -140,7 +134,6 @@
 				'paste',
 			];
 		},
-
 
 		onCellValueChanged: (event: CellValueChangedEvent<any>) => {
 			if (event.oldValue !== event.newValue) {
@@ -151,7 +144,6 @@
 				)
 			}
 		},
-
 
 		onSortChanged: (event: SortChangedEvent<any>) => {
 			if (!isInitial) {
@@ -180,10 +172,9 @@
 					}
 				})
 
-				table.presetToSave = event.api.getColumnDefs();
+				table.presetToSave = event.api.getColumnDefs() || [];
 			}
 		},
-
 
 		onColumnMoved(event: ColumnMovedEvent<any>) {
 			table.presetToSave = event.api.getColumnDefs() || [];
@@ -206,11 +197,9 @@
 			}
 		},
 
-
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data.rowNumber);
 		},
-
 
 		onSelectionChanged: (event: SelectionChangedEvent) => {
 			table.selectionState = event.api.getServerSideSelectionState();
@@ -229,32 +218,21 @@
 					if (selectedRows.length > 0) {
 						const rowArr: Record<string, number>[] = [];
 
-						try {
-							selectedRows.forEach((row) => {
-								let rowObj: {[key: string]: any} = {}
-								requiredFields.forEach((field) => {
-									rowObj[field] = row.data[field]
-								})
+						selectedRows.forEach((row) => {
+							let rowObj: {[key: string]: any} = {}
+							requiredFields.forEach((field) => {
+								rowObj[field] = row.data[field]
+							})
 
-								rowArr.push(rowObj);
-							});
-						} catch (e) {
+							rowArr.push(rowObj);
+						});
 
-						}
-
-						// disablePageTabs.value = false;
 						table.selectedRows = rowArr;
-					} else {
-						// disablePageTabs.value = true;
-						// table.selectedRows = [];
 					}
 				}
 			}
 		},
 	}
-
-
-	$inspect(table.filtersToSave)
 
 
 	//  datasource configuration
@@ -265,7 +243,7 @@
 			const currentFilter = gridApi.getFilterModel();
 			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
 			const updatedParamsRequest: TableRowRequest = params.request
-			updatedParamsRequest.fulltext = fulltextFilterValue.value;
+			updatedParamsRequest.fulltext = table.fulltextFilterValue;
 
 			// storing recents to navigate to previous filters if needed
 			if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
@@ -275,13 +253,11 @@
 			table.filtersToSave = currentFilter;
 
 			console.log(JSON.stringify(updatedParamsRequest, null, 1))
-			console.time("datasource")
 
 			apiServicePostHandled(url, updatedParamsRequest)
 				.then(httpResponse => httpResponse.data)
 				.then(response => {
-					console.timeEnd("datasource");
-					console.log(response)
+					// console.log(response)
 
 					params.success({ rowData: response.items });
 					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
@@ -336,17 +312,15 @@
 	};
 
 
-
 	// used when ribbon -> edit button is pressed
 	const columnDefaultEditable = new Map();
-
 
 
 	// runs when component is mounted only
 	onMount(() => {
 		disablePageTabs.value = true;
 		const finalGridOptions = { ...gridOptions, ...gridOptionsCustom };
-		defaultColDef = finalGridOptions.columnDefs || [];
+		table.defaultColDef = finalGridOptions.columnDefs || [];
 
 		// overwrite default coldef if user has unsaved preset
 		if (table.presetToSave.length > 0) {
@@ -433,11 +407,19 @@
 			gridApi.setGridOption("loading", true)
 		} else {
 			gridApi.setGridOption("loading", false)
+		}
+	})
+
+
+	// register datasource if user has added input params
+	$effect(() => {
+		if (Object.keys(table.loadedInputParams).length > 0 && isInitial) {
 			gridApi.setGridOption('serverSideDatasource', datasource);
 		}
 	})
 
 
+	// translate header texts
 	$effect(() => {
 		if (gridApi) {
 			if (getLocale()) {
@@ -455,17 +437,18 @@
 	})
 
 
+	// reset table to default column definitions
 	$effect(() => {
 		if (table.setColDefToDefault) {
 			const columnOrder: ColumnOrder = [];
 
-			defaultColDef.forEach((column: ColDef) => {
+			table.defaultColDef.forEach((column: ColDef) => {
 				columnOrder.push({ colId: column.field })
 				column.hide = column.hide || false;
 				column.headerName = headerTranslations[column.field || ""]();
 			})
 
-			gridApi.setGridOption("columnDefs", defaultColDef);
+			gridApi.setGridOption("columnDefs", table.defaultColDef);
 			gridApi.applyColumnState({
 				state: columnOrder,
 				applyOrder: true
@@ -476,26 +459,19 @@
 	})
 
 
-	// listening to fulltext filter changes from layout, refresh grid with delay
+	// fulltext implementation
 	let timer: NodeJS.Timeout;
 
-	function debounceFulltext() {
-		clearTimeout(timer)
-
-		timer = setTimeout(async () => {
-			await tick();
-			gridApi.onFilterChanged()
-		}, 1000)
-	}
-
 	$effect(() => {
-		if (table.fulltextFilterValue.length > 1) {
-			debounceFulltext();
+		if (table.fulltextFilterValue.length > 0) {
+			timer = debounceFn(timer, gridApi.onFilterChanged);
+		} else {
+			gridApi.onFilterChanged()
 		}
 	})
 
 
-
+	// load selectedFilters from ribbon -> my filters
 	$effect(() => {
 		if (table.selectedFilters) {
 			gridApi.setFilterModel(table.selectedFilters.filters);
@@ -503,9 +479,11 @@
 	})
 
 
+	// load selectedPreset from ribbon -> my presets
 	$effect(() => {
 		if (table.selectedPreset) {
-			const preset = deepcopy(table.selectedPreset.pagePresetValue);
+			const preset = table.selectedPreset.pagePresetValue;
+
 			const columnOrder: ColumnOrder = [];
 
 			preset.forEach((column: ColDef) => {
@@ -529,48 +507,6 @@
 			table.selectedPreset = undefined;
 		}
 	})
-
-
-
-	let excelFileInput: HTMLInputElement;
-
-	function handleExcelUpload(event) {
-		const file = event.target.files[0];
-		if (!file) return;
-
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			const data = new Uint8Array(e.target.result);
-			const workbook = XLSX.read(data, { type: "array" });
-			const sheetName = workbook.SheetNames[0];
-			const sheet = workbook.Sheets[sheetName];
-
-			let columnFields: { field: string, headerName: string }[] = gridApi.getColumnDefs()?.map(colDef => {
-				return {
-					field: colDef.colId,
-					headerName: colDef.headerName,
-				}
-			})
-
-
-			let jsonData = XLSX.utils.sheet_to_json(sheet);
-
-			const rowDataExc = jsonData.map((row) => {
-				const importedRow: Record<string, any> = {};
-
-				columnFields.forEach((columnField) => {
-					importedRow[columnField.field] = row[columnField.headerName];
-				})
-
-				return importedRow;
-			});
-
-			console.log(rowDataExc);
-		};
-
-		reader.readAsArrayBuffer(file);
-	}
-
 
 
 	$effect(() => {
@@ -712,7 +648,7 @@
 	multiple={false}
 	hidden
 	bind:this={excelFileInput}
-	onchange={handleExcelUpload}
+	onchange={(ev) => handleSSExcelUpload(ev, gridApi)}
 />
 
 

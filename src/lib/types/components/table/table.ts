@@ -112,5 +112,5 @@ export interface AgGridCSTableType {
 export type ColumnOrder = ColId[]
 
 type ColId = {
-	colId: string
+	colId: string|undefined;
 }

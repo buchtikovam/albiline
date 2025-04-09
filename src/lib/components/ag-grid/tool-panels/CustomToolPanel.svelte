@@ -1,14 +1,14 @@
 <script lang="ts">
-	import {agGridTables, currentPageKey, sideTableRowData} from "$lib/runes/table.svelte";
+	import {agGridTables, currentPageKey, sideTableRowData} from "$lib/runes/table.svelte.js";
 	import {
 		productStockInventoryDetailGridOptions,
 		productStockInventoryDetailHeaderTranslations
-	} from "$lib/definitions/routes/sklad/stav-skladu/ag-grid-cs/productStockInventoryAgGridDef.svelte";
-	import {Label} from "$lib/components/ui/label/index.js";
+	} from "$lib/definitions/routes/sklad/stav-skladu/ag-grid-cs/productStockInventoryAgGridDef.svelte.js";
+	import {Label} from "$lib/components/ui/label";
 	import {onNavigate} from "$app/navigation";
 	import type {AgGridCSTableType} from "$lib/types/components/table/table";
 	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
-	import * as RadioGroup from "$lib/components/ui/radio-group/index.js";
+	import * as RadioGroup from "$lib/components/ui/radio-group";
 
 
 	// export let toolPanelParams;
@@ -34,6 +34,8 @@
 		sideTableRowData.value = [];
 	})
 </script>
+
+
 
 
 <div class="!h-full w-full overflow-auto">

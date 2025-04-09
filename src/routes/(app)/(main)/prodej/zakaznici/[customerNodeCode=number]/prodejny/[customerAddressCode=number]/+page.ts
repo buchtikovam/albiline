@@ -1,9 +1,10 @@
-import {authDetails} from "$lib/runes/page.svelte";
-import {getLocale} from "$lib/paraglide/runtime";
-import type {CustomerAddressType, CustomerContactType} from "$lib/types/routes/prodej/zakaznici/customers";
-import type {LoadEvent} from "@sveltejs/kit";
-import type {PageLoad} from './$types';
 import {currentPageKey} from "$lib/runes/table.svelte";
+import {authDetails} from "$lib/runes/page.svelte";
+import {getLocale, localizeHref} from "$lib/paraglide/runtime";
+import {type LoadEvent, redirect} from "@sveltejs/kit";
+import type {CustomerAddressType, CustomerContactType} from "$lib/types/routes/prodej/zakaznici/customers";
+import type {PageLoad} from './$types';
+
 
 
 export const load: PageLoad = async (
@@ -24,6 +25,7 @@ export const load: PageLoad = async (
 		}
 	);
 
+
 	if (res.ok) {
 		const response = await res.json();
 
@@ -33,9 +35,21 @@ export const load: PageLoad = async (
 		};
 	}
 
-	throw new Error(
-		`Could not load customer address: 
-		nodeCode: ${params.customerNodeCode}, 
-		addressCode: ${params.customerAddressCode}`
-	);
+	// error messages will come from api
+	// add checks only for 404
+	let errorMessages = [
+		{
+			title: "Upozornění",
+			content: "Tato prodejna neexistuje",
+			type: "Critical",
+		}
+	]
+
+	throw redirect(
+		303,
+		localizeHref(
+			"/prodej/zakaznici?error=" +
+			encodeURIComponent(JSON.stringify(errorMessages))
+		)
+	)
 };

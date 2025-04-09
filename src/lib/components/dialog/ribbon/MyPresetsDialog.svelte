@@ -94,7 +94,9 @@
 		let defaultColDefCopy = deepcopy(agGridTables.value[pageKey].defaultColDef);
 		let clickedPreset = params.data.pagePresetValue;
 
-		// Recursive function to get all field names including children
+		// console.log("clicked", clickedPreset)
+		// console.log("default", defaultColDefCopy)
+			// // Recursive function to get all field names including children
 		const getAllFields = (columns: any[]): Set<string> => {
 			const fields = new Set<string>();
 			const process = (col: any) => {
@@ -148,6 +150,8 @@
 
 		// Perform the merge
 		const completedPreset = mergeColumns(clickedPreset, defaultColDefCopy);
+
+		console.log("completedPreset", completedPreset);
 
 		agGridTables.value[pageKey].selectedPreset = {
 			pagePresetId: params.data.pagePresetId,

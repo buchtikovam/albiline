@@ -332,13 +332,24 @@
 				cols.forEach(col => {
 					col.headerName = headerTranslations[col.field || ""]();
 					columnOrder.push({ colId: col.field });
-					if (col.children) processColumns(col.children);
+
+					let children = col.children;
+					if (children) {
+						if (children.length > 0) {
+							processColumns(col.children)
+						} else {
+							delete col.children;
+						}
+					}
 				});
+
+				return cols;
 			};
 
-			processColumns(preset);
+			const parsedColDef = processColumns(preset);
+			console.log(parsedColDef)
 
-			gridApi.setGridOption("columnDefs", preset);
+			gridApi.setGridOption("columnDefs", parsedColDef);
 			gridApi.applyColumnState({
 				state: columnOrder,
 				applyOrder: true
@@ -347,7 +358,7 @@
 			table.selectedPresetFull = {
 				pagePresetId: table.selectedPreset.pagePresetId,
 				pagePresetName: table.selectedPreset.pagePresetName,
-				pagePresetValue: preset,
+				pagePresetValue: parsedColDef,
 			};
 
 			table.selectedPreset = undefined;

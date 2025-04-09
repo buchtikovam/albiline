@@ -30,12 +30,15 @@
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
 	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import {goto} from "$app/navigation";
+	import type {ResponseDialogMessage} from "$lib/types/components/response";
+	import {redirect} from "@sveltejs/kit";
 
 
 	interface Props {
 		data: {
 			item: CustomerType,
-			contacts: CustomerContactType[]
+			contacts: CustomerContactType[],
 		};
 	}
 

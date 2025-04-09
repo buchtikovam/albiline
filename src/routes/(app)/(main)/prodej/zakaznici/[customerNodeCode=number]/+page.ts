@@ -1,8 +1,9 @@
-import type { PageLoad } from "./$types";
-import {authDetails} from "$lib/runes/page.svelte";
-import {getLocale} from "$lib/paraglide/runtime";
+import {authDetails} from '$lib/runes/page.svelte';
+import {getLocale, localizeHref} from "$lib/paraglide/runtime";
+import {redirect} from "@sveltejs/kit";
+import type {PageLoad} from "./$types";
 
-// export const prerender = false;
+
 
 export const load: PageLoad = async ({ params, fetch}) => {
 	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}`, {
@@ -13,6 +14,7 @@ export const load: PageLoad = async ({ params, fetch}) => {
 			'Page-Code' : "",
 		}
 	})
+
 
 	if (res.ok) {
 		const response = await res.json();
@@ -27,47 +29,22 @@ export const load: PageLoad = async ({ params, fetch}) => {
 		}
 	}
 
-	return {
-		item: getObject(),
-		contacts: [],
-	};
+
+	// error messages will come from api
+	// add checks only for 404
+	let errorMessages = [
+		{
+			title: "Upozornění",
+			content: "Tento zákazník neexistuje",
+			type: "Critical",
+		}
+	]
+
+	throw redirect(
+		303,
+		localizeHref(
+			"/prodej/zakaznici?error=" +
+			encodeURIComponent(JSON.stringify(errorMessages))
+		)
+	)
 };
-
-
-function getObject() {
-	return {
-		id: null,
-		customerNodeCode: "",
-		customerName: "",
-		name: "",
-		dic: "",
-		customerAlbiCode: null,
-		icDph: "",
-		email: "",
-		customerAddressCode: null,
-		companyName: null,
-		street: "",
-		city: "",
-		postalCode: "",
-		countryCode: "",
-		note: null,
-		paymentTypeCode: "",
-		dueDays: null,
-		invoiceCopies: null,
-		deliveryNoteCopies: null,
-		customerRank: "",
-		retailStoreTypeId: null,
-		customerStoreCode: null,
-		customerStoreEan: "",
-		packingNote: null,
-		consignmentSaleEnabled: false,
-		isReturnAllowed: false,
-		isForConsignmentReturn: false,
-		useAssortedEanCodes: false,
-		pickingBoxPacking: false,
-		splitOrderByFood: false,
-		dealerCode: null,
-		areaCode: null,
-		areaId: null
-	}
-}

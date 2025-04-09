@@ -19,7 +19,7 @@
 
 	async function savePreset() {
 		const strippedPreset: StoredPreset[] = agGridTables.value[pageKey].presetToSave.map((preset: ColDef) => {
-			return {
+			let presetToSave = {
 				field: preset.field,
 				width: preset.width,
 				hide: preset.hide || false,
@@ -31,7 +31,13 @@
 				pinned: preset.pinned,
 				sort: preset.sort,
 				sortIndex: preset.sortIndex,
-				children: preset.children.map((preset: ColDef) => {
+			}
+
+			let presetChildren = [];
+
+
+			if (preset.children) {
+				presetChildren = preset?.children.map((preset: ColDef) => {
 					return {
 						field: preset.field,
 						width: preset.width,
@@ -46,7 +52,11 @@
 						sortIndex: preset.sortIndex,
 					}
 				})
-			};
+
+				presetToSave.children = presetChildren;
+			}
+
+			return presetToSave;
 		});
 
 		const presetToSave = {
