@@ -4,7 +4,7 @@
 		customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
 	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
-	import {activeTabIndex, isMobile, responseDialogMessages} from '$lib/runes/page.svelte';
+	import {activeTabIndex, isMobile, responseDialogMessages, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {customerAddressDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressFormDef';
 	import {
 		customerAddressCustomGridOptions,
@@ -27,7 +27,7 @@
 		CustomerAddressType,
 		CustomerContactType,
 	} from '$lib/types/routes/prodej/zakaznici/customers';
-	import MaxWidthScrollableDetailContainer from '$lib/components/containers/MaxWidthScrollableDetailContainer.svelte';
+	import MaxWidthDetailContainer from '$lib/components/containers/MaxWidthDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
@@ -53,6 +53,7 @@
 
 	// page settings
 	activeTabIndex.value = 1;
+	showFulltextSearch.value = false;
 
 
 	// --- initialize variables and state
@@ -188,7 +189,7 @@
 
 
 
-<div class="p-4 max-w-[1600px]">
+<MaxWidthDetailContainer>
 	<div class="flex flex-col ">
 		<!-- header -->
 		<div class="flex justify-between mb-2">
@@ -313,9 +314,7 @@
 			</div>
 		{/each}
 	</div>
-
-
-</div>
+</MaxWidthDetailContainer>
 
 
 

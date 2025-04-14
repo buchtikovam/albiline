@@ -1,5 +1,5 @@
-import type {LayoutLoad} from "../../../../../.svelte-kit/types/src/routes/(app)/$types";
 import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+import type { LayoutLoad } from '../$types';
 
 export const load: LayoutLoad = async () => {
 	currentPageKey.value = "CustomersGetList";

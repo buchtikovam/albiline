@@ -9,7 +9,7 @@
 	import {customerPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerPageLayout';
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
-	import {activeTabIndex, responseDialogMessages} from '$lib/runes/page.svelte';
+	import {activeTabIndex, responseDialogMessages, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
 	import {apiSaveCustomerDetail} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
 	import {changeCustomerRoute} from '$lib/utils/navigation/zakaznici/changeCustomerRoute.svelte';
@@ -19,20 +19,18 @@
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznici/customers';
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";
 	import NewCustomerContactDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
+	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';
+	import MaxWidthDetailContainer from "$lib/components/containers/MaxWidthDetailContainer.svelte";
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
-	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';
 	import * as m from '$lib/paraglide/messages.js'
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
-	import {goto} from "$app/navigation";
-	import type {ResponseDialogMessage} from "$lib/types/components/response";
-	import {redirect} from "@sveltejs/kit";
 
 
 	interface Props {
@@ -47,6 +45,7 @@
 
 	// page settings
 	activeTabIndex.value = 2;
+	showFulltextSearch.value = false;
 
 
 	// --- initialize variables and state
@@ -189,7 +188,7 @@
 
 
 <!-- autoform + contacts -->
-<div class="p-4">
+<MaxWidthDetailContainer>
 	<div class="mb-2">
 		<!-- header -->
 		<div class="flex justify-between">
@@ -279,7 +278,7 @@
 			{/if}
 		</div>
 	{/each}
-</div>
+</MaxWidthDetailContainer>
 
 
 

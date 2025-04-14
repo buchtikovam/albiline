@@ -18,6 +18,8 @@
 	import DateWrapper from '$lib/components/form/inputs/DateWrapper.svelte';
 	import EmptyField from '$lib/components/form/inputs/EmptyField.svelte';
 	import * as Accordion from "$lib/components/ui/accordion";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
+	import ChevronDown from "lucide-svelte/icons/chevron-down";
 
 	interface Props {
 		formDef: AutoFormType;
@@ -84,13 +86,19 @@
 					<div class="flex">
 						<button
 						   type="button"
-						   class="p-0 pr-2 text-albi-500 w-fit"
+						   class="p-0 pr-2 text-albi-500 w-fit flex gap-2 items-center"
 						   onclick={() => section.isOpen = !section.isOpen}
-					   >
+					    >
 						   <SectionLabel
 							   label={section.translation()}
 						   />
-					   </button>
+
+							{#if section.isOpen}
+								<ChevronDown strokeWidth="2.5" class="size-4 text-albi-500"/>
+							{:else}
+								<ChevronRight strokeWidth="2.5" class="size-4 text-albi-500"/>
+							{/if}
+						</button>
 
 
 					   <button
@@ -114,12 +122,18 @@
 				<div class="flex justify-between items-center pb-2">
 					<button
 						type="button"
-						class="pr-2 w-full text-left text-albi-500"
+						class="pr-2 w-full text-left text-albi-500 flex gap-2 items-center"
 						onclick={() => section.isOpen = !section.isOpen}
 					>
 						<SectionLabel
 							label={section.translation()}
 						/>
+
+						{#if section.isOpen}
+							<ChevronDown strokeWidth="2.5" class="size-4 text-albi-500"/>
+						{:else}
+							<ChevronRight strokeWidth="2.5" class="size-4 text-albi-500"/>
+						{/if}
 					</button>
 
 

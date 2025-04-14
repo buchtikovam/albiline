@@ -5,6 +5,6 @@
 
 
 
-<div class="bg-slate-50 border border-slate-300 rounded-lg p-2 md:p-4 md:pt-2 flex flex-col gap-1 max-w-[800px]">
+<div class="p-4 max-w-[1640px]">
 	{@render children?.()}
 </div>
