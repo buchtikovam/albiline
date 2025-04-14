@@ -12,21 +12,21 @@
 </script>
 
 
-<div class="max-h-[18px] w-6 flex items-center rounded border ">
+<div class="max-h-[22px] w-7 flex items-center rounded border ">
 	{#if language === "cz"}
-		<Cz class="w-7  "/>
+		<Cz class="w-8  "/>
 	{/if}
 
 	{#if language === "sk"}
-		<Sk class="w-7 "/>
+		<Sk class="w-8 h-[24px] "/>
 	{/if}
 
 	{#if language === "pl"}
-		<Pl class="w-7"/>
+		<Pl class="w-8"/>
 	{/if}
 
 
 	{#if language === "en"}
-		<Gb class="w-7 "/>
+		<Gb class="w-8 "/>
 	{/if}
 </div>

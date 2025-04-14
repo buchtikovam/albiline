@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {agGridTables} from "$lib/runes/table.svelte.js";
-	import {localizeHref} from "$lib/paraglide/runtime";
+	import {getLocale, locales, localizeHref, localizeUrl, setLocale} from "$lib/paraglide/runtime";
 	import {clearCache} from "$lib/cacheManager";
 	import {useSidebar} from "$lib/components/ui/sidebar";
 	import {goto} from "$app/navigation";
@@ -13,7 +13,9 @@
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import * as Avatar from "$lib/components/ui/avatar";
-
+	import CountryFlag from "$lib/components/icons/CountryFlag.svelte";
+	import * as Select from "$lib/components/ui/select/index.js";
+	import { page } from "$app/state";
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = {
 		user: {
@@ -24,6 +26,7 @@
 	}
 
 	const sidebar = useSidebar();
+	let language = $state(getLocale());
 </script>
 
 
@@ -74,15 +77,45 @@
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-						<Avatar.Root class="h-8 w-8 rounded-lg">
+						<Avatar.Root class="h-8 w-8 rounded-lg flex items-center justify-center">
 <!--							<Avatar.Image-->
 <!--								src={user.avatar}-->
 <!--								alt={user.name}-->
 <!--							/>-->
 
-							<Avatar.Fallback class="rounded-lg ">
-								{user.avatar}
-							</Avatar.Fallback>
+<!--							<Avatar.Fallback class="rounded-lg ">-->
+<!--								{user.avatar}-->
+<!--							</Avatar.Fallback>-->
+							<Select.Root
+								type="single"
+								bind:value={language}
+							>
+								<Select.Trigger
+									hideChevron={true}
+									class="h-fit w-fit p-0 border-none rounded-none"
+								>
+									<CountryFlag language={language}/>
+								</Select.Trigger>
+
+								<Select.Content class="min-w-fit overflow-visible !z-50">
+									<div class="flex flex-col">
+										{#each locales as lang}
+											<button
+												onclick={() => setLocale(lang)}
+											>
+												<Select.Item
+													hideCheck={false}
+													value={lang}
+													class="w-fit"
+												>
+													<CountryFlag language={lang}/>
+												</Select.Item>
+											</button>
+										{/each}
+									</div>
+
+								</Select.Content>
+							</Select.Root>
 						</Avatar.Root>
 
 						<div class="grid flex-1 text-left text-sm leading-tight">
@@ -140,13 +173,6 @@
 						<Bug/>
 						Nahlásit chybu
 					</DropdownMenu.Item>
-
-<!--					<DropdownMenu.Item-->
-<!--						class="flex w-full items-center"-->
-<!--						onclick={() => goto(localizeHref("nastaveni"))}-->
-<!--					>-->
-
-<!--					</DropdownMenu.Item>-->
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
 

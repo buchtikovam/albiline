@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { authDetails, pageCompact } from '$lib/runes/page.svelte';
 	import { page } from '$app/state';
-	import { getLocale, locales } from "$lib/paraglide/runtime.js";
+	import { getLocale, locales, localizeHref } from "$lib/paraglide/runtime.js";
 	import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
 	import FoldVertical from 'lucide-svelte/icons/fold-vertical';
 	import Settings from 'lucide-svelte/icons/settings';
@@ -54,11 +54,11 @@
 
 				<Select.Content class="mr-7 min-w-fit overflow-visible! !z-50">
 					{#each locales as lang}
-						// TODO: fix i18n.route(page.url.pathname)
 						<a
-							href={""}
+							href={localizeHref(page.url.pathname, { locale: lang })}
 							hreflang={lang}
 							aria-current={lang === getLocale() ? "page" : undefined}
+							onclick={() => goto(localizeHref(page.url.pathname))}
 						>
 							<Select.Item
 								hideCheck={false}
