@@ -11,7 +11,7 @@
 	import type {
 		InputParamsType,
 		FetchedInputParam,
-		InputParamsOptions,
+		InputParamsOptions, InputParamsInput,
 	} from "$lib/types/components/input-params/inputParams";
 	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/dialogs/InputParamsSaveNewOrUpdateDialog.svelte";
 	import LoadInputParamsDialog from "$lib/components/input-params/dialogs/LoadInputParamsDialog.svelte";
@@ -21,8 +21,8 @@
 	import InputParamsHeader from "$lib/components/input-params/sections/InputParamsHeader.svelte";
 	import InputParamsFooter from "$lib/components/input-params/sections/InputParamsFooter.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
 
 
 	interface Props {
@@ -48,8 +48,8 @@
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);
 	let saveLabel = $state("");
-	let selectedParam: FetchedInputParam|undefined = $state();
 	let editedLabel = $state("");
+	let selectedParam: FetchedInputParam|undefined = $state();
 	let isLoadedParamChanged = $derived.by(() => {
 		if (JSON.stringify(inputParams) !== JSON.stringify(selectedParam?.paramValue)) {
 			return true
@@ -102,8 +102,9 @@
 
 	// load selected input param into InputParam component
 	function onParamSelect(inputParam: FetchedInputParam) {
-		inputParams = inputParam.paramValue;
 		selectedParam = deepcopy(inputParam);
+		defaultInputParams = deepcopy(inputParam.paramValue); // TODO: remove, make initial
+		inputParams = deepcopy(inputParam.paramValue);
 		editedLabel = inputParam.paramName;
 	}
 
@@ -139,6 +140,19 @@
 	}
 
 
+	function handleFulltextUpdate(fulltextValue: string|null) {
+		inputParams.fulltext = fulltextValue;
+	}
+
+	$inspect(inputParams.inputs)
+
+	function handleInputUpdate(paramInputs: InputParamsInput[]) {
+		if (inputParams.inputs) {
+			inputParams.inputs = paramInputs;
+		}
+	}
+
+
 	$effect(() => {
 		const currentColumnFilters = inputParams.columnFilters;
 		if (!currentColumnFilters) return;
@@ -148,6 +162,13 @@
 			inputParams = cleaned;
 		}
 	})
+
+	//
+	// $effect(() => {
+	// 	if (selectedParam) {
+	// 		// if (selectedParam.paramValue) inputParams = selectedParam.paramValue;
+	// 	}
+	// })
 </script>
 
 
@@ -182,15 +203,16 @@
 	<div class="overflow-auto pb-2">
 		{#if inputParams.fulltext !== undefined}
 			<InputParamsFulltext
-				bind:inputParams
+				fulltext={inputParams.fulltext}
+				handleFulltextChange={handleFulltextUpdate}
 			/>
 		{/if}
 
 
 		{#if inputParams.inputs !== undefined}
 			<InputParamsInputs
-				bind:inputParams
 				{defaultInputParams}
+				handleInputsUpdate={handleInputUpdate}
 			/>
 		{/if}
 

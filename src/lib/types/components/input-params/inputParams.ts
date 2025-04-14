@@ -40,7 +40,7 @@ export type FetchedInputParam = {
 
 
 // Input params -- INPUTS
-type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange|InputEnum;
+export type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|InputDateRange|InputEnum;
 
 type InputString = {
 	field: string;

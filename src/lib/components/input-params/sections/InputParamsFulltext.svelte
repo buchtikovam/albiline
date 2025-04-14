@@ -4,10 +4,11 @@
 	import {Input} from "$lib/components/ui/input";
 
 	interface Props {
-		inputParams: InputParamsType;
+		fulltext: string|null;
+		handleFulltextChange: (fulltext: string) => void;
 	}
 
-	let { inputParams = $bindable() }: Props = $props();
+	let { fulltext = $bindable(), handleFulltextChange }: Props = $props();
 </script>
 
 
@@ -19,7 +20,8 @@
 
 <Input
 	type="text"
-	bind:value={inputParams.fulltext}
+	bind:value={fulltext}
+	oninput={() => handleFulltextChange(fulltext)}
 	placeholder={m.components_input_params_fulltext_placeholder()}
 	class="border-slate-300 mb-4"
 />

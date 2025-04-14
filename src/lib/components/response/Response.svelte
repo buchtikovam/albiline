@@ -1,17 +1,15 @@
 <script lang="ts">
-	import { responseDialogMessages } from "$lib/runes/page.svelte.js";
-	import { customToast } from "$lib/utils/customToast";
-	import CircleX from "lucide-svelte/icons/circle-x";
+	import {responseDialogMessages} from "$lib/runes/page.svelte.js";
+	import {customToast} from "$lib/utils/customToast";
 	import CircleAlert from "lucide-svelte/icons/circle-alert";
 	import CircleCheck from "lucide-svelte/icons/circle-check";
-	import * as Dialog from '$lib/components/ui/dialog';
+	import CircleX from "lucide-svelte/icons/circle-x";
 	import Info from "lucide-svelte/icons/info";
+	import * as Dialog from '$lib/components/ui/dialog';
 
 
 	let dialogOpen: boolean = $state(false);
 	let messages = $derived(responseDialogMessages.value);
-
-	$inspect(messages)
 
 	let dialogMessages = $derived.by(() => {
 		if (messages) {
@@ -34,9 +32,11 @@
 
 	})
 
+
 	$effect(() => {
 		dialogOpen = dialogMessages.length > 0;
 	})
+
 
 	$effect(() => {
 		toastMessages.forEach((message, index) => {

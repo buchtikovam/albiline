@@ -26,7 +26,6 @@
 	}: Props = $props();
 
 
-	console.log(page.route.id, routeId)
 	let hideButtons = $derived(page.route.id !== routeId);
 
 	let selectedTableFilter: StoredFilters|undefined = $state();
@@ -34,6 +33,7 @@
 
 	let selectedTablePreset: StoredPresets|undefined = $state();
 	let activeTablePreset: Preset[]|undefined = $state();
+
 
 	$effect(() => {
 		activeTableFilter = table.filtersToSave;

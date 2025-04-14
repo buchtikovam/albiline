@@ -41,7 +41,7 @@
 
 	// fetch input parameters on dialog open
 	$effect(() => {
-	if (isOpen) getUserInputParams();
+		if (isOpen) getUserInputParams();
 
 		return (() => {
 			idsToDelete = [];
