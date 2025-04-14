@@ -194,9 +194,9 @@
 		<!-- header -->
 		<div class="flex justify-between">
 			{#if initialFormValues}
-			<DetailPageLabel
-				label={m.routes_prodej_zakaznici_customer_detail_label() + " " + initialFormValues.customerNodeCode}
-			/>
+				<DetailPageLabel
+					label={m.routes_prodej_zakaznici_customer_detail_label() + " " + initialFormValues.customerNodeCode}
+				/>
 			{/if}
 
 			<div class={uniqueSelectedRows.length > 1 ? "flex gap-3" : "hidden"}>
