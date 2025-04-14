@@ -35,6 +35,7 @@ export const actions = {
 			const saltResp = await getSalt.json().catch(() => null);
 
 			if (!getSalt.ok || !saltResp?.passwordSalt) {
+				console.log("salt not ok", getSalt)
 				return fail(getSalt.status, {
 					messages: saltResp?.messages,
 					userCode: userCode,
@@ -57,6 +58,7 @@ export const actions = {
 			const responseData = await resp.json().catch(() => null);
 
 			if (!resp.ok) {
+				console.log("login not ok ", resp)
 				return fail(resp.status, {
 					messages: responseData?.messages,
 					userCode: userCode,

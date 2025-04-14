@@ -26,6 +26,7 @@
 	}: Props = $props();
 
 
+	console.log(page.route.id, routeId)
 	let hideButtons = $derived(page.route.id !== routeId);
 
 	let selectedTableFilter: StoredFilters|undefined = $state();

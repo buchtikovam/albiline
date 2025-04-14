@@ -232,6 +232,9 @@
 				}
 			}
 		},
+		//
+		// onCellFocused(event: CellFocusedEvent<any>) {
+		// }
 	}
 
 

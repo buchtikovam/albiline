@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {activeTabIndex, fulltextFilterValue, showFulltextSearch} from '$lib/runes/page.svelte';
+	import {activeTabIndex, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
 	import {Input} from '$lib/components/ui/input';
@@ -38,14 +38,12 @@
 			}
 		}
 
-		// activePageTab.value = i18n.resolveRoute("/prodej/zakaznici");
+		activePageTab.value = localizeHref("/prodej/zakaznici");
 
 		return (() => {
 			activePageTab.value = "";
 		})
 	})
-
-
 </script>
 
 
@@ -98,7 +96,7 @@
 		<div class="flex gap-2 items-center">
 			<FilterAndPresetButtons
 				bind:table={table}
-				routeId="/(app)/prodej/zakaznici"
+				routeId="/(app)/(main)/prodej/zakaznici"
 			/>
 
 			{#if showFulltextSearch.value === true}

@@ -53,7 +53,7 @@
 		<div class="flex gap-2 items-center">
 			<FilterAndPresetButtons
 				bind:table={table}
-				routeId="/(app)/sklad/stav-skladu"
+				routeId="/(app)/(main)/sklad/stav-skladu"
 			/>
 
 			{#if showFulltextSearch.value === true}
