@@ -15,30 +15,30 @@
 	import ColumnFilterTypeNumber from "$lib/components/input-params/column-filters/ColumnFilterTypeNumber.svelte";
 	import {isMobile} from "$lib/runes/page.svelte.js";
 	import ColumnFilterTypeEnum from "$lib/components/input-params/column-filters/ColumnFilterTypeEnum.svelte";
+	import deepcopy from "deepcopy";
 
 
 	interface Props {
-		selectOptions: InputParamsOptions[],
-		columnFilter: ColumnFilter,
+		selectOptions: InputParamsOptions[];
+		onFilterChange: (updatedColumnFilter: ColumnFilter) => void;
+		columnFilter: ColumnFilter;
 	}
 
 	let {
 		selectOptions,
-		columnFilter = $bindable()
+		onFilterChange,
+		columnFilter
 	}: Props = $props();
 
 
+	let currentColumnFilter = $state(deepcopy(columnFilter));
 	let dropdownOptions: string[]|undefined = $state();
 	let asyncDropdownOptions: (() => Promise<string[]>)|undefined = $state();
 
+
 	$effect(() => {
 		if (columnFilter) {
-			columnFilter.filterModel.conditions.forEach((condition) => {
-				if (condition.type !== "between") {
-					// @ts-ignore
-					delete condition.endValue;
-				}
-			})
+			currentColumnFilter = deepcopy(columnFilter);
 		}
 	})
 </script>
@@ -46,23 +46,23 @@
 
 
 
-{#each columnFilter.filterModel.conditions as condition, i (i)}
+{#each currentColumnFilter.filterModel.conditions as condition, i (i)}
 	<div
-		class={`w-full sm:h-10 flex flex-col sm:flex-row gap-0.5 sm:gap-1 my-2 sm:mb-0`}
+		class={`w-full sm:h-10 flex flex-col sm:flex-row gap-0.5 sm:gap-0.5 mb-2`}
 	>
 		<div class="w-full">
 			{#if isMobile.value && i < 1}
 				<div class="flex justify-between">
 					<InputDialogColumnFilterFieldSelect
-						bind:columnFilter={columnFilter}
+						bind:columnFilter={currentColumnFilter}
 						selectOptions={selectOptions}
 						bind:dropdownOptions={dropdownOptions}
 						bind:asyncDropdownOptions={asyncDropdownOptions}
 					/>
 
-					{#if columnFilter.filterModel.operator}
+					{#if currentColumnFilter.filterModel.operator}
 						<p class="text-xs text-slate-300 font-bold">
-							Operator: {columnFilter.filterModel.operator}
+							Operator: {currentColumnFilter.filterModel.operator}
 						</p>
 					{/if}
 				</div>
@@ -70,10 +70,9 @@
 
 			{#if !isMobile.value}
 				<InputDialogColumnFilterFieldSelect
-					bind:columnFilter={columnFilter}
+					bind:columnFilter={currentColumnFilter}
 					selectOptions={selectOptions}
-					bind:dropdownOptions={dropdownOptions}
-					bind:asyncDropdownOptions={asyncDropdownOptions}
+					onChange={() => onFilterChange(currentColumnFilter)}
 				/>
 			{/if}
 		</div>
@@ -88,9 +87,15 @@
 
 			<div class="min-w-10">
 				<InputDialogOperatorSelect
-					disabled={columnFilter.columnName === null}
-					type={columnFilter.type}
-					bind:operator={condition.type}
+					disabled={currentColumnFilter.columnName === null}
+					columnFilter={currentColumnFilter}
+					condition={condition}
+					onOperatorChange={(newCondition) => {
+						// Create new filter copy with updated condition
+						const updatedFilter = deepcopy(currentColumnFilter);
+						updatedFilter.filterModel.conditions[i] = newCondition;
+						onFilterChange(updatedFilter);
+					}}
 				/>
 			</div>
 
@@ -102,10 +107,11 @@
 
 
 			<div class="w-full mr-1">
-				{#if columnFilter.type === "text"}
+				{#if currentColumnFilter.type === "text"}
 					<div class="w-full">
 						<Input
 							bind:value={condition.value}
+							oninput={() => onFilterChange(currentColumnFilter)}
 							type="text"
 							required
 						/>
@@ -113,17 +119,17 @@
 				{/if}
 
 
-				{#if columnFilter.type === "number"}
-					<div class="w-full">
-						<ColumnFilterTypeNumber
-							bind:condition={columnFilter.filterModel.conditions[i]}
-							columnFilter={columnFilter}
-						/>
-					</div>
-				{/if}
+				<!--{#if currentColumnFilter.type === "number"}-->
+				<!--	<div class="w-full">-->
+				<!--		<ColumnFilterTypeNumber-->
+				<!--			bind:condition={currentColumnFilter.filterModel.conditions[i]}-->
+				<!--			columnFilter={currentColumnFilter}-->
+				<!--		/>-->
+				<!--	</div>-->
+				<!--{/if}-->
 
 
-				{#if columnFilter.type === "boolean"}
+				{#if currentColumnFilter.type === "boolean"}
 					<div class="w-full">
 						<Input
 							class="hover:cursor-not-allowed"
@@ -133,53 +139,54 @@
 				{/if}
 
 
-				{#if columnFilter.type === "date"}
-					{#if condition.type !== "between"}
-						<div class="w-full">
-							<DatePicker
-								bind:dateValue={condition.value}
-							/>
-						</div>
-					{:else}
-						<div class="w-full">
-							<DateRangePicker
-								bind:startValue={condition.value}
-								bind:endValue={condition.endValue}
-							/>
-						</div>
-					{/if}
-				{/if}
+				<!--{#if currentColumnFilter.type === "date"}-->
+				<!--	{#if condition.type !== "between"}-->
+				<!--		<div class="w-full">-->
+				<!--			<DatePicker-->
+				<!--				bind:dateValue={condition.value}-->
+				<!--			/>-->
+				<!--		</div>-->
+				<!--	{:else}-->
+				<!--		<div class="w-full">-->
+				<!--			<DateRangePicker-->
+				<!--				bind:startValue={condition.value}-->
+				<!--				bind:endValue={condition.endValue}-->
+				<!--			/>-->
+				<!--		</div>-->
+				<!--	{/if}-->
+				<!--{/if}-->
 
 
-				{#if columnFilter.type === "enum"}
-					<div class="w-full">
-						<ColumnFilterTypeEnum
-							bind:value={condition.value}
-							dropdownOptions={dropdownOptions}
-							asyncDropdownOptions={asyncDropdownOptions}
-						/>
-					</div>
-				{/if}
+				<!--{#if currentColumnFilter.type === "enum"}-->
+				<!--	<div class="w-full">-->
+				<!--		<ColumnFilterTypeEnum-->
+				<!--			bind:value={condition.value}-->
+				<!--			dropdownOptions={dropdownOptions}-->
+				<!--			asyncDropdownOptions={asyncDropdownOptions}-->
+				<!--		/>-->
+				<!--	</div>-->
+				<!--{/if}-->
 			</div>
 
 
 			<InputDialogColumnFilterActionButtons
-				bind:columnFilter={columnFilter}
+				columnFilter={currentColumnFilter}
 				index={i}
+				{onFilterChange}
 			/>
 		{:else}
 			<div class="flex gap-1.5">
 				<div class="min-w-10">
 					<InputDialogOperatorSelect
-						disabled={columnFilter.columnName === null}
-						type={columnFilter.type}
+						disabled={currentColumnFilter.columnName === null}
+						type={currentColumnFilter.type}
 						bind:operator={condition.type}
 					/>
 				</div>
 
 
 				<div class="w-full flex">
-					{#if columnFilter.type === "text"}
+					{#if currentColumnFilter.type === "text"}
 						<div class="w-full">
 							<Input
 								bind:value={condition.value}
@@ -190,17 +197,17 @@
 					{/if}
 
 
-					{#if columnFilter.type === "number"}
+					{#if currentColumnFilter.type === "number"}
 						<div class="w-full">
 							<ColumnFilterTypeNumber
-								bind:condition={columnFilter.filterModel.conditions[i]}
-								columnFilter={columnFilter}
+								bind:condition={currentColumnFilter.filterModel.conditions[i]}
+								columnFilter={currentColumnFilter}
 							/>
 						</div>
 					{/if}
 
 
-					{#if columnFilter.type === "boolean"}
+					{#if currentColumnFilter.type === "boolean"}
 						<div class="w-full">
 							<Input
 								class="hover:cursor-not-allowed"
@@ -210,7 +217,7 @@
 					{/if}
 
 
-					{#if columnFilter.type === "date"}
+					{#if currentColumnFilter.type === "date"}
 						{#if condition.type !== "between"}
 							<div class="w-full">
 								<DatePicker
@@ -228,7 +235,7 @@
 					{/if}
 
 
-					{#if columnFilter.type === "enum"}
+					{#if currentColumnFilter.type === "enum"}
 						<div class="w-full">
 							<ColumnFilterTypeEnum
 								value={condition.value}
@@ -241,7 +248,7 @@
 
 
 				<InputDialogColumnFilterActionButtons
-					bind:columnFilter={columnFilter}
+					bind:columnFilter={currentColumnFilter}
 					index={i}
 				/>
 			</div>

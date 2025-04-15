@@ -28,7 +28,7 @@
 
 
 <Dialog.Footer class="w-full mt-6">
-	<div class="w-full flex justify-between">
+	<div class="flex w-full -ml-6 px-6 justify-between absolute bottom-0 bg-white pb-4 pt-3">
 		<div>
 			<div class="flex gap-1.5 sm:gap-2">
 				<Button
@@ -76,7 +76,7 @@
 		<div class="flex items-center gap-1.5 sm:gap-2">
 			<Button
 				type="button"
-				onclick={loadInputParamsInTable}
+				onclick={() => loadInputParamsInTable()}
 			>
 				{m.components_input_params_button_filter()}
 			</Button>

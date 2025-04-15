@@ -9,21 +9,18 @@
 	} from "$lib/types/components/input-params/inputParams";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
-	import {tick} from "svelte";
 
 
 	interface Props {
 		columnFilter: ColumnFilter;
-		selectOptions: InputParamsOptions[]
-		dropdownOptions: string[]|undefined;
-		asyncDropdownOptions: (() => Promise<string[]>)|undefined;
+		selectOptions: InputParamsOptions[];
+		onChange: () => void;
 	}
 
 	let {
 		columnFilter = $bindable(),
 		selectOptions,
-		dropdownOptions = $bindable(),
-		asyncDropdownOptions = $bindable(),
+		onChange,
 	}: Props = $props();
 
 
@@ -34,7 +31,6 @@
 	$effect(() => {
 		if (columnFilter.columnName) {
 			activeLabel = getLabel();
-
 		}
 	})
 
@@ -43,38 +39,8 @@
 		let label = "...";
 
 		selectOptions.forEach(option => {
-			if (option.children) {
-				option.children.forEach(child => {
-					if (child.field === columnFilter.columnName) {
-						label = child.label();
-
-						if (child.type === "enum") {
-							if (child.dropdownOptions) {
-								dropdownOptions = child.dropdownOptions;
-							}
-
-							if (typeof child.asyncDropdownOptions === "function") {
-								asyncDropdownOptions = child.asyncDropdownOptions;
-							}
-						} else {
-							dropdownOptions = undefined;
-							asyncDropdownOptions = undefined;
-
-						}
-					}
-				})
-			}
-
 			if (option.field === columnFilter.columnName) {
 				label = option.label();
-
-				// if (option.dropdownOptions) {
-				// 	dropdownOptions = option.dropdownOptions;
-				// }
-				//
-				// if (typeof option.asyncDropdownOptions === "function") {
-				// 	asyncDropdownOptions = option.asyncDropdownOptions;
-				// }
 			}
 		})
 
@@ -83,8 +49,6 @@
 
 
 	function updateItem(option: InputParamsSelectOption) {
-		console.log(option);
-
 		open = false;
 		columnFilter.columnName = option.field;
 
@@ -98,13 +62,7 @@
 
 		columnFilter.type = option.type;
 
-		if (option.dropdownOptions) {
-			dropdownOptions = option.dropdownOptions;
-		}
-
-		if (typeof option.asyncDropdownOptions === "function") {
-			asyncDropdownOptions = option.asyncDropdownOptions;
-		}
+		onChange()
 	}
 
 

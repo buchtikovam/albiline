@@ -1,17 +1,21 @@
 <script lang="ts">
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {isEqual} from "lodash-es";
+	import {Button} from "$lib/components/ui/button";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 	import {cleanUpColumnFilters} from "$lib/utils/components/input-params/cleanUpColumnFilters";
 	import {apiServicePostHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import {getColumnFilters} from "$lib/utils/components/input-params/getColumnFilters";
 	import {setContext} from "svelte";
 	import deepcopy from "deepcopy";
+	import Upload from "lucide-svelte/icons/upload";
+	import Save from "lucide-svelte/icons/save";
 	import type {
 		InputParamsType,
 		FetchedInputParam,
-		InputParamsOptions, InputParamsInput,
+		InputParamsOptions, InputParamsInput, ColumnFilter,
 	} from "$lib/types/components/input-params/inputParams";
 	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/dialogs/InputParamsSaveNewOrUpdateDialog.svelte";
 	import LoadInputParamsDialog from "$lib/components/input-params/dialogs/LoadInputParamsDialog.svelte";
@@ -19,9 +23,8 @@
 	import InputParamsFulltext from "$lib/components/input-params/sections/InputParamsFulltext.svelte";
 	import InputParamsInputs from "$lib/components/input-params/sections/InputParamsInputs.svelte";
 	import InputParamsHeader from "$lib/components/input-params/sections/InputParamsHeader.svelte";
-	import InputParamsFooter from "$lib/components/input-params/sections/InputParamsFooter.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as Popover from "$lib/components/ui/popover/index.js";
+	import * as m from "$lib/paraglide/messages";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 
 
@@ -64,13 +67,47 @@
 		return false;
 	});
 
+	// $effect(() => {
+	// 	if (Object.keys(table.loadedInputParams).length > 0) {
+	// 		inputParams = table.loadedInputParams;
+	// 	}
+	// });
+
+
+
+
+
+
+	// load selected input param into InputParam component
+	function onParamSelect(inputParam: FetchedInputParam) {
+		selectedParam = deepcopy(inputParam);
+		defaultInputParams = deepcopy(inputParam.paramValue); // TODO: remove, make initial
+		inputParams = deepcopy(inputParam.paramValue);
+		editedLabel = inputParam.paramName;
+	}
+
+
+	function handleFulltextUpdate(fulltextValue: string|null) {
+		inputParams.fulltext = fulltextValue;
+	}
+
+
+	function handleInputUpdate(paramInputs: InputParamsInput[]) {
+		if (inputParams.inputs) {
+			inputParams.inputs = paramInputs;
+		}
+	}
+
 
 	$effect(() => {
-		if (Object.keys(table.loadedInputParams).length > 0) {
-			inputParams = table.loadedInputParams;
-		}
-	});
+		const currentColumnFilters = inputParams.columnFilters;
+		if (!currentColumnFilters) return;
 
+		const cleaned = cleanUpColumnFilters(deepcopy(inputParams));
+		if (!isEqual(cleaned, inputParams)) {
+			inputParams = cleaned;
+		}
+	})
 
 
 	async function saveInputParam() {
@@ -100,15 +137,6 @@
 	}
 
 
-	// load selected input param into InputParam component
-	function onParamSelect(inputParam: FetchedInputParam) {
-		selectedParam = deepcopy(inputParam);
-		defaultInputParams = deepcopy(inputParam.paramValue); // TODO: remove, make initial
-		inputParams = deepcopy(inputParam.paramValue);
-		editedLabel = inputParam.paramName;
-	}
-
-
 	async function updateInputParam() {
 		if (selectedParam) {
 			const response = await apiServicePUTHandled(
@@ -125,6 +153,8 @@
 			)
 
 			if (response.success) {
+				console.log(await response.data)
+
 				selectedParam = {
 					paramId: selectedParam.paramId,
 					paramName: editedLabel.length > 0 ? editedLabel : selectedParam.paramName,
@@ -140,35 +170,43 @@
 	}
 
 
-	function handleFulltextUpdate(fulltextValue: string|null) {
-		inputParams.fulltext = fulltextValue;
-	}
-
-	$inspect(inputParams.inputs)
-
-	function handleInputUpdate(paramInputs: InputParamsInput[]) {
-		if (inputParams.inputs) {
-			inputParams.inputs = paramInputs;
-		}
+	function handleColumnFilterChange(newColumnFilters: ColumnFilter[]) {
+		inputParams.columnFilters = newColumnFilters;
 	}
 
 
-	$effect(() => {
-		const currentColumnFilters = inputParams.columnFilters;
-		if (!currentColumnFilters) return;
+	function addColumnFilter() {
+		// Create new array instead of mutating existing one
+		const newFilters = inputParams.columnFilters ? [...inputParams.columnFilters] : [];
 
-		const cleaned = cleanUpColumnFilters(deepcopy(inputParams));
-		if (!isEqual(cleaned, inputParams)) {
-			inputParams = cleaned;
-		}
-	})
+		// Generate ID safely
+		const lastId = newFilters.length > 0
+			? Math.max(...newFilters.map(f => f.id))
+			: 0;
 
-	//
-	// $effect(() => {
-	// 	if (selectedParam) {
-	// 		// if (selectedParam.paramValue) inputParams = selectedParam.paramValue;
-	// 	}
-	// })
+		// Create new filter object
+		const newFilter: ColumnFilter = {
+			id: lastId + 1,
+			columnName: null,
+			type: "text",
+			filterModel: {
+				operator: null,
+				conditions: [{
+					type: null,
+					value: null
+				}]
+			}
+		};
+
+		// Update state immutably
+		inputParams = {
+			...inputParams,
+			columnFilters: [...newFilters, newFilter]
+		};
+	}
+
+
+	$inspect(JSON.stringify(inputParams, null, 1))
 </script>
 
 
@@ -176,9 +214,7 @@
 
 <DialogWrapper
 	bind:isOpen={open}
-	onChange={() => {
-		table.areInputParamsLoading = false;
-	}}
+	onChange={() => table.areInputParamsLoading = false}
 	{header}
 	{content}
 	size="md"
@@ -188,7 +224,7 @@
 
 {#snippet header()}
 	<Dialog.Title
-		class="min-h-5 overflow-visible flex gap-2 items-center"
+		class="h-5 overflow-visible flex gap-2 items-center"
 	>
 		<InputParamsHeader
 			{selectedParam}
@@ -201,39 +237,90 @@
 
 {#snippet content()}
 	<div class="overflow-auto pb-2">
-		{#if inputParams.fulltext !== undefined}
-			<InputParamsFulltext
-				fulltext={inputParams.fulltext}
-				handleFulltextChange={handleFulltextUpdate}
-			/>
-		{/if}
+		<div class="mb-10">
+			{#if inputParams.fulltext !== undefined}
+				<InputParamsFulltext
+					fulltext={inputParams.fulltext}
+					handleFulltextChange={handleFulltextUpdate}
+				/>
+			{/if}
 
 
-		{#if inputParams.inputs !== undefined}
-			<InputParamsInputs
-				{defaultInputParams}
-				handleInputsUpdate={handleInputUpdate}
-			/>
-		{/if}
+			{#if inputParams.inputs !== undefined}
+				<!--TODO: dont use default-->
+				<InputParamsInputs
+					defaultInputParams={defaultInputParams}
+					handleInputsUpdate={handleInputUpdate}
+				/>
+			{/if}
 
 
-		{#if inputParams.columnFilters !== undefined}
-			<InputParamsColumnFilter
-				bind:inputParams
-				{selectOptions}
-			/>
-		{/if}
+			{#if inputParams.columnFilters !== undefined}
+				<InputParamsColumnFilter
+					columnFilters={inputParams.columnFilters}
+					addFilter={() => addColumnFilter()}
+					onFilterChange={handleColumnFilterChange}
+					{selectOptions}
+				/>
+			{/if}
+		</div>
 
 
 
-		<InputParamsFooter
-			{defaultInputParams}
-			{inputParams}
-			{isLoadedParamChanged}
-			bind:isSaveDialogOpen
-			bind:isLoadDialogOpen
-			loadInputParamsInTable={() => loadInputParamsInTable(table, inputParams, type)}
-		/>
+		<div class="flex w-full -ml-6 px-6 justify-between absolute bottom-0 bg-white pb-4 pt-3">
+			<div>
+				<div class="flex gap-1.5 sm:gap-2">
+					<Button
+						type="button"
+						class="size-10"
+						variant="secondary"
+						onclick={() => {
+						if (
+							JSON.stringify(defaultInputParams) === JSON.stringify(inputParams) ||
+							!isLoadedParamChanged
+						) {
+							responseDialogMessages.value = [{
+								type: "InfoToast",
+								title: m.components_input_params_save_fail_info_toast_title(),
+								content: m.components_input_params_save_fail_info_toast_content()
+							}]
+						} else {
+							isSaveDialogOpen = true;
+						}
+					}}
+					>
+						<Save
+							strokeWidth="2.5"
+							class="!size-[18px]"
+						/>
+					</Button>
+
+					<Button
+						type="button"
+						class="bg-white size-10"
+						variant="secondary"
+						onclick={() => isLoadDialogOpen = true}
+					>
+						<!--{m.components_input_params_button_load_input_params()}-->
+						<Upload
+							strokeWidth="2.5"
+							class="!size-[18px]"
+						/>
+					</Button>
+				</div>
+			</div>
+
+
+
+			<div class="flex items-center gap-1.5 sm:gap-2">
+				<Button
+					type="button"
+					onclick={() => loadInputParamsInTable(table, inputParams, type)}
+				>
+					{m.components_input_params_button_filter()}
+				</Button>
+			</div>
+		</div>
 	</div>
 {/snippet}
 

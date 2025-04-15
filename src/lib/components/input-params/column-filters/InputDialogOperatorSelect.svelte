@@ -11,7 +11,7 @@
 		ConditionTypesNumber,
 		ConditionTypesText,
 		ColumnFilterType,
-		InputParamsOperator
+		InputParamsOperator, ColumnFilter, ColumnFilterModelCondition
 	} from "$lib/types/components/input-params/inputParams";
 	import Fa from 'svelte-fa'
 	import * as Command from "$lib/components/ui/command";
@@ -21,20 +21,16 @@
 
 	interface Props {
 		disabled?: boolean;
-		type: ColumnFilterType;
-		operator: (
-			ConditionTypesText |
-			ConditionTypesNumber |
-			ConditionTypesBoolean |
-			ConditionTypesDate |
-			null
-		);
+		columnFilter: ColumnFilter;
+		condition: ColumnFilterModelCondition;
+		onOperatorChange: (newCondition: ColumnFilterModelCondition) => void;
 	}
 
 	let {
 		disabled = true,
-		operator = $bindable(),
-		type,
+		columnFilter,
+		condition,
+		onOperatorChange,  // Add this
 	}: Props = $props();
 
 
@@ -43,25 +39,17 @@
 
 
 	let operators = $derived.by(() => {
-		if (type === "text") {
-			return stringOperators;
-		}
+		if (columnFilter.type === "text") return stringOperators;
 
-		if (type === "number") {
-			return numberOperators;
-		}
+		if (columnFilter.type === "number") return numberOperators;
 
-		if (type === "boolean") {
-			return booleanOperators;
-		}
+		if (columnFilter.type === "boolean") return booleanOperators;
 
-		if (type === "date") {
-			return dateOperators;
-		}
+		if (columnFilter.type === "date") return dateOperators;
 
-		if (type === "enum") {
-			return enumOperators;
-		}
+		if (columnFilter.type === "enum") return enumOperators;
+
+		return stringOperators;
 	})
 
 
@@ -77,14 +65,12 @@
 
 
 	$effect(() => {
-		activeItem = getItem(operator);
+		activeItem = getItem(condition.type);
 	})
 
 
 	function getItem(operator: string|null) {
-		if (!operator) {
-			return null;
-		}
+		if (!operator) return null;
 
 		let item = null;
 
@@ -99,7 +85,14 @@
 
 
 	function updateItem(option: InputParamsOperator) {
-		operator = option.field;
+		// Create a NEW condition object instead of mutating
+		const newCondition = {
+			...condition,
+			type: option.field,
+			value: condition.value // Preserve existing value
+		};
+
+		onOperatorChange(newCondition); // Pass new condition up
 	}
 </script>
 
@@ -176,6 +169,7 @@
 							onSelect={() => {
 								updateItem(operator);
 								closeAndFocusTrigger();
+
 							}}
 						>
 							<Icon

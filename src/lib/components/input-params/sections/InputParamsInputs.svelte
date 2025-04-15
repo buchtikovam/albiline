@@ -24,7 +24,7 @@
 
 
 
-<p class="mb-2 text-albi-500 text-sm font-bold">
+<p class="mb-1.5 text-albi-500 text-sm font-bold">
 	Hledat podle parametrů
 </p>
 

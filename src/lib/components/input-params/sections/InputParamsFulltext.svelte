@@ -1,20 +1,22 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages.js'
-	import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
 	import {Input} from "$lib/components/ui/input";
+	import * as m from '$lib/paraglide/messages.js'
 
 	interface Props {
 		fulltext: string|null;
-		handleFulltextChange: (fulltext: string) => void;
+		handleFulltextChange: (fulltext: string|null) => void;
 	}
 
-	let { fulltext = $bindable(), handleFulltextChange }: Props = $props();
+	let {
+		fulltext = $bindable(),
+		handleFulltextChange
+	}: Props = $props();
 </script>
 
 
 
 
-<p class="mb-2 text-albi-500 text-sm font-bold">
+<p class="mb-1 text-albi-500 text-sm font-bold">
 	{m.components_input_params_section_fulltext()}
 </p>
 
