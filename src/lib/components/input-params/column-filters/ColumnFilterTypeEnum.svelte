@@ -1,12 +1,10 @@
 <script lang="ts">
 	import {Button} from "$lib/components/ui/button/index.js";
-	import {z} from "zod";
 	import {onMount} from "svelte";
 	import {tick} from "svelte";
 	import {cn} from "$lib/utils.js";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import Check from "lucide-svelte/icons/check";
-	import type {AutoFormInput} from "$lib/types/components/form/autoform";
 	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Command from "$lib/components/ui/command/index.js";
@@ -15,12 +13,14 @@
 
 	interface Props {
 		value: string;
+		onchange: () => void;
 		asyncDropdownOptions?: () => Promise<string[]>; // Optional async function
 		dropdownOptions?: string[]; // Corrected type to string[]
 	}
 
 	let {
 		value = $bindable(),
+		onchange,
 		asyncDropdownOptions,
 		dropdownOptions
 	}: Props = $props();
@@ -54,13 +54,15 @@
 		if (dropdownValue) {
 			value = dropdownValue;
 
-			if (typeof asyncDropdownOptions === "function") {
-				value = dropdownValue.split("-")[0]; // Handle async case
-			}
-
-			if (dropdownOptions) {
-				value = dropdownValue; // Handle static case
-			}
+			// if (typeof asyncDropdownOptions === "function") {
+			// 	value = dropdownValue.split("-")[0]; // Handle async case
+			// }
+			//
+			// if (dropdownOptions) {
+			//
+			// 	value = dropdownValue; // Handle static case
+			// }
+			// onchange()
 		}
 	});
 

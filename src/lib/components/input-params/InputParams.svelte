@@ -67,21 +67,33 @@
 		return false;
 	});
 
-	// $effect(() => {
-	// 	if (Object.keys(table.loadedInputParams).length > 0) {
-	// 		inputParams = table.loadedInputParams;
-	// 	}
-	// });
 
 
+	$effect(() => {
+		if (Object.keys(table.loadedInputParams).length > 0) {
+			let loaded = deepcopy(table.loadedInputParams);
 
+			if (loaded) {
+				if (loaded.columnFilters) {
+					if (loaded.columnFilters.length > 0) {
+						loaded.columnFilters.forEach((filter, index) => {
+							filter["id"] = index
+							// console.log(filter)
+						})
+					}
+				}
+			}
+
+			// console.log(loaded)
+			inputParams = deepcopy(loaded);
+		}
+	});
 
 
 
 	// load selected input param into InputParam component
 	function onParamSelect(inputParam: FetchedInputParam) {
 		selectedParam = deepcopy(inputParam);
-		defaultInputParams = deepcopy(inputParam.paramValue); // TODO: remove, make initial
 		inputParams = deepcopy(inputParam.paramValue);
 		editedLabel = inputParam.paramName;
 	}
@@ -92,10 +104,11 @@
 	}
 
 
-	function handleInputUpdate(paramInputs: InputParamsInput[]) {
-		if (inputParams.inputs) {
-			inputParams.inputs = paramInputs;
-		}
+	function handleInputsUpdate(updatedInputs: InputParamsInput[]) {
+		inputParams = {
+			...inputParams,
+			inputs: deepcopy(updatedInputs)
+		};
 	}
 
 
@@ -246,13 +259,15 @@
 			{/if}
 
 
+
 			{#if inputParams.inputs !== undefined}
-				<!--TODO: dont use default-->
 				<InputParamsInputs
-					defaultInputParams={defaultInputParams}
-					handleInputsUpdate={handleInputUpdate}
+					initialInputs={defaultInputParams.inputs}
+					inputs={inputParams.inputs}
+					onInputsChange={handleInputsUpdate}
 				/>
 			{/if}
+
 
 
 			{#if inputParams.columnFilters !== undefined}
@@ -301,7 +316,6 @@
 						variant="secondary"
 						onclick={() => isLoadDialogOpen = true}
 					>
-						<!--{m.components_input_params_button_load_input_params()}-->
 						<Upload
 							strokeWidth="2.5"
 							class="!size-[18px]"

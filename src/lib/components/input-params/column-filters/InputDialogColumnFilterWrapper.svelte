@@ -119,14 +119,15 @@
 				{/if}
 
 
-				<!--{#if currentColumnFilter.type === "number"}-->
-				<!--	<div class="w-full">-->
-				<!--		<ColumnFilterTypeNumber-->
-				<!--			bind:condition={currentColumnFilter.filterModel.conditions[i]}-->
-				<!--			columnFilter={currentColumnFilter}-->
-				<!--		/>-->
-				<!--	</div>-->
-				<!--{/if}-->
+				{#if currentColumnFilter.type === "number"}
+					<div class="w-full">
+						<ColumnFilterTypeNumber
+							bind:condition={currentColumnFilter.filterModel.conditions[i]}
+							columnFilter={currentColumnFilter}
+							onchange={() => onFilterChange(currentColumnFilter)}
+						/>
+					</div>
+				{/if}
 
 
 				{#if currentColumnFilter.type === "boolean"}
@@ -139,7 +140,7 @@
 				{/if}
 
 
-				<!--{#if currentColumnFilter.type === "date"}-->
+				{#if currentColumnFilter.type === "date"}
 				<!--	{#if condition.type !== "between"}-->
 				<!--		<div class="w-full">-->
 				<!--			<DatePicker-->
@@ -154,18 +155,19 @@
 				<!--			/>-->
 				<!--		</div>-->
 				<!--	{/if}-->
-				<!--{/if}-->
+				{/if}
 
 
-				<!--{#if currentColumnFilter.type === "enum"}-->
-				<!--	<div class="w-full">-->
-				<!--		<ColumnFilterTypeEnum-->
-				<!--			bind:value={condition.value}-->
-				<!--			dropdownOptions={dropdownOptions}-->
-				<!--			asyncDropdownOptions={asyncDropdownOptions}-->
-				<!--		/>-->
-				<!--	</div>-->
-				<!--{/if}-->
+				{#if currentColumnFilter.type === "enum"}
+					<div class="w-full">
+						<ColumnFilterTypeEnum
+							bind:value={condition.value}
+							dropdownOptions={dropdownOptions}
+							onchange={() => onFilterChange(currentColumnFilter)}
+							asyncDropdownOptions={asyncDropdownOptions}
+						/>
+					</div>
+				{/if}
 			</div>
 
 

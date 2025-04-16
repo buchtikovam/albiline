@@ -186,6 +186,15 @@
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
 
+		// finalGridOptions.columnDefs.forEach((column) => {
+		// 	console.log(column.groupId)
+		// 	if (column.groupId) {
+		//
+		// 		console.log(column.groupId);
+		// 		// column.groupId = "vyrobek";
+		// 	}
+		// })
+
 		if (finalGridOptions.columnDefs) {
 			table.defaultColDef = finalGridOptions.columnDefs
 		}

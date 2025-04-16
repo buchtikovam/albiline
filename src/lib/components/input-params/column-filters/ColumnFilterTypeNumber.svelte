@@ -8,12 +8,20 @@
 	interface Props {
 		columnFilter: ColumnFilter;
 		condition: ColumnFilterModelCondition;
+		onchange: (event: Event) => void;
 	}
 
 	let {
 		columnFilter,
 		condition = $bindable(),
+		onchange,
 	}: Props = $props();
+
+	$effect(() => {
+		if (condition.type !== "between") {
+			delete condition?.endValue;
+		}
+	})
 </script>
 
 
@@ -23,6 +31,7 @@
 		<Input
 			disabled={columnFilter.columnName === null}
 			bind:value={condition.value}
+			oninput={onchange}
 			type="number"
 			inputmode="numeric"
 			required
@@ -33,6 +42,7 @@
 		<Input
 			disabled={columnFilter.columnName === null}
 			bind:value={condition.value}
+			oninput={onchange}
 			type="number"
 			inputmode="numeric"
 			required
@@ -40,6 +50,7 @@
 		<Input
 			disabled={columnFilter.columnName === null}
 			bind:value={condition.endValue}
+			oninput={onchange}
 			required
 			type="number"
 			inputmode="numeric"

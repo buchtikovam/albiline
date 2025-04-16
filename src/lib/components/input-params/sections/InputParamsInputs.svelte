@@ -1,26 +1,74 @@
 <script lang="ts">
 	import {Checkbox} from "$lib/components/ui/checkbox/index.js";
-	import type {InputParamsInput, InputParamsType} from "$lib/types/components/input-params/inputParams";
+	import {isEqual} from "lodash-es";
+	import type {InputParamsInput} from "$lib/types/components/input-params/inputParams";
 	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
+	import deepcopy from "deepcopy";
 
 	interface Props {
-		defaultInputParams: InputParamsType; // TODO: předělat jen na inputs, ne celé input params
-		handleInputsUpdate: (paramInput: InputParamsInput[]) => void;
+		initialInputs: InputParamsInput[];
+		inputs: InputParamsInput[];
+		onInputsChange: (updatedInputs: InputParamsInput[]) => void;
 	}
 
-	let {
-		defaultInputParams,
-		handleInputsUpdate
+	const {
+		initialInputs,
+		inputs,
+		onInputsChange
 	}: Props = $props();
 
-	let defaults = $state(defaultInputParams.inputs);
+	// Reactive state with deep equality check
+	let allInputs: InputParamsInput[] = $state(deepcopy(initialInputs));
+	let isUpdating = $state(false);
 
+
+	// One-time merge on component initialization
 	$effect(() => {
-		if (defaults) {
-			handleInputsUpdate(defaults);
+		const merged= initialInputs.map(initial => {
+			const loaded = inputs?.find(i => i.field === initial.field);
+			return loaded ? { ...initial, value: loaded.value } : initial;
+		});
+
+		if (!isEqual(merged, allInputs)) {
+			allInputs = merged;
 		}
-	})
+	});
+
+
+	// Handle external input changes with deep comparison
+	$effect(() => {
+		if (isUpdating || !inputs) return;
+
+		const merged = initialInputs.map(initial => {
+			const loaded = inputs.find(i => i.field === initial.field);
+			return loaded ? { ...initial, value: loaded.value } : initial;
+		});
+
+		if (!isEqual(merged, allInputs)) {
+			allInputs = merged;
+		}
+	});
+
+
+	// Handle local changes with proper immutability
+	function handleInputChange(index: number, newValue: boolean) {
+		isUpdating = true;
+
+		// Create a new array with updated value
+		const updatedInputs = allInputs.map((input, i) =>
+			i === index ? { ...input, value: newValue } : input
+		);
+
+		// Update local state only if changed
+		if (!isEqual(updatedInputs, allInputs)) {
+			allInputs = updatedInputs;
+			onInputsChange(deepcopy(updatedInputs));
+		}
+
+		isUpdating = false;
+	}
 </script>
+
 
 
 
@@ -29,21 +77,23 @@
 </p>
 
 <div class="mb-4">
-	{#if defaults}
-		{#each defaults as paramInput, i}
-			{#if paramInput.type === "boolean"}
+	{#each allInputs as paramInput, i}
+		<div class="mb-3">
+			{#if paramInput.type === 'boolean'}
 				<div class="flex items-center gap-2">
 					<Checkbox
-						class={"focus-visible:border-albi-500"}
-						bind:checked={defaults[i].value}
+						class="focus-visible:border-albi-500"
+						checked={paramInput.value}
+						onCheckedChange={(e) => handleInputChange(i, e)}
 					/>
-
-					<InputLabelWithContext
-						contextMenuField={paramInput.field}
-						label={paramInput.label()}
-					/>
+					{#if paramInput.label}
+						<InputLabelWithContext
+							contextMenuField={paramInput.field}
+							label={paramInput.label()}
+						/>
+					{/if}
 				</div>
 			{/if}
-		{/each}
-	{/if}
+		</div>
+	{/each}
 </div>

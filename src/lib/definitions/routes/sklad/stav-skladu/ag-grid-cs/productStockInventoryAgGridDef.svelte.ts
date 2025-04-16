@@ -23,9 +23,11 @@ export const productStockInventoryAgGridDef: GridOptions = {
 			}
 		],
 	},
-
+	suppressDragLeaveHidesColumns: true,
 	onRowSelected: async (event: RowSelectedEvent<any>) => {
 		const selectedRows = event.api.getSelectedRows();
+
+		// console.log(event.api.getColumnState())
 
 		if (selectedRows.length > 0 && event.node.isSelected()) {
 			const result = await apiServicePostHandled(
@@ -53,6 +55,7 @@ export const productStockInventoryAgGridDef: GridOptions = {
 	columnDefs: [
 		{
 			field: "group_vyrobek", // Výrobek
+			groupId: "vyrobek_group",
 			children: [
 				getAgColumn(
 					"productCode", // KSP
@@ -256,6 +259,8 @@ export const productStockInventoryAgGridDef: GridOptions = {
 
 		{
 			field: "group_vyrobek", // Výrobek
+			groupId: "vyrobek_group",
+
 			children: [
 				getAgColumn(
 					"divisionName", // Divize
@@ -333,14 +338,21 @@ export const productStockInventoryAgGridDef: GridOptions = {
 }
 
 
-export const productStockInventoryDetailGridOptions = {
+export const productStockInventoryDetailGridOptions: GridOptions = {
 	columnDefs: [
 		getAgColumn(
 			"locationCode",
 			"text", 150,
 			false, false, false,
 			[],
-			{ filter: false }
+			{
+				filter: false,
+				// aggFunc: (params: IAggFuncParams) =>{ // sumarni radek s agg funkcema
+				// 	params.api.forEachNode((node) => {
+				// 		console.log(node)
+				// 	})
+				// }
+			}
 		),
 
 		getAgColumn(
