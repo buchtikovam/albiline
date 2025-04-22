@@ -255,7 +255,7 @@
 
 			table.filtersToSave = currentFilter;
 
-			console.log(JSON.stringify(updatedParamsRequest, null, 1))
+			// console.log(JSON.stringify(updatedParamsRequest, null, 1))
 
 			apiServicePostHandled(url, updatedParamsRequest)
 				.then(httpResponse => httpResponse.data)

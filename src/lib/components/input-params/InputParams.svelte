@@ -78,13 +78,11 @@
 					if (loaded.columnFilters.length > 0) {
 						loaded.columnFilters.forEach((filter, index) => {
 							filter["id"] = index
-							// console.log(filter)
 						})
 					}
 				}
 			}
 
-			// console.log(loaded)
 			inputParams = deepcopy(loaded);
 		}
 	});
