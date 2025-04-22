@@ -100,7 +100,7 @@
 
 										{#each item.children as subItem (subItem.field)}
 											<ContextMenu.Root>
-												<ContextMenu.Trigger>
+												<ContextMenu.Trigger class={subItem.hide ? "hidden" : ""}>
 													<Sidebar.MenuSubItem>
 														<Sidebar.MenuSubButton>
 															{#snippet child({ props })}
@@ -169,7 +169,7 @@
 								<Sidebar.MenuSub>
 									{#each item.children as subItem (subItem.field)}
 										<ContextMenu.Root>
-											<ContextMenu.Trigger>
+											<ContextMenu.Trigger class={subItem.hide ? "hidden" : ""}>
 												<Sidebar.MenuSubItem>
 													<Sidebar.MenuSubButton>
 														{#snippet child({ props })}

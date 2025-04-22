@@ -19,6 +19,7 @@
 
 	$effect(() => {
 		if (condition.type !== "between") {
+			// @ts-ignore
 			delete condition?.endValue;
 		}
 	})

@@ -10,12 +10,12 @@
 	import InputDialogColumnFilterFieldSelect
 		from "$lib/components/input-params/column-filters/InputDialogColumnFilterFieldSelect.svelte";
 	import InputDialogOperatorSelect from "$lib/components/input-params/column-filters/InputDialogOperatorSelect.svelte";
-	import DatePicker from "$lib/components/date/DatePicker.svelte";
-	import DateRangePicker from "$lib/components/date/DateRangePicker.svelte";
+
 	import ColumnFilterTypeNumber from "$lib/components/input-params/column-filters/ColumnFilterTypeNumber.svelte";
 	import {isMobile} from "$lib/runes/page.svelte.js";
 	import ColumnFilterTypeEnum from "$lib/components/input-params/column-filters/ColumnFilterTypeEnum.svelte";
 	import deepcopy from "deepcopy";
+	import ColumnFilterTypeDate from "$lib/components/input-params/column-filters/ColumnFilterTypeDate.svelte";
 
 
 	interface Props {
@@ -56,8 +56,7 @@
 					<InputDialogColumnFilterFieldSelect
 						bind:columnFilter={currentColumnFilter}
 						selectOptions={selectOptions}
-						bind:dropdownOptions={dropdownOptions}
-						bind:asyncDropdownOptions={asyncDropdownOptions}
+						onChange={() => onFilterChange(currentColumnFilter)}
 					/>
 
 					{#if currentColumnFilter.filterModel.operator}
@@ -141,20 +140,11 @@
 
 
 				{#if currentColumnFilter.type === "date"}
-				<!--	{#if condition.type !== "between"}-->
-				<!--		<div class="w-full">-->
-				<!--			<DatePicker-->
-				<!--				bind:dateValue={condition.value}-->
-				<!--			/>-->
-				<!--		</div>-->
-				<!--	{:else}-->
-				<!--		<div class="w-full">-->
-				<!--			<DateRangePicker-->
-				<!--				bind:startValue={condition.value}-->
-				<!--				bind:endValue={condition.endValue}-->
-				<!--			/>-->
-				<!--		</div>-->
-				<!--	{/if}-->
+					<ColumnFilterTypeDate
+						bind:condition={currentColumnFilter.filterModel.conditions[i]}
+						columnFilter={currentColumnFilter}
+						onchange={() => onFilterChange(currentColumnFilter)}
+					/>
 				{/if}
 
 
