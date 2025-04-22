@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { themeAlbiBlueParams } from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
-	import { addToEditedTableData } from "$lib/utils/addToEditedTableData";
+	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
+	import {addToEditedTableData} from "$lib/utils/addToEditedTableData";
+	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
+	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import {
 		type CellValueChangedEvent,
 		createGrid,
 		type GridApi,
 		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
-	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import {getLocale} from "$lib/paraglide/runtime";
-	import type {ColDef} from "ag-grid-community";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 
 	interface Props {
 		rowData: any[];
@@ -42,23 +41,19 @@
 
 	let pageKey: string = currentPageKey.value;
 	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
-
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
 
 
-	if (hiddenHeader) {
-		themeParams.headerHeight = 0;
-	}
+	if (hiddenHeader) themeParams.headerHeight = 0;
+
 
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
 		localeText: getAgGridLocale(),
-
 		groupTotalRow: totalRow === true ? "bottom" : undefined,
 		grandTotalRow: totalRow === true ? "bottom" : undefined,
-
 		rowSelection: undefined,
 
 		defaultColDef: {
@@ -177,40 +172,20 @@
 
 	$effect(() => {
 		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
+
+		gridApi.setGridOption(
+			"columnDefs",
+			getColumnHeaderTranslations(
+				headerTranslations,
+				gridApi.getColumnDefs() || []
+			)
+		);
 	})
 
 
 	$effect(() => {
 		if (rowData) {
 			gridApi.setGridOption("rowData", rowData);
-		}
-	})
-
-
-
-	$effect(() => {
-		if (getLocale()) {
-			if (Object.keys(headerTranslations).length > 0) {
-				let colDefs = gridApi.getColumnDefs();
-
-				// const colDefs =
-				colDefs?.forEach((column: ColDef) => {
-					if (headerTranslations[column.field]) {
-						column.headerName = headerTranslations[column.field]();
-					}
-
-					if (column.children) {
-						column.children.forEach((child: ColDef) => {
-							if (headerTranslations[child.field]) {
-								child.headerName = headerTranslations[child.field]();
-							}
-						})
-					}
-				})
-
-				// update grid with updated column defs
-				gridApi.setGridOption("columnDefs", colDefs);
-			}
 		}
 	})
 </script>
@@ -234,14 +209,16 @@
 <style>
 	/* HEADER */
 	:global(.ag-header-cell-text) {
-		overflow: hidden;
-		word-break: keep-all !important;
-		-webkit-line-clamp: 2; /* number of lines to show */
-		line-clamp: 2;
-		max-height: 32px;
-		white-space: preserve-breaks;
-		text-overflow: ellipsis;
-		-webkit-box-orient: vertical;
+		display: -webkit-box !important;
+		-webkit-line-clamp: 2 !important; /* Limit to 2 lines */
+		line-clamp: 2 !important;
+		-webkit-box-orient: vertical !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+		word-break: normal !important; /* Break words if needed */
+		white-space: normal !important;
+		line-height: 12px !important;
+		max-height: 24px !important; /* 2 * line-height */
 	}
 
 	:global(.ag-header-icon) {

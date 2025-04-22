@@ -4,7 +4,6 @@
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
 	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
-	import deepcopy from "deepcopy";
 	import Save from "lucide-svelte/icons/save";
 	import {
 		apiServicePUTHandled,
@@ -91,74 +90,7 @@
 
 
 	function handleClickSelect(params: ICellRendererParams) {
-		let defaultColDefCopy = deepcopy(agGridTables.value[pageKey].defaultColDef);
-		let clickedPreset = params.data.pagePresetValue;
-
-		// console.log("clicked", clickedPreset)
-		// console.log("default", defaultColDefCopy)
-			// // Recursive function to get all field names including children
-		const getAllFields = (columns: any[]): Set<string> => {
-			const fields = new Set<string>();
-			const process = (col: any) => {
-				if (col.field) fields.add(col.field);
-				if (col.children) col.children.forEach(process);
-			};
-			columns.forEach(process);
-			return fields;
-		};
-
-		// Recursive merge function for columns with children
-		const mergeColumns = (presetCols: any[], defaultCols: any[]): any[] => {
-			const merged: any[] = [];
-
-			// Merge preset columns with defaults
-			presetCols.forEach(preset => {
-				// Find matching default column (could be in children)
-				const findInHierarchy = (cols: any[]): any => {
-					for (const col of cols) {
-						if (col.field === preset.field) return col;
-						if (col.children) {
-							const found = findInHierarchy(col.children);
-							if (found) return found;
-						}
-					}
-				};
-
-				const defaultCol = findInHierarchy(defaultCols) || {};
-				const mergedCol = { ...defaultCol, ...preset };
-
-				// Recursively merge children
-				if (preset.children) {
-					mergedCol.children = mergeColumns(
-						preset.children,
-						defaultCol.children || []
-					);
-				}
-
-				merged.push(mergedCol);
-			});
-
-			// Add remaining default columns not in preset
-			defaultCols.forEach(def => {
-				if (!getAllFields([def]).has(def.field)) {
-					merged.push(def);
-				}
-			});
-
-			return merged;
-		};
-
-		// Perform the merge
-		const completedPreset = mergeColumns(clickedPreset, defaultColDefCopy);
-
-		console.log("completedPreset", completedPreset);
-
-		agGridTables.value[pageKey].selectedPreset = {
-			pagePresetId: params.data.pagePresetId,
-			pagePresetName: params.data.pagePresetName,
-			pagePresetValue: completedPreset,
-		};
-
+		agGridTables.value[pageKey].selectedPreset = params.data;
 		openedRibbonDialog.value = "empty";
 	}
 

@@ -5,8 +5,8 @@ import {getPaymentTypeCode} from "$lib/utils/dropdowns/paymentTypeCode";
 import {getCustomerRanks} from "$lib/utils/dropdowns/customerRank";
 import {getAgColumnEnum} from "$lib/utils/components/ag-grid/getAgColumnEnum";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
-import {goto} from "$app/navigation";
-import type {CellDoubleClickedEvent} from "ag-grid-community";
+// import {goto} from "$app/navigation";
+// import type {CellDoubleClickedEvent} from "ag-grid-community";
 import type {GridOptions} from 'ag-grid-enterprise';
 import * as m from '$lib/paraglide/messages.js'
 
@@ -17,20 +17,20 @@ let pageKey = $derived(currentPageKey.value);
 
 
 export const customerGridOptions: GridOptions = {
-	onCellDoubleClicked(event: CellDoubleClickedEvent) {
-		agGridTables.value[pageKey].selectedRows = [{
-			customerAddressCode: event.data.customerAddressCode,
-			customerNodeCode: event.data.customerNodeCode
-		}]
-
-		if (event.column.getColId() === "customerAddressCode") {
-			// goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`));
-		}
-
-		if (event.column.getColId() === "customerNodeCode") {
-			// goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}`));
-		}
-	},
+	// onCellDoubleClicked(event: CellDoubleClickedEvent) {
+	// 	agGridTables.value[pageKey].selectedRows = [{
+	// 		customerAddressCode: event.data.customerAddressCode,
+	// 		customerNodeCode: event.data.customerNodeCode
+	// 	}]
+	// 	//
+	// 	// if (event.column.getColId() === "customerAddressCode") {
+	// 	// 	// goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}/prodejny/${event.data.customerAddressCode}`));
+	// 	// }
+	// 	//
+	// 	// if (event.column.getColId() === "customerNodeCode") {
+	// 	// 	// goto(i18n.resolveRoute(`/prodej/zakaznici/${event.data.customerNodeCode}`));
+	// 	// }
+	// },
 
 
 	columnDefs: [

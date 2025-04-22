@@ -7,7 +7,7 @@
 	import Dot from "lucide-svelte/icons/dot";
 	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import type {StoredFilters} from "$lib/types/components/table/filters";
-	import type {FilterModel} from "ag-grid-enterprise";
+	import type {ColumnState, FilterModel} from "ag-grid-enterprise";
 	import type {Preset, StoredPresets} from "$lib/types/components/table/presets";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import {apiServicePUTHandled} from "$lib/api/apiService.svelte";
@@ -28,33 +28,12 @@
 
 	let hideButtons = $derived(page.route.id !== routeId);
 
-	let selectedTableFilter: StoredFilters|undefined = $state();
-	let activeTableFilter: FilterModel|undefined = $state({});
+	let currentTableFilter: FilterModel|undefined = $derived(table.filtersToSave);
+	let selectedTableFilter: StoredFilters|undefined = $derived(table.selectedFilters);
 
-	let selectedTablePreset: StoredPresets|undefined = $state();
-	let activeTablePreset: Preset[]|undefined = $state();
+	let currentTablePreset: ColumnState[]|undefined = $derived(table.presetToSave);
+	let selectedTablePreset: StoredPresets|undefined = $derived(table.selectedPresetFull);
 
-
-	$effect(() => {
-		activeTableFilter = table.filtersToSave;
-		activeTablePreset = table.presetToSave;
-
-		if (activeTablePreset) {
-			activeTablePreset.forEach(preset => {
-				if (!preset.hide) {
-					preset.hide = false;
-				}
-			})
-		}
-
-		if (table.selectedFilters) {
-			selectedTableFilter = table.selectedFilters;
-		}
-
-		if (table.selectedPresetFull) {
-			selectedTablePreset = table.selectedPresetFull;
-		}
-	})
 </script>
 
 
@@ -70,7 +49,7 @@
 					class="size-4"
 				/>
 
-				{#if JSON.stringify(activeTableFilter) !== JSON.stringify(selectedTableFilter.filters)}
+				{#if JSON.stringify(currentTableFilter) !== JSON.stringify(selectedTableFilter.filters)}
 					<Dot
 						class="absolute z-50 text-albi-500 !size-8 ml-3.5 mb-4"
 					/>
@@ -90,7 +69,7 @@
 					</DropdownMenu.GroupHeading>
 
 					<DropdownMenu.Separator />
-					{#if activeTableFilter && JSON.stringify(activeTableFilter) !== JSON.stringify(selectedTableFilter.filters)}
+					{#if currentTableFilter && JSON.stringify(currentTableFilter) !== JSON.stringify(selectedTableFilter.filters)}
 						<DropdownMenu.Item
 							onclick={async () => {
 								if (selectedTableFilter) {
@@ -100,7 +79,7 @@
 										 {
 											filterId: selectedTableFilter.filterId,
 											filterName: selectedTableFilter.filterName,
-											filters: activeTableFilter
+											filters: currentTableFilter
 										 }
 									);
 
@@ -132,6 +111,7 @@
 		</DropdownMenu.Root>
 	{/if}
 
+
 	{#if selectedTablePreset}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
@@ -142,7 +122,7 @@
 					class="size-4"
 				/>
 
-				{#if JSON.stringify(activeTablePreset) !== JSON.stringify(selectedTablePreset.pagePresetValue)}
+				{#if JSON.stringify(currentTablePreset) !== JSON.stringify(selectedTablePreset.pagePresetValue)}
 					<Dot
 						class="absolute z-50 text-albi-500 !size-8 ml-3.5 mb-4"
 					/>
@@ -163,7 +143,7 @@
 
 					<DropdownMenu.Separator />
 
-					{#if JSON.stringify(activeTablePreset) !== JSON.stringify(selectedTablePreset.pagePresetValue)}
+					{#if JSON.stringify(currentTablePreset) !== JSON.stringify(selectedTablePreset.pagePresetValue)}
 						<DropdownMenu.Item
 							onclick={async () => {
 								if (selectedTablePreset) {
@@ -173,7 +153,7 @@
 										{
 											pagePresetId: selectedTablePreset.pagePresetId,
 											pagePresetName: selectedTablePreset.pagePresetName,
-											pagePresetValue: activeTablePreset
+											pagePresetValue: currentTablePreset
 										}
 									);
 
@@ -181,7 +161,7 @@
 										selectedTablePreset = {
 											pagePresetId: selectedTablePreset.pagePresetId,
 											pagePresetName: selectedTablePreset.pagePresetName,
-											pagePresetValue: activeTablePreset
+											pagePresetValue: currentTablePreset
 										}
 									}
 								}
@@ -198,7 +178,7 @@
 					{/if}
 
 					<DropdownMenu.Item onclick={() => {
-						table.setColDefToDefault = true;
+						table.setColStateToDefault = true;
 						table.selectedPreset = undefined;
 						table.selectedPresetFull = undefined;
 						selectedTablePreset = undefined;

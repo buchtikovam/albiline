@@ -5,7 +5,7 @@ interface RouteParams {
 
 export function processRoute(route: string, params: RouteParams): string {
 	// Split the route into segments, excluding the initial "(app)" segment
-	const segments = route.split('/').slice(2);
+	const segments = route.split('/').slice(3);
 
 	// Iterate through segments and replace placeholders with actual values
 	const processedSegments = segments.map((segment) => {

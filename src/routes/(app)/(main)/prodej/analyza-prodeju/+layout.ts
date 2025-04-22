@@ -1,15 +1,18 @@
 import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
-import type { LayoutLoad } from '../$types';
+import type {LayoutLoad} from "../../../../../../.svelte-kit/types/src/routes/(app)/$types";
+
 
 export const load: LayoutLoad = async () => {
-	currentPageKey.value = "CustomersGetList";
+	currentPageKey.value = "SalesAnalytics";
 
 	if (!agGridTables.value[currentPageKey.value]) {
 		agGridTables.value[currentPageKey.value] = {
-			type: "serverSide",
+			type: "clientSide",
 			defaultColState: [],
 			setColDefToDefault: false,
+			createdTableData: [],
 			editedTableData: [],
+			deletedTableData: [],
 			filtersToSave: {},
 			presetToSave: [],
 			fulltextFilterValue: "",
@@ -18,7 +21,6 @@ export const load: LayoutLoad = async () => {
 			sortState: [],
 			activeSelectedRowIndex: 0,
 			lastVisibleRowIndex: 0,
-			latestRowCount: 100,
 			areInputParamsLoading: false,
 			hasInputParams: false,
 			loadedInputParams: {}

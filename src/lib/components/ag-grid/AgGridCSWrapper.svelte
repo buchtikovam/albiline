@@ -30,6 +30,7 @@
 	import deepcopy from "deepcopy";
 	import {authDetails} from "$lib/runes/page.svelte";
 	import {cacheTableData, clearCache, getCacheAge, getCachedTableData} from "$lib/cacheManager";
+	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 
 	interface Props {
 		pageKey: string;
@@ -69,6 +70,7 @@
 			hideDisabledCheckboxes: true,
 		},
 
+
 		defaultColDef: {
 			sortable: true,
 			resizable: true,
@@ -78,6 +80,7 @@
 			hide: false,
 			filter: false,
 			suppressHeaderMenuButton: true,
+
 			enableRowGroup: true,
 		},
 
@@ -94,19 +97,19 @@
 		},
 
 		onColumnMoved(event: ColumnMovedEvent<any>) {
-			table.presetToSave = event.api.getColumnDefs() || [];
+			table.presetToSave = event.api.getColumnState() || [];
 		},
 
 		onColumnVisible(event: ColumnVisibleEvent<any>) {
-			table.presetToSave = event.api.getColumnDefs() || [];
+			table.presetToSave = event.api.getColumnState() || [];
 		},
 
 		onColumnPinned(event: ColumnPinnedEvent<any>) {
-			table.presetToSave = event.api.getColumnDefs() || [];
+			table.presetToSave = event.api.getColumnState() || [];
 		},
 
 		onSortChanged(event: SortChangedEvent<any>) {
-			table.presetToSave = event.api.getColumnDefs() || [];
+			table.presetToSave = event.api.getColumnState() || [];
 		},
 
 		getRowId: (params: GetRowIdParams) => {
@@ -186,27 +189,26 @@
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
 
-		// finalGridOptions.columnDefs.forEach((column) => {
-		// 	console.log(column.groupId)
-		// 	if (column.groupId) {
-		//
-		// 		console.log(column.groupId);
-		// 		// column.groupId = "vyrobek";
-		// 	}
-		// })
-
-		if (finalGridOptions.columnDefs) {
-			table.defaultColDef = finalGridOptions.columnDefs
-		}
-
-		// overwrite default coldef if user has unsaved preset
-		if (table.presetToSave.length > 0) {
-			finalGridOptions.columnDefs = table.presetToSave;
-		}
-
 		gridApi = createGrid(gridContainer, finalGridOptions);
 		gridApi.setFilterModel(table.filtersToSave);
 
+		table.defaultColState = gridApi.getColumnState();
+
+		gridApi.setGridOption(
+			"columnDefs",
+			getColumnHeaderTranslations(
+				headerTranslations,
+				gridApi.getColumnDefs() || []
+			)
+		);
+
+
+		if (table.presetToSave.length > 0) {
+			gridApi.applyColumnState({
+				state: table.presetToSave,
+				applyOrder: true,
+			})
+		}
 
 		return(() => {
 			table.activeSelectedRowIndex = 0;
@@ -239,12 +241,10 @@
 
 	async function getData() {
 		try {
-			// gridApi.setGridOption("loading", true)
 			const cached = await getCachedTableData(pageKey);
 
 			if (cached) {
 				gridApi.setGridOption("rowData", cached);
-				// gridApi.setGridOption("loading", false)
 			} else {
 				await fetchAndCache();
 			}
@@ -272,34 +272,6 @@
 
 
 	$effect(() => {
-		if (getLocale()) {
-			if (Object.keys(headerTranslations).length > 0) {
-				let colDefs = gridApi.getColumnDefs();
-
-				// const colDefs =
-				colDefs?.forEach((column: ColDef) => {
-					if (headerTranslations[column.field]) {
-						column.headerName = headerTranslations[column.field]();
-					}
-
-					if (column.children) {
-						column.children.forEach((child: ColDef) => {
-							if (headerTranslations[child.field]) {
-								child.headerName = headerTranslations[child.field]();
-							}
-						})
-					}
-				})
-
-				// update grid with updated column defs
-				gridApi.setGridOption("columnDefs", colDefs);
-			}
-		}
-	})
-
-
-
-	$effect(() => {
 		if (table.selectedFilters) {
 			gridApi.setFilterModel(table.selectedFilters.filters);
 		}
@@ -307,69 +279,25 @@
 
 
 	$effect(() => {
-		if (table.setColDefToDefault) {
-			const columnOrder: ColumnOrder = [];
-			const preset = deepcopy(table.defaultColDef);
-
-			const processColumns = (cols: any[]) => {
-				cols.forEach(col => {
-					col.headerName = headerTranslations[col.field || ""]();
-					columnOrder.push({ colId: col.field });
-					if (col.children) processColumns(col.children);
-				});
-			};
-
-			processColumns(preset);
-
-			gridApi.setGridOption("columnDefs", preset);
+		if (table.setColStateToDefault) {
 			gridApi.applyColumnState({
-				state: columnOrder,
-				applyOrder: true
+				state: table.defaultColState,
+				applyOrder: true,
 			});
 
-			table.setColDefToDefault = false;
+			table.setColStateToDefault = false;
 		}
 	})
 
 
 	$effect(() => {
 		if (table.selectedPreset) {
-			const preset = deepcopy(table.selectedPreset.pagePresetValue);
-			const columnOrder: ColumnOrder = [];
-
-			const processColumns = (cols: any[]) => {
-				cols.forEach(col => {
-					col.headerName = headerTranslations[col.field || ""]();
-					columnOrder.push({ colId: col.field });
-
-					let children = col.children;
-					if (children) {
-						if (children.length > 0) {
-							processColumns(col.children)
-						} else {
-							delete col.children;
-						}
-					}
-				});
-
-				return cols;
-			};
-
-			const parsedColDef = processColumns(preset);
-			console.log(parsedColDef)
-
-			gridApi.setGridOption("columnDefs", parsedColDef);
 			gridApi.applyColumnState({
-				state: columnOrder,
+				state: table.selectedPreset.pagePresetValue,
 				applyOrder: true
 			});
 
-			table.selectedPresetFull = {
-				pagePresetId: table.selectedPreset.pagePresetId,
-				pagePresetName: table.selectedPreset.pagePresetName,
-				pagePresetValue: parsedColDef,
-			};
-
+			table.selectedPresetFull = table.selectedPreset;
 			table.selectedPreset = undefined;
 		}
 	})
@@ -543,7 +471,8 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
-			openedRibbonDialog.value = "ribbon-save-preset";
+			openedRibbonDialog.value = "ribbon-save-preset"
+			table.presetToSave = gridApi.getColumnState() || [];
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
@@ -552,7 +481,6 @@
 			openedRibbonDialog.value = "ribbon-my-presets";
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
-
 	})
 </script>
 
@@ -575,14 +503,16 @@
 <style>
 	/* HEADER */
 	:global(.ag-header-cell-text) {
-		overflow: hidden;
-		word-break: keep-all !important;
-		-webkit-line-clamp: 2; /* number of lines to show */
-		line-clamp: 2;
-		max-height: 32px;
-		white-space: preserve-breaks;
-		text-overflow: ellipsis;
-		-webkit-box-orient: vertical;
+		display: -webkit-box !important;
+		-webkit-line-clamp: 2 !important; /* Limit to 2 lines */
+		line-clamp: 2 !important;
+		-webkit-box-orient: vertical !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+		word-break: normal !important; /* Break words if needed */
+		white-space: normal !important;
+		line-height: 12px !important;
+		max-height: 24px !important; /* 2 * line-height */
 	}
 
 	:global(.ag-header-icon) {

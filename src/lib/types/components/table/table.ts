@@ -1,8 +1,6 @@
-import type {FilterModel, IServerSideGetRowsRequest} from "ag-grid-enterprise";
-import type {Preset, StoredPreset, StoredPresets} from "$lib/types/components/table/presets";
+import type {ColumnState, FilterModel, IServerSideGetRowsRequest} from "ag-grid-enterprise";
+import type {StoredPresets} from "$lib/types/components/table/presets";
 import type {
-	ColDef,
-	ColGroupDef,
 	IServerSideGroupSelectionState,
 	IServerSideSelectionState,
 	SortDirection
@@ -28,9 +26,9 @@ export interface AgGridTables {
 export interface AgGridSSTableType {
 	type: "serverSide";
 	// for restoring default table settings and layout
-	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[]; // TODO: delete ?
+	defaultColState: ColumnState[];
 	// used when setting default colDef - preset
-	setColDefToDefault: boolean;
+	setColStateToDefault: boolean;
 	// used for disabling tabs and saving edits
 	editedTableData: any[];
 	// current filters used in table. Can be saved through ribbon
@@ -40,7 +38,7 @@ export interface AgGridSSTableType {
 	// used to set filters after user chose filter from ribbon -> my filters
 	selectedFilters?: StoredFilters;
 	// current presets in the table
-	presetToSave: ColDef[]|ColGroupDef[];
+	presetToSave: ColumnState[];
 	// used to set presets after user chose preset from ribbon -> my presets
 	selectedPreset?: StoredPresets;
 	// selected preset completed by default col defs
@@ -69,9 +67,9 @@ export interface AgGridSSTableType {
 export interface AgGridCSTableType {
 	type: "clientSide";
 	// for restoring default table settings and layout
-	defaultColDef: (ColDef<unknown, any> | ColGroupDef<unknown>)[];
+	defaultColState: ColumnState[];
 	// used when setting default colDef - preset
-	setColDefToDefault: boolean;
+	setColStateToDefault: boolean;
 	// created by applying transactions
 	createdTableData: any[];
 	// used for disabling tabs and saving edits
@@ -85,7 +83,7 @@ export interface AgGridCSTableType {
 	// used to set filters after user chose filter from ribbon -> my filters
 	selectedFilters?: StoredFilters;
 	// current presets in the table
-	presetToSave: ColDef[]|ColGroupDef[];
+	presetToSave: ColumnState[];
 	// used to set presets after user chose preset from ribbon -> my presets
 	selectedPreset?: StoredPresets;
 	// selected preset completed by default col defs

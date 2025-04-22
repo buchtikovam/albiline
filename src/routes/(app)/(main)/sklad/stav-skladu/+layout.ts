@@ -1,5 +1,5 @@
-import type {LayoutLoad} from "../../../../../.svelte-kit/types/src/routes/(app)/$types";
 import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+import type {LayoutLoad} from "../../../../../../.svelte-kit/types/src/routes/(app)/$types";
 
 
 export const load: LayoutLoad = async () => {
@@ -8,7 +8,7 @@ export const load: LayoutLoad = async () => {
 	if (!agGridTables.value[currentPageKey.value]) {
 		agGridTables.value[currentPageKey.value] = {
 			type: "clientSide",
-			defaultColDef: [],
+			defaultColState: [],
 			setColDefToDefault: false,
 			createdTableData: [],
 			editedTableData: [],

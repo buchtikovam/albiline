@@ -141,6 +141,17 @@ export const allItems: SidebarItem[] = [
 				icon: null,
 				children: [],
 			},
+			{
+				field: 'analyza-prodeju',
+				href: '/prodej/analyza-prodeju',
+				open: false,
+				hide: false,
+				disabled: false,
+				popoverOpen: false,
+				translation: m.components_sidebar_item_prodej_analyza_prodeju,
+				icon: null,
+				children: [],
+			},
 			// {
 			// 	field: 'zakaznici_sk',
 			// 	href: '/prodej/zakaznici-sk',
