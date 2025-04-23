@@ -57,6 +57,8 @@
 						bind:columnFilter={currentColumnFilter}
 						selectOptions={selectOptions}
 						onChange={() => onFilterChange(currentColumnFilter)}
+						bind:asyncDropdownOptions
+						bind:dropdownOptions
 					/>
 
 					{#if currentColumnFilter.filterModel.operator}
@@ -72,6 +74,8 @@
 					bind:columnFilter={currentColumnFilter}
 					selectOptions={selectOptions}
 					onChange={() => onFilterChange(currentColumnFilter)}
+					bind:asyncDropdownOptions
+					bind:dropdownOptions
 				/>
 			{/if}
 		</div>
@@ -90,7 +94,6 @@
 					columnFilter={currentColumnFilter}
 					condition={condition}
 					onOperatorChange={(newCondition) => {
-						// Create new filter copy with updated condition
 						const updatedFilter = deepcopy(currentColumnFilter);
 						updatedFilter.filterModel.conditions[i] = newCondition;
 						onFilterChange(updatedFilter);
@@ -171,8 +174,13 @@
 				<div class="min-w-10">
 					<InputDialogOperatorSelect
 						disabled={currentColumnFilter.columnName === null}
-						type={currentColumnFilter.type}
-						bind:operator={condition.type}
+						columnFilter={currentColumnFilter}
+						condition={condition}
+						onOperatorChange={(newCondition) => {
+							const updatedFilter = deepcopy(currentColumnFilter);
+							updatedFilter.filterModel.conditions[i] = newCondition;
+							onFilterChange(updatedFilter);
+						}}
 					/>
 				</div>
 
@@ -182,6 +190,7 @@
 						<div class="w-full">
 							<Input
 								bind:value={condition.value}
+								oninput={() => onFilterChange(currentColumnFilter)}
 								type="text"
 								required
 							/>
@@ -194,6 +203,7 @@
 							<ColumnFilterTypeNumber
 								bind:condition={currentColumnFilter.filterModel.conditions[i]}
 								columnFilter={currentColumnFilter}
+								onchange={() => onFilterChange(currentColumnFilter)}
 							/>
 						</div>
 					{/if}
@@ -210,28 +220,20 @@
 
 
 					{#if currentColumnFilter.type === "date"}
-						{#if condition.type !== "between"}
-							<div class="w-full">
-								<DatePicker
-									bind:dateValue={condition.value}
-								/>
-							</div>
-						{:else}
-							<div class="w-full">
-								<DateRangePicker
-									bind:startValue={condition.value}
-									bind:endValue={condition.endValue}
-								/>
-							</div>
-						{/if}
+						<ColumnFilterTypeDate
+							bind:condition={currentColumnFilter.filterModel.conditions[i]}
+							columnFilter={currentColumnFilter}
+							onchange={() => onFilterChange(currentColumnFilter)}
+						/>
 					{/if}
 
 
 					{#if currentColumnFilter.type === "enum"}
 						<div class="w-full">
 							<ColumnFilterTypeEnum
-								value={condition.value}
+								bind:value={condition.value}
 								dropdownOptions={dropdownOptions}
+								onchange={() => onFilterChange(currentColumnFilter)}
 								asyncDropdownOptions={asyncDropdownOptions}
 							/>
 						</div>
@@ -240,8 +242,9 @@
 
 
 				<InputDialogColumnFilterActionButtons
-					bind:columnFilter={currentColumnFilter}
+					columnFilter={currentColumnFilter}
 					index={i}
+					{onFilterChange}
 				/>
 			</div>
 		{/if}

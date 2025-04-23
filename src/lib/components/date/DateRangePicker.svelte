@@ -14,49 +14,56 @@
 		endValue: string;
 		hasError?: boolean;
 		label?: string;
+		onchange?: () => void;
 	}
 
+	// Proper bindable props handling
 	let {
 		startValue = $bindable(),
 		endValue = $bindable(),
 		hasError,
 		label,
+		onchange,
 	}: Props = $props();
 
+	// Use derived state for the DateRange value
+	const value = $derived({
+		start: parseStringToDateValue(startValue),
+		end: parseStringToDateValue(endValue)
+	});
 
-	let value: DateRange = $state({
+	let pickerValue: DateRange = $state({
 		start: undefined,
 		end: undefined,
 	})
 
-
-	// $effect(() => {
-		if (startValue) {
-			value.start = parseStringToDateValue(startValue);
-		}
-
-		if (endValue) {
-			value.end = parseStringToDateValue(endValue)
-		}
-	// })
-
-
-
 	$effect(() => {
-		if (value.start && value.end) {
-			startValue = formatDateValueToString(value.start);
-			endValue = formatDateValueToString(value.end)
+		if (value) {
+			pickerValue = value
 		}
-	});
+	})
+
+
+	function handleValueChange(e: DateRange) {
+		const newStart = formatDateValueToString(e.start);
+		const newEnd = formatDateValueToString(e.end);
+
+		startValue = newStart;
+		endValue = newEnd;
+
+		if (onchange) {
+			onchange();
+		}
+	}
 </script>
 
 
-
 <DateRangePicker.Root
-	bind:value
+	bind:value={pickerValue}
 	weekdayFormat="short"
 	fixedWeeks={true}
 	locale={getLocale()}
+	onValueChange={handleValueChange}
 >
 	{#if label}
 		<DateRangePicker.Label

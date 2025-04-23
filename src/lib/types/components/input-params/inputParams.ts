@@ -79,7 +79,7 @@ type InputDateRange = {
 }
 
 
-type InputEnum= {
+type InputEnum = {
 	field: string;
 	type: "enum";
 	label: () => string;

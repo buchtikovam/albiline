@@ -47,18 +47,18 @@
 		<div
 			class="flex flex-col gap-1.5 w-full h-full "
 		>
+			<div class="flex flex-col gap-[7px] w-full">
+					<!--				<Sidebar.Trigger-->
+					<!--					class="bg-white size-8 border border-slate-300"-->
+					<!--				/>-->
 
-			<div class="flex gap-[7px] h-9">
-				<Sidebar.Trigger
-					class="bg-white size-8 border border-slate-300"
-				/>
+					<Header/>
 
-				<Header/>
+				<div class={(ribbonOpen.value ? "h-[65px]" : "h-9" + " transition-all ease-linear duration-200 ")}>
+					<Ribbon />
+				</div>
 			</div>
 
-			<div class={(ribbonOpen.value ? "h-[65px]" : "h-9" + " transition-all ease-linear duration-200 ")}>
-				<Ribbon />
-			</div>
 
 			<div class="h-full w-full">
 				{@render children?.()}

@@ -6,6 +6,7 @@
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import type {AgGridSSTableType} from "$lib/types/components/table/table";
 	import {
+		type CellFocusedEvent,
 		type CellValueChangedEvent,
 		createGrid,
 		type GridApi,
@@ -44,6 +45,7 @@
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
+	let isEditing = false;
 
 
 	if (hiddenHeader) themeParams.headerHeight = 0;
@@ -65,6 +67,14 @@
 			hide: false,
 			filter: false,
 			suppressHeaderMenuButton: true,
+		},
+
+		onCellEditingStarted: () => {
+			isEditing = true;
+		},
+
+		onCellEditingStopped: () => {
+			isEditing = false;
 		},
 
 		rowData: [],
@@ -170,6 +180,7 @@
 
 
 
+
 	$effect(() => {
 		gridApi = createGrid(gridContainer, { ...gridOptions, ...gridOptionsCustom });
 
@@ -188,6 +199,19 @@
 			gridApi.setGridOption("rowData", rowData);
 		}
 	})
+
+	$effect(() => {
+		if (gridContainer && gridApi) {
+			const handleClickOutside = (event: MouseEvent) => {
+				if (!gridContainer.contains(event.target as Node) && isEditing) {
+					gridApi.stopEditing(true);
+				}
+			};
+
+			document.addEventListener('click', handleClickOutside);
+			return () => document.removeEventListener('click', handleClickOutside);
+		}
+	});
 </script>
 
 
@@ -222,12 +246,18 @@
 	}
 
 	:global(.ag-header-icon) {
-		min-width: 20px !important;
+		min-width: 14px !important;
+	}
+
+	:global(.ag-header-icon):hover {
+		background-color: #eceef1 !important;
+		outline: none !important;
+		box-shadow: none !important;
 	}
 
 	:global(.ag-sort-indicator-icon) {
-		min-width: 22px !important;
-		margin-left: -6px !important;
+		min-width: 18px !important;
+		margin-left: -8px !important;
 	}
 
 	:global(.ag-filter-apply-panel) {

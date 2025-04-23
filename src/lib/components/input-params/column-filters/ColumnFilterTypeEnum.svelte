@@ -1,21 +1,19 @@
 <script lang="ts">
 	import {Button} from "$lib/components/ui/button/index.js";
-	import {onMount} from "svelte";
 	import {tick} from "svelte";
 	import {cn} from "$lib/utils.js";
 	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
 	import Check from "lucide-svelte/icons/check";
-	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Command from "$lib/components/ui/command/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
 	import * as Select from "$lib/components/ui/select/index.js";
 
 	interface Props {
-		value: string;
+		value: string|number|Date|boolean|null;
 		onchange: () => void;
-		asyncDropdownOptions?: () => Promise<string[]>; // Optional async function
-		dropdownOptions?: string[]; // Corrected type to string[]
+		asyncDropdownOptions?: () => Promise<string[]>;
+		dropdownOptions?: string[];
 	}
 
 	let {
@@ -25,46 +23,35 @@
 		dropdownOptions
 	}: Props = $props();
 
+
 	let dropdownValue = $state(value);
-	let options: string[] = $state([]); // Initialize options as an empty array
+	let options: string[] = $state([]);
+
 
 	// Initialize dropdownValue if value is empty
 	if (!value) {
 		dropdownValue = "‎";
 	}
 
-	// Fetch options on mount
-	onMount(async () => {
-		console.log("mount");
 
+	$effect(() => {
+		if (typeof asyncDropdownOptions === "function" || dropdownOptions) {
+			getOptions();
+		}
+	});
+
+
+	async function getOptions() {
 		if (typeof asyncDropdownOptions === "function") {
 			try {
-				options = await asyncDropdownOptions(); // Resolve the promise
+				options = await asyncDropdownOptions();
 			} catch (error) {
 				console.error("Failed to fetch async options:", error);
 			}
 		} else if (dropdownOptions) {
-			options = dropdownOptions; // Use static options
+			options = dropdownOptions;
 		}
-	});
-
-
-	// Effect to handle dropdownValue changes
-	$effect(() => {
-		if (dropdownValue) {
-			value = dropdownValue;
-
-			// if (typeof asyncDropdownOptions === "function") {
-			// 	value = dropdownValue.split("-")[0]; // Handle async case
-			// }
-			//
-			// if (dropdownOptions) {
-			//
-			// 	value = dropdownValue; // Handle static case
-			// }
-			// onchange()
-		}
-	});
+	}
 
 
 	// Popover logic
@@ -78,7 +65,8 @@
 		});
 	}
 
-	// Dynamic width logic
+
+	// Dynamic width of select options
 	let buttonWidth = $state(0);
 
 	$effect(() => {
@@ -137,6 +125,16 @@
 									value={option}
 									onSelect={() => {
 										dropdownValue = option;
+
+										if (typeof asyncDropdownOptions === "function") {
+											value = dropdownValue.split("-")[0].trim();
+										}
+
+										if (dropdownOptions) {
+											value = dropdownValue;
+										}
+
+										onchange();
 										closeAndFocusTrigger();
 									}}
 								>

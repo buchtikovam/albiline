@@ -23,6 +23,7 @@
 		hasError,
 		label,
 		field,
+		onchange,
 	}: Props = $props();
 
 
@@ -54,6 +55,12 @@
 	disabled={false}
 	bind:value={value}
 	locale={getLocale()}
+	onValueChange={(e) => {
+		if (onchange) {
+			dateValue = formatDateValueToString(e);
+			onchange()
+		}
+	}}
 >
 	<div class="flex w-full flex-col">
 		{#if label}

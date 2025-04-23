@@ -44,6 +44,7 @@
 	// page settings
 	let pageKey: string = currentPageKey.value;
 	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
+	let isEditing = false;
 
 
 	// create grid
@@ -102,6 +103,14 @@
 			autoHeaderHeight: true,
 			wrapHeaderText: true,
 			suppressHeaderMenuButton: true,
+		},
+
+		onCellEditingStarted: () => {
+			isEditing = true;
+		},
+
+		onCellEditingStopped: () => {
+			isEditing = false;
 		},
 
 		getMainMenuItems: (event) => {
@@ -391,7 +400,7 @@
 
 	// register datasource if user has added input params
 	$effect(() => {
-		if (Object.keys(table.loadedInputParams).length > 0 && isInitial) {
+		if (Object.keys(table.loadedInputParams).length > 0 ) {
 			gridApi.setGridOption('serverSideDatasource', datasource);
 		}
 	})
@@ -442,6 +451,20 @@
 			table.selectedPreset = undefined;
 		}
 	})
+
+
+	$effect(() => {
+		if (gridContainer && gridApi) {
+			const handleClickOutside = (event: MouseEvent) => {
+				if (!gridContainer.contains(event.target as Node) && isEditing) {
+					gridApi.stopEditing(true);
+				}
+			};
+
+			document.addEventListener('click', handleClickOutside);
+			return () => document.removeEventListener('click', handleClickOutside);
+		}
+	});
 
 
 	$effect(() => {
@@ -614,12 +637,18 @@
 	}
 
 	:global(.ag-header-icon) {
-		min-width: 20px !important;
+		min-width: 14px !important;
+	}
+
+	:global(.ag-header-icon):hover {
+		background-color: #eceef1 !important;
+		outline: none !important;
+		box-shadow: none !important;
 	}
 
 	:global(.ag-sort-indicator-icon) {
-		min-width: 22px !important;
-		margin-left: -6px !important;
+		min-width: 18px !important;
+		margin-left: -8px !important;
 	}
 
 	:global(.ag-filter-apply-panel) {
@@ -723,6 +752,7 @@
 		outline: none !important;
 		box-shadow: none !important;
 	}
+
 
 
 	/*	BUTTONS */

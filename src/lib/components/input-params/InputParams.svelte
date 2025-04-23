@@ -26,6 +26,8 @@
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import Trash2 from "lucide-svelte/icons/trash-2";
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
 
 	interface Props {
@@ -97,7 +99,7 @@
 	}
 
 
-	function handleFulltextUpdate(fulltextValue: string|null) {
+	function handleFulltextUpdate(fulltextValue: string|null)  {
 		inputParams.fulltext = fulltextValue;
 	}
 
@@ -127,8 +129,8 @@
 			{
 				paramName: saveLabel,
 				paramValue: {
-					fulltext: deepcopy(inputParams.fulltext),
-					inputs: deepcopy(inputParams.inputs),
+					fulltext: inputParams.fulltext,
+					inputs: inputParams.inputs,
 					columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
 				},
 			}
@@ -158,6 +160,7 @@
 					paramName: editedLabel.length > 0 ? editedLabel : selectedParam.paramName,
 					paramValue: {
 						fulltext: inputParams.fulltext,
+						inputs: inputParams.inputs,
 						columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
 					},
 				}
@@ -171,6 +174,7 @@
 					paramName: editedLabel.length > 0 ? editedLabel : selectedParam.paramName,
 					paramValue: {
 						fulltext: inputParams.fulltext,
+						inputs: inputParams.inputs,
 						columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
 					},
 				}
@@ -215,9 +219,6 @@
 			columnFilters: [...newFilters, newFilter]
 		};
 	}
-
-
-	$inspect(JSON.stringify(inputParams, null, 1))
 </script>
 
 
@@ -235,13 +236,14 @@
 
 {#snippet header()}
 	<Dialog.Title
-		class="h-5 overflow-visible flex gap-2 items-center"
+		class="h-5 overflow-visible flex gap-2 items-center justify-between"
 	>
 		<InputParamsHeader
 			{selectedParam}
-			{editedLabel}
+			bind:editedLabel
 			{isLoadedParamChanged}
 		/>
+
 	</Dialog.Title>
 {/snippet}
 
@@ -260,7 +262,7 @@
 
 			{#if inputParams.inputs !== undefined}
 				<InputParamsInputs
-					initialInputs={defaultInputParams.inputs}
+					initialInputs={defaultInputParams.inputs || []}
 					inputs={inputParams.inputs}
 					onInputsChange={handleInputsUpdate}
 				/>
@@ -281,45 +283,77 @@
 
 
 		<div class="flex w-full -ml-6 px-6 justify-between absolute bottom-0 bg-white pb-4 pt-3">
-			<div>
-				<div class="flex gap-1.5 sm:gap-2">
-					<Button
-						type="button"
-						class="size-10"
-						variant="secondary"
-						onclick={() => {
-						if (
-							JSON.stringify(defaultInputParams) === JSON.stringify(inputParams) ||
-							!isLoadedParamChanged
-						) {
-							responseDialogMessages.value = [{
-								type: "InfoToast",
-								title: m.components_input_params_save_fail_info_toast_title(),
-								content: m.components_input_params_save_fail_info_toast_content()
-							}]
-						} else {
-							isSaveDialogOpen = true;
-						}
-					}}
-					>
-						<Save
-							strokeWidth="2.5"
-							class="!size-[18px]"
-						/>
-					</Button>
 
-					<Button
-						type="button"
-						class="bg-white size-10"
-						variant="secondary"
-						onclick={() => isLoadDialogOpen = true}
-					>
-						<Upload
-							strokeWidth="2.5"
-							class="!size-[18px]"
-						/>
-					</Button>
-				</div>
+			<div class="flex gap-1.5 sm:gap-2">
+
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<Button
+							type="button"
+							class="size-10"
+							variant="secondary"
+							onclick={() => {
+								if (isEqual(defaultInputParams, inputParams) || !isLoadedParamChanged) {
+									responseDialogMessages.value = [{
+										type: "InfoToast",
+										title: m.components_input_params_save_fail_info_toast_title(),
+										content: m.components_input_params_save_fail_info_toast_content()
+									}]
+								} else {
+									isSaveDialogOpen = true;
+								}
+							}}
+						>
+							<Save
+								strokeWidth="2.5"
+								class="!size-[18px]"
+							/>
+						</Button>
+					</Tooltip.Trigger>
+
+					<Tooltip.Content>
+						Uložit
+					</Tooltip.Content>
+				</Tooltip.Root>
+
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<Button
+							type="button"
+							class="bg-white size-10"
+							variant="secondary"
+							onclick={() => isLoadDialogOpen = true}
+						>
+							<Upload
+								strokeWidth="2.5"
+								class="!size-[18px]"
+							/>
+						</Button>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						Načíst uložené
+					</Tooltip.Content>
+				</Tooltip.Root>
+
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<Button
+							type="button"
+							variant="secondary"
+							class={`${isEqual(defaultInputParams, inputParams) ? "hidden" : ""} size-10`}
+							onclick={() => {
+							inputParams = defaultInputParams;
+							selectedParam = undefined;
+							editedLabel = "";
+						}}
+						>
+							<Trash2 class="!size-[18px]"/>
+						</Button>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						Resetovat
+					</Tooltip.Content>
+				</Tooltip.Root>
 			</div>
 
 
@@ -327,7 +361,10 @@
 			<div class="flex items-center gap-1.5 sm:gap-2">
 				<Button
 					type="button"
-					onclick={() => loadInputParamsInTable(table, inputParams, type)}
+					onclick={() => {
+						loadInputParamsInTable(table, inputParams, type);
+						open = false;
+					}}
 				>
 					{m.components_input_params_button_filter()}
 				</Button>

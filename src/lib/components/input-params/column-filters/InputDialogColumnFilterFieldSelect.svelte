@@ -5,7 +5,7 @@
 	import type {
 		ColumnFilter,
 		InputParamsOptions,
-		InputParamsSelectOption
+		InputParamsSelectOption, InputParamsSelectOptionGroup
 	} from "$lib/types/components/input-params/inputParams";
 	import * as Popover from "$lib/components/ui/popover";
 	import * as Command from "$lib/components/ui/command";
@@ -15,12 +15,16 @@
 		columnFilter: ColumnFilter;
 		selectOptions: InputParamsOptions[];
 		onChange: () => void;
+		dropdownOptions: string[]|undefined;
+		asyncDropdownOptions: (() => Promise<string[]>)|undefined;
 	}
 
 	let {
 		columnFilter = $bindable(),
 		selectOptions,
 		onChange,
+		dropdownOptions = $bindable(),
+		asyncDropdownOptions = $bindable(),
 	}: Props = $props();
 
 
@@ -31,18 +35,53 @@
 	$effect(() => {
 		if (columnFilter.columnName) {
 			activeLabel = getLabel();
+		} else {
+			activeLabel = ""
 		}
 	})
+
+
+	// typeguard
+	function isGroup(option: InputParamsOptions): option is InputParamsSelectOptionGroup {
+		return 'children' in option;
+	}
 
 
 	function getLabel() {
 		let label = "...";
 
-		selectOptions.forEach(option => {
-			if (option.field === columnFilter.columnName) {
-				label = option.label();
+		for (const option of selectOptions) {
+			if (isGroup(option)) {
+				for (const child of option.children) {
+					if (child.field === columnFilter.columnName) {
+						label = child.label();
+
+						if (child.type === "enum") {
+							dropdownOptions = child.dropdownOptions;
+							asyncDropdownOptions = child.asyncDropdownOptions;
+						} else {
+							dropdownOptions = undefined;
+							asyncDropdownOptions = undefined;
+						}
+
+						return label;
+					}
+				}
+			} else {
+				if (option.field === columnFilter.columnName) {
+					label = option.label();
+
+					if (option.type === "enum") {
+						dropdownOptions = option.dropdownOptions;
+						asyncDropdownOptions = option.asyncDropdownOptions;
+					} else {
+						dropdownOptions = undefined;
+						asyncDropdownOptions = undefined;
+					}
+					return label;
+				}
 			}
-		})
+		}
 
 		return label;
 	}
@@ -58,11 +97,17 @@
 				condition.type = null;
 				condition.value = null;
 			})
+		} else {
+			// if type is still enum, but field was changed, clear value => prevent sending wrong enum values to BE
+			if (option.type === "enum") {
+				columnFilter.filterModel.conditions.forEach(condition => {
+					condition.value = null;
+				})
+			}
 		}
 
 		columnFilter.type = option.type;
-
-		onChange()
+		onChange();
 	}
 
 
@@ -157,7 +202,7 @@
 				</Command.Empty>
 
 				{#each selectOptions as option}
-					{#if !option.children}
+					{#if !isGroup(option)}
 						<Command.Item
 							onSelect={() => {
 								updateItem(option);

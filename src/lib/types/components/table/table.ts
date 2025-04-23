@@ -17,6 +17,7 @@ export interface TableRowRequest extends IServerSideGetRowsRequest {
 }
 
 
+
 export interface AgGridTables {
 	[pageKey: string]: AgGridSSTableType|AgGridCSTableType;
 }

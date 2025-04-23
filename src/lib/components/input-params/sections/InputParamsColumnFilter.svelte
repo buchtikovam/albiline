@@ -15,7 +15,6 @@
 		addFilter: () => void;
 		selectOptions: InputParamsOptions[];
 		onFilterChange: (newFilters: ColumnFilter[]) => void;  // Add this type
-
 	}
 
 	let {

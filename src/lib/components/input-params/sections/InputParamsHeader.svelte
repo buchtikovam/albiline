@@ -14,13 +14,12 @@
 
 	let {
 	    selectedParam,
-		editedLabel,
+		editedLabel = $bindable(),
 		isLoadedParamChanged,
 	}: Props = $props();
 
 
 	let editLabel = $state(false);
-
 </script>
 
 

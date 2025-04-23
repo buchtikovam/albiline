@@ -28,7 +28,7 @@ export const themeAlbiBlueParams = {
 	checkboxBorderRadius: 4,
 	checkboxBorderWidth: 1,
 	checkboxCheckedShapeColor: "#FFFFFF",
-	iconSize: 16,
+	iconSize: 14,
 	inputBackgroundColor: "#FFFFFF",
 	inputFocusBorder: true,
 	inputPaddingStart: 6,

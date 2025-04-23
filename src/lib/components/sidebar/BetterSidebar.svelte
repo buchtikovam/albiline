@@ -10,6 +10,7 @@
 	import SidebarInput from "$lib/components/sidebar/SidebarInput.svelte";
 	import SidebarMain from "$lib/components/sidebar/SidebarMain.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
+	import {SidebarRail} from "$lib/components/ui/sidebar/index.js";
 
 
 	let filteredItems: SidebarItem[] = $state(deepcopy(allItems));
@@ -69,4 +70,6 @@
 	<Sidebar.Footer class="bg-white">
 		<SidebarAvatar />
 	</Sidebar.Footer>
+
+	<SidebarRail class="hover:bg-albi-50 my-2"/>
 </Sidebar.Root>

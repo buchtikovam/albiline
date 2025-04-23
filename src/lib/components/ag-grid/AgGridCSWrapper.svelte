@@ -3,7 +3,7 @@
 	import {
 		type BodyScrollEvent,
 		type ColumnMovedEvent,
-		type ColumnPinnedEvent,
+		type ColumnPinnedEvent, type ColumnResizedEvent,
 		type ColumnVisibleEvent,
 		createGrid,
 		type FilterChangedEvent,
@@ -54,6 +54,7 @@
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
 	let recentFilters: FilterModel[] = $state([]);
+	let isEditing = false;
 
 
 	const gridOptions: GridOptions = {
@@ -80,11 +81,18 @@
 			hide: false,
 			filter: false,
 			suppressHeaderMenuButton: true,
-
 			enableRowGroup: true,
 		},
 
 		rowData: [],
+
+		onCellEditingStarted: () => {
+			isEditing = true;
+		},
+
+		onCellEditingStopped: () => {
+			isEditing = false;
+		},
 
 		onFilterChanged(event: FilterChangedEvent<any>) {
 			const currentFilter = event.api.getFilterModel();
@@ -106,6 +114,10 @@
 
 		onColumnPinned(event: ColumnPinnedEvent<any>) {
 			table.presetToSave = event.api.getColumnState() || [];
+		},
+
+		onColumnResized(event: ColumnResizedEvent<any>) {
+			table.presetToSave = event.api.getColumnState();
 		},
 
 		onSortChanged(event: SortChangedEvent<any>) {
@@ -315,6 +327,20 @@
 
 
 	$effect(() => {
+		if (gridContainer && gridApi) {
+			const handleClickOutside = (event: MouseEvent) => {
+				if (!gridContainer.contains(event.target as Node) && isEditing) {
+					gridApi.stopEditing(true);
+				}
+			};
+
+			document.addEventListener('click', handleClickOutside);
+			return () => document.removeEventListener('click', handleClickOutside);
+		}
+	});
+
+
+	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.NEW) {
 			// const rowToAdd = {};
 			//
@@ -516,12 +542,18 @@
 	}
 
 	:global(.ag-header-icon) {
-		min-width: 20px !important;
+		min-width: 14px !important;
+	}
+
+	:global(.ag-header-icon):hover {
+		background-color: #eceef1 !important;
+		outline: none !important;
+		box-shadow: none !important;
 	}
 
 	:global(.ag-sort-indicator-icon) {
-		min-width: 22px !important;
-		margin-left: -6px !important;
+		min-width: 18px !important;
+		margin-left: -8px !important;
 	}
 
 	:global(.ag-filter-apply-panel) {

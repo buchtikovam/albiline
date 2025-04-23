@@ -6,7 +6,7 @@
 	interface Props {
 		columnFilter: ColumnFilter;
 		condition: ColumnFilterModelCondition;
-		onchange: (event: Event) => void;
+		onchange: () => void;
 	}
 
 	let {
@@ -23,13 +23,13 @@
 	})
 </script>
 
-<!-- TODO: implement onchange -->
 
 
 {#if condition.type !== "between"}
 	<div class="w-full">
 		<DatePicker
 			bind:dateValue={condition.value}
+			{onchange}
 		/>
 	</div>
 {:else}
@@ -37,6 +37,7 @@
 		<DateRangePicker
 			bind:startValue={condition.value}
 			bind:endValue={condition.endValue}
+			{onchange}
 		/>
 	</div>
 {/if}

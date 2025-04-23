@@ -2,7 +2,7 @@ import type {DateValue} from "@internationalized/date";
 
 
 
-export function formatDateValueToString(dateValue: DateValue) {
+export function formatDateValueToString(dateValue: DateValue|undefined) {
 	if (!dateValue) return "Invalid Date";
 
 	const day = String(dateValue.day).padStart(2, "0");

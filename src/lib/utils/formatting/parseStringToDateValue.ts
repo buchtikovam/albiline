@@ -2,6 +2,10 @@ import {parseDate} from "@internationalized/date";
 
 
 export function parseStringToDateValue(dateString: string) {
+	if (!dateString) {
+		return undefined;
+	}
+
 	// Extract the date portion "20.02.2025"
 	const [day, month, year] = dateString.split(" ")[0].split(".").map(Number);
 
