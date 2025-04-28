@@ -14,6 +14,8 @@
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
+	let hiddenHeader = $state(false);
+
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;
 </script>
@@ -23,7 +25,7 @@
 <div class="h-dvh w-dvh bg-slate-100">
 	<Sidebar.Provider
 		style="--sidebar-width: 280px; --sidebar-width-mobile: 200px"
-		class="!h-full py-2 pr-2 w-full"
+		class="!h-full pb-2 pr-2 w-full"
 		bind:open={sidebarOpen.value}
 	>
 
@@ -45,20 +47,28 @@
 
 
 		<div
-			class="flex flex-col gap-1.5 w-full h-full "
+			class="flex flex-col w-full h-full"
 		>
-			<div class="flex flex-col gap-[7px] w-full">
+			<div class={`${hiddenHeader ? "hidden" : "flex"} flex-col gap-[7px] w-full pt-2 transition-all ease-linear`}>
 					<!--				<Sidebar.Trigger-->
 					<!--					class="bg-white size-8 border border-slate-300"-->
 					<!--				/>-->
 
+				<div class="h-9">
 					<Header/>
+				</div>
 
 				<div class={(ribbonOpen.value ? "h-[65px]" : "h-9" + " transition-all ease-linear duration-200 ")}>
 					<Ribbon />
 				</div>
 			</div>
 
+			<button
+				type="button"
+				class="h-[7px] w-full bg-slate-100 hover:bg-albi-100 transition-all ease-linear cursor-ns-resize"
+				onclick={() => hiddenHeader = !hiddenHeader}
+				aria-label="button"
+			></button>
 
 			<div class="h-full w-full">
 				{@render children?.()}

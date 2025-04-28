@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
 	import {
 		type BodyScrollEvent,
 		type ColumnMovedEvent,

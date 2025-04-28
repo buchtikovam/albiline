@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
-	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue";
+	import {agGridTables, currentPageKey, tableViewSettings} from "$lib/runes/table.svelte";
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 	import {addToEditedTableData} from "$lib/utils/addToEditedTableData";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
@@ -44,7 +44,7 @@
 	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
-	let themeParams = $state(themeAlbiBlueParams);
+	let themeParams = $derived(themeAlbiBlueParams);
 	let isEditing = false;
 
 
@@ -199,6 +199,15 @@
 			gridApi.setGridOption("rowData", rowData);
 		}
 	})
+
+	// $effect(() => {
+	// 	if (tableViewSettings.value) {
+	// 		console.log(JSON.stringify(tableViewSettings.value, null, 2));
+	//
+	// 		gridApi.setGridOption("theme", themeQuartz.withParams(themeParams))
+	//
+	// 	}
+	// })
 
 	$effect(() => {
 		if (gridContainer && gridApi) {

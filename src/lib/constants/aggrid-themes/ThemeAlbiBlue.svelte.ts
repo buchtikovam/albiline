@@ -1,7 +1,11 @@
 import { pageCompact } from "$lib/runes/page.svelte";
+import {type TableSettings, tableViewSettings} from "$lib/runes/table.svelte";
 
 
-export const themeAlbiBlueParams = {
+let tableSettings: TableSettings = $derived(tableViewSettings.value)
+
+
+export const themeAlbiBlueParams = $state({
 	accentColor: "#03BFD7",
 	advancedFilterBuilderButtonBarBorder: true,
 	advancedFilterBuilderColumnPillColor: "#D0FA9C",
@@ -21,14 +25,15 @@ export const themeAlbiBlueParams = {
 	headerColumnBorder: false,
 	headerColumnResizeHandleColor: "#E1E7EF",
 	headerColumnResizeHandleWidth: 2,
-	headerFontSize: 11,
-	headerHeight: 28,
+	fontSize: tableSettings.fontSize,
+	headerFontSize: tableSettings.headerFontSize,
+	headerHeight: tableSettings.headerHeight,
 	headerFontWeight: 800,
 	headerVerticalPaddingScale: 0,
 	checkboxBorderRadius: 4,
 	checkboxBorderWidth: 1,
 	checkboxCheckedShapeColor: "#FFFFFF",
-	iconSize: 14,
+	iconSize: tableSettings.iconSize,
 	inputBackgroundColor: "#FFFFFF",
 	inputFocusBorder: true,
 	inputPaddingStart: 6,
@@ -46,10 +51,10 @@ export const themeAlbiBlueParams = {
 	selectCellBorder: false,
 	selectedRowBackgroundColor: "rgba(255,237,190,0.32)",
 	sideBarBackgroundColor: "#FFFFFF",
-	spacing: pageCompact.value ? 2 : 5,
+	spacing: tableSettings.spacing,
 	tabBottomPadding: 6,
 	tabHoverBackgroundColor: "#00000000",
 	toolPanelSeparatorBorder: true,
 	wrapperBorder: false,
 	wrapperBorderRadius: 0
-}
+})

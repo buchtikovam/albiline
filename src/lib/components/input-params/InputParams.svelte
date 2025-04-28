@@ -269,7 +269,6 @@
 			{/if}
 
 
-
 			{#if inputParams.columnFilters !== undefined}
 				<InputParamsColumnFilter
 					columnFilters={inputParams.columnFilters}
@@ -283,9 +282,7 @@
 
 
 		<div class="flex w-full -ml-6 px-6 justify-between absolute bottom-0 bg-white pb-4 pt-3">
-
 			<div class="flex gap-1.5 sm:gap-2">
-
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						<Button

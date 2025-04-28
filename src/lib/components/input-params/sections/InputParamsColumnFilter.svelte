@@ -60,7 +60,7 @@
 
 
 <div class="flex flex-col gap-0">
-	{#each columnFilters as columnFilter, i}
+	{#each columnFilters as columnFilter}
 		<div
 			class={
 			columnFilter.filterModel.conditions.length > 1
@@ -74,7 +74,6 @@
 				</p>
 			{/if}
 
-			<!-- add callback that -->
 			<InputDialogColumnFilterWrapper
 				selectOptions={selectOptions}
 				onFilterChange={(updatedColumnFilter: ColumnFilter) => onColumnFilterChange(updatedColumnFilter)}
