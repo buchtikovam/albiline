@@ -32,14 +32,13 @@
 		}
 	})
 
+
 	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.LOAD) {
 			table = { ...table, areInputParamsLoading: true };
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 	})
-
-	$inspect(open)
 </script>
 
 

@@ -50,15 +50,11 @@
 			class="flex flex-col w-full h-full"
 		>
 			<div class={`${hiddenHeader ? "hidden" : "flex"} flex-col gap-[7px] w-full pt-2 transition-all ease-linear`}>
-					<!--				<Sidebar.Trigger-->
-					<!--					class="bg-white size-8 border border-slate-300"-->
-					<!--				/>-->
-
-				<div class="h-9">
+				<div class={`${ribbonOpen.value ? "h-[37px]" : "h-9"}`}>
 					<Header/>
 				</div>
 
-				<div class={(ribbonOpen.value ? "h-[65px]" : "h-9" + " transition-all ease-linear duration-200 ")}>
+				<div class={(ribbonOpen.value ? "h-[66px] -mt-[1px]" : "h-9" + " transition-all ease-linear duration-200 ")}>
 					<Ribbon />
 				</div>
 			</div>

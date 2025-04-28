@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
+	import {currentPageKey, agGridTables, tableViewSettings} from '$lib/runes/table.svelte';
 	import {authDetails} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
@@ -615,6 +615,11 @@
 		id="datagrid"
 		class=""
 		style="flex: 1 1 auto"
+		style:--ag-spacing={tableViewSettings.value?.spacing + 'px'}
+		style:--ag-header-height={tableViewSettings.value?.headerHeight + 'px'}
+		style:--ag-header-font-size={tableViewSettings.value?.headerFontSize + 'px'}
+		style:--ag-font-size={tableViewSettings.value?.fontSize + 'px'}
+		style:--ag-icon-size={tableViewSettings.value?.iconSize + 'px'}
 		bind:this={gridContainer}
 	></div>
 </div>

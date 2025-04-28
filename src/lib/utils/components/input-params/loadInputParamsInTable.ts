@@ -12,6 +12,25 @@ export async function loadInputParamsInTable(
 	inputParams: InputParamsType,
 	type: "clientSide"|"serverSide"
 ) {
+	let columnList: string[] = [];
+
+	// TODO: issue here - not providing required fields -> extend table type
+	// if (Object.keys(table.presetToSave).length > 0) {
+	// 	table.presetToSave.forEach(preset => {
+	// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
+	// 			columnList.push(preset.colId)
+	// 		}
+	// 	})
+	// } else {
+	// 	table.defaultColState.forEach(preset => {
+	// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
+	// 			columnList.push(preset.colId)
+	// 		}
+	// 	})
+	// }
+
+
+
 	table.areInputParamsLoading = true;
 	table.hasInputParams = true;
 	table.selectedRows = [];
@@ -23,6 +42,7 @@ export async function loadInputParamsInTable(
 		fulltext: inputParams.fulltext,
 		inputs: inputParams.inputs,
 		columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
+		// columnList: columnList,
 	}
 
 	if (type === "clientSide") {
@@ -37,6 +57,7 @@ export async function loadInputParamsInTable(
 				fulltext: inputParams.fulltext,
 				inputs: inputParams.inputs,
 				columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
+				columnList: columnList,
 			}
 		)
 

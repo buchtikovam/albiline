@@ -8,7 +8,7 @@ export const load: LayoutLoad = async () => {
 		agGridTables.value[currentPageKey.value] = {
 			type: "serverSide",
 			defaultColState: [],
-			setColDefToDefault: false,
+			setColStateToDefault: false,
 			editedTableData: [],
 			filtersToSave: {},
 			presetToSave: [],

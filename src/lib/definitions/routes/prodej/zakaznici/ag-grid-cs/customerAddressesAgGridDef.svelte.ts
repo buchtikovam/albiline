@@ -5,6 +5,7 @@ import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import type {ICellRendererParams, CellClassParams} from 'ag-grid-community';
 import type {GridOptions} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
+import {localizeHref} from "$lib/paraglide/runtime";
 
 
 const bgHEX = "#fff7df";
@@ -77,11 +78,11 @@ export const customerAddressCustomGridOptions: GridOptions = {
 			pinned: "left",
 			minWidth: 40,
 			width: 40,
-			// cellRenderer: (params: ICellRendererParams) => selectButtonWithUrl(
-			// 	params,
-			// 	i18n.resolveRoute("/prodej/zakaznici/" + params.data.customerNodeCode + "/prodejny/" +  params.data.customerAddressCode),
-			// 	onAddressClick
-			// ),
+			cellRenderer: (params: ICellRendererParams) => selectButtonWithUrl(
+				params,
+				localizeHref("/prodej/zakaznici/" + params.data.customerNodeCode + "/prodejny/" +  params.data.customerAddressCode),
+				onAddressClick
+			),
 			cellStyle: (params: CellClassParams) => {
 				if (
 					params.data.customerNodeCode === Number(page.params.customerNodeCode) &&

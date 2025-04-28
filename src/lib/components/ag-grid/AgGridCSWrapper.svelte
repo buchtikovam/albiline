@@ -21,7 +21,7 @@
 	import type {ColDef, ColGroupDef} from "ag-grid-community";
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {agGridTables} from "$lib/runes/table.svelte";
+	import {agGridTables, tableViewSettings} from "$lib/runes/table.svelte";
 	import type {AgGridCSTableType, AgGridSSTableType, ColumnOrder} from "$lib/types/components/table/table";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {beforeNavigate} from "$app/navigation";
@@ -31,6 +31,7 @@
 	import {authDetails} from "$lib/runes/page.svelte";
 	import {cacheTableData, clearCache, getCacheAge, getCachedTableData} from "$lib/cacheManager";
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
+	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
 
 	interface Props {
 		pageKey: string;
@@ -55,6 +56,7 @@
 	let themeParams = $state(themeAlbiBlueParams);
 	let recentFilters: FilterModel[] = $state([]);
 	let isEditing = false;
+	let excelFileInput: HTMLInputElement;
 
 
 	const gridOptions: GridOptions = {
@@ -230,8 +232,7 @@
 	})
 
 
-	let lastInputParams = $state(table.loadedInputParams);
-	$inspect(lastInputParams)
+	let lastInputParams = table.loadedInputParams;
 
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0) {
@@ -241,15 +242,10 @@
 			} else {
 				getData();
 			}
-		} else {
-			clearCache(pageKey);
-			getData();
 		}
 
-
 		lastInputParams = table.loadedInputParams;
-	})
-
+	});
 
 	async function getData() {
 		try {
@@ -268,6 +264,28 @@
 
 	async function fetchAndCache() {
 		try {
+			// let columnList: string[] = requiredFields;
+			//
+			//
+			// if (Object.keys(table.presetToSave).length > 0) {
+			// 	table.presetToSave.forEach(preset => {
+			// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
+			// 			columnList.push(preset.colId)
+			// 		}
+			// 	})
+			// } else {
+			// 	table.defaultColState.forEach(preset => {
+			// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
+			// 			columnList.push(preset.colId)
+			// 		}
+			// 	})
+			// }
+			//
+			// const requestObj = deepcopy(table.loadedInputParams);
+			// requestObj["columnList"] = columnList;
+			//
+			// console.log(requestObj)
+
 			gridApi.setGridOption("loading", true)
 			const response = await apiServicePostHandled('pageData', table.loadedInputParams);
 			const data = await response.data;
@@ -437,6 +455,12 @@
 		}
 
 
+		if (ribbonAction.value === RibbonActionEnum.IMPORT) {
+			excelFileInput.click();
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
 		if (ribbonAction.value === RibbonActionEnum.FILTER_QUICK) {
 			const column = gridApi.getFocusedCell();
 			const selection = window.getSelection()?.toString().trim();
@@ -512,6 +536,17 @@
 
 
 
+
+<input
+	type="file"
+	accept=".xls,.xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	multiple={false}
+	hidden
+	bind:this={excelFileInput}
+	onchange={(ev) => handleSSExcelUpload(ev, gridApi)}
+/>
+
+
 <div
 	class="flex flex-column h-full"
 >
@@ -519,6 +554,11 @@
 		id="datagrid"
 		class=""
 		style="flex: 1 1 auto"
+		style:--ag-spacing={tableViewSettings.value?.spacing + 'px'}
+		style:--ag-header-height={tableViewSettings.value?.headerHeight + 'px'}
+		style:--ag-header-font-size={tableViewSettings.value?.headerFontSize + 'px'}
+		style:--ag-font-size={tableViewSettings.value?.fontSize + 'px'}
+		style:--ag-icon-size={tableViewSettings.value?.iconSize + 'px'}
 		bind:this={gridContainer}
 	></div>
 </div>

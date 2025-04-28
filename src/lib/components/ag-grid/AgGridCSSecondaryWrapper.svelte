@@ -200,14 +200,6 @@
 		}
 	})
 
-	// $effect(() => {
-	// 	if (tableViewSettings.value) {
-	// 		console.log(JSON.stringify(tableViewSettings.value, null, 2));
-	//
-	// 		gridApi.setGridOption("theme", themeQuartz.withParams(themeParams))
-	//
-	// 	}
-	// })
 
 	$effect(() => {
 		if (gridContainer && gridApi) {
@@ -232,6 +224,11 @@
 		id="datagrid"
 		class=""
 		style="flex: 1 1 auto"
+		style:--ag-spacing={tableViewSettings.value?.spacing + 'px'}
+		style:--ag-header-height={hiddenHeader ? 0 : tableViewSettings.value?.headerHeight + 'px'}
+		style:--ag-header-font-size={tableViewSettings.value?.headerFontSize + 'px'}
+		style:--ag-font-size={tableViewSettings.value?.fontSize + 'px'}
+		style:--ag-icon-size={tableViewSettings.value?.iconSize + 'px'}
 		bind:this={gridContainer}
 	></div>
 </div>
