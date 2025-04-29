@@ -37,7 +37,7 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerAddressesDialog.svelte";
 	import NewCustomerContactDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte";
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
 
@@ -59,7 +59,7 @@
 	// --- initialize variables and state
 	// page
 	let pageKey: string = $derived(currentPageKey.value);
-	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeRoute = $derived({

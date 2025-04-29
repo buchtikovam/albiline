@@ -5,7 +5,7 @@
 	import {Input} from "$lib/components/ui/input";
 	import {localizeHref} from "$lib/paraglide/runtime";
 	import {goto} from "$app/navigation";
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
 	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
@@ -23,7 +23,7 @@
 
 	currentPageKey.value = "ProductStockInventory";
 
-	let table: AgGridSSTableType = $state(agGridTables.value[currentPageKey.value]);
+	let table: AgGridTableType = $state(agGridTables.value[currentPageKey.value]);
 	let activeTab = $derived(activeTabIndex.value.toString());
 </script>
 

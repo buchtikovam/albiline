@@ -22,7 +22,7 @@
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {agGridTables, tableViewSettings} from "$lib/runes/table.svelte";
-	import type {AgGridCSTableType, AgGridSSTableType, ColumnOrder} from "$lib/types/components/table/table";
+	import type {AgGridTableType, ColumnOrder} from "$lib/types/components/table/table";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import {beforeNavigate} from "$app/navigation";
 	import {onMount, tick} from "svelte";
@@ -35,22 +35,18 @@
 
 	interface Props {
 		pageKey: string;
-		requiredFields?: string[];
-		rowNumberIdentificationKey: string,
 		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
 	}
 
 	let {
 		pageKey,
-		requiredFields,
-		rowNumberIdentificationKey,
 		headerTranslations,
 		gridOptionsCustom
 	}: Props = $props();
 
 
-	let table: AgGridCSTableType = $state(agGridTables.value[pageKey]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let themeParams = $state(themeAlbiBlueParams);
@@ -127,7 +123,7 @@
 		},
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data[rowNumberIdentificationKey]);
+			return String(params.data[table.identificationKey]);
 		},
 
 		onBodyScroll(event: BodyScrollEvent<any>) {
@@ -145,7 +141,7 @@
 
 			if (table.selectedRows.length > 0) {
 				table.selectedRows.forEach((row) => {
-					let node = gridApi.getRowNode(String(row[rowNumberIdentificationKey]));
+					let node = gridApi.getRowNode(String(row[table.identificationKey]));
 					node?.setSelected(true)
 				});
 			}
@@ -232,7 +228,7 @@
 	})
 
 
-	let lastInputParams = table.loadedInputParams;
+	let lastInputParams = deepcopy(table.loadedInputParams);
 
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0) {
@@ -264,30 +260,29 @@
 
 	async function fetchAndCache() {
 		try {
-			// let columnList: string[] = requiredFields;
-			//
-			//
-			// if (Object.keys(table.presetToSave).length > 0) {
-			// 	table.presetToSave.forEach(preset => {
-			// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
-			// 			columnList.push(preset.colId)
-			// 		}
-			// 	})
-			// } else {
-			// 	table.defaultColState.forEach(preset => {
-			// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
-			// 			columnList.push(preset.colId)
-			// 		}
-			// 	})
-			// }
-			//
-			// const requestObj = deepcopy(table.loadedInputParams);
-			// requestObj["columnList"] = columnList;
-			//
-			// console.log(requestObj)
+			const columnList: string[] = deepcopy(table.requiredFields);
+
+			if (Object.keys(table.presetToSave).length > 0) {
+				table.presetToSave.forEach(preset => {
+					if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+						columnList.push(preset.colId)
+					}
+				})
+			} else {
+				table.defaultColState.forEach(preset => {
+					if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+						columnList.push(preset.colId)
+					}
+				})
+			}
+
+			console.log(columnList)
+
+			let requestObj = deepcopy(table.loadedInputParams);
+			requestObj["columnList"] = columnList
 
 			gridApi.setGridOption("loading", true)
-			const response = await apiServicePostHandled('pageData', table.loadedInputParams);
+			const response = await apiServicePostHandled('pageData', requestObj);
 			const data = await response.data;
 
 			gridApi.setGridOption("loading", false);
@@ -384,13 +379,12 @@
 			rowsToDelete.map((row) => {
 				const strippedRow = {};
 
-				if (requiredFields) {
-					requiredFields.forEach((field) => {
-						strippedRow[field] = row[field];
-					})
-				} else {
-					strippedRow[rowNumberIdentificationKey] = row[rowNumberIdentificationKey];
-				}
+				table.requiredFields.forEach((field) => {
+					strippedRow[field] = row[field];
+				})
+
+				strippedRow[rowNumberIdentificationKey] = row[rowNumberIdentificationKey];
+
 
 				rowsToDeleteStripped.push(strippedRow)
 			})

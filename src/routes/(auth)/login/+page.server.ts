@@ -58,7 +58,11 @@ export const actions = {
 			const responseData = await resp.json().catch(() => null);
 
 			if (!resp.ok) {
-				console.log("login not ok ", resp)
+				console.log("login not ok ", resp, JSON.stringify({
+					userCode: userCode,
+					passwordHash: passwordHash
+				}));
+
 				return fail(resp.status, {
 					messages: responseData?.messages,
 					userCode: userCode,
@@ -69,7 +73,9 @@ export const actions = {
 				// Set session cookie
 				cookies.set("auth", JSON.stringify({
 					sessionKey: responseData.sessionKey,
-					userName: responseData.userName
+					userName: responseData.userName,
+					email: responseData.email,
+					icon: responseData.icon,
 				}), {
 					httpOnly: true,
 					path: "/",
@@ -95,7 +101,7 @@ export const actions = {
 			}
 
 			throw error(500, {
-				message: "Internal server error",
+				message: "Other error",
 			});
 		}
 	}

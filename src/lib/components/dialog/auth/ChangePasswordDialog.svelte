@@ -13,7 +13,7 @@
 	let { isOpen = $bindable() }: Props = $props();
 
 	let disableSubmit = $state(false);
-	const passwordSchema = z.string().regex(new RegExp(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{10,}$/));
+	const passwordSchema = z.string().regex(new RegExp(/^(?=.*\d)(?=.*[!@#$%^&*_\-+=~`|(){}[\]:;"'<>,.?\/])(?=.*[a-z])(?=.*[A-Z]).{10,}$/));
 </script>
 
 
@@ -35,7 +35,7 @@
 	<form
 		method="POST"
 		autocomplete="off"
-		action="/profil"
+		action="/zmena-hesla"
 	>
 		<div
 			class={`

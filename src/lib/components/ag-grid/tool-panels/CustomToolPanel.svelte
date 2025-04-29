@@ -6,13 +6,13 @@
 	} from "$lib/definitions/routes/sklad/stav-skladu/ag-grid-cs/productStockInventoryAgGridDef.svelte.js";
 	import {Label} from "$lib/components/ui/label";
 	import {onNavigate} from "$app/navigation";
-	import type {AgGridCSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
 	import * as RadioGroup from "$lib/components/ui/radio-group";
 
 
 	// export let toolPanelParams;
-	let table: AgGridCSTableType = agGridTables.value[currentPageKey.value];
+	let table: AgGridTableType = agGridTables.value[currentPageKey.value];
 
 
 	let mainRowData = $derived.by(() => {

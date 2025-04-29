@@ -18,13 +18,13 @@ export const InputParamsProductStockInventory: InputParamsType = {
 
 	columnFilters : [{
 		id: 0,
-		columnName: null,
+		columnName: "productName",
 		type: "text",
 		filterModel: {
 			operator: null,
 			conditions: [
 				{
-					type: null,
+					type: "contains",
 					value: null,
 				},
 			]

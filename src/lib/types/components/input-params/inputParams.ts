@@ -25,7 +25,6 @@ export type InputParamsType = {
 	fulltext?: string|null;
 	inputs?: InputParamsInput[];
 	columnFilters?: ColumnFilter[];
-	columnList?: string[];
 }
 
 

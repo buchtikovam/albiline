@@ -5,7 +5,7 @@
 	import Columns3 from "lucide-svelte/icons/columns-3";
 	import Circle from "lucide-svelte/icons/circle";
 	import Dot from "lucide-svelte/icons/dot";
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import type {StoredFilters} from "$lib/types/components/table/filters";
 	import type {ColumnState, FilterModel} from "ag-grid-enterprise";
 	import type {Preset, StoredPresets} from "$lib/types/components/table/presets";
@@ -16,7 +16,7 @@
 
 
 	interface Props {
-		table: AgGridSSTableType;
+		table: AgGridTableType;
 		routeId: string;
 	}
 

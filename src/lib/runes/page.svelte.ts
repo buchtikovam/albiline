@@ -14,7 +14,7 @@ export const fulltextFilterValue: { value: string } = $state({ value: "" });
 
 export const activeTabIndex: { value: number } = $state({ value: 0 });
 
-export const authDetails: { sessionKey: string|null, userName: string|null } = $state({ sessionKey: null, userName: null });
+export const authDetails: { sessionKey: string|null, userName: string|null, email: string|null, icon: any } = $state({ sessionKey: null, userName: null, email: null, icon: null });
 
 export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 	value: []

@@ -12,7 +12,7 @@
 	import {debounceFn} from "$lib/utils/general/debounce.svelte";
 	import {getLocale} from "$lib/paraglide/runtime";
 	import {onMount} from 'svelte';
-	import type {ColumnOrder, AgGridSSTableType, TableRowRequest} from '$lib/types/components/table/table';
+	import type {ColumnOrder, AgGridTableType, TableRowRequest} from '$lib/types/components/table/table';
 	import type {ColDef} from 'ag-grid-community';
 	import {
 		createGrid, themeQuartz,
@@ -28,14 +28,12 @@
 
 	interface Props {
 		url: string;
-		requiredFields: string[];
 		gridOptionsCustom: GridOptions;
 		headerTranslations: Record<string, () => string>
 	}
 
 	let {
 		url,
-		requiredFields,
 		gridOptionsCustom,
 		headerTranslations
 	}: Props = $props();
@@ -43,7 +41,7 @@
 
 	// page settings
 	let pageKey: string = currentPageKey.value;
-	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let isEditing = false;
 
 
@@ -149,7 +147,7 @@
 			if (event.oldValue !== event.newValue) {
 				addToEditedTableData(
 					event,
-					requiredFields,
+					table.requiredFields,
 					table.editedTableData,
 				)
 			}
@@ -163,27 +161,7 @@
 				})
 			}
 
-			if (event.columns) {
-				event.columns.forEach((column: Column) => {
-					let match = false;
-
-					table.sortState.forEach((sort) => {
-						if (sort.colId === column.getId()) {
-							match = true;
-							sort.sort = column.getSort();
-						}
-					})
-
-					if (!match) {
-						table.sortState.push({
-							colId: column.getColId(),
-							sort: column.getSort(),
-						})
-					}
-				})
-
-				table.presetToSave = event.api.getColumnState() || [];
-			}
+			table.presetToSave = event.api.getColumnState() || [];
 		},
 
 		onColumnMoved(event: ColumnMovedEvent<any>) {
@@ -208,7 +186,7 @@
 		},
 
 		getRowId: (params: GetRowIdParams) => {
-			return String(params.data.rowNumber);
+			return String(params.data[table.identificationKey]);
 		},
 
 		onSelectionChanged: (event: SelectionChangedEvent) => {
@@ -230,7 +208,7 @@
 
 						selectedRows.forEach((row) => {
 							let rowObj: {[key: string]: any} = {}
-							requiredFields.forEach((field) => {
+							table.requiredFields.forEach((field) => {
 								rowObj[field] = row.data[field]
 							})
 
@@ -349,7 +327,7 @@
 		}
 
 		return (() => {
-			table.selectionState = gridApi.getServerSideSelectionState();
+			table.selectionState = gridApi.getServerSideSelectionState() || { toggledNodes: [], selectAll: false };
 			table.filtersToSave = gridApi.getFilterModel();
 			table.lastVisibleRowIndex = gridApi.getFirstDisplayedRowIndex();
 			table.presetToSave = gridApi.getColumnState() || [];
@@ -369,7 +347,7 @@
 
 						rows.forEach((row) => {
 							let rowObj: { [key: string]: any } = {}
-							requiredFields.forEach((field) => {
+							table.requiredFields.forEach((field) => {
 								rowObj[field] = row.data[field]
 							})
 
@@ -391,7 +369,7 @@
 	// used for waiting for API to cache data based on new input params
 	$effect(() => {
 		if (table.areInputParamsLoading) {
-			gridApi.setGridOption("loading", true)
+			gridApi.setGridOption("loading", true); // todo
 		} else {
 			gridApi.setGridOption("loading", false)
 		}
@@ -402,8 +380,20 @@
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0 ) {
 			gridApi.setGridOption('serverSideDatasource', datasource);
+			resetTable();
 		}
 	})
+
+
+	function resetTable() {
+		// reset filterModel
+		gridApi.setFilterModel(null)
+		gridApi.setServerSideSelectionState({ toggledNodes: [], selectAll: false })
+		gridApi.applyColumnState({
+			state: [],
+			applyOrder: true,
+		})
+	}
 
 
 	// reset table to default column definitions
@@ -456,7 +446,7 @@
 	$effect(() => {
 		if (gridContainer && gridApi) {
 			const handleClickOutside = (event: MouseEvent) => {
-				if (!gridContainer.contains(event.target as Node) && isEditing) {
+				if (!gridContainer?.contains(event.target as Node) && isEditing) {
 					gridApi.stopEditing(true);
 				}
 			};

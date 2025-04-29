@@ -75,7 +75,6 @@
 
 <AgGridSSWrapper
 	gridOptionsCustom={customerGridOptions}
-	requiredFields={["customerNodeCode", "customerAddressCode"]}
 	url="customers"
 	headerTranslations={customerHeaderTranslations}
 />

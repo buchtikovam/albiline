@@ -8,9 +8,7 @@
 
 
 <AgGridCSWrapper
-	requiredFields={["id"]}
 	pageKey="SalesAnalytics"
-	rowNumberIdentificationKey="id"
 	gridOptionsCustom={salesAnalyticsAgGridDef}
 	headerTranslations={salesAnalyticsHeaderTranslations}
 />

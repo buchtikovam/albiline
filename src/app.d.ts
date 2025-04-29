@@ -7,10 +7,10 @@ import type { ParaglideLocals } from '@inlang/paraglide-sveltekit';
 
 
 type User = {
-	id: number
-	email: string
-	role: string,
-	userCode: string
+	email: string,
+	userName: string,
+	userCode: string,
+	icon: any,
 }
 
 

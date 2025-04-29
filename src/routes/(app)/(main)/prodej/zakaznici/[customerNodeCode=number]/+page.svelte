@@ -19,7 +19,7 @@
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
 	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznici/customers';
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";
@@ -51,7 +51,7 @@
 	// --- initialize variables and state
 	// page
 	let pageKey: string = $derived(currentPageKey.value);
-	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);
 	let activeIndex = $state(0);

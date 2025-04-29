@@ -5,7 +5,7 @@
 	import {Input} from '$lib/components/ui/input';
 	import {localizeHref} from "$lib/paraglide/runtime";
 	import {goto} from '$app/navigation';
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
@@ -24,7 +24,7 @@
 	currentPageKey.value = "CustomersGetList";
 
 	let activeTab = $derived(activeTabIndex.value.toString());
-	let table: AgGridSSTableType = $state(agGridTables.value["CustomersGetList"]);
+	let table: AgGridTableType = $state(agGridTables.value["CustomersGetList"]);
 	let customerAddressCode = $state(0);
 	let customerNodeCode = $state(0);
 

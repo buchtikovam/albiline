@@ -16,17 +16,22 @@
 	import CountryFlag from "$lib/components/icons/CountryFlag.svelte";
 	import * as Select from "$lib/components/ui/select/index.js";
 	import { page } from "$app/state";
+	import {authDetails} from "$lib/runes/page.svelte";
 
-	let { user }: { user: { name: string; email: string; avatar: string } } = {
-		user: {
-			name: "Jan Novák",
-			email: "jan.novak@albi.cz",
-			avatar: "JN",
-		},
-	}
+	let user = $derived(authDetails)
 
 	const sidebar = useSidebar();
 	let language = $state(getLocale());
+
+	let initialsFallback = $derived.by(() => {
+		if (user.userName) {
+			let words = user.userName.split(" ").map(word => word[0]);
+
+			return words.join("")
+		}
+	})
+
+	$inspect(initialsFallback)
 </script>
 
 
@@ -43,19 +48,19 @@
 						{...props}
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-<!--							<Avatar.Image-->
-<!--								src={user.avatar}-->
-<!--								alt={user.name}-->
-<!--							/>-->
+							<Avatar.Image
+								src={user.icon}
+								alt={user.icon}
+							/>
 
 							<Avatar.Fallback class="rounded-lg">
-								{user.avatar}
+								{initialsFallback}
 							</Avatar.Fallback>
 						</Avatar.Root>
 
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">
-								{user.name}
+								{user.userName}
 							</span>
 
 							<span class="truncate text-xs">
@@ -78,14 +83,6 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="h-8 w-8 rounded-lg flex items-center justify-center">
-<!--							<Avatar.Image-->
-<!--								src={user.avatar}-->
-<!--								alt={user.name}-->
-<!--							/>-->
-
-<!--							<Avatar.Fallback class="rounded-lg ">-->
-<!--								{user.avatar}-->
-<!--							</Avatar.Fallback>-->
 							<Select.Root
 								type="single"
 								bind:value={language}
@@ -120,7 +117,7 @@
 
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">
-								{user.name}
+								{user.userName}
 							</span>
 
 							<span class="truncate text-xs">

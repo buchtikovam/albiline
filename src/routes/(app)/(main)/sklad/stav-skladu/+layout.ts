@@ -8,8 +8,10 @@ export const load: LayoutLoad = async () => {
 	if (!agGridTables.value[currentPageKey.value]) {
 		agGridTables.value[currentPageKey.value] = {
 			type: "clientSide",
+			requiredFields: ["productId"],
+			identificationKey: "productId",
 			defaultColState: [],
-			setColDefToDefault: false,
+			setColStateToDefault: false,
 			createdTableData: [],
 			editedTableData: [],
 			deletedTableData: [],

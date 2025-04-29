@@ -18,6 +18,8 @@
 
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;
+	authDetails.email = data.auth.email;
+	authDetails.icon = data.auth.icon;
 </script>
 
 

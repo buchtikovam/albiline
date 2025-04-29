@@ -4,11 +4,11 @@
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 	import {addToEditedTableData} from "$lib/utils/addToEditedTableData";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import type {AgGridSSTableType} from "$lib/types/components/table/table";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import {
 		type CellFocusedEvent,
 		type CellValueChangedEvent,
-		createGrid,
+		createGrid, type GetRowIdParams,
 		type GridApi,
 		type GridOptions, themeQuartz
 	} from 'ag-grid-enterprise';
@@ -18,7 +18,6 @@
 		returnWholeRowOnEdit?: boolean;
 		editedRowData?:	any[];
 		createdRowData?: any[];
-		requiredFields?: string[];
 		totalRow?: boolean;
 		hiddenHeader?: boolean;
 		fullHeight?: boolean;
@@ -31,7 +30,6 @@
 		returnWholeRowOnEdit,
 		editedRowData = $bindable(),
 		createdRowData = $bindable(),
-		requiredFields,
 		totalRow,
 		fullHeight,
 		hiddenHeader,
@@ -41,18 +39,14 @@
 
 
 	let pageKey: string = currentPageKey.value;
-	let table: AgGridSSTableType = $state(agGridTables.value[pageKey]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
-	let themeParams = $derived(themeAlbiBlueParams);
 	let isEditing = false;
 
 
-	if (hiddenHeader) themeParams.headerHeight = 0;
-
-
 	const gridOptions: GridOptions = {
-		theme: themeQuartz.withParams(themeParams),
+		theme: themeQuartz.withParams(themeAlbiBlueParams),
 		localeText: getAgGridLocale(),
 		groupTotalRow: totalRow === true ? "bottom" : undefined,
 		grandTotalRow: totalRow === true ? "bottom" : undefined,
@@ -113,42 +107,40 @@
 
 		// checks created x edited by unique field, that only existing records have
 		onCellValueChanged(event: CellValueChangedEvent<any>) {
-			if (requiredFields) {
-				let isInitialColumn = requiredFields.every((field) => {
-					return event.data[field] !== null;
-				})
+			let isInitialColumn = table.requiredFields.every((field) => {
+				return event.data[field] !== null;
+			})
 
-				if (event.oldValue !== event.newValue) {
-					if (returnWholeRowOnEdit && editedRowData) {
-						let match = false;
+			if (event.oldValue !== event.newValue) {
+				if (returnWholeRowOnEdit && editedRowData) {
+					let match = false;
 
-						editedRowData.forEach((row) => {
-							requiredFields.forEach((field) => {
-								if (row[field] === event.data[field]) {
-									match = true;
-								}
-							})
+					editedRowData.forEach((row) => {
+						table.requiredFields.forEach((field) => {
+							if (row[field] === event.data[field]) {
+								match = true;
+							}
 						})
+					})
 
-						if (!match) {
-							editedRowData.push(event.data)
-						}
+					if (!match) {
+						editedRowData.push(event.data)
 					}
+				}
 
-					if (editedRowData && createdRowData) {
-						if (isInitialColumn) {
-							addToEditedTableData(
-								event,
-								requiredFields,
-								editedRowData,
-							)
-						} else {
-							addToEditedTableData(
-								event,
-								["createdRowId"],
-								createdRowData,
-							)
-						}
+				if (editedRowData && createdRowData) {
+					if (isInitialColumn) {
+						addToEditedTableData(
+							event,
+							table.requiredFields,
+							editedRowData,
+						)
+					} else {
+						addToEditedTableData(
+							event,
+							["createdRowId"],
+							createdRowData,
+						)
 					}
 				}
 			}

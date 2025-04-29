@@ -2,47 +2,38 @@
 // server side tables.
 import { apiServicePostHandled } from '$lib/api/apiService.svelte';
 import type { InputParamsType } from '$lib/types/components/input-params/inputParams';
-import type { AgGridCSTableType, AgGridSSTableType } from '$lib/types/components/table/table';
+import type {AgGridTableType} from '$lib/types/components/table/table';
 import { getColumnFilters } from './getColumnFilters';
 import deepcopy from "deepcopy";
 
 
 export async function loadInputParamsInTable(
-	table: AgGridCSTableType|AgGridSSTableType,
+	table: AgGridTableType,
 	inputParams: InputParamsType,
 	type: "clientSide"|"serverSide"
 ) {
-	let columnList: string[] = [];
+	const columnList: string[] = deepcopy(table.requiredFields);
 
-	// TODO: issue here - not providing required fields -> extend table type
-	// if (Object.keys(table.presetToSave).length > 0) {
-	// 	table.presetToSave.forEach(preset => {
-	// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
-	// 			columnList.push(preset.colId)
-	// 		}
-	// 	})
-	// } else {
-	// 	table.defaultColState.forEach(preset => {
-	// 		if (!preset.hide && !preset.colId.includes("ag-Grid")) {
-	// 			columnList.push(preset.colId)
-	// 		}
-	// 	})
-	// }
-
-
+	if (Object.keys(table.presetToSave).length > 0) {
+		table.presetToSave.forEach(preset => {
+			if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+				columnList.push(preset.colId)
+			}
+		})
+	} else {
+		table.defaultColState.forEach(preset => {
+			if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+				columnList.push(preset.colId)
+			}
+		})
+	}
 
 	table.areInputParamsLoading = true;
 	table.hasInputParams = true;
-	table.selectedRows = [];
-	table.selectionState = null;
-	table.lastVisibleRowIndex = 0;
-	table.sortState = [];
-	table.filtersToSave = {};
 	table.loadedInputParams = {
 		fulltext: inputParams.fulltext,
 		inputs: inputParams.inputs,
 		columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
-		// columnList: columnList,
 	}
 
 	if (type === "clientSide") {
@@ -51,6 +42,8 @@ export async function loadInputParamsInTable(
 
 
 	if (type === "serverSide") {
+		console.log(columnList)
+
 		const response = await apiServicePostHandled(
 			"cachedPageData",
 			{
