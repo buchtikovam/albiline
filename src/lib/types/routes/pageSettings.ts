@@ -5,8 +5,10 @@ export interface PageMetaDataType {
 	},
 	keys: string[],
 	layout: any,
-	inputs: {
-		fulltextEnabled: boolean,
-		columnFiltersEnabled: boolean,
-	}
+	inputs: PageMetaDataInputs,
+}
+
+export interface PageMetaDataInputs {
+	fulltextEnabled: boolean,
+	columnFiltersEnabled: boolean,
 }

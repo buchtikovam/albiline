@@ -1,39 +1,28 @@
-// api will keep track of input params, creating a smaller data set for
-// server side tables.
-import { apiServicePostHandled } from '$lib/api/apiService.svelte';
-import type { InputParamsType } from '$lib/types/components/input-params/inputParams';
-import type {AgGridTableType} from '$lib/types/components/table/table';
-import { getColumnFilters } from './getColumnFilters';
+import {apiServicePostHandled} from '$lib/api/apiService.svelte';
+import {getColumnFilters} from './getColumnFilters';
 import deepcopy from "deepcopy";
+import type {PageMetaDataInputs} from "$lib/types/routes/pageSettings";
+import type {InputParamsType} from '$lib/types/components/input-params/inputParams';
+import type {AgGridTableType} from '$lib/types/components/table/table';
+
 
 
 export async function loadInputParamsInTable(
 	table: AgGridTableType,
 	inputParams: InputParamsType,
-	type: "clientSide"|"serverSide"
+	type: "clientSide"|"serverSide",
+	restrictions: PageMetaDataInputs
 ) {
-	const columnList: string[] = deepcopy(table.requiredFields);
-
-	if (Object.keys(table.presetToSave).length > 0) {
-		table.presetToSave.forEach(preset => {
-			if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
-				columnList.push(preset.colId)
-			}
-		})
-	} else {
-		table.defaultColState.forEach(preset => {
-			if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
-				columnList.push(preset.colId)
-			}
-		})
-	}
-
 	table.areInputParamsLoading = true;
 	table.hasInputParams = true;
 	table.loadedInputParams = {
-		fulltext: inputParams.fulltext,
+		fulltext: restrictions.fulltextEnabled
+			? inputParams.fulltext
+			: "",
 		inputs: inputParams.inputs,
-		columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
+		columnFilters: restrictions.columnFiltersEnabled
+			? getColumnFilters(deepcopy(inputParams.columnFilters))
+			: [],
 	}
 
 	if (type === "clientSide") {
@@ -42,14 +31,34 @@ export async function loadInputParamsInTable(
 
 
 	if (type === "serverSide") {
-		console.log(columnList)
+		const columnList: string[] = deepcopy(table.requiredFields);
 
+		// get column list for server side table
+		if (Object.keys(table.presetToSave).length > 0) {
+			table.presetToSave.forEach(preset => {
+				if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+					columnList.push(preset.colId)
+				}
+			})
+		} else {
+			table.defaultColState.forEach(preset => {
+				if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+					columnList.push(preset.colId)
+				}
+			})
+		}
+
+		// cache table on the api
 		const response = await apiServicePostHandled(
 			"cachedPageData",
 			{
-				fulltext: inputParams.fulltext,
+				fulltext: restrictions.fulltextEnabled
+					? inputParams.fulltext
+					: "",
 				inputs: inputParams.inputs,
-				columnFilters: getColumnFilters(deepcopy(inputParams.columnFilters)),
+				columnFilters: restrictions.columnFiltersEnabled
+					? getColumnFilters(deepcopy(inputParams.columnFilters))
+					: [],
 				columnList: columnList,
 			}
 		)

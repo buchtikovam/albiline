@@ -28,20 +28,26 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import Trash2 from "lucide-svelte/icons/trash-2";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+	import type {PageMetaDataInputs} from "$lib/types/routes/pageSettings";
 
 
 	interface Props {
 		open: boolean,
 		type: 'serverSide'|'clientSide',
 		defaultInputParams: InputParamsType,
-		selectOptions: InputParamsOptions[]
+		selectOptions: InputParamsOptions[],
+		restrictions: PageMetaDataInputs,
 	}
 
 	let {
 		open = $bindable(),
 		type,
 		defaultInputParams,
-		selectOptions
+		selectOptions,
+		restrictions = {
+			fulltextEnabled: true,
+			columnFiltersEnabled: true
+		},
 	}: Props = $props();
 
 
@@ -251,7 +257,7 @@
 {#snippet content()}
 	<div class="overflow-auto pb-2">
 		<div class="mb-10">
-			{#if inputParams.fulltext !== undefined}
+			{#if inputParams.fulltext !== undefined && restrictions.fulltextEnabled}
 				<InputParamsFulltext
 					fulltext={inputParams.fulltext}
 					handleFulltextChange={handleFulltextUpdate}
@@ -269,7 +275,7 @@
 			{/if}
 
 
-			{#if inputParams.columnFilters !== undefined}
+			{#if inputParams.columnFilters !== undefined && restrictions.columnFiltersEnabled}
 				<InputParamsColumnFilter
 					columnFilters={inputParams.columnFilters}
 					addFilter={() => addColumnFilter()}
@@ -359,7 +365,13 @@
 				<Button
 					type="button"
 					onclick={() => {
-						loadInputParamsInTable(table, inputParams, type);
+						loadInputParamsInTable(
+							table,
+							inputParams,
+							type,
+							restrictions
+						);
+
 						open = false;
 					}}
 				>

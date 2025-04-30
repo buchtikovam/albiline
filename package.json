@@ -79,6 +79,7 @@
 		"lodash-es": "^4.17.21",
 		"pwa-asset-generator": "^6.4.0",
 		"qrcode": "^1.5.4",
+		"sha256": "^0.2.0",
 		"svelte-fa": "^4.0.3",
 		"svelte-portal": "^2.2.1",
 		"tailwind-merge": "^2.3.0",

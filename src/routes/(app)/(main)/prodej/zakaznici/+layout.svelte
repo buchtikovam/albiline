@@ -13,6 +13,9 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import {Button} from "$lib/components/ui/button";
+	import {page} from "$app/state";
+	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -72,7 +75,7 @@
 					disabled={activeTab !== "1" && (disableNavigation.value || disablePageTabs.value)}
 					value={"1"}
 					onclick={() => {
-						goto(localizeHref(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`))
+						goto(localizeHref(`/prodej/zakaznici/${customerNodeCode}/prodejny/${customerAddressCode}`));
 					}}
 				>
 					{m.routes_prodej_zakaznici_tabs_address_detail()}
@@ -84,7 +87,7 @@
 					disabled={activeTab !== "2" && (disableNavigation.value || disablePageTabs.value)}
 					value={"2"}
 					onclick={() => {
-						goto(localizeHref(`/prodej/zakaznici/${customerNodeCode}`))
+						goto(localizeHref(`/prodej/zakaznici/${customerNodeCode}`));
 					}}
 				>
 					{m.routes_prodej_zakaznici_tabs_customer_detail()}
@@ -92,8 +95,27 @@
 			</Tabs.List>
 		</Tabs.Root>
 
+		<!--todo: add real restrictions, hide button -->
+		<div class="flex items-center">
+			{#if table.showRefreshDataButton}
+				<Button
+					variant="outline"
+					class="h-8 text-xs mr-2"
+					onclick={() => {
+						loadInputParamsInTable(
+							table,
+							table.loadedInputParams,
+							"serverSide",
+							{columnFiltersEnabled: true, fulltextEnabled: true}
+						);
 
-		<div class="flex gap-2 items-center">
+						table.showRefreshDataButton = false;
+					}}
+				>
+					Přenačíst data
+				</Button>
+			{/if}
+
 			<FilterAndPresetButtons
 				bind:table={table}
 				routeId="/(app)/(main)/prodej/zakaznici"

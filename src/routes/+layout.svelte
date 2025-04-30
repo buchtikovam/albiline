@@ -1,7 +1,8 @@
 <script lang="ts">
+	import {isMobile, pageCompact} from "$lib/runes/page.svelte";
+	import {tableViewSettings} from "$lib/runes/table.svelte";
 	import {pwaAssetsHead} from 'virtual:pwa-assets/head';
 	import {locales, localizeHref} from '$lib/paraglide/runtime';
-	import {isMobile} from "$lib/runes/page.svelte";
 	import {pwaInfo} from 'virtual:pwa-info';
 	import {page} from '$app/state';
 	import {Toaster} from "svelte-sonner";
@@ -13,7 +14,7 @@
 
 	let innerWidth: number = $state(0);
 	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
-
+	pageCompact.value = tableViewSettings.value.spacing < 3;
 
 	$effect(() => {
 		isMobile.value = innerWidth < 640;

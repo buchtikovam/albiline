@@ -69,6 +69,8 @@ export interface AgGridTableType {
 	hasInputParams: boolean;
 	// used to fetch data limited by user input params
 	loadedInputParams: InputParamsType;
+	// refresh button for reloading data when unloaded column visible
+	showRefreshDataButton: boolean;
 }
 
 

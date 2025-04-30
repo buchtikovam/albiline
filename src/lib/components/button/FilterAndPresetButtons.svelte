@@ -38,11 +38,11 @@
 
 
 
-<div class={`hidden gap-2 ${hideButtons ? "sm:hidden" : "sm:flex"}`}>
+<div class={`hidden  ${hideButtons ? "sm:hidden " : "sm:flex"}`}>
 	{#if selectedTableFilter}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
-				class="size-8 text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md border border-slate-300"
+				class="size-8 mr-2 text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md border border-slate-300"
 			>
 				<Filter
 					strokeWidth={2}
@@ -115,7 +115,7 @@
 	{#if selectedTablePreset}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
-				class="size-8 text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md border border-slate-300"
+				class="size-8 mr-2 text-albi-950 hover:text-albi-950 bg-white hover:bg-white flex items-center justify-center rounded-md border border-slate-300"
 			>
 				<Columns3
 					strokeWidth={2}

@@ -11,7 +11,14 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
 	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
+	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 
+
+	interface Props {
+		data: { pageMetaData: PageMetaDataType }
+	}
+
+	let { data }: Props = $props();
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
@@ -69,6 +76,7 @@
 		type="serverSide"
 		defaultInputParams={InputParamsZakaznici}
 		selectOptions={InputParamsZakazniciSelectOptions}
+		restrictions={data.pageMetaData.inputs}
 	/>
 {/if}
 

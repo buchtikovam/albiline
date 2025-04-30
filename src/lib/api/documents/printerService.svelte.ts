@@ -21,8 +21,15 @@ export async function initializePrinterService() {
 
 export async function getAvailablePrinters() {
 	try {
-		console.log("trying to get available printers");
-		await JSPM.JSPrintManager.getPrinters()
+		let printers: string[] = await JSPM.JSPrintManager.getPrinters();
+
+		for (const printer of printers) {
+			let info = await JSPM.JSPrintManager.getPrintersInfo(1, printer, 0);
+
+			console.log(info);
+		}
+
+		return printers;
 
 	} catch (error) {
 		console.error('Error fetching printers:', error);

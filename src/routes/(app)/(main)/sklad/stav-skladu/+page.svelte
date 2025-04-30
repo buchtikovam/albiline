@@ -14,7 +14,13 @@
 	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {onMount} from "svelte";
+	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 
+	interface Props {
+		data: { pageMetaData: PageMetaDataType }
+	}
+
+	let { data }: Props = $props();
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
@@ -55,6 +61,7 @@
 		type="clientSide"
 		defaultInputParams={InputParamsProductStockInventory}
 		selectOptions={InputParamsProductStockInventorySelectOptions}
+		restrictions={data.pageMetaData.inputs}
 	/>
 {/if}
 

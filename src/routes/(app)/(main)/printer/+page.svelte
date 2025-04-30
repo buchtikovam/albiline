@@ -1,15 +1,14 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
-	import {getAvailablePrinters, initializePrinterService} from "$lib/api/documents/printerService.svelte.js";
+	import {getAvailablePrinters, initializePrinterService} from "$lib/api/documents/printerService.svelte";
 
-	let printers = [];
-	let isInitialized = false;
+	let printers: string[] = $state([]);
+	let isInitialized = $state(false);
 
 	onMount(async () => {
 		isInitialized = await initializePrinterService();
 		if (isInitialized) {
 			printers = await getAvailablePrinters();
-			console.log('Available printers:', printers);
 		}
 	});
 </script>
@@ -18,10 +17,13 @@
 	{#if !isInitialized}
 		<p>Initializing print service...</p>
 	{:else}
-		<h1>Available Printers</h1>
+		<h1>Available Printers:</h1>
+
+		<br/>
+
 		<ul>
 			{#each printers as printer}
-				<li>{printer.name} ({printer.status})</li>
+				<li class="text-sm">{printer}</li>
 			{/each}
 		</ul>
 	{/if}

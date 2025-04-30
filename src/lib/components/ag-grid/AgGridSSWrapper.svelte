@@ -170,6 +170,53 @@
 
 		onColumnVisible(event: ColumnVisibleEvent<any>) {
 			table.presetToSave = event.api.getColumnState() || [];
+
+			if (event.visible) {
+				const colId = event.column.getColId();
+				let nodeIndex = 0;
+
+				for (const node of gridApi.getRenderedNodes()) {
+					if (nodeIndex < 100) {
+						const columnData = node.data[colId];
+						if (columnData !== null && columnData !== undefined) {
+							break;
+						}
+						nodeIndex++;
+					} else {
+						table.showRefreshDataButton = true;
+						break;
+					}
+				}
+			} else {
+				let hasEmptyColumn = false;
+
+				let columns: string[] = gridApi.getColumnState()
+					.map((colState) => {
+						if (!colState.hide && !colState.colId.includes("ag-Grid")) {
+							return colState.colId;
+						}
+					})
+					.filter(colId => colId !== undefined);
+
+				columns.forEach((column) => {
+					let nodeIndex = 0;
+
+					for (const node of gridApi.getRenderedNodes()) {
+						if (nodeIndex < 100) {
+							const columnData = node.data[column];
+							if (columnData !== null && columnData !== undefined) {
+								break;
+							}
+							nodeIndex++;
+						} else {
+							hasEmptyColumn = true
+							break;
+						}
+					}
+				})
+
+				table.showRefreshDataButton = hasEmptyColumn;
+			}
 		},
 
 		onColumnPinned(event: ColumnPinnedEvent<any>) {
@@ -190,7 +237,7 @@
 		},
 
 		onSelectionChanged: (event: SelectionChangedEvent) => {
-			table.selectionState = event.api.getServerSideSelectionState();
+			table.selectionState = event.api.getServerSideSelectionState() || {};
 			table.activeSelectedRowIndex = 0
 
 			if (table.selectionState) {
