@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {currentPageKey, agGridTables, tableViewSettings} from '$lib/runes/table.svelte';
-	import {authDetails} from '$lib/runes/page.svelte';
+	import {authDetails, responseDialogMessages} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
@@ -25,6 +25,9 @@
 		type SelectionChangedEvent, type SortChangedEvent
 	} from 'ag-grid-enterprise';
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
+	import {
+		ServerSideTotalRowsStatusBarComponent
+	} from "$lib/utils/components/ag-grid/status-bar/serverSideTotalRowsStatusBarComponent.svelte";
 
 	interface Props {
 		url: string;
@@ -52,7 +55,6 @@
 	let rowBufferSize = 100;
 	let isInitial = $state(true);
 	let themeParams = $state(themeAlbiBlueParams);
-
 
 	// grid configuration
 	const gridOptions: GridOptions = {
@@ -102,6 +104,19 @@
 			autoHeaderHeight: true,
 			wrapHeaderText: true,
 			suppressHeaderMenuButton: true,
+		},
+
+		statusBar: {
+			statusPanels: [
+				{
+					statusPanel: ServerSideTotalRowsStatusBarComponent,
+					align: 'left',
+				},
+				{
+					statusPanel: 'agSelectedRowCountComponent',
+					align: 'left',
+				},
+			]
 		},
 
 		onCellEditingStarted: () => {
@@ -170,53 +185,76 @@
 		},
 
 		onColumnVisible(event: ColumnVisibleEvent<any>) {
-			table.presetToSave = event.api.getColumnState() || [];
+			table.showRefreshDataButton = false;
 
-			if (event.visible) {
-				const colId = event.column.getColId();
-				let nodeIndex = 0;
+			if (!isInitial) {
+				// Save column state
+				table.presetToSave = event.api.getColumnState() || [];
 
-				for (const node of gridApi.getRenderedNodes()) {
-					if (nodeIndex < 100) {
-						const columnData = node.data[colId];
-						if (columnData !== null && columnData !== undefined) {
-							break;
+				// Get all visible columns (excluding ag-Grid internal columns)
+				const visibleColumnsFields = event.api.getColumnState()
+					.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
+					.map(colState => colState.colId);
+
+
+				// Exit early if no visible columns
+				if (visibleColumnsFields.length === 0) {
+					table.showRefreshDataButton = false;
+					return;
+				}
+
+				// Determine maximum rows to check (capped at 1000)
+				const iterationMax = Math.min(table.latestRowCount ?? 1000, 1000);
+				const columnsWithData = new Set<string>();
+				const pendingColumns = new Set(visibleColumnsFields);
+				let processedNodes = 0;
+
+				// Check each node up to iterationMax or until all columns have data
+				event.api.forEachNode((node) => {
+					if (processedNodes >= iterationMax || pendingColumns.size === 0) return;
+
+					// Check remaining pending columns against this node's data
+					Array.from(pendingColumns).forEach(colId => {
+						if (node.data?.[colId] != null) { // Using optional chaining
+							columnsWithData.add(colId);
+							pendingColumns.delete(colId);
 						}
-						nodeIndex++;
-					} else {
-						table.showRefreshDataButton = true;
-						break;
-					}
+					});
+
+					processedNodes++;
+				});
+
+
+				// Get column definitions for header names
+				const columnDefs = event.api.getColumnDefs() || [];
+
+				// Convert empty column IDs to header names
+				const emptyColumns = visibleColumnsFields
+					.filter(colId => !columnsWithData.has(colId))
+					.map(colId => {
+						const colDef = columnDefs.find(def => def?.colId === colId);
+						// Use headerName if exists, fallback to colId
+						return colDef?.headerName || colId;
+					});
+
+
+
+				// Update UI and log results
+				if (emptyColumns.length > 0) {
+					// responseDialogMessages.value = [{
+					// 	type: "InfoToast",
+					// 	title: "Informace",
+					// 	content: "Sloupce <b>(" + emptyColumns.join(", ") + ")</b> nemají načtená data. Doporučujeme je přenačíst."
+					// }]
+
+					// console.log('Columns without data:', emptyColumns);
+					table.showRefreshDataButton = true;
+				} else {
+					// console.log('Columns without data:', emptyColumns);
+					table.showRefreshDataButton = false;
 				}
 			} else {
-				let hasEmptyColumn = false;
-
-				let columns: string[] = gridApi.getColumnState()
-					.map((colState) => {
-						if (!colState.hide && !colState.colId.includes("ag-Grid")) {
-							return colState.colId;
-						}
-					})
-					.filter(colId => colId !== undefined);
-
-				columns.forEach((column) => {
-					let nodeIndex = 0;
-
-					for (const node of gridApi.getRenderedNodes()) {
-						if (nodeIndex < 100) {
-							const columnData = node.data[column];
-							if (columnData !== null && columnData !== undefined) {
-								break;
-							}
-							nodeIndex++;
-						} else {
-							hasEmptyColumn = true
-							break;
-						}
-					}
-				})
-
-				table.showRefreshDataButton = hasEmptyColumn;
+				table.showRefreshDataButton = false;
 			}
 		},
 
@@ -238,34 +276,28 @@
 		},
 
 		onSelectionChanged: (event: SelectionChangedEvent) => {
-			table.selectionState = event.api.getServerSideSelectionState() || {};
 			table.activeSelectedRowIndex = 0
 
-			if (table.selectionState) {
-				if (table.selectionState.toggledNodes) {
-					disablePageTabs.value = table.selectionState.toggledNodes.length < 1;
+			if (table.selectionState?.toggledNodes) {
+				disablePageTabs.value = table.selectionState.toggledNodes.length < 1;
 
-					const selectedRows: any[] = [];
+				const rowArr: Record<string, unknown>[] = [];
 
-					table.selectionState.toggledNodes.forEach((rowNumber) => {
-						selectedRows.push(event.api.getDisplayedRowAtIndex(Number(rowNumber) - 1));
-					})
+				table.selectionState.toggledNodes.forEach((rowNumber) => {
+					const row = event.api.getDisplayedRowAtIndex(Number(rowNumber) - 1);
 
-					if (selectedRows.length > 0) {
-						const rowArr: Record<string, number>[] = [];
-
-						selectedRows.forEach((row) => {
-							let rowObj: {[key: string]: any} = {}
-							table.requiredFields.forEach((field) => {
-								rowObj[field] = row.data[field]
-							})
-
-							rowArr.push(rowObj);
+					// Add null checks for row and row.data
+					if (row?.data) {
+						const rowObj: Record<string, unknown> = {};
+						table.requiredFields?.forEach((field) => {
+							// Safe property access with optional chaining
+							rowObj[field] = row.data?.[field] ?? null;
 						});
-
-						table.selectedRows = rowArr;
+						rowArr.push(rowObj);
 					}
-				}
+				});
+
+				table.selectedRows = rowArr;
 			}
 		},
 	}
@@ -324,6 +356,9 @@
 										);
 									}
 								}
+							} else {
+								gridApi.ensureIndexVisible(0, "top");
+
 							}
 						}
 
@@ -375,37 +410,38 @@
 		}
 
 		return (() => {
-			table.selectionState = gridApi.getServerSideSelectionState() || { toggledNodes: [], selectAll: false };
+			if (gridApi) {
+				table.selectionState = gridApi.getServerSideSelectionState() || {
+					toggledNodes: [],
+					selectAll: false
+				};
+			}
+
+			// Update selectedRows persistence with null checks
+			if (table.selectionState?.toggledNodes) {
+				const rows: Record<string, unknown>[] = [];
+
+				table.selectionState.toggledNodes.forEach((rowNumber) => {
+					const row = gridApi.getDisplayedRowAtIndex(Number(rowNumber) - 1);
+
+					if (row?.data) {
+						const rowObj: Record<string, unknown> = {};
+						table.requiredFields?.forEach((field) => {
+							rowObj[field] = row.data?.[field] ?? null;
+						});
+						rows.push(rowObj);
+					}
+				});
+
+				table.selectedRows = rows;
+			}
+
 			table.filtersToSave = gridApi.getFilterModel();
 			table.lastVisibleRowIndex = gridApi.getFirstDisplayedRowIndex();
 			table.presetToSave = gridApi.getColumnState() || [];
 			table.activeSelectedRowIndex = 0;
 			disableNavigation.value = false;
 
-			if (table.selectionState) {
-				if (table.selectionState.toggledNodes) {
-					const rows: any[] = [];
-
-					table.selectionState.toggledNodes.forEach((rowNumber) => {
-						rows.push(gridApi.getDisplayedRowAtIndex(Number(rowNumber) - 1));
-					})
-
-					if (rows.length > 0) {
-						const rowArr: Record<string, number>[] = [];
-
-						rows.forEach((row) => {
-							let rowObj: { [key: string]: any } = {}
-							table.requiredFields.forEach((field) => {
-								rowObj[field] = row.data[field]
-							})
-
-							rowArr.push(rowObj);
-						});
-
-						table.selectedRows = rowArr;
-					}
-				}
-			}
 
 			setTimeout(() => {
 				gridApi.destroy();
@@ -427,7 +463,7 @@
 	// register datasource if user has added input params
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0 ) {
-			gridApi.setGridOption('serverSideDatasource', datasource);
+			gridApi.ensureIndexVisible(0, "top");
 			resetTable();
 		}
 	})
@@ -435,7 +471,8 @@
 
 	function resetTable() {
 		// reset filterModel
-		gridApi.setFilterModel(null)
+		gridApi.setFilterModel(null);
+		gridApi.setGridOption('serverSideDatasource', datasource);
 		gridApi.setServerSideSelectionState({ toggledNodes: [], selectAll: false })
 		gridApi.applyColumnState({
 			state: [],

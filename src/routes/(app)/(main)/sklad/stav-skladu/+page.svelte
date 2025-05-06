@@ -29,7 +29,10 @@
 	let table: AgGridTableType = $state(agGridTables.value["ProductStockInventory"]);
 
 	let isInitial = $derived(!table.hasInputParams);
-	let open = $derived(table.areInputParamsLoading);
+
+	let open = $derived.by(() => {
+		if (!table.hasInputParams) return true;
+	});
 
 
 	onMount(() => {

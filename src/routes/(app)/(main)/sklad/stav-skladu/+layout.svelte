@@ -12,6 +12,8 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
+	import {Button} from "$lib/components/ui/button";
 
 
 	interface Props {
@@ -50,7 +52,26 @@
 		</Tabs.Root>
 
 
-		<div class="flex gap-2 items-center">
+		<div class="flex items-center">
+			{#if table.showRefreshDataButton}
+				<Button
+					variant="outline"
+					class="h-8 text-xs mr-2"
+					onclick={() => {
+					loadInputParamsInTable(
+						table,
+						table.loadedInputParams,
+						"clientSide",
+						{columnFiltersEnabled: true, fulltextEnabled: true}
+					);
+
+					table.showRefreshDataButton = false;
+				}}
+				>
+					Přenačíst data
+				</Button>
+			{/if}
+
 			<FilterAndPresetButtons
 				bind:table={table}
 				routeId="/(app)/(main)/sklad/stav-skladu"

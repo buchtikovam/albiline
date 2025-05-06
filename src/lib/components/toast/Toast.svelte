@@ -34,8 +34,8 @@
 			<Info class="size-5" />
 		</div>
 
-		<div class="ms-3 text-sm font-semibold">
-			{content}
+		<div class="ms-3 text-sm font-medium">
+			{@html content}
 		</div>
 	</div>
 {:else if type === 'WarningToast'}
@@ -48,8 +48,8 @@
 			<CircleAlert class="size-5 md:size-6" />
 		</div>
 
-		<div class="ml-3 text-sm md:text-sm font-semibold">
-			{content}
+		<div class="ml-3 text-sm md:text-sm font-medium">
+			{@html content}
 		</div>
 	</div>
 {:else if type === 'SuccessToast'}
@@ -62,8 +62,8 @@
 			<CircleCheck class="size-5 md:size-6" />
 		</div>
 
-		<div class="ms-3 text-sm font-semibold">
-			{content}
+		<div class="ms-3 text-sm font-medium">
+			{@html content}
 		</div>
 	</div>
 {:else}
@@ -76,8 +76,8 @@
 			<CircleX class="size-5 md:size-6" />
 		</div>
 
-		<div class="ms-3 text-sm font-semibold">
-			{content}
+		<div class="ms-3 text-sm font-medium">
+			{@html content}
 		</div>
 	</div>
 {/if}

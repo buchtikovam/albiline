@@ -48,7 +48,8 @@
 
 <Toaster
 	position={isMobile.value ? "top-center" : "bottom-right"}
-	class="h-dvh overflow-visible flex justify-center md:justify-end"
+	closeButton={true}
+	class=" overflow-visible flex justify-center md:justify-end"
 />
 
 

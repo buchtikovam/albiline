@@ -13,8 +13,12 @@ export async function loadInputParamsInTable(
 	type: "clientSide"|"serverSide",
 	restrictions: PageMetaDataInputs
 ) {
+	table.latestRowCount = 0;
+	table.lastVisibleRowIndex = 0;
 	table.areInputParamsLoading = true;
 	table.hasInputParams = true;
+	table.selectionState = { selectAll: false, toggledNodes: [] };
+	table.selectedRows = [];
 	table.loadedInputParams = {
 		fulltext: restrictions.fulltextEnabled
 			? inputParams.fulltext
@@ -25,9 +29,6 @@ export async function loadInputParamsInTable(
 			: [],
 	}
 
-	if (type === "clientSide") {
-		table.areInputParamsLoading = false;
-	}
 
 
 	if (type === "serverSide") {

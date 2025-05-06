@@ -28,7 +28,7 @@
 	import {onMount, tick} from "svelte";
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
 	import deepcopy from "deepcopy";
-	import {authDetails} from "$lib/runes/page.svelte";
+	import {authDetails, responseDialogMessages} from "$lib/runes/page.svelte";
 	import {cacheTableData, clearCache, getCacheAge, getCachedTableData} from "$lib/cacheManager";
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
@@ -53,7 +53,14 @@
 	let recentFilters: FilterModel[] = $state([]);
 	let isEditing = false;
 	let excelFileInput: HTMLInputElement;
+	let isInitial = $state(true);
+	let previousVisibleColumns: string[] = $state([]);
 
+	function arraysEqual(a: string[], b: string[]): boolean {
+		if (a === b) return true;
+		if (a?.length !== b?.length) return false;
+		return a.every((val, index) => val === b[index]);
+	}
 
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
@@ -62,6 +69,19 @@
 
 		sideBar: {
 			toolPanels: ["columns", "filters"],
+		},
+
+		statusBar: {
+			statusPanels: [
+				{
+					statusPanel: 'agTotalAndFilteredRowCountComponent',
+					align: 'left',
+				},
+				{
+					statusPanel: 'agSelectedRowCountComponent',
+					align: 'left',
+				},
+			]
 		},
 
 		rowSelection:{
@@ -108,7 +128,105 @@
 		},
 
 		onColumnVisible(event: ColumnVisibleEvent<any>) {
-			table.presetToSave = event.api.getColumnState() || [];
+			// Get current visible columns
+			const currentVisibleColumns = event.api.getColumnState()
+				.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
+				.map(colState => colState.colId);
+
+			// Skip if visibility hasn't changed
+			if (arraysEqual(currentVisibleColumns, previousVisibleColumns)) {
+				return;
+			}
+
+			// Update visibility tracking
+			previousVisibleColumns = currentVisibleColumns;
+
+			table.showRefreshDataButton = false;
+
+			if (!isInitial) {
+				// Save column state
+				table.presetToSave = event.api.getColumnState() || [];
+
+				// Get all visible columns (excluding ag-Grid internal columns)
+				const visibleColumnsFields = event.api.getColumnState()
+					.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
+					.map(colState => colState.colId);
+
+				// Exit early if no visible columns
+				if (visibleColumnsFields.length === 0) {
+					table.showRefreshDataButton = false;
+					return;
+				}
+
+				// Determine maximum rows to check (capped at 1000)
+				const iterationMax = Math.min(table.latestRowCount ?? 1000, 1000);
+				const columnsWithData = new Set<string>();
+				const pendingColumns = new Set(visibleColumnsFields);
+				let processedNodes = 0;
+
+				// Check each node up to iterationMax or until all columns have data
+				event.api.forEachNode((node) => {
+					if (processedNodes >= iterationMax || pendingColumns.size === 0) return;
+
+					// Check remaining pending columns against this node's data
+					Array.from(pendingColumns).forEach(colId => {
+						if (node.data?.[colId] != null) { // Using optional chaining
+							columnsWithData.add(colId);
+							pendingColumns.delete(colId);
+						}
+					});
+
+					processedNodes++;
+				});
+
+
+				// Get column definitions for header names
+				const columnDefs = event.api.getColumnDefs() || [];
+
+				// Helper to find column def recursively
+				const findColumnDef = (targetColId: string, defs: any[]): any => {
+					for (const def of defs) {
+						if (def.colId === targetColId) return def;
+						if (def.children) {
+							const childDef = findColumnDef(targetColId, def.children);
+							if (childDef) return childDef;
+						}
+					}
+					return null;
+				};
+
+				// Convert empty column IDs to header names with group handling
+				const emptyColumns = visibleColumnsFields
+					.filter(colId => !columnsWithData.has(colId))
+					.flatMap(colId => {
+						const colDef = findColumnDef(colId, columnDefs);
+						if (!colDef) return [colId]; // Fallback to ID if not found
+
+						// Handle group columns
+						if (colDef.children) {
+							return colDef.children
+								.filter(childDef => !columnsWithData.has(childDef.colId))
+								.map(childDef => childDef.headerName || childDef.colId);
+						}
+
+						return [colDef.headerName || colId];
+					});
+
+				// Update UI and log results
+				if (emptyColumns.length > 0) {
+					// responseDialogMessages.value = [{
+					// 	type: "InfoToast",
+					// 	title: "Informace",
+					// 	content: "Sloupce <b>(" + emptyColumns.join(", ") + ")</b> nemají načtená data. Doporučujeme je přenačíst."
+					// }]
+					table.showRefreshDataButton = true;
+				} else {
+					// console.log('Columns without data:', emptyColumns);
+					table.showRefreshDataButton = false;
+				}
+			} else {
+				table.showRefreshDataButton = false;
+			}
 		},
 
 		onColumnPinned(event: ColumnPinnedEvent<any>) {
@@ -199,10 +317,8 @@
 		disablePageTabs.value = true;
 
 		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
-
 		gridApi = createGrid(gridContainer, finalGridOptions);
 		gridApi.setFilterModel(table.filtersToSave);
-
 		table.defaultColState = gridApi.getColumnState();
 
 		gridApi.setGridOption(
@@ -213,36 +329,55 @@
 			)
 		);
 
-
 		if (table.presetToSave.length > 0) {
 			gridApi.applyColumnState({
 				state: table.presetToSave,
 				applyOrder: true,
-			})
+			});
 		}
+
+		// Initialize visibility tracking after column setup
+		previousVisibleColumns = gridApi.getColumnState()
+			.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
+			.map(colState => colState.colId);
+
+		isInitial = false;
 
 		return(() => {
 			table.activeSelectedRowIndex = 0;
 			table.createdTableData = [];
 			table.deletedTableData = [];
-		})
-	})
+		});
+	});
 
 
-	let lastInputParams = deepcopy(table.loadedInputParams);
+	// let lastInputParams = deepcopy(table.loadedInputParams);
 
 	$effect(() => {
-		if (Object.keys(table.loadedInputParams).length > 0) {
-			if (JSON.stringify(table.loadedInputParams) !== JSON.stringify(lastInputParams)) {
+		// if (Object.keys(table.loadedInputParams).length > 0) {
+			if (table.areInputParamsLoading) {
 				clearCache(pageKey);
 				getData();
+				// resetTable();
+				table.areInputParamsLoading = false;
 			} else {
 				getData();
 			}
-		}
+		// }
 
-		lastInputParams = table.loadedInputParams;
+		// lastInputParams = table.loadedInputParams;
 	});
+
+	// function resetTable() {
+	// 	// reset filterModel
+	// 	gridApi.setFilterModel(null);
+	// 	gridApi.applyColumnState({
+	// 		state: [],
+	// 		applyOrder: true,
+	// 	})
+	// }
+
+
 
 	async function getData() {
 		try {
@@ -276,8 +411,6 @@
 					}
 				})
 			}
-
-			console.log(columnList)
 
 			let requestObj = deepcopy(table.loadedInputParams);
 			requestObj["columnList"] = columnList
@@ -356,52 +489,12 @@
 
 	$effect(() => {
 		if (ribbonAction.value === RibbonActionEnum.NEW) {
-			// const rowToAdd = {};
-			//
-			// rowToAdd[rowNumberIdentificationKey] = table.createdTableData.length * -1;
-			//
-			// table.createdTableData.push(rowToAdd);
-			//
-			// gridApi.applyTransaction({
-			// 	addIndex: 0,
-			// 	add: [rowToAdd]
-			// })
-
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
-
-
-		if (ribbonAction.value === RibbonActionEnum.DELETE) {
-			const rowsToDelete = gridApi.getSelectedRows();
-			const rowsToDeleteStripped: any[] = []
-
-			console.log(rowsToDelete)
-
-			rowsToDelete.map((row) => {
-				const strippedRow = {};
-
-				table.requiredFields.forEach((field) => {
-					strippedRow[field] = row[field];
-				})
-
-				strippedRow[rowNumberIdentificationKey] = row[rowNumberIdentificationKey];
-
-
-				rowsToDeleteStripped.push(strippedRow)
-			})
-
-			table.deletedTableData.push(...rowsToDeleteStripped);
-
-			gridApi.applyTransaction({
-				remove: rowsToDelete,
-			})
-
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
 
 		if (ribbonAction.value === RibbonActionEnum.LOAD) {
-			table.areInputParamsLoading = true;
+			table.hasInputParams = false;
 			console.log("load", pageKey)
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}

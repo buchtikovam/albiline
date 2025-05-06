@@ -172,24 +172,6 @@
 						/>
 					</div>
 				</div>
-
-
-				<div>
-					<p class="text-sm pb-0.5">
-						Velikost ikonek
-					</p>
-
-					<div class="px-2 overflow-visible">
-						<Slider
-							type="single"
-							bind:value={tableViewSettings.value.iconSize}
-							min={10}
-							max={16}
-							step={1}
-							class="w-full h-4 overflow-visible"
-						/>
-					</div>
-				</div>
 			</div>
 		</div>
 
