@@ -51,6 +51,7 @@
 		groupTotalRow: totalRow === true ? "bottom" : undefined,
 		grandTotalRow: totalRow === true ? "bottom" : undefined,
 		rowSelection: undefined,
+		loadThemeGoogleFonts: false,
 
 		defaultColDef: {
 			sortable: true,

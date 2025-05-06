@@ -30,8 +30,6 @@
 			return words.join("")
 		}
 	})
-
-	$inspect(initialsFallback)
 </script>
 
 

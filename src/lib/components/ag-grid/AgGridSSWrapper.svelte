@@ -67,6 +67,7 @@
 		maxBlocksInCache: 20,
 		rowBuffer: rowBufferSize,
 		blockLoadDebounceMillis: 600,
+		loadThemeGoogleFonts: false,
 		undoRedoCellEditingLimit: 20,
 		enableCellTextSelection: true,
 		tooltipShowDelay: 1000,

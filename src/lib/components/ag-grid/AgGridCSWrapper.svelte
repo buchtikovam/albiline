@@ -58,6 +58,7 @@
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
 		localeText: getAgGridLocale(),
+		loadThemeGoogleFonts: false,
 
 		sideBar: {
 			toolPanels: ["columns", "filters"],

@@ -156,7 +156,6 @@
 					</div>
 				</div>
 
-
 				<div>
 					<p class="text-sm pb-0.5">
 						Velikost textu
