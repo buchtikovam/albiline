@@ -317,7 +317,6 @@ export const productStockInventoryAgGridDef: GridOptions = {
 					false, false, true,
 					[],
 				),
-
 			]
 		},
 

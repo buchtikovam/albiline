@@ -232,7 +232,10 @@
 
 <DialogWrapper
 	bind:isOpen={open}
-	onChange={() => table.areInputParamsLoading = false}
+	onChange={() => {
+		table.areInputParamsLoading = false;
+		table.openInputParams = false;
+	}}
 	{header}
 	{content}
 	size="md"

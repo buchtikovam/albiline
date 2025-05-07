@@ -25,7 +25,7 @@ export function getAgColumn(
 	} else {
 		table.type === 'serverSide'
 			? filterButtons = ['apply', 'reset']
-			: filterButtons = []
+			: filterButtons = ['apply', 'reset']
 	}
 	
 	if (type === 'text') {

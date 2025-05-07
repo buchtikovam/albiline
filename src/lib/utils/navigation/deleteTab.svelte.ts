@@ -28,6 +28,7 @@ export function deleteTab(tab: HeaderTab) {
 							table.sortState = [];
 							table.areInputParamsLoading = false;
 							table.hasInputParams = false;
+							table.openInputParams = false;
 							table.loadedInputParams = {};
 						}
 					});
@@ -44,6 +45,7 @@ export function deleteTab(tab: HeaderTab) {
 							table.sortState = [];
 							table.areInputParamsLoading = false;
 							table.hasInputParams = false;
+							table.openInputParams = false;
 							table.loadedInputParams = {};
 						}
 					});
@@ -61,6 +63,7 @@ export function deleteTab(tab: HeaderTab) {
 							table.sortState = [];
 							table.areInputParamsLoading = false;
 							table.hasInputParams = false;
+							table.openInputParams = false;
 							table.loadedInputParams = {};
 						}
 					});

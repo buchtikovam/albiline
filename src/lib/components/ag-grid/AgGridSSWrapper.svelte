@@ -1,28 +1,24 @@
 <script lang="ts">
 	import {currentPageKey, agGridTables, tableViewSettings} from '$lib/runes/table.svelte';
-	import {authDetails, responseDialogMessages} from '$lib/runes/page.svelte';
+	import {authDetails} from '$lib/runes/page.svelte';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
-	import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 	import {debounceFn} from "$lib/utils/general/debounce.svelte";
-	import {getLocale} from "$lib/paraglide/runtime";
 	import {onMount} from 'svelte';
-	import type {ColumnOrder, AgGridTableType, TableRowRequest} from '$lib/types/components/table/table';
-	import type {ColDef} from 'ag-grid-community';
+	import type {AgGridTableType, TableRowRequest} from '$lib/types/components/table/table';
 	import {
 		createGrid, themeQuartz,
-		type CellValueChangedEvent,
-		type Column, type ColumnMovedEvent,
+		type ColumnMovedEvent,
 		type ColumnPinnedEvent, type ColumnVisibleEvent,
 		type FilterModel, type GetRowIdParams,
 		type GridApi, type GridOptions,
 		type IServerSideDatasource, type IServerSideGetRowsParams,
-		type SelectionChangedEvent, type SortChangedEvent
+		type SelectionChangedEvent, type SortChangedEvent, type RowSelectedEvent
 	} from 'ag-grid-enterprise';
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 	import {
@@ -159,15 +155,7 @@
 			];
 		},
 
-		onCellValueChanged: (event: CellValueChangedEvent<any>) => {
-			if (event.oldValue !== event.newValue) {
-				addToEditedTableData(
-					event,
-					table.requiredFields,
-					table.editedTableData,
-				)
-			}
-		},
+		// onCellValueChanged: (event: CellValueChangedEvent<any>) => ccreateEventHandlers().onCellValueChanged()
 
 		onSortChanged: (event: SortChangedEvent<any>) => {
 			if (!isInitial) {
@@ -275,6 +263,34 @@
 			return String(params.data[table.identificationKey]);
 		},
 
+		onRowSelected(event: RowSelectedEvent<any>) {
+			if (gridApi) {
+				table.selectionState = gridApi.getServerSideSelectionState() || {
+					toggledNodes: [],
+					selectAll: false
+				};
+			}
+
+			// Update selectedRows persistence with null checks
+			if (table.selectionState?.toggledNodes) {
+				const rows: Record<string, unknown>[] = [];
+
+				table.selectionState.toggledNodes.forEach((rowNumber) => {
+					const row = gridApi.getDisplayedRowAtIndex(Number(rowNumber) - 1);
+
+					if (row?.data) {
+						const rowObj: Record<string, unknown> = {};
+						table.requiredFields?.forEach((field) => {
+							rowObj[field] = row.data?.[field] ?? null;
+						});
+						rows.push(rowObj);
+					}
+				});
+
+				table.selectedRows = rows;
+			}
+		},
+
 		onSelectionChanged: (event: SelectionChangedEvent) => {
 			table.activeSelectedRowIndex = 0
 
@@ -326,7 +342,6 @@
 				.then(httpResponse => httpResponse.data)
 				.then(response => {
 					// console.log(response)
-
 					params.success({ rowData: response.items });
 					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
 
@@ -543,6 +558,12 @@
 
 
 	$effect(() => {
+		if (ribbonAction.value === RibbonActionEnum.LOAD) {
+			table.openInputParams = true;
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
+
+
 		if (ribbonAction.value === RibbonActionEnum.DELETE) {
 			console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;

@@ -46,7 +46,6 @@ export const actions: Actions = {
 
 			// Redirect on success
 			redirect(303, "/login");
-
 		} catch (err) {
 			// @ts-ignore
 			if (err.status === 303 && err.location) {

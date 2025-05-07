@@ -19,6 +19,7 @@ export async function loadInputParamsInTable(
 	table.hasInputParams = true;
 	table.selectionState = { selectAll: false, toggledNodes: [] };
 	table.selectedRows = [];
+	table.openInputParams = false;
 	table.loadedInputParams = {
 		fulltext: restrictions.fulltextEnabled
 			? inputParams.fulltext

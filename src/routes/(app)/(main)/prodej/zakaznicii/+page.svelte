@@ -9,10 +9,10 @@
 	import {onMount} from "svelte";
 	import NewCustomerOrAddressDecisionDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
-	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
 	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 	import {beforeNavigate} from "$app/navigation";
+	import AgGridRefactoredSSWrapper from "$lib/components/ag-grid/ss-wrapper/AgGridRefactoredSSWrapper.svelte";
 
 
 	interface Props {
@@ -37,6 +37,7 @@
 		}
 	};
 
+	$inspect(table)
 
 	$effect(() => {
 		document.addEventListener('keydown', handleKeyDown);
@@ -81,7 +82,7 @@
 {/if}
 
 
-<AgGridSSWrapper
+<AgGridRefactoredSSWrapper
 	gridOptionsCustom={customerGridOptions}
 	url="customers"
 	headerTranslations={customerHeaderTranslations}

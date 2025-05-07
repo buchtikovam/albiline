@@ -8,13 +8,12 @@
 	} from "$lib/definitions/routes/sklad/stav-skladu/input-params/inputParamsProductStockInventory";
 	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
 	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+	import {beforeNavigate} from "$app/navigation";
+	import {onMount} from "svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {onMount} from "svelte";
-	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 
 	interface Props {
 		data: { pageMetaData: PageMetaDataType }
@@ -22,33 +21,28 @@
 
 	let { data }: Props = $props();
 
+
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 	currentPageKey.value = "ProductStockInventory";
 
 	let table: AgGridTableType = $state(agGridTables.value["ProductStockInventory"]);
-
-	let isInitial = $derived(!table.hasInputParams);
-
-	let open = $derived.by(() => {
-		if (!table.hasInputParams) return true;
-	});
-
-
-	onMount(() => {
-		if (isInitial) {
-			open = true;
-		}
-	})
+	let open = $state(false);
 
 
 	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.LOAD) {
-			table = { ...table, areInputParamsLoading: true };
-			ribbonAction.value = RibbonActionEnum.UNKNOWN;
-		}
+		open = table.openInputParams;
+	})
+
+	onMount(() => {
+		open = !table.hasInputParams;
+	})
+
+	beforeNavigate(() => {
+		table.openInputParams = false;
 	})
 </script>
+
 
 
 <svelte:head>
@@ -56,6 +50,7 @@
 		Stav skladu | Albiline
 	</title>
 </svelte:head>
+
 
 
 {#if open}
@@ -67,7 +62,6 @@
 		restrictions={data.pageMetaData.inputs}
 	/>
 {/if}
-
 
 <AgGridCSWrapper
 	pageKey="ProductStockInventory"

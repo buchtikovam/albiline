@@ -13,18 +13,18 @@ export const InputParamsProductStockInventory: InputParamsType = {
 		field: "onStock",
 		type: "boolean",
 		label: () => "Pouze zboží skladem",
-		value: false
+		value: true
 	}],
 
 	columnFilters : [{
 		id: 0,
-		columnName: "productName",
+		columnName: null,
 		type: "text",
 		filterModel: {
 			operator: null,
 			conditions: [
 				{
-					type: "contains",
+					type: null,
 					value: null,
 				},
 			]

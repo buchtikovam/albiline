@@ -18,6 +18,7 @@ export const load: LayoutLoad = async () => {
 			filtersToSave: {},
 			presetToSave: [],
 			fulltextFilterValue: "",
+			openInputParams: true,
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],
