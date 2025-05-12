@@ -1,9 +1,8 @@
 <script lang="ts">
 	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
 	import Loader from "lucide-svelte/icons/loader";
-	let table = $state(agGridTables.value[currentPageKey.value]);
 
-
+	let table = $derived(agGridTables.value[currentPageKey.value]);
 </script>
 
 

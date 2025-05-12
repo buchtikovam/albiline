@@ -2,7 +2,7 @@ import type { GridApi } from "ag-grid-enterprise";
 import type { GlobalDialogOptions } from "$lib/types/components/dialog/globalDialogOptions";
 import type { AgGridTableType } from "$lib/types/components/table/table";
 import type { GridDependencies } from "$lib/components/ag-grid/ss-wrapper/types";
-import { createDataSource } from "$lib/components/ag-grid/ss-wrapper/gridDataSource";
+import { createDataSource } from "$lib/components/ag-grid/ss-wrapper/gridDataSource.svelte";
 import { agGridTables, currentPageKey } from "$lib/runes/table.svelte";
 import { openedRibbonDialog } from "$lib/runes/ribbon.svelte";
 import { authDetails } from "$lib/runes/page.svelte";
@@ -116,7 +116,13 @@ export class GridDependencyManager implements GridDependencies {
 	resetTable(): void {
 		if (this.state.gridApi) {
 			this.state.gridApi.setFilterModel(null);
-			this.state.gridApi.setGridOption("serverSideDatasource", createDataSource("", this));
+			this.state.gridApi.setGridOption(
+				"serverSideDatasource",
+				createDataSource(
+					agGridTables.value[currentPageKey.value].url || "",
+					this
+				)
+			);
 			this.state.gridApi.setServerSideSelectionState({
 				toggledNodes: [],
 				selectAll: false,

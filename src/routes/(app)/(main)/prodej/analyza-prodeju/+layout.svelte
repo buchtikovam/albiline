@@ -1,10 +1,7 @@
 <script lang="ts">
-	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
-	import {disableNavigation, disablePageTabs} from "$lib/runes/navigation.svelte";
+	import {showFulltextSearch} from "$lib/runes/page.svelte";
 	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
 	import {Input} from "$lib/components/ui/input";
-	import {localizeHref} from "$lib/paraglide/runtime";
-	import {goto} from "$app/navigation";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
@@ -22,33 +19,14 @@
 
 
 	currentPageKey.value = "SalesAnalytics";
-
 	let table: AgGridTableType = $state(agGridTables.value[currentPageKey.value]);
-	let activeTab = $derived(activeTabIndex.value.toString());
 </script>
 
 
 
 <PageWrapper>
 	<TabFulltextWrapper>
-		<Tabs.Root
-			value={activeTab}
-			class="w-full md:w-fit"
-		>
-			<Tabs.List class="rounded-md border !border-slate-300">
-				<Tabs.Trigger
-					class="font-bold"
-					disabled={activeTab !== "0" && (disableNavigation.value || disablePageTabs.value)}
-					value={"0"}
-					onclick={() => {
-						goto(localizeHref("/sklad/stav-skladu"))
-					}}
-				>
-					Seznam
-				</Tabs.Trigger>
-			</Tabs.List>
-		</Tabs.Root>
-
+		<div class="w-full"></div>
 
 		<div class="flex gap-2 items-center">
 			<FilterAndPresetButtons

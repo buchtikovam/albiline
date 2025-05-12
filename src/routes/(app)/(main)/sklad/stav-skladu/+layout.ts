@@ -22,6 +22,7 @@ export const load: LayoutLoad = async () => {
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],
+			recentFilters: [],
 			activeSelectedRowIndex: 0,
 			lastVisibleRowIndex: 0,
 			areInputParamsLoading: false,

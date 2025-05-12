@@ -6,6 +6,7 @@ export const load: LayoutLoad = async () => {
 
 	if (!agGridTables.value[currentPageKey.value]) {
 		agGridTables.value[currentPageKey.value] = {
+			url: "customers",
 			type: "serverSide",
 			requiredFields: ["customerAddressCode", "customerNodeCode"],
 			identificationKey: "rowNumber",

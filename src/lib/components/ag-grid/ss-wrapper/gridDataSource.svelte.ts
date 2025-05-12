@@ -5,17 +5,21 @@ import {disablePageTabs} from "$lib/runes/navigation.svelte";
 import {isEqual} from "lodash-es";
 
 
-
 export const createDataSource = (
 	url: string,
 	deps: GridDependencies
 ): IServerSideDatasource => ({
 	getRows: async (params: IServerSideGetRowsParams) => {
 		deps.setTableProp("filtersToSave", deps.gridApi.getFilterModel())
-
+		// track recent filters
 		const lastStoredFilter = deps.table.recentFilters[deps.table.recentFilters.length - 1] || {}
 		const currentFilter = deps.gridApi.getFilterModel();
 		if(!isEqual(lastStoredFilter, currentFilter)) {
+			// store only 10 latest filters
+			if (deps.table.recentFilters.length === 10) {
+				deps.table.recentFilters.shift();
+			}
+
 			deps.table.recentFilters.push(currentFilter);
 		}
 
@@ -27,13 +31,9 @@ export const createDataSource = (
 			.then(response => {
 				// set row data
 				params.success({rowData: response.items});
-				// set total rows
-				deps.table.latestRowCount = response.totalRows || 0;
-				console.log(response.totalRows)
-
-				if (response.totalRows > 0) {
-					deps.gridApi.setRowCount(response.totalRows || 0)
-				}
+				// set row count
+				deps.setTableProp("latestRowCount", response.totalRows || 0)
+				deps.gridApi.setRowCount(response.totalRows || 0)
 				// if initital handle case
 				if (deps.isInitial) handleInitialLoad(deps);
 				deps.setIsInitial(false)
@@ -45,9 +45,7 @@ export const createDataSource = (
 	}
 });
 
-// todo: total row count se neupdatuje !!
 
-// todo: přidat max 10 pamatování recent filters
 
 const handleInitialLoad = (deps: GridDependencies) => {
 	disablePageTabs.value = false;

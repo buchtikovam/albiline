@@ -13,6 +13,8 @@
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
 	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 	import {beforeNavigate} from "$app/navigation";
+	import AgGridRefactoredSSWrapper from "$lib/components/ag-grid/ss-wrapper/AgGridRefactoredSSWrapper.svelte";
+	import AgGridSSWrapperCopy2 from "$lib/components/ag-grid/ss-wrapper/AgGridSSWrapperCopy2.svelte";
 
 
 	interface Props {
@@ -26,7 +28,6 @@
 	currentPageKey.value = "CustomersGetList";
 
 	let table = agGridTables.value[currentPageKey.value];
-
 	let open = $state(false);
 
 
@@ -45,6 +46,8 @@
 			document.removeEventListener('keydown', handleKeyDown);
 		}
 	})
+
+	$inspect(table.openInputParams, table.hasInputParams)
 
 	$effect(() => {
 		open = table.openInputParams;
@@ -73,7 +76,7 @@
 {#if open}
 	<InputParams
 		bind:open
-		type="serverSide"
+		type={table.type}
 		defaultInputParams={InputParamsZakaznici}
 		selectOptions={InputParamsZakazniciSelectOptions}
 		restrictions={data.pageMetaData.inputs}
@@ -81,12 +84,23 @@
 {/if}
 
 
-<AgGridSSWrapper
+<!--<AgGridRefactoredSSWrapper-->
+<!--	gridOptionsCustom={customerGridOptions}-->
+<!--	headerTranslations={customerHeaderTranslations}-->
+<!--/>-->
+
+<!--<AgGridSSWrapper-->
+<!--	gridOptionsCustom={customerGridOptions}-->
+<!--	url="customers"-->
+<!--	headerTranslations={customerHeaderTranslations}-->
+<!--/>-->
+
+
+<AgGridSSWrapperCopy2
 	gridOptionsCustom={customerGridOptions}
 	url="customers"
 	headerTranslations={customerHeaderTranslations}
 />
-
 
 
 <NewCustomerOrAddressDecisionDialog />

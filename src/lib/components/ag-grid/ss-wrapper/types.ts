@@ -6,12 +6,6 @@ import type {
 import type { AgGridTableType } from '$lib/types/components/table/table';
 import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 
-export interface Props {
-	url: string;
-	gridOptionsCustom: GridOptions;
-	headerTranslations: Record<string, () => string>
-}
-
 
 export type TableUpdater<T extends AgGridTableType> = (current: T) => Partial<T>;
 

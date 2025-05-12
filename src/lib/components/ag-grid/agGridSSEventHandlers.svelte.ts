@@ -2,15 +2,15 @@ import {addToEditedTableData} from '$lib/utils/addToEditedTableData';
 import type {
 	CellValueChangedEvent,
 	ColumnMovedEvent,
-} from 'ag-grid-community';
-import type {GridDependencies} from './types';
-import type {
-	ColumnPinnedEvent,
-	ColumnVisibleEvent,
-	FilterChangedEvent,
-	RowSelectedEvent, SelectionChangedEvent,
+	SelectionChangedEvent,
 	SortChangedEvent
+} from 'ag-grid-community';
+import type {
+	ColumnPinnedEvent, ColumnVisibleEvent, FilterChangedEvent,
+	GridApi,
+	RowSelectedEvent,
 } from "ag-grid-enterprise";
+import type {AgGridTableType} from "$lib/types/components/table/table";
 import {disablePageTabs} from "$lib/runes/navigation.svelte";
 
 
@@ -19,34 +19,33 @@ import {disablePageTabs} from "$lib/runes/navigation.svelte";
 
 export function handleRowSelected(
 	e: RowSelectedEvent,
-	deps: GridDependencies
+	gridApi: GridApi,
+	table: AgGridTableType
 ): void {
-	if (deps.gridApi) {
-		deps.setTableProp(
-			"selectionState",
-			e.api.getServerSideSelectionState() || {
+	if (gridApi) {
+		table.selectionState = e.api.getServerSideSelectionState() || {
 			toggledNodes: [],
 			selectAll: false
-		})
+		}
 	}
 
 	// Update selectedRows persistence with null checks
-	if (deps.table.selectionState?.toggledNodes) {
+	if (table.selectionState?.toggledNodes) {
 		const rows: Record<string, unknown>[] = [];
 
-		deps.table.selectionState.toggledNodes.forEach((rowNumber) => {
+		table.selectionState.toggledNodes.forEach((rowNumber) => {
 			const row = e.api.getDisplayedRowAtIndex(Number(rowNumber) - 1);
 
 			if (row?.data) {
 				const rowObj: Record<string, unknown> = {};
-				deps.table.requiredFields?.forEach((field) => {
+				table.requiredFields?.forEach((field) => {
 					rowObj[field] = row.data?.[field] ?? null;
 				});
 				rows.push(rowObj);
 			}
 		});
 
-		deps.setTableProp("selectedRows", rows);
+		table.selectedRows= rows;
 	}
 }
 
@@ -56,29 +55,29 @@ export function handleRowSelected(
 
 export function handleCellValueChanged (
 	event: CellValueChangedEvent,
-	deps: GridDependencies,
+	table: AgGridTableType,
 ): void {
 	if (event.oldValue === event.newValue) return;
 
 	addToEditedTableData(
 		event,
-		deps.table.requiredFields,
-		deps.table.editedTableData
+		table.requiredFields,
+		table.editedTableData
 	);
 }
 
 
 export function handleCellEditingStart(
-	deps: GridDependencies,
+	updateIsEditing: (newValue: boolean) => void,
 ): void {
-	deps.setIsEditing(true);
+	updateIsEditing(true)
 }
 
 
 export function handleCellEditingStopped(
-	deps: GridDependencies,
+	updateIsEditing: (newValue: boolean) => void,
 ): void {
-	deps.setIsEditing(false);
+	updateIsEditing(false)
 }
 
 
@@ -87,29 +86,30 @@ export function handleCellEditingStopped(
 
 export function handleColumnMoved(
 	e: ColumnMovedEvent,
-	deps: GridDependencies,
+	table: AgGridTableType,
 ): void {
-	deps.table.presetToSave = e.api.getColumnState() || [];
+	table.presetToSave = e.api.getColumnState() || [];
 }
 
 
 export function handleColumnPinned(
 	e: ColumnPinnedEvent,
-	deps: GridDependencies,
+	table: AgGridTableType,
 ): void {
-	deps.table.presetToSave = e.api.getColumnState() || [];
+	table.presetToSave = e.api.getColumnState() || [];
 }
 
 
 export function handleColumnVisibleChanged(
 	event: ColumnVisibleEvent,
-	deps: GridDependencies,
+	isInitial: boolean,
+	table: AgGridTableType,
 ): void {
-	deps.setTableProp("showRefreshDataButton", false);
+	table.showRefreshDataButton = false;
 
-	if (!deps.isInitial) {
+	if (!isInitial) {
 		// Save column state
-		deps.setTableProp("presetToSave", event.api.getColumnState() || []);
+		table.presetToSave = event.api.getColumnState() || [];
 
 		// Get all visible columns (excluding ag-Grid internal columns)
 		const visibleColumnsFields = event.api.getColumnState()
@@ -118,12 +118,12 @@ export function handleColumnVisibleChanged(
 
 		// Exit early if no visible columns
 		if (visibleColumnsFields.length === 0) {
-			deps.setTableProp("showRefreshDataButton", false);
+			table.showRefreshDataButton = false;
 			return;
 		}
 
 		// Determine maximum rows to check (capped at 1000)
-		const iterationMax = Math.min(deps.table.latestRowCount ?? 1000, 1000);
+		const iterationMax = Math.min(table.latestRowCount ?? 1000, 1000);
 		const columnsWithData = new Set<string>();
 		const pendingColumns = new Set(visibleColumnsFields);
 		let processedNodes = 0;
@@ -152,23 +152,13 @@ export function handleColumnVisibleChanged(
 			.map(colId => {
 				// @ts-ignore
 				const colDef = columnDefs.find(def => def.colId === colId);
-				// Use headerName if exists, fallback to colId
 				return colDef?.headerName || colId;
 			});
 
 		// Update UI and log results
-		if (emptyColumns.length > 0) {
-			// responseDialogMessages.value = [{
-			// 	type: "InfoToast",
-			// 	title: "Informace",
-			// 	content: "Sloupce <b>(" + emptyColumns.join(", ") + ")</b> nemají načtená data. Doporučujeme je přenačíst."
-			// }]
-			deps.setTableProp("showRefreshDataButton", true);
-		} else {
-			deps.setTableProp('showRefreshDataButton', false);
-		}
+		table.showRefreshDataButton = emptyColumns.length > 0;
 	} else {
-		deps.setTableProp("showRefreshDataButton", false);
+		table.showRefreshDataButton = false;
 	}
 }
 
@@ -178,7 +168,8 @@ export function handleColumnVisibleChanged(
 
 export function handleSortChanged(
 	e: SortChangedEvent,
-	{ isInitial, setTableProp }: GridDependencies,
+	table: AgGridTableType,
+	isInitial: boolean,
 ): void {
 	if (!isInitial) {
 		e.api.setServerSideSelectionState({
@@ -187,14 +178,14 @@ export function handleSortChanged(
 		});
 	}
 
-	setTableProp(
-		"presetToSave",
-		e.api.getColumnState() || []
-	);
+	table.presetToSave = e.api.getColumnState() || [];
 }
 
 
-export function handleFilterChanged(e: FilterChangedEvent, { isInitial }: GridDependencies): void {
+export function handleFilterChanged(
+	e: FilterChangedEvent,
+	isInitial: boolean
+): void {
 	if (isInitial) {
 		e.api.setServerSideSelectionState({
 			selectAll: false,
@@ -206,9 +197,9 @@ export function handleFilterChanged(e: FilterChangedEvent, { isInitial }: GridDe
 
 export function handleSelectionChanged(
 	e: SelectionChangedEvent,
-	{ table, setTableProp }: GridDependencies
+	table: AgGridTableType,
 ): void {
-	setTableProp("activeSelectedRowIndex", 0);
+	table.activeSelectedRowIndex = 0;
 
 	if (table.selectionState?.toggledNodes) {
 		disablePageTabs.value = table.selectionState.toggledNodes.length < 1;
@@ -229,6 +220,6 @@ export function handleSelectionChanged(
 			}
 		});
 
-		setTableProp("selectedRows", rowArr);
+		table.selectedRows = rowArr;
 	}
 }
