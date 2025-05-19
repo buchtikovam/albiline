@@ -151,14 +151,6 @@ async function fetchAndCache(
 }
 
 
-export function resetTable(gridApi: GridApi) {
-	gridApi.setFilterModel(null);
-	gridApi.applyColumnState({
-		state: [],
-		applyOrder: true,
-	})
-}
-
 
 export function onColStateReset(
 	gridApi: GridApi,

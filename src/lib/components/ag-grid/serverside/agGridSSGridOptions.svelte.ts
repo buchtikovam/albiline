@@ -39,17 +39,14 @@ import {
 
 
 export function getSSGridOptions (
-	gridApi: GridApi,
 	table: AgGridTableType,
-	updateIsEditing: (newValue: boolean) => void,
-	isInitial: boolean,
 ): GridOptions {
 	return {
 		theme: themeQuartz.withParams(themeAlbiBlueParams),
 		localeText: getAgGridLocale(),
 		rowModelType: 'serverSide',
 		maintainColumnOrder: true,
-		serverSideInitialRowCount: table.latestRowCount,
+		serverSideInitialRowCount: table.latestRowCount || 0,
 		enterNavigatesVerticallyAfterEdit: true,
 		undoRedoCellEditing: true,
 		cacheBlockSize: 1000,
@@ -81,9 +78,20 @@ export function getSSGridOptions (
 
 		statusBar: getStatusBar(),
 		defaultColDef: getDefaultColDef(),
-
-		// utils
 		getRowId: (params: GetRowIdParams) => getRowId(params, table),
+	}
+}
+
+
+
+export function getSSGridOptionsHandlers(
+	updateIsEditing: (newValue: boolean) => void,
+	isInitial: boolean,
+	gridApi: GridApi,
+	table: AgGridTableType,
+): GridOptions {
+	return {
+		// utils
 		getMainMenuItems: (e: GetMainMenuItemsParams) => getMainMenuItems(e),
 		getContextMenuItems: () => getContextMenuItems(),
 
@@ -105,5 +113,4 @@ export function getSSGridOptions (
 		onFilterChanged: (e: FilterChangedEvent) => handleFilterChanged(e, isInitial),
 		onSelectionChanged: (e: SelectionChangedEvent) => handleSelectionChanged(e, table),
 	}
-
 }

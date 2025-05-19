@@ -174,9 +174,11 @@ export function handleRowDataUpdated(
 	table: AgGridTableType
 ): void {
 	setTimeout(() => {
-		table.lastVisibleRowIndex < 10
-			? event.api.ensureIndexVisible(table.lastVisibleRowIndex, "top")
-			: event.api.ensureIndexVisible(table.lastVisibleRowIndex + 10, "top");
+		if (!gridApi.isDestroyed()) {
+			table.lastVisibleRowIndex < 10
+				? event.api.ensureIndexVisible(table.lastVisibleRowIndex, "top")
+				: event.api.ensureIndexVisible(table.lastVisibleRowIndex + 10, "top");
+		}
 	}, 300)
 }
 

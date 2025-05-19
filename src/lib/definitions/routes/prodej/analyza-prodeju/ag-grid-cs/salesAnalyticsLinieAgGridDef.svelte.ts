@@ -3,7 +3,7 @@ import type {GridOptions} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
 
 
-export const salesAnalyticsAgGridDef: GridOptions = {
+export const salesAnalyticsLinieAgGridDef: GridOptions = {
 	sideBar: {
 		toolPanels: [
 			"columns",
@@ -15,14 +15,14 @@ export const salesAnalyticsAgGridDef: GridOptions = {
 
 	columnDefs: [
 		getAgColumn(
-			"itemId", // Divize
+			"itemId", // Linie
 			"number", 68,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
-			"itemName", // Název divize
+			"itemName", // Název linie
 			"text", 68,
 			false, false, false,
 			[],
@@ -681,186 +681,7 @@ export const salesAnalyticsAgGridDef: GridOptions = {
 			]
 		},
 
-		{
-			field: "group_margin", // Marže
-			children: [
-				// wholesale
-				getAgColumn(
-					"profit_Wholesale_LY", // VO vloni
-					"number", 68,
-					false, false, false,
-					[],
-				),
 
-				getAgColumn(
-					"margin_Wholesale_LY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"profit_Wholesale_AY", // VO letos
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Wholesale_AY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				// eshop
-				getAgColumn(
-					"profit_Eshop_LY", // eShop vloni
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Eshop_LY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"profit_Eshop_AY", // eShop letos
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Eshop_AY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				// retail
-				getAgColumn(
-					"profit_Retail_LY", // MO vloni
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Retail_LY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"profit_Retail_AY", // MO letos
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Retail_AY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				// bakery
-				getAgColumn(
-					"profit_RetailBakery_LY", // Pekárny vloni
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_RetailBakery_LY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"profit_RetailBakery_AY", // Pekárny letos
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_RetailBakery_AY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				// kinoko
-				getAgColumn(
-					"profit_RetailKinoko_LY", // Kinoko vloni
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Kinoko_LY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"profit_RetailKinoko_AY", // Kinoko letos
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_Kinoko_AY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				// export
-				getAgColumn(
-					"profit_WholesaleExport_LY", // Export vloni
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_WholesaleExport_LY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"profit_WholesaleExport_AY", // Export letos
-					"number", 68,
-					false, false, false,
-					[],
-				),
-
-				getAgColumn(
-					"margin_WholesaleExport_AY", // % todo: procenta
-					"number", 68,
-					false, false, false,
-					[],
-				),
-			],
-		},
-
-		// hidden columns
 		// getAgColumn("basePrice_CZ_LY", "number", 68, false, false, false, []),
 		// getAgColumn("basePrice_CZ_AY", "number", 68, false, false, false, []),
 		// getAgColumn("basePrice_CZ_Wholesale_LY", "number", 68, false, false, false, []),
@@ -891,97 +712,14 @@ export const salesAnalyticsAgGridDef: GridOptions = {
 		// getAgColumn("basePrice_PL_Eshop_AY", "number", 68, false, false, false, []),
 		// getAgColumn("basePrice_CZ_Export_LY", "number", 68, false, false, false, []),
 		// getAgColumn("basePrice_CZ_Export_AY", "number", 68, false, false, false, []),
-		// // getAgColumn(
-		// 	"sales_Wholesale_LY", // Sales Wholesale Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Wholesale_AY", // Sales Wholesale Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Eshop_LY", // Sales Eshop Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Eshop_AY", // Sales Eshop Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Retail_LY", // Sales Retail Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Retail_AY", // Sales Retail Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_WholesaleExport_LY", // Sales WholesaleExport Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_WholesaleExport_AY", // Sales WholesaleExport Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_RetailBakery_LY", // Sales RetailBakery Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_RetailBakery_AY", // Sales RetailBakery Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Kinoko_LY", // Sales RetailKinoko Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Kinoko_AY", // Sales RetailKinoko Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
 	]
 }
 
 
 
-export const salesAnalyticsHeaderTranslations = {
-	itemId: m.routes_prodej_analyza_prodeju_table_column_item_id,
-	itemName: m.routes_prodej_analyza_prodeju_table_column_item_name,
+export const salesAnalyticsLinieHeaderTranslations = {
+	itemId: m.routes_prodej_analyza_prodeju_linie_table_column_itemId,
+	itemName: m.routes_prodej_analyza_prodeju_linie_table_column_itemName,
 	currency: m.routes_prodej_analyza_prodeju_table_column_currency,
 	sales_LY: m.routes_prodej_analyza_prodeju_table_column_sales_ly,
 	sales_AY: m.routes_prodej_analyza_prodeju_table_column_sales_ay,
@@ -1073,29 +811,5 @@ export const salesAnalyticsHeaderTranslations = {
 	discount_PL_Eshop_AY: m.routes_prodej_analyza_prodeju_table_column_discount_pl_eshop_ay,
 	discount_CZ_Export_LY: m.routes_prodej_analyza_prodeju_table_column_discount_cz_export_ly,
 	discount_CZ_Export_AY: m.routes_prodej_analyza_prodeju_table_column_discount_cz_export_ay,
-	group_margin: m.routes_prodej_analyza_prodeju_table_column_group_marze,
-	profit_Wholesale_LY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesale_ly,
-	margin_Wholesale_LY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesale_ly,
-	profit_Wholesale_AY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesale_ay,
-	margin_Wholesale_AY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesale_ay,
-	profit_Eshop_LY: m.routes_prodej_analyza_prodeju_table_column_profit_eshop_ly,
-	margin_Eshop_LY: m.routes_prodej_analyza_prodeju_table_column_margin_eshop_ly,
-	profit_Eshop_AY: m.routes_prodej_analyza_prodeju_table_column_profit_eshop_ay,
-	margin_Eshop_AY: m.routes_prodej_analyza_prodeju_table_column_margin_eshop_ay,
-	profit_Retail_LY: m.routes_prodej_analyza_prodeju_table_column_profit_retail_ly,
-	margin_Retail_LY: m.routes_prodej_analyza_prodeju_table_column_margin_retail_ly,
-	profit_Retail_AY: m.routes_prodej_analyza_prodeju_table_column_profit_retail_ay,
-	margin_Retail_AY: m.routes_prodej_analyza_prodeju_table_column_margin_retail_ay,
-	profit_RetailBakery_LY: m.routes_prodej_analyza_prodeju_table_column_profit_retailbakery_ly,
-	margin_RetailBakery_LY: m.routes_prodej_analyza_prodeju_table_column_margin_retailbakery_ly,
-	profit_RetailBakery_AY: m.routes_prodej_analyza_prodeju_table_column_profit_retailbakery_ay,
-	margin_RetailBakery_AY: m.routes_prodej_analyza_prodeju_table_column_margin_retailbakeryl_ay,
-	profit_RetailKinoko_LY: m.routes_prodej_analyza_prodeju_table_column_profit_retailkinoko_ly,
-	margin_Kinoko_LY: m.routes_prodej_analyza_prodeju_table_column_margin_kinoko_ly,
-	profit_RetailKinoko_AY: m.routes_prodej_analyza_prodeju_table_column_profit_retailkinoko_ay,
-	margin_Kinoko_AY: m.routes_prodej_analyza_prodeju_table_column_margin_kinoko_ay,
-	profit_WholesaleExport_LY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesaleexport_ly,
-	margin_WholesaleExport_LY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesaleexport_ly,
-	profit_WholesaleExport_AY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesaleexport_ay,
-	margin_WholesaleExport_AY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesaleexport_ay
+
 }

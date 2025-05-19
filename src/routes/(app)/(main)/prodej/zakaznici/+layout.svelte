@@ -55,7 +55,6 @@
 	<TabFulltextWrapper>
 		<Tabs.Root
 			value={activeTab}
-			class="w-full md:w-fit"
 		>
 			<Tabs.List class="rounded-md border !border-slate-300">
 				<Tabs.Trigger

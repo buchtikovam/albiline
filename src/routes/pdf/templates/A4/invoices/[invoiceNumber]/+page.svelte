@@ -42,7 +42,7 @@
 	}
 </script>
 
-
+<!-- svelte-ignore hydration_attribute_changed -->
 <div 
 	style={`width: ${A4.width}px; height: ${A4.height}px`}
 	class="m-auto bg-white"
@@ -127,6 +127,7 @@
 					<div>
 						<p>{ `${albiInfo.accountNumber}/${albiInfo.bankCode}`}</p>
 						<p>{ header.documentCode || "{{paymentReference}}"}</p>
+						<!-- svelte-ignore hydration_attribute_changed -->
 						<p>{ header.zpusob_platba || "{{zpusob_platba}}"}</p>
 					</div>
 				</div> 

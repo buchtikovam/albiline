@@ -15,7 +15,10 @@
 	import {
 		handleClickOutside, onTablePresetSelected, resetColState, resetTable
 	} from "$lib/components/ag-grid/serverside/agGridSSUtils.svelte.js";
-	import {getSSGridOptions} from "$lib/components/ag-grid/serverside/agGridSSGridOptions.svelte.js";
+	import {
+		getSSGridOptions,
+		getSSGridOptionsHandlers
+	} from "$lib/components/ag-grid/serverside/agGridSSGridOptions.svelte.js";
 	import {getSSDatasource} from "$lib/components/ag-grid/serverside/agGridSSDatasource.svelte.js";
 	import {mountSSGrid, unmountSSGrid} from "$lib/components/ag-grid/serverside/agGridSSLifecycle.svelte";
 
@@ -54,7 +57,7 @@
 	// Grid configuration
 	const gridOptions: GridOptions = {
 		// @ts-ignore
-		...getSSGridOptions(gridApi, table, updateIsEditing, isInitial),
+		...getSSGridOptions(table),
 		...gridOptionsCustom,
 	};
 
@@ -65,7 +68,12 @@
 		const finalGridOptions = { ...gridOptions, ...gridOptionsCustom };
 
 		// initialize grid
-		if (gridContainer) gridApi = createGrid(gridContainer, finalGridOptions);
+		if (gridContainer) gridApi = createGrid(gridContainer, gridOptions);
+
+		gridApi.updateGridOptions(
+			getSSGridOptionsHandlers(updateIsEditing, isInitial, gridApi, table)
+		);
+
 		mountSSGrid(gridApi, table, headerTranslations);
 
 		return (() => {
@@ -85,7 +93,6 @@
 	// register datasource if user has added input params
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0 ) {
-			gridApi.ensureIndexVisible(0, "top");
 			resetTable(
 				gridApi,
 				getSSDatasource(

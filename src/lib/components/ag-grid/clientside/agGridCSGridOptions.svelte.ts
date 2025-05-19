@@ -30,9 +30,6 @@ import type {AgGridTableType} from "$lib/types/components/table/table";
 
 export function getCSGridOptions(
 	table: AgGridTableType,
-	updateIsEditing: (newValue: boolean) => void,
-	isInitial: boolean,
-	gridApi: GridApi,
 ): GridOptions {
 	return {
 		theme: themeQuartz.withParams(themeAlbiBlueParams),
@@ -48,7 +45,17 @@ export function getCSGridOptions(
 		defaultColDef: getDefaultColDef(),
 
 		getRowId: (params: GetRowIdParams) => getRowIdCS(params, table),
+	}
+}
 
+
+export function getCSGridOptionsHandlers(
+	table: AgGridTableType,
+	updateIsEditing: (newValue: boolean) => void,
+	isInitial: boolean,
+	gridApi: GridApi,
+): GridOptions {
+	return {
 		getMainMenuItems: (event: GetMainMenuItemsParams) => getMainMenuItemsCS(event),
 		getContextMenuItems: () => getContextMenuItemsCS(),
 

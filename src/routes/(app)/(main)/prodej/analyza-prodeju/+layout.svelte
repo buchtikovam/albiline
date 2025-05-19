@@ -9,6 +9,9 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import {Checkbox} from "$lib/components/ui/checkbox";
+	import {Separator} from "$lib/components/ui/separator";
+	import {setContext} from "svelte";
 
 
 	interface Props {
@@ -18,15 +21,82 @@
 	let { children }: Props = $props();
 
 
+	interface PageSections {
+		 linieSection: boolean;
+		 kspSection: boolean;
+		 ksSection: boolean;
+	}
+
+	let pageSectionsState: PageSections = $state({
+		linieSection: true,
+		kspSection: false,
+		ksSection: false,
+	})
+
 	currentPageKey.value = "SalesAnalytics";
 	let table: AgGridTableType = $state(agGridTables.value[currentPageKey.value]);
+
+	setContext("pageSections", pageSectionsState);
+
+	$effect(() => {
+		if (
+			pageSectionsState.kspSection === false &&
+			pageSectionsState.ksSection === true
+		) {
+			pageSectionsState.ksSection = false;
+		}
+
+		if (
+			pageSectionsState.linieSection === false &&
+			pageSectionsState.kspSection === true
+		) {
+			pageSectionsState.kspSection = false;
+		}
+	})
 </script>
 
 
 
 <PageWrapper>
 	<TabFulltextWrapper>
-		<div class="w-full"></div>
+		<div class="flex-1">
+			<div class="flex text-xs justify-end items-center gap-1.5 bg-white h-8 border border-slate-300 rounded-md w-fit px-2">
+				<b>Detail: </b>
+
+				<div class="flex items-center gap-1">
+					<Checkbox
+						class="size-4"
+						bind:checked={pageSectionsState.linieSection}
+					/>
+
+					<p>po liniích</p>
+				</div>
+
+				<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]"/>
+
+				<div class="flex items-center gap-1">
+					<Checkbox
+						class="size-4"
+						disabled={!pageSectionsState.linieSection}
+						bind:checked={pageSectionsState.kspSection}
+					/>
+
+					<p>po ksp</p>
+				</div>
+
+				<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]"/>
+
+				<div class="flex items-center gap-1">
+					<Checkbox
+						class="size-4"
+						disabled={!pageSectionsState.kspSection}
+						bind:checked={pageSectionsState.ksSection}
+					/>
+
+					<p>po kusech</p>
+				</div>
+			</div>
+		</div>
 
 		<div class="flex gap-2 items-center">
 			<FilterAndPresetButtons

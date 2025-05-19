@@ -10,7 +10,7 @@
 
 
 <div
-	class="h-full overflow-auto bg-white rounded-lg border border-slate-300"
+	class="h-full overflow-auto rounded-lg border border-slate-300 bg-white"
 >
 	{@render children()}
 </div>

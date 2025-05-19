@@ -24,7 +24,7 @@
 			>
 				{@const Icon = ribbonItem.icon}
 				<button
-					class="text-[9px] size-11 leading-none rounded hover:bg-muted/80 text-albi-950 hover:text-black"
+					class="text-[9px] size-11 leading-none rounded-md hover:bg-muted/70 text-albi-950 hover:text-black"
 				>
 					<span
 						class="flex w-11 items-center justify-center ml-1 text-albi-950 hover:text-black"

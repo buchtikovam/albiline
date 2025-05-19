@@ -6,7 +6,10 @@ import { albiInfo } from '$lib/constants/info/albiInfo';
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/invoices/${params.invoiceNumber}/pdf`)
-	
+
+	console.log("LOAD")
+
+
 	if (res.ok) {		
 		const response: InvoiceData = await res.json();
 		// const iban = albiInfo.iban;

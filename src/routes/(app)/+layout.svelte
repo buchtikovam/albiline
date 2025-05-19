@@ -23,14 +23,20 @@
 	authDetails.sessionKey = data.auth.sessionKey;
 	authDetails.email = data.auth.email;
 	authDetails.icon = data.auth.icon;
+
+	$effect(() => {
+		if (isMobile.value) {
+			hiddenHeader = false;
+		}
+	})
 </script>
 
 
 
-<div class="h-dvh w-dvh bg-slate-100">
+<div class="h-screen w-screen bg-slate-100 overflow-hidden">
 	<Sidebar.Provider
 		style="--sidebar-width: 280px; --sidebar-width-mobile: 200px"
-		class="!h-full pb-2 pr-2 w-full"
+		class="!h-full pb-2 pr-2  w-full flex"
 		bind:open={sidebarOpen.value}
 	>
 
@@ -51,27 +57,29 @@
 		{/if}
 
 
-		<div
-			class="flex flex-col w-full h-full"
-		>
-			<div class={`${hiddenHeader ? "hidden" : "flex"} flex-col gap-[7px] w-full pt-2 transition-all ease-linear`}>
-				<div class={`${ribbonOpen.value ? "h-[37px]" : "h-9"}`}>
-					<Header/>
-				</div>
+		<div class="flex flex-col flex-1 min-w-0 h-full">
+			<div class={`pt-2 ${hiddenHeader ? "hidden" : "flex"}  flex-col gap-2 flex-none`}>
+				{#if isMobile.value}
+					<Sidebar.Trigger class="bg-white border border-slate-300 !h-8 !w-8"/>
+				{:else}
+					<Header />
+				{/if}
 
-				<div class={(ribbonOpen.value ? "h-[66px] -mt-[1px]" : "h-9" + " transition-all ease-linear duration-200 ")}>
-					<Ribbon />
-				</div>
+				<Ribbon />
 			</div>
 
-			<button
-				type="button"
-				class="h-[7px] w-full bg-slate-100 hover:bg-albi-100 transition-all ease-linear cursor-ns-resize"
-				onclick={() => hiddenHeader = !hiddenHeader}
-				aria-label="button"
-			></button>
+			{#if isMobile.value}
+				<div class="h-2"></div>
+			{:else}
+				<button
+					type="button"
+					class="h-2 w-full bg-slate-100 hover:bg-albi-100 transition-all ease-linear cursor-ns-resize"
+					onclick={() => hiddenHeader = !hiddenHeader}
+					aria-label="button"
+				></button>
+			{/if}
 
-			<div class="h-full w-full">
+			<div class="flex-1 min-h-0 overflow-auto">
 				{@render children?.()}
 			</div>
 		</div>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		createGrid,
-		type FilterModel,
 		type GridApi,
 		type GridOptions,
 	} from 'ag-grid-enterprise';
@@ -14,7 +13,10 @@
 	import {clearCache} from "$lib/cacheManager";
 	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
 	import {getCSData, onColStateReset, onCSPresetSelected} from "$lib/components/ag-grid/clientside/agGridCSUtils.svelte";
-	import {getCSGridOptions} from "$lib/components/ag-grid/clientside/agGridCSGridOptions.svelte";
+	import {
+		getCSGridOptions,
+		getCSGridOptionsHandlers
+	} from "$lib/components/ag-grid/clientside/agGridCSGridOptions.svelte";
 	import {mountCSGrid, unmountCSGrid} from "$lib/components/ag-grid/clientside/agGridCSLifecycle.svelte";
 	import {handleClickOutside} from "$lib/components/ag-grid/serverside/agGridSSUtils.svelte";
 	import {handleRibbonActionCS} from "$lib/components/ag-grid/clientside/agGridCSRibbonActionHandlers.svelte";
@@ -35,7 +37,6 @@
 	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
-	let recentFilters: FilterModel[] = $state([]);
 	let isEditing = $state(false);
 	let excelFileInput: HTMLInputElement;
 	let isInitial = $state(true);
@@ -49,7 +50,7 @@
 	// Grid configuration
 	const gridOptions: GridOptions = {
 		// @ts-ignore
-		...getCSGridOptions(table, updateIsEditing, isInitial, gridApi),
+		...getCSGridOptions(table),
 		...gridOptionsCustom,
 	};
 
@@ -59,11 +60,16 @@
 		disablePageTabs.value = true;
 
 		gridApi = createGrid(gridContainer, gridOptions);
+		gridApi.updateGridOptions(
+			getCSGridOptionsHandlers(table, updateIsEditing, isInitial, gridApi)
+		);
+
 		mountCSGrid(gridApi, table, headerTranslations);
 		isInitial = false;
 
 		return(() => {
-			unmountCSGrid(table, gridApi);
+			console.log(gridApi.getSelectedRows())
+			unmountCSGrid(table, gridApi); // todo: fix selected rows issue when navigating to ss grid
 		});
 	});
 

@@ -17,7 +17,7 @@
 {#if ribbonOpen.value}
 	{@const Icon = ribbonItem.icon}
 	<button
-		class="text-[10px] text-albi-950 hover:text-black min-w-11 w-11 h-11 line-clamp-2 rounded hover:bg-muted/70 leading-none overflow-visible"
+		class="text-[10px] text-albi-950 hover:text-black min-w-11 w-11 h-11 my-1 line-clamp-2 rounded-md hover:bg-muted/70 leading-none overflow-visible"
 		onclick={() => {
 		    ribbonAction.value = ribbonItem.action;
 		}}
