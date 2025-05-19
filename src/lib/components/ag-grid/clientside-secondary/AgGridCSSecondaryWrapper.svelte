@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {agGridTables, currentPageKey, tableViewSettings} from "$lib/runes/table.svelte";
-	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
+	import {agGridTables, currentPageKey, tableViewSettings} from "$lib/runes/table.svelte.js";
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte.js";
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 	import {addToEditedTableData} from "$lib/utils/addToEditedTableData";
 	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
@@ -271,9 +271,6 @@
 	:global(.ag-row-footer) {
 		background-color: #fff7ed;
 	}
-
-
-
 
 
 	/* SIDEBAR FILTER PANEL */

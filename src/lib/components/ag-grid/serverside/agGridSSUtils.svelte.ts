@@ -3,7 +3,7 @@ import type {AgGridTableType} from "$lib/types/components/table/table";
 import type {ColDef, GetMainMenuItemsParams} from "ag-grid-community";
 import {
 	ServerSideTotalRowsStatusBarComponent
-} from "$lib/utils/components/ag-grid/status-bar/serverSideTotalRowsStatusBarComponent.svelte";
+} from "$lib/utils/components/ag-grid/status-bar/serverSideTotalRowsStatusBarComponent.svelte.js";
 
 
 export function handleClickOutside (
@@ -45,6 +45,20 @@ export function resetTable(
 		state: [],
 		applyOrder: true,
 	})
+}
+
+
+
+export function resetColState(
+	gridApi: GridApi,
+	table: AgGridTableType
+)  {
+	gridApi.applyColumnState({
+		state: table.defaultColState,
+		applyOrder: true,
+	});
+
+	table.setColStateToDefault = false;
 }
 
 

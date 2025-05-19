@@ -7,7 +7,7 @@
 	import {Label} from "$lib/components/ui/label";
 	import {onNavigate} from "$app/navigation";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
-	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte";
 	import * as RadioGroup from "$lib/components/ui/radio-group";
 
 

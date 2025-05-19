@@ -1,80 +1,111 @@
 <script lang="ts">
-	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
-	import {
-		type BodyScrollEvent,
-		type ColumnMovedEvent,
-		type ColumnPinnedEvent, type ColumnResizedEvent,
-		type ColumnVisibleEvent,
-		createGrid,
-		type FilterChangedEvent,
-		type FilterModel,
-		type GetRowIdParams,
-		type GridApi,
-		type GridOptions,
-		type RowDataUpdatedEvent,
-		type SelectionChangedEvent, type ShouldRowBeSkippedParams,
-		type SortChangedEvent,
-		themeQuartz
-	} from 'ag-grid-enterprise';
-	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
-	import {getLocale} from "$lib/paraglide/runtime";
-	import type {ColDef, ColGroupDef} from "ag-grid-community";
-	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {agGridTables, tableViewSettings} from "$lib/runes/table.svelte";
-	import type {AgGridTableType, ColumnOrder} from "$lib/types/components/table/table";
-	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
-	import {beforeNavigate} from "$app/navigation";
-	import {onMount, tick} from "svelte";
-	import {disablePageTabs} from "$lib/runes/navigation.svelte";
-	import deepcopy from "deepcopy";
-	import {authDetails, responseDialogMessages} from "$lib/runes/page.svelte";
-	import {cacheTableData, clearCache, getCacheAge, getCachedTableData} from "$lib/cacheManager";
-	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
+	import {currentPageKey, agGridTables, tableViewSettings} from '$lib/runes/table.svelte.js';
+	import {authDetails} from '$lib/runes/page.svelte.js';
+	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte.js";
+	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte.js';
+	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte.js";
+	import {apiServicePostHandled} from "$lib/api/apiService.svelte.js";
 	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
+	import {debounceFn} from "$lib/utils/general/debounce.svelte.js";
+	import {onMount} from 'svelte';
+	import type {AgGridTableType, TableRowRequest} from '$lib/types/components/table/table';
+	import {
+		createGrid, themeQuartz,
+		type ColumnMovedEvent,
+		type ColumnPinnedEvent, type ColumnVisibleEvent,
+		type FilterModel, type GetRowIdParams,
+		type GridApi, type GridOptions,
+		type IServerSideDatasource, type IServerSideGetRowsParams,
+		type SelectionChangedEvent, type SortChangedEvent, type RowSelectedEvent
+	} from 'ag-grid-enterprise';
+	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
+	import {
+		ServerSideTotalRowsStatusBarComponent
+	} from "$lib/utils/components/ag-grid/status-bar/serverSideTotalRowsStatusBarComponent.svelte.js";
 
 	interface Props {
-		pageKey: string;
-		headerTranslations: Record<string, () => string>;
+		url: string;
 		gridOptionsCustom: GridOptions;
+		headerTranslations: Record<string, () => string>
 	}
 
 	let {
-		pageKey,
-		headerTranslations,
-		gridOptionsCustom
+		url,
+		gridOptionsCustom,
+		headerTranslations
 	}: Props = $props();
 
 
+	// page settings
+	let pageKey: string = currentPageKey.value;
 	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
-	let gridContainer: HTMLDivElement;
-	let gridApi: GridApi<unknown>;
-	let themeParams = $state(themeAlbiBlueParams);
-	let recentFilters: FilterModel[] = $state([]);
 	let isEditing = false;
+
+
+	// create grid
+	let gridContainer: HTMLElement|undefined = $state(undefined);
+	let gridApi: GridApi<unknown>;
 	let excelFileInput: HTMLInputElement;
+	let rowBufferSize = 100;
 	let isInitial = $state(true);
-	let previousVisibleColumns: string[] = $state([]);
+	let themeParams = $state(themeAlbiBlueParams);
 
-	function arraysEqual(a: string[], b: string[]): boolean {
-		if (a === b) return true;
-		if (a?.length !== b?.length) return false;
-		return a.every((val, index) => val === b[index]);
-	}
-
+	// grid configuration
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeParams),
 		localeText: getAgGridLocale(),
+		rowModelType: "serverSide",
+		maintainColumnOrder: true,
+		serverSideInitialRowCount: table.latestRowCount,
+		enterNavigatesVerticallyAfterEdit: true,
+		undoRedoCellEditing: true,
+		cacheBlockSize: 1000,
+		maxBlocksInCache: 20,
+		rowBuffer: rowBufferSize,
+		blockLoadDebounceMillis: 600,
 		loadThemeGoogleFonts: false,
+		undoRedoCellEditingLimit: 20,
+		enableCellTextSelection: true,
+		tooltipShowDelay: 1000,
 
 		sideBar: {
 			toolPanels: ["columns", "filters"],
 		},
 
+		cellSelection: {
+			handle: {
+				mode: "fill",
+				direction: "y",
+			},
+		},
+
+		rowSelection: {
+			mode: 'multiRow',
+			enableClickSelection: true,
+			headerCheckbox: false,
+			hideDisabledCheckboxes: true,
+		},
+
+		defaultColDef: {
+			sortable: true,
+			resizable: true,
+			enableRowGroup: true,
+			editable: true,
+			minWidth: 60,
+			maxWidth: 400,
+			hide: false,
+			filter: 'agMultiColumnFilter',
+			autoHeaderHeight: true,
+			wrapHeaderText: true,
+			suppressHeaderMenuButton: true,
+		},
+
 		statusBar: {
 			statusPanels: [
 				{
-					statusPanel: 'agTotalAndFilteredRowCountComponent',
+					statusPanel: ServerSideTotalRowsStatusBarComponent,
 					align: 'left',
 				},
 				{
@@ -84,27 +115,6 @@
 			]
 		},
 
-		rowSelection:{
-			mode: "singleRow",
-			enableClickSelection: true,
-			hideDisabledCheckboxes: true,
-		},
-
-
-		defaultColDef: {
-			sortable: true,
-			resizable: true,
-			editable: false,
-			minWidth: 50,
-			maxWidth: 400,
-			hide: false,
-			filter: false,
-			suppressHeaderMenuButton: true,
-			enableRowGroup: true,
-		},
-
-		rowData: [],
-
 		onCellEditingStarted: () => {
 			isEditing = true;
 		},
@@ -113,14 +123,49 @@
 			isEditing = false;
 		},
 
-		onFilterChanged(event: FilterChangedEvent<any>) {
-			const currentFilter = event.api.getFilterModel();
-			table.filtersToSave = currentFilter;
-			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
+		getMainMenuItems: (event) => {
+			return [
+				'pinSubMenu',
+				'separator',
+				'valueAggSubMenu', 'autoSizeThis', 'columnChooser', 'resetColumns',
+				'separator',
+				'sortUnSort',
+				'separator',
+				{
+					name: "IT",
+					icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-code-xml\"><path d=\"m18 16 4-4-4-4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"m14.5 4-5 16\"/></svg>",
+					subMenu: [
+						{
+							name: "field: " + event.column.getColId(),
+							action: () => {
+								navigator.clipboard.writeText(event.column.getColId())
+							},
+						}
+					]
+				}
+			];
+		},
 
-			if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
-				recentFilters.push(currentFilter);
+		getContextMenuItems: () => {
+			return [
+				'copy',
+				'copyWithHeaders',
+				'cut',
+				'paste',
+			];
+		},
+
+		// onCellValueChanged: (event: CellValueChangedEvent<any>) => ccreateEventHandlers().onCellValueChanged()
+
+		onSortChanged: (event: SortChangedEvent<any>) => {
+			if (!isInitial) {
+				gridApi.setServerSideSelectionState({
+					selectAll: false,
+					toggledNodes: []
+				})
 			}
+
+			table.presetToSave = event.api.getColumnState() || [];
 		},
 
 		onColumnMoved(event: ColumnMovedEvent<any>) {
@@ -128,19 +173,6 @@
 		},
 
 		onColumnVisible(event: ColumnVisibleEvent<any>) {
-			// Get current visible columns
-			const currentVisibleColumns = event.api.getColumnState()
-				.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
-				.map(colState => colState.colId);
-
-			// Skip if visibility hasn't changed
-			if (arraysEqual(currentVisibleColumns, previousVisibleColumns)) {
-				return;
-			}
-
-			// Update visibility tracking
-			previousVisibleColumns = currentVisibleColumns;
-
 			table.showRefreshDataButton = false;
 
 			if (!isInitial) {
@@ -151,6 +183,7 @@
 				const visibleColumnsFields = event.api.getColumnState()
 					.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
 					.map(colState => colState.colId);
+
 
 				// Exit early if no visible columns
 				if (visibleColumnsFields.length === 0) {
@@ -183,34 +216,16 @@
 				// Get column definitions for header names
 				const columnDefs = event.api.getColumnDefs() || [];
 
-				// Helper to find column def recursively
-				const findColumnDef = (targetColId: string, defs: any[]): any => {
-					for (const def of defs) {
-						if (def.colId === targetColId) return def;
-						if (def.children) {
-							const childDef = findColumnDef(targetColId, def.children);
-							if (childDef) return childDef;
-						}
-					}
-					return null;
-				};
-
-				// Convert empty column IDs to header names with group handling
+				// Convert empty column IDs to header names
 				const emptyColumns = visibleColumnsFields
 					.filter(colId => !columnsWithData.has(colId))
-					.flatMap(colId => {
-						const colDef = findColumnDef(colId, columnDefs);
-						if (!colDef) return [colId]; // Fallback to ID if not found
-
-						// Handle group columns
-						if (colDef.children) {
-							return colDef.children
-								.filter(childDef => !columnsWithData.has(childDef.colId))
-								.map(childDef => childDef.headerName || childDef.colId);
-						}
-
-						return [colDef.headerName || colId];
+					.map(colId => {
+						const colDef = columnDefs.find(def => def?.colId === colId);
+						// Use headerName if exists, fallback to colId
+						return colDef?.headerName || colId;
 					});
+
+
 
 				// Update UI and log results
 				if (emptyColumns.length > 0) {
@@ -219,6 +234,8 @@
 					// 	title: "Informace",
 					// 	content: "Sloupce <b>(" + emptyColumns.join(", ") + ")</b> nemají načtená data. Doporučujeme je přenačíst."
 					// }]
+
+					// console.log('Columns without data:', emptyColumns);
 					table.showRefreshDataButton = true;
 				} else {
 					// console.log('Columns without data:', emptyColumns);
@@ -233,92 +250,163 @@
 			table.presetToSave = event.api.getColumnState() || [];
 		},
 
-		onColumnResized(event: ColumnResizedEvent<any>) {
-			table.presetToSave = event.api.getColumnState();
-		},
-
-		onSortChanged(event: SortChangedEvent<any>) {
-			table.presetToSave = event.api.getColumnState() || [];
+		onFilterChanged: () =>  {
+			if (!isInitial) {
+				gridApi.setServerSideSelectionState({
+					selectAll: false,
+					toggledNodes: []
+				})
+			}
 		},
 
 		getRowId: (params: GetRowIdParams) => {
 			return String(params.data[table.identificationKey]);
 		},
 
-		onBodyScroll(event: BodyScrollEvent<any>) {
-			if (event.top > -1) {
-				table.lastVisibleRowIndex = event.api.getFirstDisplayedRowIndex();
+		onRowSelected(event: RowSelectedEvent<any>) {
+			if (gridApi) {
+				table.selectionState = gridApi.getServerSideSelectionState() || {
+					toggledNodes: [],
+					selectAll: false
+				};
 			}
-		},
 
-		onRowDataUpdated(event: RowDataUpdatedEvent<any>) {
-			setTimeout(() => {
-				table.lastVisibleRowIndex < 10
-					? event.api.ensureIndexVisible(table.lastVisibleRowIndex, "top")
-					: event.api.ensureIndexVisible(table.lastVisibleRowIndex + 10, "top");
-			}, 300)
+			// Update selectedRows persistence with null checks
+			if (table.selectionState?.toggledNodes) {
+				const rows: Record<string, unknown>[] = [];
 
-			if (table.selectedRows.length > 0) {
-				table.selectedRows.forEach((row) => {
-					let node = gridApi.getRowNode(String(row[table.identificationKey]));
-					node?.setSelected(true)
+				table.selectionState.toggledNodes.forEach((rowNumber) => {
+					const row = gridApi.getDisplayedRowAtIndex(Number(rowNumber) - 1);
+
+					if (row?.data) {
+						const rowObj: Record<string, unknown> = {};
+						table.requiredFields?.forEach((field) => {
+							rowObj[field] = row.data?.[field] ?? null;
+						});
+						rows.push(rowObj);
+					}
 				});
+
+				table.selectedRows = rows;
 			}
 		},
 
-		onSelectionChanged(event: SelectionChangedEvent<any>) {
-			table.selectedRows = event.api.getSelectedRows();
+		onSelectionChanged: (event: SelectionChangedEvent) => {
+			table.activeSelectedRowIndex = 0
+
+			if (table.selectionState?.toggledNodes) {
+				disablePageTabs.value = table.selectionState.toggledNodes.length < 1;
+
+				const rowArr: Record<string, unknown>[] = [];
+
+				table.selectionState.toggledNodes.forEach((rowNumber) => {
+					const row = event.api.getDisplayedRowAtIndex(Number(rowNumber) - 1);
+
+					// Add null checks for row and row.data
+					if (row?.data) {
+						const rowObj: Record<string, unknown> = {};
+						table.requiredFields?.forEach((field) => {
+							// Safe property access with optional chaining
+							rowObj[field] = row.data?.[field] ?? null;
+						});
+						rowArr.push(rowObj);
+					}
+				});
+
+				table.selectedRows = rowArr;
+			}
 		},
-
-
-		getMainMenuItems: (event) => {
-			return [
-				'pinSubMenu',
-				'separator',
-				'valueAggSubMenu',
-				'autoSizeThis',
-				'columnChooser',
-				'resetColumns',
-				'separator',
-				'sortUnSort',
-				'separator',
-				{
-					name: "IT",
-					icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-code-xml\"><path d=\"m18 16 4-4-4-4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"m14.5 4-5 16\"/></svg>",
-					subMenu: [
-						{
-							name: "field: " + event.column.getColId(),
-							action: () => {
-								navigator.clipboard.writeText(event.column.getColId())
-							},
-						}
-					]
-				}
-			];
-		},
-
-		getContextMenuItems: () => {
-			return [
-				'copy',
-				'copyWithHeaders',
-				'cut',
-				'paste',
-			];
-		},
-
-		maintainColumnOrder: true,
-		enableCellTextSelection: true,
-		ensureDomOrder: true,
 	}
 
 
-	// initiate grid
+	//  datasource configuration
+	let recentFilters: FilterModel[] = $state([]);
+
+	const datasource: IServerSideDatasource = {
+		getRows: (params: IServerSideGetRowsParams) => {
+			const currentFilter = gridApi.getFilterModel();
+			const lastStoredFilter = recentFilters[recentFilters.length - 1] || {};
+			const updatedParamsRequest: TableRowRequest = params.request
+			updatedParamsRequest.fulltext = table.fulltextFilterValue;
+
+			// storing recents to navigate to previous filters if needed
+			if(JSON.stringify(lastStoredFilter) !== JSON.stringify(currentFilter)) {
+				recentFilters.push(currentFilter);
+			}
+
+			table.filtersToSave = currentFilter;
+
+			// console.log(JSON.stringify(updatedParamsRequest, null, 1))
+
+			apiServicePostHandled(url, updatedParamsRequest)
+				.then(httpResponse => httpResponse.data)
+				.then(response => {
+					// console.log(response)
+					params.success({ rowData: response.items });
+					table.latestRowCount = response.totalRows === -1 ? 0 : response.totalRows;
+
+					if (response.items.length > 0) {
+						gridApi.setRowCount(table.latestRowCount || 0);
+					}
+
+					if (isInitial) {
+						disablePageTabs.value = false;
+
+						const columnState = {
+							state: table.sortState,
+						}
+
+						gridApi.applyColumnState(columnState);
+
+						// setting scroll position
+						if (table.lastVisibleRowIndex > rowBufferSize) {
+							gridApi.ensureIndexVisible(table.lastVisibleRowIndex + rowBufferSize, "top");
+						} else {
+							if (table.selectionState) {
+								if (table.selectionState.toggledNodes) {
+									if (Number(table.selectionState.toggledNodes[0])) {
+										gridApi.ensureIndexVisible(
+											Number(table.selectionState.toggledNodes[0]) - 1 ,
+											"top"
+										);
+									}
+								}
+							} else {
+								gridApi.ensureIndexVisible(0, "top");
+
+							}
+						}
+
+						// setting selectedRows
+						setTimeout(() => {
+							if (table.selectionState) {
+								if (table.selectionState.toggledNodes) {
+									disablePageTabs.value = table.selectionState.toggledNodes.length === 0;
+									gridApi.setServerSideSelectionState(table.selectionState)
+								}
+							}
+						}, 200)
+					}
+
+					isInitial = false;
+				})
+				.catch(error => {
+					console.log(error);
+					params.fail();
+				});
+		}
+	};
+
+
+	// runs when component is mounted only
 	onMount(() => {
 		disablePageTabs.value = true;
+		const finalGridOptions = { ...gridOptions, ...gridOptionsCustom };
 
-		const finalGridOptions =  {...gridOptions, ...gridOptionsCustom};
-		gridApi = createGrid(gridContainer, finalGridOptions);
+		// initialize grid
+		if (gridContainer) gridApi = createGrid(gridContainer, finalGridOptions);
 		gridApi.setFilterModel(table.filtersToSave);
+
 		table.defaultColState = gridApi.getColumnState();
 
 		gridApi.setGridOption(
@@ -333,106 +421,82 @@
 			gridApi.applyColumnState({
 				state: table.presetToSave,
 				applyOrder: true,
-			});
+			})
 		}
 
-		// Initialize visibility tracking after column setup
-		previousVisibleColumns = gridApi.getColumnState()
-			.filter(colState => !colState.hide && !colState.colId.includes("ag-Grid"))
-			.map(colState => colState.colId);
+		return (() => {
+			if (gridApi) {
+				table.selectionState = gridApi.getServerSideSelectionState() || {
+					toggledNodes: [],
+					selectAll: false
+				};
+			}
 
-		isInitial = false;
+			// Update selectedRows persistence with null checks
+			if (table.selectionState?.toggledNodes) {
+				const rows: Record<string, unknown>[] = [];
 
-		return(() => {
+				table.selectionState.toggledNodes.forEach((rowNumber) => {
+					const row = gridApi.getDisplayedRowAtIndex(Number(rowNumber) - 1);
+
+					if (row?.data) {
+						const rowObj: Record<string, unknown> = {};
+						table.requiredFields?.forEach((field) => {
+							rowObj[field] = row.data?.[field] ?? null;
+						});
+						rows.push(rowObj);
+					}
+				});
+
+				table.selectedRows = rows;
+			}
+
+			table.filtersToSave = gridApi.getFilterModel();
+			table.lastVisibleRowIndex = gridApi.getFirstDisplayedRowIndex();
+			table.presetToSave = gridApi.getColumnState() || [];
 			table.activeSelectedRowIndex = 0;
-			table.createdTableData = [];
-			table.deletedTableData = [];
-		});
-	});
+			disableNavigation.value = false;
 
 
+			setTimeout(() => {
+				gridApi.destroy();
+			}, 100)
+		})
+	})
+
+
+	// used for waiting for API to cache data based on new input params
 	$effect(() => {
-		if (Object.keys(table.loadedInputParams).length > 0) {
-			if (table.areInputParamsLoading) {
-				clearCache(pageKey);
-				getData();
-				// resetTable();
-			} else {
-				getData();
-			}
-		}
-	});
-
-	// function resetTable() {
-	// 	// reset filterModel
-	// 	gridApi.setFilterModel(null);
-	// 	gridApi.applyColumnState({
-	// 		state: [],
-	// 		applyOrder: true,
-	// 	})
-	// }
-
-
-
-	async function getData() {
-		try {
-			const cached = await getCachedTableData(pageKey);
-
-			if (cached) {
-				gridApi.setGridOption("rowData", cached);
-			} else {
-				await fetchAndCache();
-				table.areInputParamsLoading = false;
-			}
-		} catch (e) {
-			console.log("Get data error: ", e instanceof Error ? e.message : "");
-		}
-	}
-
-
-	async function fetchAndCache() {
-		try {
-			const columnList: string[] = deepcopy(table.requiredFields);
-
-			if (Object.keys(table.presetToSave).length > 0) {
-				table.presetToSave.forEach(preset => {
-					if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
-						columnList.push(preset.colId)
-					}
-				})
-			} else {
-				table.defaultColState.forEach(preset => {
-					if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
-						columnList.push(preset.colId)
-					}
-				})
-			}
-
-			let requestObj = deepcopy(table.loadedInputParams);
-			requestObj["columnList"] = columnList
-
-			gridApi.setGridOption("loading", true)
-			const response = await apiServicePostHandled('pageData', requestObj);
-			const data = await response.data;
-
-			gridApi.setGridOption("loading", false);
-			gridApi.setGridOption("rowData", data.items);
-
-			await cacheTableData(pageKey, data.items);
-		} catch (e) {
-			console.log("Fetch and cache error: ", e instanceof Error ? e.message : "");
-		}
-	}
-
-
-
-	$effect(() => {
-		if (table.selectedFilters) {
-			gridApi.setFilterModel(table.selectedFilters.filters);
+		if (table.areInputParamsLoading) {
+			gridApi.setGridOption("loading", true); // todo
+		} else {
+			gridApi.setGridOption("loading", false)
 		}
 	})
 
 
+	// register datasource if user has added input params
+	$effect(() => {
+		if (Object.keys(table.loadedInputParams).length > 0 ) {
+			gridApi.ensureIndexVisible(0, "top");
+			resetTable();
+		}
+	})
+
+
+	function resetTable() {
+		// reset filterModel
+		gridApi.setFilterModel(null);
+		gridApi.setGridOption('serverSideDatasource', datasource);
+		gridApi.setServerSideSelectionState({ toggledNodes: [], selectAll: false })
+		gridApi.applyColumnState({
+			state: [],
+			applyOrder: true,
+		})
+	}
+
+
+	// reset table to default column definitions
 	$effect(() => {
 		if (table.setColStateToDefault) {
 			gridApi.applyColumnState({
@@ -445,6 +509,27 @@
 	})
 
 
+	// fulltext implementation
+	let timer: NodeJS.Timeout;
+
+	$effect(() => {
+		if (table.fulltextFilterValue.length > 0) {
+			timer = debounceFn(timer, gridApi.onFilterChanged);
+		} else {
+			gridApi.onFilterChanged()
+		}
+	})
+
+
+	// load selectedFilters from ribbon -> my filters
+	$effect(() => {
+		if (table.selectedFilters) {
+			gridApi.setFilterModel(table.selectedFilters.filters);
+		}
+	})
+
+
+	// load selectedPreset from ribbon -> my presets
 	$effect(() => {
 		if (table.selectedPreset) {
 			gridApi.applyColumnState({
@@ -458,21 +543,10 @@
 	})
 
 
-
-
-	$effect(() => {
-		if (table.fulltextFilterValue.length > 1) {
-			gridApi.setGridOption("quickFilterText", table.fulltextFilterValue);
-		} else {
-			gridApi.setGridOption("quickFilterText", "");
-		}
-	})
-
-
 	$effect(() => {
 		if (gridContainer && gridApi) {
 			const handleClickOutside = (event: MouseEvent) => {
-				if (!gridContainer.contains(event.target as Node) && isEditing) {
+				if (!gridContainer?.contains(event.target as Node) && isEditing) {
 					gridApi.stopEditing(true);
 				}
 			};
@@ -484,13 +558,14 @@
 
 
 	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.NEW) {
+		if (ribbonAction.value === RibbonActionEnum.LOAD) {
+			table.openInputParams = true;
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
 
-		if (ribbonAction.value === RibbonActionEnum.LOAD) {
-			table.openInputParams = true;
+		if (ribbonAction.value === RibbonActionEnum.DELETE) {
+			console.log("DELETE", gridApi.getServerSideSelectionState()?.toggledNodes);
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
@@ -598,13 +673,15 @@
 
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_FILTERS) {
-			openedRibbonDialog.value = "ribbon-save-filters"
+			const filters = gridApi.getFilterModel();
+			openedRibbonDialog.value = "ribbon-save-filters";
+			table.filtersToSave = filters;
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
 
 
 		if (ribbonAction.value === RibbonActionEnum.SAVE_PRESET) {
-			openedRibbonDialog.value = "ribbon-save-preset"
+			openedRibbonDialog.value = "ribbon-save-preset";
 			table.presetToSave = gridApi.getColumnState() || [];
 			ribbonAction.value = RibbonActionEnum.UNKNOWN;
 		}
@@ -619,7 +696,6 @@
 
 
 
-
 <input
 	type="file"
 	accept=".xls,.xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -630,9 +706,7 @@
 />
 
 
-<div
-	class="flex flex-column h-full"
->
+<div class="flex flex-column h-full">
 	<div
 		id="datagrid"
 		class=""
@@ -645,7 +719,6 @@
 		bind:this={gridContainer}
 	></div>
 </div>
-
 
 
 
@@ -723,6 +796,10 @@
 	}
 
 
+	:global(.ag-tool-panel-horizontal-resize) {
+		@apply bg-slate-300;
+	}
+
 	/* SIDEBAR COLUMN PANEL */
 
 
@@ -736,8 +813,6 @@
 
 
 	/*INPUTY */
-
-
 
 	/*:global(.ag-filter-select) {*/
 	/*	margin-bottom: 6px;*/
@@ -779,9 +854,6 @@
 		box-shadow: none !important;
 	}
 
-	:global(.ag-tool-panel-horizontal-resize) {
-		@apply bg-slate-300;
-	}
 
 
 	/*	BUTTONS */
@@ -800,7 +872,7 @@
 	}
 
 
-	:global(.ag-center-cols-viewport) {
-		min-height: 60px !important;
-	}
+	/*:global(.ag-center-cols-viewport) {*/
+	/*	min-height: 20px !important;*/
+	/*}*/
 </style>

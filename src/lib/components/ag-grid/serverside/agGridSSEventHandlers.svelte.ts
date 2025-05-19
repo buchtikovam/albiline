@@ -11,7 +11,7 @@ import type {
 	RowSelectedEvent,
 } from "ag-grid-enterprise";
 import type {AgGridTableType} from "$lib/types/components/table/table";
-import {disablePageTabs} from "$lib/runes/navigation.svelte";
+import {disablePageTabs} from "$lib/runes/navigation.svelte.js";
 
 
 // row events

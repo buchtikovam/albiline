@@ -12,7 +12,7 @@
 	import type {StoredFilters} from "$lib/types/components/table/filters";
 	import FilterDetailDialog from "$lib/components/dialog/ribbon/FilterDetailDialog.svelte";
 	import TableSkeletonSmall from "$lib/components/skeleton/TableSkeletonSmall.svelte";
-	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';

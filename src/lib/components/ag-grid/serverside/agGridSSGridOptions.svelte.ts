@@ -14,7 +14,7 @@ import {
 	type RowSelectedEvent,
 	themeQuartz
 } from "ag-grid-enterprise";
-import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte";
+import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte.js";
 import {getAgGridLocale} from "$lib/utils/components/ag-grid/methods/getAgGridLocale";
 import {
 	handleCellEditingStart,
@@ -26,7 +26,7 @@ import {
 	handleFilterChanged,
 	handleRowSelected, handleSelectionChanged,
 	handleSortChanged
-} from '$lib/components/ag-grid/agGridSSEventHandlers.svelte';
+} from '$lib/components/ag-grid/serverside/agGridSSEventHandlers.svelte.js';
 import type { AgGridTableType } from '$lib/types/components/table/table';
 import {
 	getContextMenuItems,
@@ -34,7 +34,7 @@ import {
 	getMainMenuItems,
 	getRowId,
 	getStatusBar
-} from '$lib/components/ag-grid/agGridSSUtils.svelte';
+} from '$lib/components/ag-grid/serverside/agGridSSUtils.svelte.js';
 
 
 

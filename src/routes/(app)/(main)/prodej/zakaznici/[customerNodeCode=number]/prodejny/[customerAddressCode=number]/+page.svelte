@@ -29,7 +29,7 @@
 	} from '$lib/types/routes/prodej/zakaznici/customers';
 	import MaxWidthDetailContainer from '$lib/components/containers/MaxWidthDetailContainer.svelte';
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
-	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';
+	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';
 	import SectionLabel from '$lib/components/form/labels/SectionLabel.svelte';
 	import AutoForm from '$lib/components/form/AutoForm.svelte';

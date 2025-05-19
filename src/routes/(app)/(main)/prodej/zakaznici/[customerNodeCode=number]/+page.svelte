@@ -24,7 +24,7 @@
 	import CustomerDetailInvoiceAdressesDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-get/CustomerInvoiceAdressesDialog.svelte";
 	import NewCustomerContactDialog from '$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerContactDialog.svelte';
-	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte';
+	import AgGridCSSecondaryWrapper from '$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte';
 	import MaxWidthDetailContainer from "$lib/components/containers/MaxWidthDetailContainer.svelte";
 	import DetailPageLabel from '$lib/components/form/labels/DetailPageLabel.svelte';
 	import DetailNavButton from '$lib/components/button/DetailNavButton.svelte';

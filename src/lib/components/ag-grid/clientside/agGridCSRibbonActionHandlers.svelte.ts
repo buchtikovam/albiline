@@ -1,41 +1,44 @@
-import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
-import type {GridDependencies} from './types';
+import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+import type {AgGridTableType} from "$lib/types/components/table/table";
+import type {GridApi} from "ag-grid-enterprise";
 import {authDetails} from "$lib/runes/page.svelte";
 import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 
 
-export const handleRibbonAction = (
+export const handleRibbonActionCS = (
 	action: RibbonActionEnum,
-	deps: GridDependencies
+	table: AgGridTableType,
+	gridApi: GridApi,
+	excelFileInput: HTMLInputElement,
 ) => {
 	switch (action) {
 		case RibbonActionEnum.LOAD:
-			deps.setTableProp("openInputParams", true);
+			table.openInputParams = true;
 			break;
 
 		case RibbonActionEnum.EXPORT_EXCEL_HEADERS:
-			deps.gridApi.exportDataAsExcel(getExcelExportOnlyHeadersParams(deps));
+			gridApi.exportDataAsExcel(getExcelExportOnlyHeadersParams(gridApi));
 			break;
 
 		case RibbonActionEnum.EXPORT_EXCEL_DATA:
 			// @ts-ignore
-			deps.gridApi.exportDataAsExcel(getExcelExportParams(deps));
+			gridApi.exportDataAsExcel(getExcelExportParams(gridApi));
 			break;
 
 		case RibbonActionEnum.IMPORT:
-			deps.excelFileInput.click();
+			excelFileInput.click();
 			break;
 
 		case RibbonActionEnum.FILTER_QUICK:
-			handleQuickFilter(deps);
+			handleQuickFilter(gridApi);
 			break;
 
 		case RibbonActionEnum.FILTER_UNDO:
-			handleFilterUndo(deps);
+			handleFilterUndo(table, gridApi);
 			break;
 
 		case RibbonActionEnum.FILTER_REMOVE:
-			deps.gridApi.setFilterModel(null);
+			gridApi.setFilterModel(null);
 			break;
 
 		case RibbonActionEnum.MY_FILTERS:
@@ -43,7 +46,7 @@ export const handleRibbonAction = (
 			break;
 
 		case RibbonActionEnum.SAVE_FILTERS:
-			deps.setTableProp("filtersToSave", deps.gridApi.getFilterModel());
+			table.filtersToSave = gridApi.getFilterModel();
 			openedRibbonDialog.value = "ribbon-save-filters";
 			break;
 
@@ -53,17 +56,16 @@ export const handleRibbonAction = (
 
 		case RibbonActionEnum.SAVE_PRESET:
 			openedRibbonDialog.value = "ribbon-save-preset";
-			deps.setTableProp("presetToSave", deps.gridApi.getColumnState() || []);
+			table.presetToSave = gridApi.getColumnState() || [];
 			break;
 	}
-};
-
+}
 
 
 function getExcelExportOnlyHeadersParams(
-	deps: GridDependencies
+	gridApi: GridApi,
 ) {
-	const allColumns = deps.gridApi.getAllDisplayedColumns();
+	const allColumns = gridApi.getAllDisplayedColumns();
 	// Exclude the first column
 	let columnKeys = allColumns?.map(col => col.getColId());
 	columnKeys.splice(0,1);
@@ -82,9 +84,9 @@ function getExcelExportOnlyHeadersParams(
 
 
 function getExcelExportParams(
-	deps: GridDependencies
+	gridApi: GridApi
 ) {
-	const allColumns = deps.gridApi.getAllDisplayedColumns();
+	const allColumns = gridApi.getAllDisplayedColumns();
 	// Exclude the first column
 	let columnKeys = allColumns?.map(col => col.getColId());
 	columnKeys.splice(0,1);
@@ -101,7 +103,9 @@ function getExcelExportParams(
 }
 
 
-function handleQuickFilter({ gridApi }: GridDependencies) {
+function handleQuickFilter(
+	gridApi: GridApi
+) {
 	const column = gridApi.getFocusedCell();
 	const selection = window.getSelection()?.toString().trim();
 
@@ -129,7 +133,10 @@ function handleQuickFilter({ gridApi }: GridDependencies) {
 }
 
 
-function handleFilterUndo({ table, gridApi }: GridDependencies) {
+function handleFilterUndo(
+	table: AgGridTableType,
+	gridApi: GridApi
+) {
 	table.recentFilters.pop();
 
 	table.recentFilters[table.recentFilters.length - 1]

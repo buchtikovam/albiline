@@ -1,13 +1,13 @@
 <script lang="ts">
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import {
 		salesAnalyticsAgGridDef, salesAnalyticsHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/ag-grid-cs/salesAnalyticsAgGridDef.svelte";
+	import AgGridCSWrapperCopy from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 </script>
 
 
 
-<AgGridCSWrapper
+<AgGridCSWrapperCopy
 	pageKey="SalesAnalytics"
 	gridOptionsCustom={salesAnalyticsAgGridDef}
 	headerTranslations={salesAnalyticsHeaderTranslations}

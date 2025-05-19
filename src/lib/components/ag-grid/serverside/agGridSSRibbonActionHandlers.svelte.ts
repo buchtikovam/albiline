@@ -1,6 +1,6 @@
 import {RibbonActionEnum} from '$lib/enums/ribbon/ribbonAction';
-import {authDetails} from "$lib/runes/page.svelte";
-import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
+import {authDetails} from "$lib/runes/page.svelte.js";
+import {openedRibbonDialog} from "$lib/runes/ribbon.svelte.js";
 import type {AgGridTableType} from "$lib/types/components/table/table";
 import type {GridApi} from "ag-grid-enterprise";
 

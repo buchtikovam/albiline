@@ -3,18 +3,14 @@
 	import {customerGridOptions, customerHeaderTranslations} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-ss/customerAgGridDef.svelte';
 	import {activeTabIndex, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {parseUrlErrors} from "$lib/utils/navigation/parseUrlErrors.svelte";
+	import {beforeNavigate} from "$app/navigation";
 	import {onMount} from "svelte";
+	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 	import NewCustomerOrAddressDecisionDialog
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
-	import AgGridSSWrapper from '$lib/components/ag-grid/AgGridSSWrapper.svelte';
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
-	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
-	import {beforeNavigate} from "$app/navigation";
-	import AgGridRefactoredSSWrapper from "$lib/components/ag-grid/ss-wrapper/AgGridRefactoredSSWrapper.svelte";
-	import AgGridSSWrapperCopy2 from "$lib/components/ag-grid/ss-wrapper/AgGridSSWrapperCopy2.svelte";
+	import AgGridSSWrapper from "$lib/components/ag-grid/serverside/AgGridSSWrapper.svelte";
 
 
 	interface Props {
@@ -84,19 +80,7 @@
 {/if}
 
 
-<!--<AgGridRefactoredSSWrapper-->
-<!--	gridOptionsCustom={customerGridOptions}-->
-<!--	headerTranslations={customerHeaderTranslations}-->
-<!--/>-->
-
-<!--<AgGridSSWrapper-->
-<!--	gridOptionsCustom={customerGridOptions}-->
-<!--	url="customers"-->
-<!--	headerTranslations={customerHeaderTranslations}-->
-<!--/>-->
-
-
-<AgGridSSWrapperCopy2
+<AgGridSSWrapper
 	gridOptionsCustom={customerGridOptions}
 	url="customers"
 	headerTranslations={customerHeaderTranslations}

@@ -6,7 +6,7 @@
 	import {apiGetCustomerInvoiceAddresses} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
 	import {onMount} from "svelte";
 	import type {CustomerInvoiceAddressType} from "$lib/types/routes/prodej/zakaznici/customers";
-	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';

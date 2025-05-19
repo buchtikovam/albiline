@@ -9,7 +9,7 @@
 		nastaveniHeaderTranslations
 	} from "$lib/definitions/routes/nastaveni/ag-grid-cs/nastaveniAgGridDef";
 	import {onMount} from "svelte";
-	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/AgGridCSSecondaryWrapper.svelte";
+	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte";
 	import SectionLabel from "$lib/components/form/labels/SectionLabel.svelte";
 	import InputLabel from "$lib/components/form/labels/InputLabel.svelte";
 

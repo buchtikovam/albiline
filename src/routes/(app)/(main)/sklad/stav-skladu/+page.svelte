@@ -12,8 +12,8 @@
 	import {onMount} from "svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
-	import AgGridCSWrapper from "$lib/components/ag-grid/AgGridCSWrapper.svelte";
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
+	import AgGridCSWrapperCopy from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 
 	interface Props {
 		data: { pageMetaData: PageMetaDataType }
@@ -63,7 +63,7 @@
 	/>
 {/if}
 
-<AgGridCSWrapper
+<AgGridCSWrapperCopy
 	pageKey="ProductStockInventory"
 	gridOptionsCustom={productStockInventoryAgGridDef}
 	headerTranslations={productStockInventoryHeaderTranslations}
