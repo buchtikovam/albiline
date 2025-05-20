@@ -10,6 +10,7 @@
 	import {getColumnFilters} from "$lib/utils/components/input-params/getColumnFilters";
 	import {setContext} from "svelte";
 	import deepcopy from "deepcopy";
+	import Trash2 from "lucide-svelte/icons/trash-2";
 	import Upload from "lucide-svelte/icons/upload";
 	import Save from "lucide-svelte/icons/save";
 	import type {
@@ -17,18 +18,17 @@
 		FetchedInputParam,
 		InputParamsOptions, InputParamsInput, ColumnFilter,
 	} from "$lib/types/components/input-params/inputParams";
+	import type {PageMetaDataInputs} from "$lib/types/routes/pageSettings";
 	import InputParamsSaveNewOrUpdateDialog from "$lib/components/input-params/dialogs/InputParamsSaveNewOrUpdateDialog.svelte";
-	import LoadInputParamsDialog from "$lib/components/input-params/dialogs/LoadInputParamsDialog.svelte";
 	import InputParamsColumnFilter from "$lib/components/input-params/sections/InputParamsColumnFilter.svelte";
+	import LoadInputParamsDialog from "$lib/components/input-params/dialogs/LoadInputParamsDialog.svelte";
 	import InputParamsFulltext from "$lib/components/input-params/sections/InputParamsFulltext.svelte";
 	import InputParamsInputs from "$lib/components/input-params/sections/InputParamsInputs.svelte";
 	import InputParamsHeader from "$lib/components/input-params/sections/InputParamsHeader.svelte";
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import Trash2 from "lucide-svelte/icons/trash-2";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import type {PageMetaDataInputs} from "$lib/types/routes/pageSettings";
 
 
 	interface Props {
@@ -36,7 +36,7 @@
 		type: 'serverSide'|'clientSide',
 		defaultInputParams: InputParamsType,
 		selectOptions: InputParamsOptions[],
-		restrictions: PageMetaDataInputs,
+		restrictions?: PageMetaDataInputs,
 	}
 
 	let {
@@ -96,6 +96,7 @@
 	});
 
 
+	$inspect(JSON.stringify(inputParams, null, 1))
 
 	// load selected input param into InputParam component
 	function onParamSelect(inputParam: FetchedInputParam) {
@@ -116,7 +117,6 @@
 			inputs: deepcopy(updatedInputs)
 		};
 	}
-
 
 	$effect(() => {
 		const currentColumnFilters = inputParams.columnFilters;

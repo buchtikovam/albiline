@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {showFulltextSearch} from "$lib/runes/page.svelte";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+	import {showFulltextSearch} from "$lib/runes/page.svelte.js";
+	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte.js";
 	import {Input} from "$lib/components/ui/input";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
@@ -8,7 +8,7 @@
 	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
-	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import * as Tabs from "$lib/components/ui/tabs";
 	import {Checkbox} from "$lib/components/ui/checkbox";
 	import {Separator} from "$lib/components/ui/separator";
 	import {setContext} from "svelte";
@@ -28,12 +28,12 @@
 	}
 
 	let pageSectionsState: PageSections = $state({
-		linieSection: true,
+		linieSection: false,
 		kspSection: false,
 		ksSection: false,
 	})
 
-	currentPageKey.value = "SalesAnalytics";
+	currentPageKey.value = "SalesTotalByDivision";
 	let table: AgGridTableType = $state(agGridTables.value[currentPageKey.value]);
 
 	setContext("pageSections", pageSectionsState);
@@ -101,7 +101,7 @@
 		<div class="flex gap-2 items-center">
 			<FilterAndPresetButtons
 				bind:table={table}
-				routeId="/(app)/(main)/prodej/analyza-prodeju"
+				routeId="/(app)/(main)/prodej/analyza-prodeju/celkem"
 			/>
 
 			{#if showFulltextSearch.value === true}

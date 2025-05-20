@@ -41,6 +41,7 @@
 		}
 	}
 
+	$inspect(filteredItems, searchTerm)
 
 	$effect(() => {
 		search(searchTerm, sidebarCategory.value);

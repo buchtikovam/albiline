@@ -94,37 +94,111 @@
 									class="w-fit max-w-80 p-1"
 								>
 									<Sidebar.Menu>
-										<p class="text-xs font-medium text-slate-500 p-1 pb-0">
+										<p class="text-xs font-bold text-albi-500 p-1">
 											{item.translation()}
 										</p>
 
 										{#each item.children as subItem (subItem.field)}
-											<ContextMenu.Root>
-												<ContextMenu.Trigger class={subItem.hide ? "hidden" : ""}>
-													<Sidebar.MenuSubItem>
-														<Sidebar.MenuSubButton>
-															{#snippet child({ props })}
-																<a
-																	href={subItem.href}
-																	onclick={() => {
+											{#if subItem.children.length > 0}
+
+												<Collapsible.Root open={true}>
+													<Collapsible.Trigger>
+														{#snippet child({ props })}
+															<Sidebar.MenuButton {...props}>
+																{#snippet tooltipContent()}
+																	{subItem.translation()}
+																{/snippet}
+
+																{@const Icon = subItem.icon}
+																{#if subItem.icon}
+																	<Icon />
+																{/if}
+
+																<span>
+																	{subItem.translation()}
+																</span>
+
+																{#if subItem.open}
+																	<ChevronDown
+																		class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+																	/>
+
+																{:else}
+																	<ChevronRight
+																		class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+																	/>
+																{/if}
+
+															</Sidebar.MenuButton>
+														{/snippet}
+													</Collapsible.Trigger>
+
+
+													<Collapsible.Content>
+														<Sidebar.MenuSub>
+															{#each subItem.children as subSubItem(subSubItem.field)}
+
+																<ContextMenu.Root>
+																	<ContextMenu.Trigger>
+																		<Sidebar.MenuSubItem>
+																			<Sidebar.MenuSubButton>
+																				{#snippet child({ props })}
+																					<a
+																						href={subSubItem.href}
+																						data-sveltekit-preload-data="off"
+																						onclick={() => {
+																							handleTabClick(subSubItem, 2);
+																						}}
+																						{...props}
+																					>
+																						<span>
+																							{subSubItem.translation()}
+																						</span>
+																					</a>
+																				{/snippet}
+																			</Sidebar.MenuSubButton>
+																		</Sidebar.MenuSubItem>
+																	</ContextMenu.Trigger>
+
+																	<ContextMenuFavorite
+																		field={subItem.field}
+																	/>
+																</ContextMenu.Root>
+															{/each}
+														</Sidebar.MenuSub>
+													</Collapsible.Content>
+												</Collapsible.Root>
+											{:else}
+												<ContextMenu.Root>
+													<ContextMenu.Trigger class={subItem.hide ? "hidden" : ""}>
+														<Sidebar.MenuItem>
+															<Sidebar.MenuSubButton>
+																{#snippet child({ props })}
+																	<a
+																		href={subItem.href}
+																		onclick={() => {
 																		item.popoverOpen = false;
 																		handleTabClick(subItem, 1);
 																	}}
-																	{...props}
-																>
+																		{...props}
+																	>
 																	<span>
 																		{subItem.translation()}
 																	</span>
-																</a>
-															{/snippet}
-														</Sidebar.MenuSubButton>
-													</Sidebar.MenuSubItem>
-												</ContextMenu.Trigger>
+																	</a>
+																{/snippet}
+															</Sidebar.MenuSubButton>
+														</Sidebar.MenuItem>
+													</ContextMenu.Trigger>
 
-												<ContextMenuFavorite
-													field={subItem.field}
-												/>
-											</ContextMenu.Root>
+													<ContextMenuFavorite
+														field={subItem.field}
+													/>
+												</ContextMenu.Root>
+											{/if}
+
+
+
 										{/each}
 									</Sidebar.Menu>
 								</Popover.Content>
@@ -133,7 +207,7 @@
 
 							<!-- open sidebar -->
 
-							<Collapsible.Trigger >
+							<Collapsible.Trigger>
 								{#snippet child({ props })}
 									<Sidebar.MenuButton {...props}>
 										{#snippet tooltipContent()}
@@ -151,11 +225,11 @@
 
 										{#if item.open}
 											<ChevronDown
-												class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+												class="ml-auto"
 											/>
 										{:else}
 											<ChevronRight
-												class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+												class="ml-auto "
 											/>
 										{/if}
 									</Sidebar.MenuButton>
@@ -168,32 +242,107 @@
 							{#if item.children.length > 0}
 								<Sidebar.MenuSub>
 									{#each item.children as subItem (subItem.field)}
-										<ContextMenu.Root>
-											<ContextMenu.Trigger class={subItem.hide ? "hidden" : ""}>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a
-																href={subItem.href}
-																onclick={() => {
-																	handleTabClick(subItem, 1);
-																}}
-																{...props}
-															>
-																<span>
-																	{subItem.translation()}
-																</span>
-															</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
+										{#if subItem.children.length > 0}
+											<Collapsible.Root
+												bind:open={subItem.open}
+												class="group/collapsible"
+											>
+												<Sidebar.MenuSubItem class={subItem.hide ? "hidden" : "block"}>
+													<Collapsible.Trigger class="w-full">
+														<Sidebar.MenuSubButton {...props}>
+															<!--{#snippet tooltipContent()} todo -->
+															<!--	{subItem.translation()}-->
+															<!--{/snippet}-->
+
+															{@const Icon = subItem.icon}
+															{#if subItem.icon}
+																<Icon />
+															{/if}
+
+															<span>
+																{subItem.translation()}
+															</span>
+
+															{#if subItem.open}
+																<ChevronDown
+																	class="ml-auto "
+																/>
+															{:else}
+																<ChevronRight
+																	class="ml-auto "
+																/>
+															{/if}
+														</Sidebar.MenuSubButton>
+													</Collapsible.Trigger>
 												</Sidebar.MenuSubItem>
-											</ContextMenu.Trigger>
 
 
-											<ContextMenuFavorite
-												field={subItem.field}
-											/>
-										</ContextMenu.Root>
+												<Collapsible.Content>
+													{#if subItem.children.length > 0}
+														<Sidebar.MenuSub>
+															{#each subItem.children as subSubItem (subSubItem.field)}
+																<ContextMenu.Root>
+																	<ContextMenu.Trigger class={subSubItem.hide ? "hidden" : ""}>
+																		<Sidebar.MenuSubItem>
+																			<Sidebar.MenuSubButton>
+																				{#snippet child({ props })}
+																					<a
+																						href={subSubItem.href}
+																						data-sveltekit-preload-data="off"
+																						onclick={() => {
+																							handleTabClick(subSubItem, 2);
+																						}}
+																						{...props}
+																					>
+
+																					<span>
+																						{subSubItem.translation()}
+																					</span>
+
+																					</a>
+																				{/snippet}
+																			</Sidebar.MenuSubButton>
+																		</Sidebar.MenuSubItem>
+																	</ContextMenu.Trigger>
+
+
+																	<ContextMenuFavorite
+																		field={subSubItem.field}
+																	/>
+																</ContextMenu.Root>
+															{/each}
+														</Sidebar.MenuSub>
+													{/if}
+
+												</Collapsible.Content>
+											</Collapsible.Root>
+										{:else}
+											<ContextMenu.Root>
+												<ContextMenu.Trigger class={subItem.hide ? "hidden" : ""}>
+													<Sidebar.MenuSubItem>
+														<Sidebar.MenuSubButton>
+															{#snippet child({ props })}
+																<a
+																	href={subItem.href}
+																	onclick={() => {
+																		handleTabClick(subItem, 1);
+																	}}
+																	{...props}
+																>
+																	<span>
+																		{subItem.translation()}
+																	</span>
+																</a>
+															{/snippet}
+														</Sidebar.MenuSubButton>
+													</Sidebar.MenuSubItem>
+												</ContextMenu.Trigger>
+
+												<ContextMenuFavorite
+													field={subItem.field}
+												/>
+											</ContextMenu.Root>
+										{/if}
 									{/each}
 								</Sidebar.MenuSub>
 							{/if}

@@ -35,7 +35,7 @@
 
 <div class="h-screen w-screen bg-slate-100 overflow-hidden">
 	<Sidebar.Provider
-		style="--sidebar-width: 280px; --sidebar-width-mobile: 200px"
+		style="--sidebar-width: 320px; --sidebar-width-mobile: 320px"
 		class="!h-full pb-2 pr-2  w-full flex"
 		bind:open={sidebarOpen.value}
 	>
@@ -48,7 +48,7 @@
 			<div
 				class={
 					sidebarOpen.value
-						? "w-[280px] max-w-[280px] min-w-[280px] transition-all duration-200 ease-linear"
+						? "w-[320px] max-w-[320px] min-w-[320px] transition-all duration-200 ease-linear"
 						: "w-[66px] max-w-[66px] min-w-[66px] transition-all duration-200 ease-linear"
 				}
 			>

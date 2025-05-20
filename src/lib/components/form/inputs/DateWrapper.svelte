@@ -23,7 +23,7 @@
 
 	$effect(() => {
 		if (value) {
-			validateDate()
+			validateDate();
 		}
 	})
 

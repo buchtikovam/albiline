@@ -1,9 +1,10 @@
 <script lang="ts">
 	import {Checkbox} from "$lib/components/ui/checkbox/index.js";
-	import {isEqual} from "lodash-es";
 	import type {InputParamsInput} from "$lib/types/components/input-params/inputParams";
 	import InputLabelWithContext from "$lib/components/form/labels/InputLabelWithContext.svelte";
 	import deepcopy from "deepcopy";
+	import DatePicker from "$lib/components/date/DatePicker.svelte";
+	import {Input} from "$lib/components/ui/input";
 
 	interface Props {
 		initialInputs: InputParamsInput[];
@@ -17,53 +18,24 @@
 		onInputsChange
 	}: Props = $props();
 
+
 	// Reactive state with deep equality check
 	let allInputs: InputParamsInput[] = $state(deepcopy(initialInputs));
 	let isUpdating = $state(false);
 
 
-	// One-time merge on component initialization
-	$effect(() => {
-		const merged= initialInputs.map(initial => {
-			const loaded = inputs?.find(i => i.field === initial.field);
-			return loaded ? { ...initial, value: loaded.value } : initial;
-		});
-
-		if (!isEqual(merged, allInputs)) {
-			allInputs = merged;
-		}
-	});
-
-
-	// Handle external input changes with deep comparison
-	$effect(() => {
-		if (isUpdating || !inputs) return;
-
-		const merged = initialInputs.map(initial => {
-			const loaded = inputs.find(i => i.field === initial.field);
-			return loaded ? { ...initial, value: loaded.value } : initial;
-		});
-
-		if (!isEqual(merged, allInputs)) {
-			allInputs = merged;
-		}
-	});
-
-
-	// Handle local changes with proper immutability
-	function handleInputChange(index: number, newValue: boolean) {
+	// Updated to handle multiple value types
+	function handleInputChange(index: number, newValue: any) {
 		isUpdating = true;
 
-		// Create a new array with updated value
 		const updatedInputs = allInputs.map((input, i) =>
 			i === index ? { ...input, value: newValue } : input
 		);
 
-		// Update local state only if changed
-		if (!isEqual(updatedInputs, allInputs)) {
+		// if (!isEqual(updatedInputs, allInputs)) {
 			allInputs = updatedInputs;
 			onInputsChange(deepcopy(updatedInputs));
-		}
+		// }
 
 		isUpdating = false;
 	}
@@ -76,11 +48,51 @@
 	Hledat podle parametrů
 </p>
 
-<div class="mb-4">
+<div class="mb-4 grid grid-cols-2 gap-x-2">
 	{#each allInputs as paramInput, i}
 		<div class="mb-3">
+			{#if paramInput.type === "text"}
+				<div>
+					<InputLabelWithContext
+						contextMenuField={paramInput.field}
+						label={paramInput.label()}
+					/>
+
+					<Input
+						bind:value={paramInput.value}
+						type="text"
+						onchange={() => handleInputChange(i, paramInput.value)}
+					/>
+				</div>
+			{/if}
+
+			{#if paramInput.type === "number"}
+				<div>
+					<InputLabelWithContext
+						contextMenuField={paramInput.field}
+						label={paramInput.label()}
+					/>
+
+					<Input
+						bind:value={paramInput.value}
+						type="number"
+						onchange={() => handleInputChange(i, paramInput.value)}
+					/>
+				</div>
+			{/if}
+
+			{#if paramInput.type === "date"}
+				<DatePicker
+					hasError={false}
+					bind:dateValue={paramInput.value}
+					label={paramInput.label()}
+					field={paramInput.field}
+					onchange={() => handleInputChange(i, paramInput.value)}
+				/>
+			{/if}
+
 			{#if paramInput.type === 'boolean'}
-				<div class="flex items-center gap-2">
+				<div class="flex items-center  gap-2">
 					<Checkbox
 						class="focus-visible:border-albi-500"
 						checked={paramInput.value}

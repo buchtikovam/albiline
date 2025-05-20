@@ -8,7 +8,10 @@ export function mountCSGrid(
 	table: AgGridTableType,
 	headerTranslations: Record<string, () => string>
 ): void {
-	gridApi.setFilterModel(table.filtersToSave);
+	if (table) {
+		gridApi.setFilterModel(table.filtersToSave);
+	}
+
 	table.defaultColState = gridApi.getColumnState();
 
 	gridApi.setGridOption(

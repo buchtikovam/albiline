@@ -244,7 +244,7 @@
 			<!-- customer contacts table: display all, add new, move table up/down -->
 			{#if item.type === "contacts"}
 				<div class={item.isLast ? "" : "mb-4"}>
-					<div class="flex gap-2" >
+					<div class="flex gap-2 pb-2" >
 						<SectionLabel
 							label={m.routes_prodej_zakaznici_detail_contacts_label()}
 						/>
@@ -253,27 +253,32 @@
 							id="contacts"
 							onclick={() => pageLayout = flipItems(pageLayout)}
 						>
-							<ArrowUpDown class="size-4 text-albi-500"/>
+							<ArrowUpDown
+								class="size-4 text-albi-500"
+							/>
 						</button>
 
 
 						<button
 							onclick={() => openNewContactDialog = true}
 						>
-							<Plus strokeWidth={2.5} class="size-4 text-albi-500"/>
+							<Plus
+								strokeWidth={2.5}
+								class="size-4 text-albi-500"
+							/>
 						</button>
 					</div>
 
-
-					<AgGridCSSecondaryWrapper
-						requiredFields={["customerPersonCode"]}
-						rowData={contactValues}
-						fullHeight={false}
-						headerTranslations={customerAndAddressContactsHeaderTranslations}
-						gridOptionsCustom={customerAndAddressContactsGridOptions}
-						bind:createdRowData={createdContacts}
-						bind:editedRowData={editedContactValues}
-					/>
+					<div class="p-2 bg-slate-100 border border-slate-300 rounded-lg">
+						<AgGridCSSecondaryWrapper
+							rowData={contactValues}
+							fullHeight={false}
+							headerTranslations={customerAndAddressContactsHeaderTranslations}
+							gridOptionsCustom={customerAndAddressContactsGridOptions}
+							bind:createdRowData={createdContacts}
+							bind:editedRowData={editedContactValues}
+						/>
+					</div>
 				</div>
 			{/if}
 		</div>

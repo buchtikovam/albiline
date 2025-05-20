@@ -1,9 +1,9 @@
-import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
-import type {LayoutLoad} from "../../../../../../.svelte-kit/types/src/routes/(app)/$types";
+import {agGridTables, currentPageKey} from "$lib/runes/table.svelte.js";
+import type {LayoutLoad} from "../../../../../../../.svelte-kit/types/src/routes/(app)/$types";
 
 
 export const load: LayoutLoad = async () => {
-	currentPageKey.value = "SalesAnalytics";
+	currentPageKey.value = "SalesTotalByDivision";
 
 	if (!agGridTables.value[currentPageKey.value]) {
 		agGridTables.value[currentPageKey.value] = {

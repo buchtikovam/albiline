@@ -107,7 +107,6 @@
 	})
 
 
-
 	// disable navigation on routing between detail pages
 	$effect(() => {
 		if (table.activeSelectedRowIndex) {
@@ -115,7 +114,6 @@
 			if (!table.selectedRows[table.activeSelectedRowIndex - 1]) disableLeft = true;
 		}
 	})
-
 
 
 	// disable navigation if there are unsaved changes in form
@@ -274,7 +272,7 @@
 				<!-- address contacts table: display all, add new, move table up/down -->
 				{#if item.type === "contacts"}
 					<div
-						class={(item.isLast ? "mb-2" : "mb-4")}
+						class={(item.isLast ? "" : "mb-4")}
 					>
 						<div class="flex gap-2 pb-2">
 							<SectionLabel
@@ -299,16 +297,17 @@
 						</div>
 
 						<!-- contacts table -->
-						<AgGridCSSecondaryWrapper
-							requiredFields={["customerPersonCode"]}
-							rowData={contactValues}
-							fullHeight={false}
-							hiddenHeader={false}
-							headerTranslations={customerAndAddressContactsHeaderTranslations}
-							gridOptionsCustom={customerAndAddressContactsGridOptions}
-							bind:createdRowData={createdContacts}
-							bind:editedRowData={editedContactValues}
-						/>
+						<div class="p-2 bg-slate-100 border border-slate-300 rounded-lg">
+							<AgGridCSSecondaryWrapper
+								rowData={contactValues}
+								fullHeight={false}
+								hiddenHeader={false}
+								headerTranslations={customerAndAddressContactsHeaderTranslations}
+								gridOptionsCustom={customerAndAddressContactsGridOptions}
+								bind:createdRowData={createdContacts}
+								bind:editedRowData={editedContactValues}
+							/>
+						</div>
 					</div>
 				{/if}
 			</div>

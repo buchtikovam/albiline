@@ -22,12 +22,12 @@ export async function initializePrinterService() {
 export async function getAvailablePrinters() {
 	try {
 		let printers: string[] = await JSPM.JSPrintManager.getPrinters();
-
-		for (const printer of printers) {
-			let info = await JSPM.JSPrintManager.getPrintersInfo(1, printer, 0);
-
-			console.log(info);
-		}
+		//
+		// for (const printer of printers) {
+		// 	let info = await JSPM.JSPrintManager.getPrintersInfo(1, printer, 0);
+		//
+		// 	console.log(info);
+		// }
 
 		return printers;
 
