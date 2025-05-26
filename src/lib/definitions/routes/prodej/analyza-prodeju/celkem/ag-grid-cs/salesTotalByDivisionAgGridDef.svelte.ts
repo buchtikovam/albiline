@@ -1,6 +1,110 @@
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte.js";
-import type {GridOptions} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
+
+
+function formatPercentage(
+	number: number,
+	fractionDigits = 2,
+) {
+	if (number === null || number === undefined || isNaN(number)) return "0%";
+
+	const percentValue = number * 100;
+
+	const formattedNumber = percentValue.toLocaleString('cs-CZ', {
+		style: 'decimal',
+		maximumFractionDigits: fractionDigits,
+		useGrouping: true,
+	});
+
+	return `${formattedNumber}%`; // Append % without space
+}
+
+
+function formatNumberValue(number: number) {
+	if (!number) return "0";
+
+	return Math.trunc(number)
+		.toLocaleString('cs-CZ')
+		.replace(/,/g, ' ')
+}
+
+
+function getDiff(
+	dividendField: string,
+	divisorField: string,
+	params: IAggFuncParams
+) {
+	let dividendSum = 0;
+	let divisorSum = 0;
+
+	params.api.forEachNode((node: IRowNode) => {
+		dividendSum += node.data[dividendField];
+		divisorSum += node.data[divisorField];
+	});
+
+	if (divisorSum <= 0 && dividendSum > 0) {
+		return 1; // 100% growth
+	}
+
+	if (divisorSum >= 0 && dividendSum < 0) {
+		return -1; // -100% decline
+	}
+
+	if (divisorSum === 0 && dividendSum === 0) {
+		return 0; // 0% change
+	}
+
+	if (divisorSum === 0) {
+		return dividendSum > 0 ? Infinity : -Infinity;
+	}
+
+	return (dividendSum / divisorSum) - 1;
+}
+
+
+function getDiffFromBasePrice(
+	salesField: string,
+	basePriceField: string,
+	params: IAggFuncParams
+) {
+	let sales = 0;
+	let baseprice = 0;
+
+	params.api.forEachNode((node: IRowNode) => {
+		sales += node.data[salesField];
+		baseprice += node.data[basePriceField];
+	});
+
+	if (baseprice !== 0) {
+		return (sales / baseprice) - 1;
+	}
+
+	return 0;
+}
+
+
+function getMargrinDiff(
+	profitField: string,
+	salesField: string,
+	params: IAggFuncParams
+) {
+	let profit = 0;
+	let sales = 0;
+
+	params.api.forEachNode((node: IRowNode) => {
+		profit += node.data[profitField];
+		sales += node.data[salesField];
+	});
+
+	if (sales !== 0) {
+		return (profit / sales);
+	}
+
+	return 0;
+}
+
+
 
 
 export const SalesTotalByDivisionAgGridDef: GridOptions = {
@@ -11,7 +115,17 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 		],
 	},
 
+	statusBar: undefined,
 	suppressDragLeaveHidesColumns: true,
+
+	rowSelection: {
+		mode: "singleRow",
+		enableClickSelection: true,
+		hideDisabledCheckboxes: true,
+		checkboxes: false,
+	},
+
+	grandTotalRow: "bottom",
 
 	columnDefs: [
 		getAgColumn(
@@ -23,37 +137,57 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 		getAgColumn(
 			"itemName", // Název divize
-			"text", 68,
+			"text", 170,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
 			"currency", // Měna
-			"text", 68,
+			"text", 70,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
 			"sales_LY", // Celkem vloni
-			"number", 68,
+			"number", 105,
 			false, false, false,
-			[],
+			["text-right"],
+			{
+				aggFunc: 'sum',
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberValue(params.value);
+				},
+			}
 		),
 
 		getAgColumn(
 			"sales_AY", // Celkem letos
-			"number", 68,
+			"number", 105,
 			false, false, false,
-			[],
+			["text-right"],
+			{
+				aggFunc: 'sum',
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberValue(params.value)
+				}
+			}
 		),
 
 		getAgColumn(
-			"salesDiff", // % todo: procenta
-			"number", 68,
+			"salesDiff", // %
+			"number", 70,
 			false, false, false,
-			[],
+			["text-right"],
+			{
+				aggFunc: (params: IAggFuncParams) => {
+					return getDiff("sales_AY", "sales_LY", params);
+				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0);
+				}
+			}
 		),
 
 		{
@@ -61,86 +195,166 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"sales_CZ_LY", // Celkem vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_AY", // Celkem letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_AY", "sales_CZ_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					},
 				),
 
 				getAgColumn(
 					"sales_CZ_Wholesale_LY", // VO vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_Wholesale_AY", // VO letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_Wholesale_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_Wholesale_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_Wholesale_AY", "sales_CZ_Wholesale_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					},
 				),
 
 				getAgColumn(
 					"sales_CZ_Eshop_LY", // CZ eShop vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_Eshop_AY", // CZ eShop letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_Eshop_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_Eshop_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_Eshop_AY", "sales_CZ_Eshop_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_Retail_LY", // CZ prodejny vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_Retail_AY", // CZ prodejny letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_Retail_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_Retail_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_Retail_AY", "sales_CZ_Retail_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -150,23 +364,43 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"sales_CZ_RetailBakery_LY", // Vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_RetailBakery_AY", // Letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_RetailBakery_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_RetailBakery_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_RetailBakery_AY", "sales_CZ_RetailBakery_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -176,44 +410,84 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"sales_CZ_EshopKinoko_LY", // eShop vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_EshopKinoko_AY", // eShop letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_EshopKinoko_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_EshopKinoko_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_EshopKinoko_AY", "sales_CZ_EshopKinoko_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_RetailKinoko_LY", // MO vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_RetailKinoko_AY", // MO letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_RetailKinoko_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_RetailKinoko_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_RetailKinoko_AY", "sales_CZ_RetailKinoko_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -223,86 +497,166 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"sales_SK_LY", // SK celkem vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_AY", // SK celkem letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_SK_LY_Diff", // % todo: procenta
-					"number", 68,
+					"sales_SK_LY_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_SK_AY", "sales_SK_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_Wholesale_LY", // SK VO vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_Wholesale_AY", // SK VO letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_SK_Wholesale_LY_Diff", // % todo: procenta
-					"number", 68,
+					"sales_SK_Wholesale_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_SK_Wholesale_AY", "sales_SK_Wholesale_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_Eshop_LY", // SK eShop vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_Eshop_AY", // SK eShop letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_SK_Eshop_LY_Diff", // % todo: procenta
-					"number", 68,
+					"sales_SK_Eshop_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_SK_Eshop_AY", "sales_SK_Eshop_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_Retail_LY", // SK prodejny vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_SK_Retail_AY", // SK prodejny letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_SK_Retail_LY_Diff", // % todo: procenta
-					"number", 68,
+					"sales_SK_Retail_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_SK_Retail_AY", "sales_SK_Retail_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -312,65 +666,125 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"sales_PL_LY", // PL celkem vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_PL_AY", // PL celkem letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_PL_Diff", // % todo: procenta
-					"number", 68,
+					"sales_PL_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_PL_AY", "sales_PL_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_PL_Wholesale_LY", // PL VO vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_PL_Wholesale_AY", // PL VO letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_PL_Wholesale_Diff", // % todo: procenta
-					"number", 68,
+					"sales_PL_Wholesale_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_PL_Wholesale_AY", "sales_PL_Wholesale_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_PL_Eshop_LY", // PL eShop vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_PL_Eshop_AY", // PL eShop letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_PL_Eshop_Diff", // % todo: procenta
-					"number", 68,
+					"sales_PL_Eshop_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_PL_Eshop_AY", "sales_PL_Eshop_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -380,23 +794,43 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"sales_CZ_Export_LY", // Export celkem vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"sales_CZ_Export_AY", // Export celkem letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"sales_CZ_Export_Diff", // % todo: procenta
-					"number", 68,
+					"sales_CZ_Export_Diff", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("sales_CZ_Export_AY", "sales_CZ_Export_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -406,98 +840,198 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			children: [
 				getAgColumn(
 					"basePrice_LY", // Celkem vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
 					"basePrice_AY", // Celkem letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: 'sum',
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value)
+						}
+					}
 				),
 
 				getAgColumn(
-					"basePrice_Diff", // % todo: procenta
-					"number", 68,
+					"basePrice_Diff", // %
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiff("basePrice_AY", "basePrice_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
 
 		getAgColumn(
-			"discount_LY", // Celkem sleva vloni
-			"number", 68,
+			"discount_LY", // Celkem sleva vloni %
+			"number", 90,
 			false, false, false,
-			[],
+			["text-right"],
+			{
+				aggFunc: (params: IAggFuncParams) => {
+					return getDiffFromBasePrice("sales_LY", "basePrice_LY", params)
+				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0);
+				}
+			}
 		),
 
 		getAgColumn(
-			"discount_AY", // Celkem sleva letos
-			"number", 68,
+			"discount_AY", // Celkem sleva letos %
+			"number", 90,
 			false, false, false,
-			[],
+			["text-right"],
+			{
+				aggFunc: (params: IAggFuncParams) => {
+					return getDiffFromBasePrice("sales_AY", "basePrice_AY", params)
+				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0);
+				}
+			}
 		),
 
 		{
 			field: "group_cz", // CZ
 			children: [
 				getAgColumn(
-					"discount_CZ_LY", // Celkem sleva vloni
-					"number", 68,
+					"discount_CZ_LY", // Celkem sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_LY", "basePrice_CZ_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_AY", // Celkem sleva letos
-					"number", 68,
+					"discount_CZ_AY", // Celkem sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_AY", "basePrice_CZ_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Wholesale_LY", // VO sleva vloni
-					"number", 68,
+					"discount_CZ_Wholesale_LY", // VO sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Wholesale_LY", "basePrice_CZ_Wholesale_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Wholesale_AY", // VO sleva letos
-					"number", 68,
+					"discount_CZ_Wholesale_AY", // VO sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Wholesale_AY", "basePrice_CZ_Wholesale_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Eshop_LY", // eShop sleva vloni
-					"number", 68,
+					"discount_CZ_Eshop_LY", // eShop sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Eshop_LY", "basePrice_CZ_Eshop_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Eshop_AY", // eShop sleva letos
-					"number", 68,
+					"discount_CZ_Eshop_AY", // eShop sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Eshop_AY", "basePrice_CZ_Eshop_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Retail_LY", // Prodejny sleva vloni
-					"number", 68,
+					"discount_CZ_Retail_LY", // Prodejny sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Retail_LY", "basePrice_CZ_Retail_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Retail_AY", // Prodejny sleva letos
-					"number", 68,
+					"discount_CZ_Retail_AY", // Prodejny sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Retail_AY", "basePrice_CZ_Retail_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			],
 		},
@@ -506,17 +1040,33 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			field: "group_bakery", // Pekárny
 			children: [
 				getAgColumn(
-					"discount_CZ_RetailBakery_LY", // Sleva vloni
-					"number", 68,
+					"discount_CZ_RetailBakery_LY", // Sleva vloni %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_RetailBakery_LY", "basePrice_CZ_RetailBakery_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_RetailBakery_AY", // Sleva letos
-					"number", 68,
+					"discount_CZ_RetailBakery_AY", // Sleva letos %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_RetailBakery_AY", "basePrice_CZ_RetailBakery_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -525,31 +1075,63 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			field: "group_kinoko", // Kinoko
 			children: [
 				getAgColumn(
-					"discount_CZ_EshopKinoko_LY", // eShop sleva vloni
-					"number", 68,
+					"discount_CZ_EshopKinoko_LY", // eShop sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_EshopKinoko_LY", "basePrice_CZ_EshopKinoko_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_EshopKinoko_AY", // eShop sleva letos
-					"number", 68,
+					"discount_CZ_EshopKinoko_AY", // eShop sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_EshopKinoko_AY", "basePrice_CZ_EshopKinoko_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_RetailKinoko_LY", // MO sleva vloni
-					"number", 68,
+					"discount_CZ_RetailKinoko_LY", // MO sleva vloni %
+					"number", 85,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_RetailKinoko_LY", "basePrice_CZ_RetailKinoko_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_RetailKinoko_AY", // MO sleva letos
-					"number", 68,
+					"discount_CZ_RetailKinoko_AY", // MO sleva letos %
+					"number", 85,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_RetailKinoko_AY", "basePrice_CZ_RetailKinoko_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -558,59 +1140,123 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			field: "group_sk", // SK
 			children: [
 				getAgColumn(
-					"discount_SK_LY", // Celkem sleva vloni
-					"number", 68,
+					"discount_SK_LY", // Celkem sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_LY", "basePrice_SK_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_AY", // Celkem sleva letos
-					"number", 68,
+					"discount_SK_AY", // Celkem sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_AY", "basePrice_SK_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_Wholesale_LY", // VO sleva vloni
-					"number", 68,
+					"discount_SK_Wholesale_LY", // VO sleva vloni %
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_Wholesale_LY", "basePrice_SK_Wholesale_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_Wholesale_AY", // VO sleva letos
-					"number", 68,
+					"discount_SK_Wholesale_AY", // VO sleva letos %
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_Wholesale_AY", "basePrice_SK_Wholesale_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_Eshop_LY", // eShop sleva vloni
-					"number", 68,
+					"discount_SK_Eshop_LY", // eShop sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_Eshop_LY", "basePrice_SK_Eshop_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_Eshop_AY", // eShop sleva letos
-					"number", 68,
+					"discount_SK_Eshop_AY", // eShop sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_Eshop_AY", "basePrice_SK_Eshop_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_Retail_LY", // Prodejny sleva vloni
-					"number", 68,
+					"discount_SK_Retail_LY", // Prodejny sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_Retail_LY", "basePrice_SK_Retail_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_SK_Retail_AY", // Prodejny sleva letos
-					"number", 68,
+					"discount_SK_Retail_AY", // Prodejny sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_SK_Retail_AY", "basePrice_SK_Retail_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			],
 		},
@@ -619,45 +1265,93 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			field: "group_pl", // PL
 			children: [
 				getAgColumn(
-					"discount_PL_LY", // Celkem sleva vloni
-					"number", 68,
+					"discount_PL_LY", // Celkem sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_PL_LY", "basePrice_PL_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_PL_AY", // Celkem sleva letos
-					"number", 68,
+					"discount_PL_AY", // Celkem sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_PL_AY", "basePrice_PL_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_PL_Wholesale_LY", // VO sleva vloni
-					"number", 68,
+					"discount_PL_Wholesale_LY", // VO sleva vloni %
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_PL_Wholesale_LY", "basePrice_PL_Wholesale_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_PL_Wholesale_AY", // VO sleva letos
-					"number", 68,
+					"discount_PL_Wholesale_AY", // VO sleva letos %
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_PL_Wholesale_AY", "basePrice_PL_Wholesale_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_PL_Eshop_LY", // eShop sleva vloni
-					"number", 68,
+					"discount_PL_Eshop_LY", // eShop sleva vloni %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_PL_Eshop_LY", "basePrice_PL_Eshop_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_PL_Eshop_AY", // eShop sleva letos
-					"number", 68,
+					"discount_PL_Eshop_AY", // eShop sleva letos %
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_PL_Eshop_AY", "basePrice_PL_Eshop_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			],
 		},
@@ -666,17 +1360,33 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			field: "group_export", // Export
 			children: [
 				getAgColumn(
-					"discount_CZ_Export_LY", // Export sleva vloni
-					"number", 68,
+					"discount_CZ_Export_LY", // Export sleva vloni %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Export_LY", "basePrice_CZ_Export_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 
 				getAgColumn(
-					"discount_CZ_Export_AY", // Export sleva letos
-					"number", 68,
+					"discount_CZ_Export_AY", // Export sleva letos %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getDiffFromBasePrice("sales_CZ_Export_AY", "basePrice_CZ_Export_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0);
+						}
+					}
 				),
 			]
 		},
@@ -684,296 +1394,343 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 		{
 			field: "group_margin", // Marže
 			children: [
-				// wholesale
 				getAgColumn(
 					"profit_Wholesale_LY", // VO vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Wholesale_LY", // % todo: procenta
-					"number", 68,
+					"margin_Wholesale_LY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Wholesale_LY", "sales_Wholesale_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
 				getAgColumn(
 					"profit_Wholesale_AY", // VO letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Wholesale_AY", // % todo: procenta
-					"number", 68,
+					"margin_Wholesale_AY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Wholesale_AY", "sales_Wholesale_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
-				// eshop
 				getAgColumn(
 					"profit_Eshop_LY", // eShop vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Eshop_LY", // % todo: procenta
-					"number", 68,
+					"margin_Eshop_LY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Eshop_LY", "sales_Eshop_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
 				getAgColumn(
 					"profit_Eshop_AY", // eShop letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Eshop_AY", // % todo: procenta
-					"number", 68,
+					"margin_Eshop_AY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Eshop_AY", "sales_Eshop_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
-				// retail
 				getAgColumn(
 					"profit_Retail_LY", // MO vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Retail_LY", // % todo: procenta
-					"number", 68,
+					"margin_Retail_LY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Retail_LY", "sales_Retail_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
 				getAgColumn(
 					"profit_Retail_AY", // MO letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Retail_AY", // % todo: procenta
-					"number", 68,
+					"margin_Retail_AY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Retail_AY", "sales_Retail_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
-				// bakery
 				getAgColumn(
 					"profit_RetailBakery_LY", // Pekárny vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_RetailBakery_LY", // % todo: procenta
-					"number", 68,
+					"margin_RetailBakery_LY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_RetailBakery_LY", "sales_RetailBakery_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
 				getAgColumn(
 					"profit_RetailBakery_AY", // Pekárny letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_RetailBakery_AY", // % todo: procenta
-					"number", 68,
+					"margin_RetailBakery_AY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_RetailBakery_AY", "sales_RetailBakery_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
-				// kinoko
 				getAgColumn(
 					"profit_RetailKinoko_LY", // Kinoko vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Kinoko_LY", // % todo: procenta
-					"number", 68,
+					"margin_Kinoko_LY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Kinoko_LY", "sales_Kinoko_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
 				getAgColumn(
 					"profit_RetailKinoko_AY", // Kinoko letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_Kinoko_AY", // % todo: procenta
-					"number", 68,
+					"margin_Kinoko_AY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_Kinoko_AY", "sales_Kinoko_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
-				// export
 				getAgColumn(
 					"profit_WholesaleExport_LY", // Export vloni
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_WholesaleExport_LY", // % todo: procenta
-					"number", 68,
+					"margin_WholesaleExport_LY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_WholesaleExport_LY", "sales_WholesaleExport_LY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 
 				getAgColumn(
 					"profit_WholesaleExport_AY", // Export letos
-					"number", 68,
+					"number", 105,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberValue(params.value);
+						}
+					}
 				),
 
 				getAgColumn(
-					"margin_WholesaleExport_AY", // % todo: procenta
-					"number", 68,
+					"margin_WholesaleExport_AY", // %
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
+					{
+						aggFunc: (params: IAggFuncParams) => {
+							return getMargrinDiff("profit_WholesaleExport_AY", "sales_WholesaleExport_AY", params)
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 2);
+						}
+					}
 				),
 			],
 		},
-
-		// hidden columns
-		// getAgColumn("basePrice_CZ_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Wholesale_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Wholesale_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Eshop_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Eshop_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Retail_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Retail_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_RetailBakery_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_RetailBakery_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_EshopKinoko_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_EshopKinoko_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_RetailKinoko_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_RetailKinoko_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_Wholesale_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_Wholesale_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_Eshop_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_Eshop_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_Retail_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_SK_Retail_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_PL_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_PL_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_PL_Wholesale_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_PL_Wholesale_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_PL_Eshop_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_PL_Eshop_AY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Export_LY", "number", 68, false, false, false, []),
-		// getAgColumn("basePrice_CZ_Export_AY", "number", 68, false, false, false, []),
-		// // getAgColumn(
-		// 	"sales_Wholesale_LY", // Sales Wholesale Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Wholesale_AY", // Sales Wholesale Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Eshop_LY", // Sales Eshop Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Eshop_AY", // Sales Eshop Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Retail_LY", // Sales Retail Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Retail_AY", // Sales Retail Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_WholesaleExport_LY", // Sales WholesaleExport Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_WholesaleExport_AY", // Sales WholesaleExport Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_RetailBakery_LY", // Sales RetailBakery Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_RetailBakery_AY", // Sales RetailBakery Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Kinoko_LY", // Sales RetailKinoko Ly
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
-		//
-		// getAgColumn(
-		// 	"sales_Kinoko_AY", // Sales RetailKinoko Ay
-		// 	"number", 68,
-		// 	false, true, false,
-		// 	[],
-		// ),
 	]
 }
 

@@ -59,7 +59,9 @@
 
 <PageWrapper>
 	<TabFulltextWrapper>
-		<div class="flex-1">
+		<div class="flex-1 flex justify-between">
+			<p>blah blah blah</p>
+
 			<div class="flex text-xs justify-end items-center gap-1.5 bg-white h-8 border border-slate-300 rounded-md w-fit px-2">
 				<b>Detail: </b>
 

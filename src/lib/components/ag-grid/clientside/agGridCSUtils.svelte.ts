@@ -100,9 +100,11 @@ export async function getCSData(
 		const cached = await getCachedTableData(currentPageKey.value);
 
 		if (cached) {
+			console.log("cached")
 			// @ts-ignore
 			gridApi.setGridOption("rowData", cached);
 		} else {
+			console.log("notcached")
 			await fetchAndCache(gridApi, table);
 			table.areInputParamsLoading = false;
 		}
@@ -117,7 +119,7 @@ async function fetchAndCache(
 	table: AgGridTableType
 ) {
 	try {
-		const columnList: string[] = deepcopy(table.requiredFields);
+		let columnList: string[] = deepcopy(table.requiredFields);
 
 		if (Object.keys(table.presetToSave).length > 0) {
 			table.presetToSave.forEach(preset => {
@@ -133,6 +135,10 @@ async function fetchAndCache(
 			})
 		}
 
+		if (table.necessaryDataColumns) {
+			columnList = columnList.concat(table.necessaryDataColumns);
+		}
+
 		let requestObj = deepcopy(table.loadedInputParams);
 		// @ts-ignore
 		requestObj["columnList"] = columnList
@@ -140,10 +146,8 @@ async function fetchAndCache(
 		gridApi.setGridOption("loading", true)
 		const response = await apiServicePostHandled('pageData', requestObj);
 		const data = await response.data;
-
-		gridApi.setGridOption("loading", false);
 		gridApi.setGridOption("rowData", data.items);
-
+		gridApi.setGridOption("loading", false);
 		await cacheTableData(currentPageKey.value, data.items);
 	} catch (e) {
 		console.log("Fetch and cache error: ", e instanceof Error ? e.message : "");

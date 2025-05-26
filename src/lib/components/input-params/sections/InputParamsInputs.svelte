@@ -87,7 +87,7 @@
 					bind:dateValue={paramInput.value}
 					label={paramInput.label()}
 					field={paramInput.field}
-					onchange={() => handleInputChange(i, paramInput.value)}
+					onchange={() => handleInputChange(i, paramInput.value.split(" ")[0])}
 				/>
 			{/if}
 

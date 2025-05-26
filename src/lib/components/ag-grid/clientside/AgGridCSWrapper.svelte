@@ -20,6 +20,7 @@
 	import {mountCSGrid, unmountCSGrid} from "$lib/components/ag-grid/clientside/agGridCSLifecycle.svelte";
 	import {handleClickOutside} from "$lib/components/ag-grid/serverside/agGridSSUtils.svelte";
 	import {handleRibbonActionCS} from "$lib/components/ag-grid/clientside/agGridCSRibbonActionHandlers.svelte";
+	import {beforeNavigate} from "$app/navigation";
 
 	interface Props {
 		pageKey: string;
@@ -145,6 +146,10 @@
 
 		ribbonAction.value = RibbonActionEnum.UNKNOWN;
 	});
+
+	beforeNavigate(() => {
+		gridApi.destroy()
+	})
 </script>
 
 

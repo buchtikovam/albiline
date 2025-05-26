@@ -8,13 +8,13 @@ export const InputParamsSalesTotalByDivision: InputParamsType = {
 			field: "datefrom",
 			type: "date",
 			label: () => "Datum od",
-			value: "01.04.2020 00:00:000"
+			value: "01.04.2024"
 		},
 		{
 			field: "dateto",
 			type: "date",
 			label: () => "Datum do",
-			value: "01.04.2024 00:00:000"
+			value: "02.04.2024"
 		},
 		{
 			field: "salescountrycode",

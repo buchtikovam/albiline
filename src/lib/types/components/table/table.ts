@@ -77,6 +77,8 @@ export interface AgGridTableType {
 	showRefreshDataButton: boolean;
 	//
 	recentFilters: FilterModel[]
+	//
+	necessaryDataColumns: string[];
 }
 
 

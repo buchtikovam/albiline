@@ -1,6 +1,6 @@
 import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
-import type {GridOptions, RowSelectedEvent} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, RowSelectedEvent, ValueFormatterParams} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js'
 import {sideTableRowData} from "$lib/runes/table.svelte";
 import {CustomStatsToolPanel} from "$lib/utils/components/ag-grid/customToolPanelWrapper";
@@ -24,6 +24,7 @@ export const productStockInventoryAgGridDef: GridOptions = {
 		],
 	},
 	suppressDragLeaveHidesColumns: true,
+
 	onRowSelected: async (event: RowSelectedEvent<any>) => {
 		const selectedRows = event.api.getSelectedRows();
 
@@ -359,7 +360,10 @@ export const productStockInventoryDetailGridOptions: GridOptions = {
 			"number", 80,
 			false, false, false,
 			[],
-			{ filter: false, aggFunc: "sum" }
+			{
+				filter: false,
+				aggFunc: 'sum',
+			}
 		),
 
 		getAgColumn(

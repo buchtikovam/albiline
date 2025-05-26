@@ -13,7 +13,7 @@
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import type {PageMetaDataType} from "$lib/types/routes/pageSettings";
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
-	import AgGridCSWrapperCopy from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
+	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 
 	interface Props {
 		data: { pageMetaData: PageMetaDataType }
@@ -28,7 +28,7 @@
 
 	let table: AgGridTableType = $state(agGridTables.value["ProductStockInventory"]);
 	let open = $state(false);
-
+	let destroy = $state(false);
 
 	$effect(() => {
 		open = table.openInputParams;
@@ -40,6 +40,7 @@
 
 	beforeNavigate(() => {
 		table.openInputParams = false;
+		destroy = true;
 	})
 </script>
 
@@ -63,8 +64,10 @@
 	/>
 {/if}
 
-<AgGridCSWrapperCopy
-	pageKey="ProductStockInventory"
-	gridOptionsCustom={productStockInventoryAgGridDef}
-	headerTranslations={productStockInventoryHeaderTranslations}
-/>
+{#if !destroy}
+	<AgGridCSWrapper
+		pageKey="ProductStockInventory"
+		gridOptionsCustom={productStockInventoryAgGridDef}
+		headerTranslations={productStockInventoryHeaderTranslations}
+	/>
+{/if}

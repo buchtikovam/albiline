@@ -33,7 +33,7 @@ export async function loadInputParamsInTable(
 
 
 	if (type === "serverSide") {
-		const columnList: string[] = deepcopy(table.requiredFields);
+		let columnList: string[] = deepcopy(table.requiredFields);
 
 		// get column list for server side table
 		if (Object.keys(table.presetToSave).length > 0) {
@@ -48,6 +48,10 @@ export async function loadInputParamsInTable(
 					columnList.push(preset.colId)
 				}
 			})
+		}
+
+		if (table.necessaryDataColumns) {
+			columnList = columnList.concat(table.necessaryDataColumns);
 		}
 
 		// cache table on the api
