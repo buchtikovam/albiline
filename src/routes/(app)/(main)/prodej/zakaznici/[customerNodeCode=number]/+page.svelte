@@ -8,7 +8,7 @@
 	import {customerDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerDetailFormDef';
 	import {customerPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerPageLayout';
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
-	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 	import {activeTabIndex, responseDialogMessages, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
 	import {apiSaveCustomerDetail} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
@@ -50,7 +50,7 @@
 
 	// --- initialize variables and state
 	// page
-	let pageKey: string = $derived(currentPageKey.value);
+	let pageKey = $state(pageKeys.value.value[pageKeys.value.index])
 	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);

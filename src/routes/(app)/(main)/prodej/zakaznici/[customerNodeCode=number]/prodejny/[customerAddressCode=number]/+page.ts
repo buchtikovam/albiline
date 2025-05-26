@@ -1,4 +1,4 @@
-import {currentPageKey} from "$lib/runes/table.svelte";
+import {pageKeys} from "$lib/runes/table.svelte";
 import {authDetails} from "$lib/runes/page.svelte";
 import {getLocale, localizeHref} from "$lib/paraglide/runtime";
 import {type LoadEvent, redirect} from "@sveltejs/kit";
@@ -20,7 +20,7 @@ export const load: PageLoad = async (
 				'Content-Type': 'application/json',
 				'Session-Key': authDetails.sessionKey || '',
 				'Accept-Language': getLocale(),
-				'Page-Code': currentPageKey.value,
+				'Page-Code': pageKeys.value,
 			}
 		}
 	);

@@ -1,4 +1,4 @@
-import {agGridTables, currentPageKey} from '$lib/runes/table.svelte.js';
+import {agGridTables, pageKeys} from '$lib/runes/table.svelte.js';
 import {page} from '$app/state';
 import {selectButtonWithUrl} from "$lib/utils/components/ag-grid/cell-renderers/selectButtonWithUrl.svelte";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
@@ -125,7 +125,7 @@ function onAddressClick(params: ICellRendererParams) {
 	}
 
 	let match = false;
-	let table = agGridTables.value[currentPageKey.value];
+	let table = agGridTables.value[pageKeys.value.value[pageKeys.value.index]];
 	let storedRows = table.selectedRows;
 
 	// check if is already in stored rows

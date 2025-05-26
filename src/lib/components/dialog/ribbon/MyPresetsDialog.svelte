@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {pageCompact} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 	import {selectButton} from "$lib/utils/components/ag-grid/cell-renderers/selectButton.svelte";
 	import {deleteButton} from "$lib/utils/components/ag-grid/cell-renderers/deleteButton.svelte.js";
 	import Save from "lucide-svelte/icons/save";
@@ -28,7 +28,7 @@
 	let fetchedPresets: StoredPresets[] = $state([]);
 	let editedPresets: StoredPresets[] = $state([]);
 	let isLoading = $state(true);
-	let pageKey = currentPageKey.value;
+	let pageKey = pageKeys.value.value[pageKeys.value.index];
 
 
 	$effect(() => {

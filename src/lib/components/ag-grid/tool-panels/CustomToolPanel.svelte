@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {agGridTables, currentPageKey, sideTableRowData} from "$lib/runes/table.svelte.js";
+	import {agGridTables, pageKeys, sideTableRowData} from "$lib/runes/table.svelte.js";
 	import {
 		productStockInventoryDetailGridOptions,
 		productStockInventoryDetailHeaderTranslations
@@ -12,7 +12,7 @@
 
 
 	// export let toolPanelParams;
-	let table: AgGridTableType = agGridTables.value[currentPageKey.value];
+	let table: AgGridTableType = agGridTables.value[pageKeys.value.value[pageKeys.value.index]];
 
 
 	let mainRowData = $derived.by(() => {

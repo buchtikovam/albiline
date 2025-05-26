@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 	import {responseDialogMessages} from "$lib/runes/page.svelte";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {isEqual} from "lodash-es";
@@ -54,7 +54,7 @@
 	setContext("endpoint", "userInputParameters");
 
 
-	let table = agGridTables.value[currentPageKey.value];
+	let table = agGridTables.value[pageKeys.value.value[pageKeys.value.index]];
 	let inputParams: InputParamsType = $state(defaultInputParams);
 	let isLoadDialogOpen = $state(false)
 	let isSaveDialogOpen = $state(false);

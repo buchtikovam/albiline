@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {agGridTables, currentPageKey, tableViewSettings} from "$lib/runes/table.svelte.js";
+	import {agGridTables, pageKeys, tableViewSettings} from "$lib/runes/table.svelte.js";
 	import {themeAlbiBlueParams} from "$lib/constants/aggrid-themes/ThemeAlbiBlue.svelte.js";
 	import {getColumnHeaderTranslations} from "$lib/utils/components/ag-grid/methods/getColumnHeaderTranslations";
 	import {addToEditedTableData} from "$lib/utils/addToEditedTableData";
@@ -38,7 +38,7 @@
 	}: Props = $props();
 
 
-	let pageKey: string = currentPageKey.value;
+	let pageKey: string = pageKeys.value.value[pageKeys.value.index];
 	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;

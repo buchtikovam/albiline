@@ -3,7 +3,7 @@
 		customerAndAddressContactsGridOptions,
 		customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
-	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
+	import {pageKeys, agGridTables} from '$lib/runes/table.svelte';
 	import {activeTabIndex, isMobile, responseDialogMessages, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {customerAddressDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressFormDef';
 	import {
@@ -58,7 +58,7 @@
 
 	// --- initialize variables and state
 	// page
-	let pageKey: string = $derived(currentPageKey.value);
+	let pageKey: string = $derived(pageKeys.value.value[pageKeys.value.index]);
 	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);

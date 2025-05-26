@@ -1,12 +1,11 @@
 import {authDetails, responseDialogMessages} from '$lib/runes/page.svelte';
-import {currentPageKey} from "$lib/runes/table.svelte";
+import {pageKeys} from "$lib/runes/table.svelte";
 import {getLocale} from "$lib/paraglide/runtime";
 import {triggerLogout} from "$lib/utils/lifecycle/triggerLogout";
-import Cookies from 'js-cookie'
 
 
 const url = "http://10.2.2.10/albiline.test/api/v1/";
-const pageKey = $derived(currentPageKey.value);
+const pageKey = $derived(pageKeys.value.value[pageKeys.value.index]);
 
 
 export async function apiServiceGET(

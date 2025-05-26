@@ -44,7 +44,7 @@ export type InputParamsInput = InputString|InputNumber|InputBoolean|InputDate|In
 
 type InputString = {
 	field: string;
-	label: () => string;
+	label?: () => string;
 	type: "text";
 	value: string,
 }
@@ -52,20 +52,20 @@ type InputString = {
 type InputNumber = {
 	field: string;
 	type: "number";
-	label: () => string;
+	label?: () => string;
 	value: number,
 }
 
 type InputBoolean = {
 	field: string;
-	label: () => string;
+	label?: () => string;
 	type: "boolean";
 	value: boolean,
 }
 
 type InputDate = {
 	field: string;
-	label: () => string;
+	label?: () => string;
 	type: "date";
 	value: string, // v domluveném datumovém formátu
 }
@@ -73,7 +73,7 @@ type InputDate = {
 type InputDateRange = {
 	field: string;
 	type: "date";
-	label: () => string;
+	label?: () => string;
 	value: string, // v domluveném datumovém formátu
 	endValue: string, // v domluveném datumovém formátu
 }
@@ -82,7 +82,7 @@ type InputDateRange = {
 type InputEnum = {
 	field: string;
 	type: "enum";
-	label: () => string;
+	label?: () => string;
 	value: string,
 }
 

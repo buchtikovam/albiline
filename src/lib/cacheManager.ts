@@ -35,8 +35,6 @@ export async function getCachedTableData<T>(tableId: string): Promise<T | null> 
 			console.log("expired")
 			await db.compressedData.delete(tableId);
 			return null;
-		} else {
-			console.log("live")
 		}
 
 		const decompressedData = await decompressData(entry.data);

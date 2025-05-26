@@ -1,4 +1,4 @@
-import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 import {getDeliveryCountryCodes, getInvoiceCountryCodes} from "$lib/utils/dropdowns/countryCodes";
 import {getRetailStoreTypeName} from "$lib/utils/dropdowns/retailStoreType";
 import {getPaymentTypeCode} from "$lib/utils/dropdowns/paymentTypeCode";
@@ -12,7 +12,7 @@ import * as m from '$lib/paraglide/messages.js'
 
 
 
-let pageKey = $derived(currentPageKey.value);
+let pageKey = $derived(pageKeys.value.value[pageKeys.value.index]);
 
 
 

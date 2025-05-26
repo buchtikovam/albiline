@@ -2,15 +2,16 @@
 	import type {Snippet} from "svelte";
 
 	interface Props {
-		children: Snippet
+		children: Snippet,
+		border?: boolean,
 	}
 
-	let { children } : Props = $props();
+	let { children, border = true } : Props = $props();
 </script>
 
 
 <div
-	class="h-full overflow-auto rounded-lg border border-slate-300 bg-white"
+	class={`${border ? "border" : ""} h-full overflow-auto rounded-lg border-slate-300`}
 >
 	{@render children()}
 </div>

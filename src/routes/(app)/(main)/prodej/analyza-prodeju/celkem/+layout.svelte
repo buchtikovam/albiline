@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {showFulltextSearch} from "$lib/runes/page.svelte.js";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte.js";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte.js";
 	import {Input} from "$lib/components/ui/input";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
@@ -12,6 +12,8 @@
 	import {Checkbox} from "$lib/components/ui/checkbox";
 	import {Separator} from "$lib/components/ui/separator";
 	import {setContext} from "svelte";
+	import Info from "lucide-svelte/icons/info";
+	import * as Popover from "$lib/components/ui/popover/index.js";
 
 
 	interface Props {
@@ -19,7 +21,6 @@
 	}
 
 	let { children }: Props = $props();
-
 
 	interface PageSections {
 		 linieSection: boolean;
@@ -33,10 +34,36 @@
 		ksSection: false,
 	})
 
-	currentPageKey.value = "SalesTotalByDivision";
-	let table: AgGridTableType = $state(agGridTables.value[currentPageKey.value]);
+	pageKeys.value = {
+		value: [
+			"SalesTotalByDivision",
+			"SalesTotalByDivisionSubdetailProductline",
+			"SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel",
+			"SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity"
+		],
+		index: 0
+	};
 
+	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	setContext("pageSections", pageSectionsState);
+
+	let title = $derived.by(() => {
+		if (table.loadedInputParams.inputs) {
+			const inputs = table.loadedInputParams.inputs;
+			const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
+			const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
+			const countryCode = inputs.find(f => f.field === 'salescountrycode')?.value || '';
+			let currency = "CZK";
+
+			if (countryCode === "CZ") currency = "CZK";
+			if (countryCode === "SK") currency = "EUR";
+			if (countryCode === "PL") currency = "PLN";
+
+			return `Prodeje za období ${dateFrom}-${dateTo}. Vše v ${currency} bez DPH.`;
+		}
+
+		return "";
+	})
 
 	$effect(() => {
 		if (
@@ -59,10 +86,24 @@
 
 <PageWrapper>
 	<TabFulltextWrapper>
-		<div class="flex-1 flex justify-between">
-			<p>blah blah blah</p>
+		<div class="flex-1 flex justify-between items-center mr-2">
+			<Popover.Root>
+				<Popover.Trigger
+					class="size-8 bg-white border border-slate-300 rounded-md flex 2xl:hidden justify-center items-center"
+				>
+					<Info strokeWidth="2" class="size-[18px]"/>
+				</Popover.Trigger>
 
-			<div class="flex text-xs justify-end items-center gap-1.5 bg-white h-8 border border-slate-300 rounded-md w-fit px-2">
+				<Popover.Content side="right" class="text-sm h-8 py-0 px-2 w-fit flex items-center border-albi-500">
+					<p>{title}</p>
+				</Popover.Content>
+			</Popover.Root>
+
+			<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
+				<p class="text-sm ">{title}</p>
+			</div>
+
+			<div class="min-w-[304px] flex text-xs justify-end items-center gap-1.5 bg-white h-8 border border-slate-300 rounded-md w-fit px-2">
 				<b>Detail: </b>
 
 				<div class="flex items-center gap-1">
@@ -86,7 +127,10 @@
 					<p>po ksp</p>
 				</div>
 
-				<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]"/>
+				<Separator
+					orientation="vertical"
+					class="bg-albi-500 min-h-3 w-[2px]"
+				/>
 
 				<div class="flex items-center gap-1">
 					<Checkbox
@@ -100,29 +144,27 @@
 			</div>
 		</div>
 
-		<div class="flex gap-2 items-center">
-			<FilterAndPresetButtons
-				bind:table={table}
-				routeId="/(app)/(main)/prodej/analyza-prodeju/celkem"
-			/>
+		<FilterAndPresetButtons
+			bind:table={table}
+			routeId="/(app)/(main)/prodej/analyza-prodeju/celkem"
+		/>
 
-			{#if showFulltextSearch.value === true}
-				<div
-					class="hidden md:flex items-center h-8"
-				>
-					<Input
-						class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
-						placeholder={m.components_header_search_placeholder()}
-						type="text"
-						bind:value={table.fulltextFilterValue}
-					/>
-				</div>
-			{/if}
-		</div>
+		{#if showFulltextSearch.value === true}
+			<div
+				class="hidden md:flex items-center h-8"
+			>
+				<Input
+					class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
+					placeholder={m.components_header_search_placeholder()}
+					type="text"
+					bind:value={table.fulltextFilterValue}
+				/>
+			</div>
+		{/if}
 	</TabFulltextWrapper>
 
 
-	<MainContentWrapper>
+	<MainContentWrapper border={false}>
 		{@render children?.()}
 	</MainContentWrapper>
 </PageWrapper>

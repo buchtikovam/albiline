@@ -1,9 +1,8 @@
-import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte.js";
-import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
-import * as m from '$lib/paraglide/messages.js';
-import { formatPercentage } from '$lib/utils/general/formatPercentage';
-import { formatNumberToCzech } from '$lib/utils/general/formatNumberToCzech';
-
+import type {IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
+import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
+import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
+import {formatPercentage} from "$lib/utils/general/formatPercentage";
+import * as m from "$lib/paraglide/messages";
 
 function getDiff(
 	dividendField: string,
@@ -49,30 +48,7 @@ function getDiffFromBasePrice(
 }
 
 
-function getMargrinDiff(
-	profitField: string,
-	salesField: string,
-	params: IAggFuncParams
-) {
-	let profit = 0;
-	let sales = 0;
-
-	params.api.forEachNode((node: IRowNode) => {
-		profit += node.data[profitField];
-		sales += node.data[salesField];
-	});
-
-	if (sales !== 0) {
-		return (profit / sales);
-	}
-
-	return 0;
-}
-
-
-
-
-export const SalesTotalByDivisionAgGridDef: GridOptions = {
+export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef = {
 	sideBar: {
 		toolPanels: [
 			"columns",
@@ -82,6 +58,8 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 	statusBar: undefined,
 	suppressDragLeaveHidesColumns: true,
+	grandTotalRow: "bottom",
+	suppressStickyTotalRow: false,
 
 	rowSelection: {
 		mode: "singleRow",
@@ -90,18 +68,16 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 		checkboxes: false,
 	},
 
-	grandTotalRow: "bottom",
-
 	columnDefs: [
 		getAgColumn(
-			"itemId", // Divize
+			"itemId", // Linie
 			"number", 65,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
-			"itemName", // Název divize
+			"itemName", // Název linie
 			"text", 170,
 			false, false, false,
 			[],
@@ -120,10 +96,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: 'sum',
+				aggFunc: "sum",
 				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value);
-				},
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
@@ -133,7 +109,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: 'sum',
+				aggFunc: "sum",
 				valueFormatter: (params: ValueFormatterParams) => {
 					return formatNumberToCzech(params.value)
 				}
@@ -147,10 +123,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("sales_AY", "sales_LY", params);
+					return getDiff("sales_AY", "sales_LY", params)
 				},
 				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0);
+					return formatPercentage(params.value, 0)
 				}
 			}
 		),
@@ -164,7 +140,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -177,7 +153,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -191,12 +167,12 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_AY", "sales_CZ_LY", params);
+							return getDiff("sales_CZ_AY", "sales_CZ_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
-					},
+					}
 				),
 
 				getAgColumn(
@@ -205,7 +181,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -218,7 +194,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -232,12 +208,12 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Wholesale_AY", "sales_CZ_Wholesale_LY", params);
+							return getDiff("sales_CZ_Wholesale_AY", "sales_CZ_Wholesale_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
-					},
+					}
 				),
 
 				getAgColumn(
@@ -246,7 +222,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -259,7 +235,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -273,10 +249,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Eshop_AY", "sales_CZ_Eshop_LY", params);
+							return getDiff("sales_CZ_Eshop_AY", "sales_CZ_Eshop_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -287,7 +263,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -300,7 +276,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -314,10 +290,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Retail_AY", "sales_CZ_Retail_LY", params);
+							return getDiff("sales_CZ_Retail_AY", "sales_CZ_Retail_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -333,7 +309,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -346,7 +322,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -360,10 +336,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_RetailBakery_AY", "sales_CZ_RetailBakery_LY", params);
+							return getDiff("sales_CZ_RetailBakery_AY", "sales_CZ_RetailBakery_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -379,7 +355,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -392,7 +368,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -406,10 +382,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_EshopKinoko_AY", "sales_CZ_EshopKinoko_LY", params);
+							return getDiff("sales_CZ_EshopKinoko_AY", "sales_CZ_EshopKinoko_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -420,7 +396,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -433,7 +409,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -447,10 +423,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_RetailKinoko_AY", "sales_CZ_RetailKinoko_LY", params);
+							return getDiff("sales_CZ_RetailKinoko_AY", "sales_CZ_RetailKinoko_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -466,7 +442,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -479,7 +455,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -493,10 +469,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_AY", "sales_SK_LY", params);
+							return getDiff("sales_SK_AY", "sales_SK_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -507,7 +483,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -520,11 +496,12 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
 					}
+
 				),
 
 				getAgColumn(
@@ -534,10 +511,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_Wholesale_AY", "sales_SK_Wholesale_LY", params);
+							return getDiff("sales_SK_Wholesale_AY", "sales_SK_Wholesale_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -548,7 +525,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -561,7 +538,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -575,10 +552,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_Eshop_AY", "sales_SK_Eshop_LY", params);
+							return getDiff("sales_SK_Eshop_AY", "sales_SK_Eshop_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -589,7 +566,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -602,7 +579,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -616,10 +593,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_Retail_AY", "sales_SK_Retail_LY", params);
+							return getDiff("sales_SK_Retail_AY", "sales_SK_Retail_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -635,7 +612,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -648,7 +625,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -662,10 +639,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_PL_AY", "sales_PL_LY", params);
+							return getDiff("sales_PL_AY", "sales_PL_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -676,7 +653,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -689,7 +666,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -703,10 +680,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_PL_Wholesale_AY", "sales_PL_Wholesale_LY", params);
+							return getDiff("sales_PL_Wholesale_AY", "sales_PL_Wholesale_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -717,7 +694,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -730,7 +707,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -744,10 +721,10 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_PL_Eshop_AY", "sales_PL_Eshop_LY", params);
+							return getDiff("sales_PL_Eshop_AY", "sales_PL_Eshop_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
@@ -763,7 +740,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -776,7 +753,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: 'sum',
+						aggFunc: "sum",
 						valueFormatter: (params: ValueFormatterParams) => {
 							return formatNumberToCzech(params.value)
 						}
@@ -790,15 +767,16 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Export_AY", "sales_CZ_Export_LY", params);
+							return getDiff("sales_CZ_Export_AY", "sales_CZ_Export_LY", params)
 						},
 						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
+							return formatPercentage(params.value, 0)
 						}
 					}
 				),
 			]
 		},
+
 
 		{
 			field: "group_zc", // ZC
@@ -845,7 +823,6 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 				),
 			]
 		},
-
 		getAgColumn(
 			"discount_LY", // Celkem sleva vloni %
 			"number", 90,
@@ -1355,355 +1332,13 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 				),
 			]
 		},
-
-		{
-			field: "group_margin", // Marže
-			children: [
-				getAgColumn(
-					"profit_Wholesale_LY", // VO vloni
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Wholesale_LY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Wholesale_LY", "sales_Wholesale_LY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_Wholesale_AY", // VO letos
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Wholesale_AY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Wholesale_AY", "sales_Wholesale_AY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_Eshop_LY", // eShop vloni
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Eshop_LY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Eshop_LY", "sales_Eshop_LY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_Eshop_AY", // eShop letos
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Eshop_AY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Eshop_AY", "sales_Eshop_AY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_Retail_LY", // MO vloni
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Retail_LY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Retail_LY", "sales_Retail_LY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_Retail_AY", // MO letos
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Retail_AY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Retail_AY", "sales_Retail_AY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_RetailBakery_LY", // Pekárny vloni
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_RetailBakery_LY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailBakery_LY", "sales_RetailBakery_LY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_RetailBakery_AY", // Pekárny letos
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_RetailBakery_AY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailBakery_AY", "sales_RetailBakery_AY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_RetailKinoko_LY", // Kinoko vloni
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Kinoko_LY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailKinoko_LY", "sales_Kinoko_LY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_RetailKinoko_AY", // Kinoko letos
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_Kinoko_AY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailKinoko_AY", "sales_Kinoko_AY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_WholesaleExport_LY", // Export vloni
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_WholesaleExport_LY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_WholesaleExport_LY", "sales_WholesaleExport_LY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-
-				getAgColumn(
-					"profit_WholesaleExport_AY", // Export letos
-					"number", 105,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
-				),
-
-				getAgColumn(
-					"margin_WholesaleExport_AY", // %
-					"number", 70,
-					false, false, false,
-					["text-right"],
-					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_WholesaleExport_AY", "sales_WholesaleExport_AY", params)
-						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
-					}
-				),
-			],
-		},
 	]
 }
 
 
-
-export const salesTotalByDivisionHeaderTranslations = {
-	itemId: m.routes_prodej_analyza_prodeju_table_column_item_id,
-	itemName: m.routes_prodej_analyza_prodeju_table_column_item_name,
+export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelHeaderTranslations = {
+	itemId: () => "KLP",
+	itemName: () => "Název KLP",
 	currency: m.routes_prodej_analyza_prodeju_table_column_currency,
 	sales_LY: m.routes_prodej_analyza_prodeju_table_column_sales_ly,
 	sales_AY: m.routes_prodej_analyza_prodeju_table_column_sales_ay,
@@ -1795,29 +1430,4 @@ export const salesTotalByDivisionHeaderTranslations = {
 	discount_PL_Eshop_AY: m.routes_prodej_analyza_prodeju_table_column_discount_pl_eshop_ay,
 	discount_CZ_Export_LY: m.routes_prodej_analyza_prodeju_table_column_discount_cz_export_ly,
 	discount_CZ_Export_AY: m.routes_prodej_analyza_prodeju_table_column_discount_cz_export_ay,
-	group_margin: m.routes_prodej_analyza_prodeju_table_column_group_marze,
-	profit_Wholesale_LY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesale_ly,
-	margin_Wholesale_LY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesale_ly,
-	profit_Wholesale_AY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesale_ay,
-	margin_Wholesale_AY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesale_ay,
-	profit_Eshop_LY: m.routes_prodej_analyza_prodeju_table_column_profit_eshop_ly,
-	margin_Eshop_LY: m.routes_prodej_analyza_prodeju_table_column_margin_eshop_ly,
-	profit_Eshop_AY: m.routes_prodej_analyza_prodeju_table_column_profit_eshop_ay,
-	margin_Eshop_AY: m.routes_prodej_analyza_prodeju_table_column_margin_eshop_ay,
-	profit_Retail_LY: m.routes_prodej_analyza_prodeju_table_column_profit_retail_ly,
-	margin_Retail_LY: m.routes_prodej_analyza_prodeju_table_column_margin_retail_ly,
-	profit_Retail_AY: m.routes_prodej_analyza_prodeju_table_column_profit_retail_ay,
-	margin_Retail_AY: m.routes_prodej_analyza_prodeju_table_column_margin_retail_ay,
-	profit_RetailBakery_LY: m.routes_prodej_analyza_prodeju_table_column_profit_retailbakery_ly,
-	margin_RetailBakery_LY: m.routes_prodej_analyza_prodeju_table_column_margin_retailbakery_ly,
-	profit_RetailBakery_AY: m.routes_prodej_analyza_prodeju_table_column_profit_retailbakery_ay,
-	margin_RetailBakery_AY: m.routes_prodej_analyza_prodeju_table_column_margin_retailbakeryl_ay,
-	profit_RetailKinoko_LY: m.routes_prodej_analyza_prodeju_table_column_profit_retailkinoko_ly,
-	margin_Kinoko_LY: m.routes_prodej_analyza_prodeju_table_column_margin_kinoko_ly,
-	profit_RetailKinoko_AY: m.routes_prodej_analyza_prodeju_table_column_profit_retailkinoko_ay,
-	margin_Kinoko_AY: m.routes_prodej_analyza_prodeju_table_column_margin_kinoko_ay,
-	profit_WholesaleExport_LY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesaleexport_ly,
-	margin_WholesaleExport_LY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesaleexport_ly,
-	profit_WholesaleExport_AY: m.routes_prodej_analyza_prodeju_table_column_profit_wholesaleexport_ay,
-	margin_WholesaleExport_AY: m.routes_prodej_analyza_prodeju_table_column_margin_wholesaleexport_ay
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {currentPageKey, agGridTables, tableViewSettings} from '$lib/runes/table.svelte.js';
+	import {pageKeys, agGridTables, tableViewSettings} from '$lib/runes/table.svelte.js';
 	import {ribbonAction} from "$lib/runes/ribbon.svelte.js";
 	import {disablePageTabs} from '$lib/runes/navigation.svelte.js';
 	import {handleSSExcelUpload} from "$lib/utils/components/ag-grid/methods/handleSSExcelUpload";
@@ -36,8 +36,7 @@
 
 
 	// page settings
-	let pageKey: string = currentPageKey.value;
-	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let isEditing = $state(false);
 
 
@@ -65,7 +64,6 @@
 	// runs when component is mounted only
 	onMount(() => {
 		disablePageTabs.value = true;
-		const finalGridOptions = { ...gridOptions, ...gridOptionsCustom };
 
 		// initialize grid
 		if (gridContainer) gridApi = createGrid(gridContainer, gridOptions);

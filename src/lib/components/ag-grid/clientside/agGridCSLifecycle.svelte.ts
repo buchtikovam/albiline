@@ -28,16 +28,6 @@ export function mountCSGrid(
 			applyOrder: true,
 		});
 	}
-
-
-	setTimeout(() => {
-		if (table.selectedRows.length > 0) {
-			table.selectedRows.forEach((row) => {
-				let node = gridApi.getRowNode(String(row[table.identificationKey]));
-				node?.setSelected(true)
-			});
-		}
-	}, 800)
 }
 
 
@@ -45,7 +35,6 @@ export function unmountCSGrid(table: AgGridTableType, gridApi: GridApi): void {
 	table.activeSelectedRowIndex = 0;
 	table.createdTableData = [];
 	table.deletedTableData = [];
-	console.log(gridApi.getSelectedRows())
 	// table.selectedRows = ;
 
 	gridApi.destroy();

@@ -6,7 +6,7 @@
 	} from 'ag-grid-enterprise';
 	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {agGridTables, tableViewSettings} from "$lib/runes/table.svelte";
+	import {agGridTables, pageKeys, tableViewSettings} from "$lib/runes/table.svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import {onMount} from "svelte";
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
@@ -23,25 +23,25 @@
 	import {beforeNavigate} from "$app/navigation";
 
 	interface Props {
-		pageKey: string;
+		table: AgGridTableType,
 		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
+		allowRibbonActions?: boolean;
 	}
 
 	let {
-		pageKey,
+		table = $bindable(),
 		headerTranslations,
-		gridOptionsCustom
+		gridOptionsCustom,
+		allowRibbonActions = true,
 	}: Props = $props();
 
 
-	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let gridContainer: HTMLDivElement;
 	let gridApi: GridApi<unknown>;
 	let isEditing = $state(false);
 	let excelFileInput: HTMLInputElement;
 	let isInitial = $state(true);
-
 
 	function updateIsEditing(newValue: boolean) {
 		isEditing = newValue;
@@ -69,8 +69,7 @@
 		isInitial = false;
 
 		return(() => {
-			console.log(gridApi.getSelectedRows())
-			unmountCSGrid(table, gridApi); // todo: fix selected rows issue when navigating to ss grid
+			unmountCSGrid(table, gridApi);
 		});
 	});
 
@@ -78,7 +77,7 @@
 	$effect(() => {
 		if (Object.keys(table.loadedInputParams).length > 0) {
 			if (table.areInputParamsLoading) {
-				clearCache(pageKey);
+				clearCache(table.name);
 				getCSData(gridApi, table);
 			} else {
 				getCSData(gridApi, table);
@@ -133,23 +132,20 @@
 		}
 	});
 
-
 	$effect(() => {
-		if (ribbonAction.value === RibbonActionEnum.UNKNOWN) return;
+		if (allowRibbonActions) {
+			if (ribbonAction.value === RibbonActionEnum.UNKNOWN) return;
 
-		handleRibbonActionCS(
-			ribbonAction.value,
-			table,
-			gridApi,
-			excelFileInput
-		);
+			handleRibbonActionCS(
+				ribbonAction.value,
+				table,
+				gridApi,
+				excelFileInput
+			);
 
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
 	});
-
-	beforeNavigate(() => {
-		gridApi.destroy()
-	})
 </script>
 
 

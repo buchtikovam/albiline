@@ -2,7 +2,7 @@
 	import {InputParamsZakaznici, InputParamsZakazniciSelectOptions} from "$lib/definitions/routes/prodej/zakaznici/input-params/InputParamsZakaznici";
 	import {customerGridOptions, customerHeaderTranslations} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-ss/customerAgGridDef.svelte';
 	import {activeTabIndex, showFulltextSearch} from '$lib/runes/page.svelte';
-	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 	import {parseUrlErrors} from "$lib/utils/navigation/parseUrlErrors.svelte";
 	import {beforeNavigate} from "$app/navigation";
 	import {onMount} from "svelte";
@@ -21,9 +21,13 @@
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
-	currentPageKey.value = "CustomersGetList";
 
-	let table = agGridTables.value[currentPageKey.value];
+	pageKeys.value = {
+		value: ["CustomersGetList"],
+		index: 0
+	};
+
+	let table = agGridTables.value[pageKeys.value.value[pageKeys.value.index]];
 	let open = $state(false);
 
 
@@ -42,8 +46,6 @@
 			document.removeEventListener('keydown', handleKeyDown);
 		}
 	})
-
-	$inspect(table.openInputParams, table.hasInputParams)
 
 	$effect(() => {
 		open = table.openInputParams;

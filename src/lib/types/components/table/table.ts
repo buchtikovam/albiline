@@ -25,6 +25,10 @@ export interface AgGridTables {
 
 export interface AgGridTableType {
 	url?: string;
+	// used instead of pagekey, when there are multiple ag grid tables on one page
+	name: string;
+	// index in pagekeys.index
+	index: number;
 	// used in inputParams after submit
 	type: "serverSide" | "clientSide";
 	// used for identifying cross tables records on the api

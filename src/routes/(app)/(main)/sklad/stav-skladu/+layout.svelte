@@ -1,8 +1,10 @@
 <script lang="ts">
 	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
 	import {disableNavigation, disablePageTabs} from "$lib/runes/navigation.svelte";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
+	import {Button} from "$lib/components/ui/button";
 	import {Input} from "$lib/components/ui/input";
+	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 	import {localizeHref} from "$lib/paraglide/runtime";
 	import {goto} from "$app/navigation";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
@@ -12,8 +14,6 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
-	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
-	import {Button} from "$lib/components/ui/button";
 
 
 	interface Props {
@@ -22,13 +22,14 @@
 
 	let { children }: Props = $props();
 
+	pageKeys.value = {
+		value: ["ProductStockInventory"],
+		index: 0,
+	}
 
-	currentPageKey.value = "ProductStockInventory";
-
-	let table: AgGridTableType = $state(agGridTables.value[currentPageKey.value]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let activeTab = $derived(activeTabIndex.value.toString());
 </script>
-
 
 
 <PageWrapper>

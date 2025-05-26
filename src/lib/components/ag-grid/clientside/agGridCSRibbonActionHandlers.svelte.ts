@@ -3,14 +3,15 @@ import type {AgGridTableType} from "$lib/types/components/table/table";
 import type {GridApi} from "ag-grid-enterprise";
 import {authDetails} from "$lib/runes/page.svelte";
 import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
+import {pageKeys} from "$lib/runes/table.svelte";
 
 
-export const handleRibbonActionCS = (
+export function handleRibbonActionCS(
 	action: RibbonActionEnum,
 	table: AgGridTableType,
 	gridApi: GridApi,
 	excelFileInput: HTMLInputElement,
-) => {
+)  {
 	switch (action) {
 		case RibbonActionEnum.LOAD:
 			table.openInputParams = true;

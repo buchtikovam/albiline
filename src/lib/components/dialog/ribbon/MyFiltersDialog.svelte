@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
-	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte";
+	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 	import {apiServiceDELETEHandled, apiServiceGETHandled, apiServicePUTHandled} from "$lib/api/apiService.svelte";
 	import {ribbonFiltersAgGridDef} from "$lib/definitions/components/ribbon/ag-grid/ribbonFiltersAgGridDef";
 	import Save from "lucide-svelte/icons/save";
@@ -26,7 +26,7 @@
 	let fetchedFilters: StoredFilters[] = $state([]);
 	let idsToDelete: number[] = $state([]);
 	let editedFilters: StoredFilters[] = $state([]);
-	let pageKey = $derived(currentPageKey.value);
+	let pageKey = $derived(pageKeys.value.value[pageKeys.value.index]);
 
 
 	$effect(() => {

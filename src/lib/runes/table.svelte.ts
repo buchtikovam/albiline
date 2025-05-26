@@ -12,7 +12,7 @@ export interface TableSettings {
 // INITIALIZE IN +PAGE.SVELTE, NOT IN AG GRID WRAPPER
 export const agGridTables: SessionStore<AgGridTables> = sessionStore("agGridTables", {});
 
-export const currentPageKey: { value: string } = $state({ value: ""})
+export const pageKeys: SessionStore<{ value: string[], index: number }> = sessionStore("pageKeys", { value: [], index: 0 })
 
 export const sideTableRowData: { value: any[] } = $state({ value: [] })
 

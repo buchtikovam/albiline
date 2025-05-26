@@ -46,7 +46,7 @@ export function getSSGridOptions (
 		localeText: getAgGridLocale(),
 		rowModelType: 'serverSide',
 		maintainColumnOrder: true,
-		serverSideInitialRowCount: table.latestRowCount || 0,
+		serverSideInitialRowCount: 0,
 		enterNavigatesVerticallyAfterEdit: true,
 		undoRedoCellEditing: true,
 		cacheBlockSize: 1000,

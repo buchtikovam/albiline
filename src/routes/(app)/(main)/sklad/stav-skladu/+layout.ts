@@ -1,13 +1,18 @@
-import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 import type {LayoutLoad} from "../../../../../../.svelte-kit/types/src/routes/(app)/$types";
 
 
 export const load: LayoutLoad = async () => {
-	currentPageKey.value = "ProductStockInventory";
+	pageKeys.value = {
+		value: ["ProductStockInventory"],
+		index: 0,
+	}
 
-	if (!agGridTables.value[currentPageKey.value]) {
-		agGridTables.value[currentPageKey.value] = {
+	if (!agGridTables.value[pageKeys.value.value[0]]) {
+		agGridTables.value[pageKeys.value.value[0]] = {
 			type: "clientSide",
+			name: "ProductStockInventory",
+			index: 0,
 			requiredFields: ["productId"],
 			identificationKey: "productId",
 			defaultColState: [],
@@ -22,6 +27,7 @@ export const load: LayoutLoad = async () => {
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],
+			necessaryDataColumns: [],
 			recentFilters: [],
 			activeSelectedRowIndex: 0,
 			lastVisibleRowIndex: 0,

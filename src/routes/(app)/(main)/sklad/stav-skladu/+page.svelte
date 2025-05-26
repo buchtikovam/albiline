@@ -7,7 +7,7 @@
 		InputParamsProductStockInventory, InputParamsProductStockInventorySelectOptions
 	} from "$lib/definitions/routes/sklad/stav-skladu/input-params/inputParamsProductStockInventory";
 	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
-	import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import {beforeNavigate} from "$app/navigation";
 	import {onMount} from "svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
@@ -21,12 +21,15 @@
 
 	let { data }: Props = $props();
 
+	pageKeys.value = {
+		value: ["ProductStockInventory"],
+		index: 0,
+	}
 
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
-	currentPageKey.value = "ProductStockInventory";
 
-	let table: AgGridTableType = $state(agGridTables.value["ProductStockInventory"]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let open = $state(false);
 	let destroy = $state(false);
 
@@ -64,9 +67,9 @@
 	/>
 {/if}
 
-{#if !destroy}
+{#if !destroy && table}
 	<AgGridCSWrapper
-		pageKey="ProductStockInventory"
+		table={table}
 		gridOptionsCustom={productStockInventoryAgGridDef}
 		headerTranslations={productStockInventoryHeaderTranslations}
 	/>

@@ -3,7 +3,7 @@ import { page } from '$app/state';
 import { goto } from '$app/navigation';
 import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
 import {localizeHref} from "$lib/paraglide/runtime";
-import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 
 
 export function deleteTab(tab: HeaderTab) {
@@ -12,7 +12,7 @@ export function deleteTab(tab: HeaderTab) {
 			const index = openedTabs.value.indexOf(tab);
 			openedTabs.value.splice(openedTabs.value.indexOf(tab), 1);
 
-			let table = agGridTables.value[currentPageKey.value];
+			let table = agGridTables.value[pageKeys.value.value[pageKeys.value.index]];
 
 
 			// after tab was removed, redirect on available tab

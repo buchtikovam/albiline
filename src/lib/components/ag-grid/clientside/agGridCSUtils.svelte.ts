@@ -4,7 +4,7 @@ import type {AgGridTableType} from "$lib/types/components/table/table";
 import {cacheTableData, getCachedTableData} from "$lib/cacheManager";
 import deepcopy from "deepcopy";
 import {apiServicePostHandled} from "$lib/api/apiService.svelte";
-import {currentPageKey} from "$lib/runes/table.svelte";
+import {pageKeys} from "$lib/runes/table.svelte";
 
 
 export function getDefaultColDef() {
@@ -97,14 +97,24 @@ export async function getCSData(
 	table: AgGridTableType
 ) {
 	try {
-		const cached = await getCachedTableData(currentPageKey.value);
+		const cached = await getCachedTableData(table.name);
 
 		if (cached) {
-			console.log("cached")
 			// @ts-ignore
 			gridApi.setGridOption("rowData", cached);
+
+			if (table.selectedRows.length > 0) {
+				table.selectedRows.forEach((row) => {
+					let node = gridApi.getRowNode(String(row[table.identificationKey]));
+					node?.setSelected(true)
+				});
+			} else {
+				if (gridApi.getDisplayedRowCount() > 0) {
+					let row = gridApi.getDisplayedRowAtIndex(0);
+					row?.setSelected(true)
+				}
+			}
 		} else {
-			console.log("notcached")
 			await fetchAndCache(gridApi, table);
 			table.areInputParamsLoading = false;
 		}
@@ -144,11 +154,18 @@ async function fetchAndCache(
 		requestObj["columnList"] = columnList
 
 		gridApi.setGridOption("loading", true)
-		const response = await apiServicePostHandled('pageData', requestObj);
+		const response = await apiServicePostHandled(
+			'pageData',
+			requestObj,
+			table.name
+		);
+
 		const data = await response.data;
+
 		gridApi.setGridOption("rowData", data.items);
 		gridApi.setGridOption("loading", false);
-		await cacheTableData(currentPageKey.value, data.items);
+
+		await cacheTableData(table.name, data.items);
 	} catch (e) {
 		console.log("Fetch and cache error: ", e instanceof Error ? e.message : "");
 	}

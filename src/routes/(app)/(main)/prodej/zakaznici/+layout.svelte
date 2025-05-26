@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {activeTabIndex, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {activePageTab, disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
-	import {currentPageKey, agGridTables} from '$lib/runes/table.svelte';
+	import {pageKeys, agGridTables} from '$lib/runes/table.svelte';
 	import {Input} from '$lib/components/ui/input';
 	import {localizeHref} from "$lib/paraglide/runtime";
 	import {goto} from '$app/navigation';
@@ -23,8 +23,10 @@
 
 	let { children }: Props = $props();
 
-
-	currentPageKey.value = "CustomersGetList";
+	pageKeys.value = {
+		value: ["CustomersGetList"],
+		index: 0
+	};
 
 	let activeTab = $derived(activeTabIndex.value.toString());
 	let table: AgGridTableType = $state(agGridTables.value["CustomersGetList"]);

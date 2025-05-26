@@ -1,10 +1,10 @@
-import {agGridTables, currentPageKey} from "$lib/runes/table.svelte";
+import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 import {parseStringToDate} from "$lib/utils/formatting/parseStringToDate";
 import {BooleanFilter} from "$lib/utils/components/ag-grid/column-filters/booleanFilter";
 import type {ValueFormatterParams} from "ag-grid-enterprise";
 
 
-let table = $derived(agGridTables.value[currentPageKey.value])
+let table = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]])
 
 
 export function getAgColumn(

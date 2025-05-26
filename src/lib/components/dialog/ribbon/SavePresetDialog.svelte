@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {currentPageKey, agGridTables} from "$lib/runes/table.svelte.js";
+	import {pageKeys, agGridTables} from "$lib/runes/table.svelte.js";
 	import {openedRibbonDialog} from "$lib/runes/ribbon.svelte";
 	import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 	import type {ColumnState} from "ag-grid-enterprise";
@@ -9,7 +9,7 @@
 
 	let isOpen: boolean = $state(false);
 	let inputValue: string = $state("");
-	let pageKey = $derived(currentPageKey.value);
+	let pageKey = $derived(pageKeys.value.value[pageKeys.value.index]);
 
 
 	$effect(() => {

@@ -176,10 +176,12 @@
 																{#snippet child({ props })}
 																	<a
 																		href={subItem.href}
+																		data-sveltekit-preload-data="off"
 																		onclick={() => {
-																		item.popoverOpen = false;
-																		handleTabClick(subItem, 1);
-																	}}
+																			item.popoverOpen = false;
+																			handleTabClick(subItem, 1);
+																		}
+																	}
 																		{...props}
 																	>
 																	<span>
@@ -196,9 +198,6 @@
 													/>
 												</ContextMenu.Root>
 											{/if}
-
-
-
 										{/each}
 									</Sidebar.Menu>
 								</Popover.Content>
@@ -324,6 +323,7 @@
 															{#snippet child({ props })}
 																<a
 																	href={subItem.href}
+																	data-sveltekit-preload-data="off"
 																	onclick={() => {
 																		handleTabClick(subItem, 1);
 																	}}

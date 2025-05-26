@@ -33,7 +33,6 @@
 
 	let currentTablePreset: ColumnState[]|undefined = $derived(table.presetToSave);
 	let selectedTablePreset: StoredPresets|undefined = $derived(table.selectedPresetFull);
-
 </script>
 
 
