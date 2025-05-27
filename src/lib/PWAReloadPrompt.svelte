@@ -2,6 +2,10 @@
 
 <script lang="ts">
 	import { useRegisterSW } from 'virtual:pwa-register/svelte';
+	import {agGridTables} from "$lib/runes/table.svelte";
+	// import {goto} from "$app/navigation";
+	// import {redirect} from "@sveltejs/kit";
+	import {clearCache} from "$lib/cacheManager";
 
 	const autoreload = true;
 	// console.log('PWAReloadPrompt');
@@ -30,29 +34,27 @@
 		needRefresh.set(false)
 	}
 
-	let toast = $derived($offlineReady || $needRefresh)
+	let toast = $derived($needRefresh)
 </script>
 
 {#if toast}
 	<div class="pwa-toast" role="alert">
 		<div class="message">
-			{#if $offlineReady}
-				<span>
-					App ready to work offline
-				</span>
-			{:else}
-				<span>
-					New content available, click on reload button to update.
-				</span>
-			{/if}
+			<span>
+				Albiline byl aktualizován. Doporučujeme přenačíst aplikaci.
+			</span>
 		</div>
 		{#if $needRefresh}
-			<button onclick={() => updateServiceWorker(true)}>
-				Reload
+			<button onclick={async () => {
+				await updateServiceWorker(true);
+				agGridTables.value = {};
+				await clearCache();
+			}}>
+				Přenačíst
 			</button>
 		{/if}
 		<button onclick={close}>
-			Close
+			Zavřít
 		</button>
 	</div>
 {/if}

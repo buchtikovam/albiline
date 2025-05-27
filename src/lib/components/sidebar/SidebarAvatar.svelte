@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {agGridTables} from "$lib/runes/table.svelte.js";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte.js";
 	import {getLocale, locales, localizeHref, localizeUrl, setLocale} from "$lib/paraglide/runtime";
 	import {clearCache} from "$lib/cacheManager";
 	import {useSidebar} from "$lib/components/ui/sidebar";
@@ -17,6 +17,8 @@
 	import * as Select from "$lib/components/ui/select/index.js";
 	import { page } from "$app/state";
 	import {authDetails} from "$lib/runes/page.svelte";
+	import {recentItems} from "$lib/runes/sidebar.svelte";
+	import {openedTabs} from "$lib/runes/navigation.svelte";
 
 	let user = $derived(authDetails)
 
@@ -127,12 +129,6 @@
 				<DropdownMenu.Separator />
 
 				<DropdownMenu.Group>
-<!--					<DropdownMenu.Label-->
-<!--						class="text-muted-foreground text-xs"-->
-<!--					>-->
-<!--						Uživatel-->
-<!--					</DropdownMenu.Label>-->
-
 					<DropdownMenu.Item
 						class="flex w-full items-center"
 						onclick={() => goto(localizeHref("profil"))}
@@ -148,12 +144,6 @@
 
 
 				<DropdownMenu.Group>
-<!--					<DropdownMenu.Label-->
-<!--						class="text-muted-foreground text-xs"-->
-<!--					>-->
-<!--						Aplikace-->
-<!--					</DropdownMenu.Label>-->
-
 					<DropdownMenu.Item
 						class="flex w-full items-center"
 						onclick={() => goto(localizeHref("nastaveni"))}
@@ -183,6 +173,12 @@
 							onclick={async () => {
 								await clearCache();
 								agGridTables.value = {};
+								pageKeys.value = {
+									value: [],
+									index: 0,
+								};
+								recentItems.value = [];
+								openedTabs.value = [];
 							}}
 						>
 							<DropdownMenu.Item

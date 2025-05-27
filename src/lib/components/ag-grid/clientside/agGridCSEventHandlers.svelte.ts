@@ -52,9 +52,14 @@ export function handleColumnVisibleChanged(
 ) {
 	table.showRefreshDataButton = false;
 
+	console.log("change", isInitial)
+
 	if (!isInitial) {
 		// Save column state
+
 		table.presetToSave = event.api.getColumnState() || [];
+
+		console.log(table.presetToSave)
 
 		// Get all visible columns (excluding ag-Grid internal columns)
 		const visibleColumnsFields = event.api.getColumnState()

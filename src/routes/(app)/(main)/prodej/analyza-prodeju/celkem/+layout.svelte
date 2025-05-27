@@ -54,12 +54,14 @@
 			const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
 			const countryCode = inputs.find(f => f.field === 'salescountrycode')?.value || '';
 			let currency = "CZK";
+			let formattedDateFrom = dateFrom.toString().replace(" 00:00:00:000", "");
+			let formattedDateTo = dateTo.toString().replace(" 00:00:00:000", "");
 
 			if (countryCode === "CZ") currency = "CZK";
 			if (countryCode === "SK") currency = "EUR";
 			if (countryCode === "PL") currency = "PLN";
 
-			return `Prodeje za období ${dateFrom}-${dateTo}. Vše v ${currency} bez DPH.`;
+			return `Prodeje za období ${formattedDateFrom}-${formattedDateTo}. Vše v ${currency} bez DPH.`;
 		}
 
 		return "";
@@ -82,26 +84,35 @@
 	})
 </script>
 
-
+<svelte:head>
+	<title>
+		Analýza prodejů - celkem | Albiline
+	</title>
+</svelte:head>
 
 <PageWrapper>
 	<TabFulltextWrapper>
 		<div class="flex-1 flex justify-between items-center mr-2">
-			<Popover.Root>
-				<Popover.Trigger
-					class="size-8 bg-white border border-slate-300 rounded-md flex 2xl:hidden justify-center items-center"
-				>
-					<Info strokeWidth="2" class="size-[18px]"/>
-				</Popover.Trigger>
+			{#if title.length > 0}
+				<Popover.Root>
+					<Popover.Trigger
+						class="size-8 bg-white border border-slate-300 rounded-md flex 2xl:hidden justify-center items-center"
+					>
+						<Info strokeWidth="2" class="size-[18px]"/>
+					</Popover.Trigger>
 
-				<Popover.Content side="right" class="text-sm h-8 py-0 px-2 w-fit flex items-center border-albi-500">
-					<p>{title}</p>
-				</Popover.Content>
-			</Popover.Root>
+					<Popover.Content side="right" class="text-sm h-8 py-0 px-2 w-fit flex items-center border-albi-500">
+						<p>{title}</p>
+					</Popover.Content>
+				</Popover.Root>
 
-			<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
-				<p class="text-sm ">{title}</p>
-			</div>
+				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
+					<p class="text-sm ">{title}</p>
+				</div>
+			{:else}
+				<div class="w-1"></div>
+			{/if}
+
 
 			<div class="min-w-[304px] flex text-xs justify-end items-center gap-1.5 bg-white h-8 border border-slate-300 rounded-md w-fit px-2">
 				<b>Detail: </b>
@@ -124,7 +135,7 @@
 						bind:checked={pageSectionsState.kspSection}
 					/>
 
-					<p>po ksp</p>
+					<p>po KLP</p>
 				</div>
 
 				<Separator

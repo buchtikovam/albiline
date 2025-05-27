@@ -47,8 +47,7 @@
 
 
 {#snippet content()}
-	<form
-		onsubmit={onSubmit}
+	<div
 		class="p-0.5 pt-0 -mt-1"
 	>
 		<Label
@@ -67,11 +66,12 @@
 
 		<Dialog.Footer>
 			<Button
-				type="submit"
+				type="button"
 				class="mt-6 w-full"
+				onclick={onSubmit}
 			>
 				{ saveButtonLabel() }
 			</Button>
 		</Dialog.Footer>
-	</form>
+	</div>
 {/snippet}

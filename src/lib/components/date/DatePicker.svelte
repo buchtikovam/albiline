@@ -15,7 +15,7 @@
 		hasError?: boolean;
 		label?: string;
 		field?: string;
-		onchange?: () => void;
+		onchange?: (dateValue: string) => void;
 	}
 
 	let {
@@ -58,7 +58,7 @@
 	onValueChange={(e) => {
 		if (onchange) {
 			dateValue = formatDateValueToString(e);
-			onchange()
+			onchange(dateValue)
 		}
 	}}
 >

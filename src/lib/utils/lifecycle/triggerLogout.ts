@@ -1,6 +1,8 @@
 import {invalidateAll} from "$app/navigation";
 import {clearCache} from "$lib/cacheManager";
-import {agGridTables} from "$lib/runes/table.svelte";
+import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
+import {recentItems} from "$lib/runes/sidebar.svelte";
+import {openedTabs} from "$lib/runes/navigation.svelte";
 
 
 export async function triggerLogout() {
@@ -8,7 +10,12 @@ export async function triggerLogout() {
 
 	await clearCache();
 	agGridTables.value = {};
-
+	pageKeys.value = {
+		value: [],
+		index: 0,
+	};
+	recentItems.value = [];
+	openedTabs.value = [];
 
 	await fetch('/logout', {
 		method: 'POST',

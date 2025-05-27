@@ -56,8 +56,9 @@ export function handleRibbonActionCS(
 			break;
 
 		case RibbonActionEnum.SAVE_PRESET:
-			openedRibbonDialog.value = "ribbon-save-preset";
+			console.log("save")
 			table.presetToSave = gridApi.getColumnState() || [];
+			openedRibbonDialog.value = "ribbon-save-preset";
 			break;
 	}
 }

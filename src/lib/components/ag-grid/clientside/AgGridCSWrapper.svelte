@@ -27,6 +27,7 @@
 		headerTranslations: Record<string, () => string>;
 		gridOptionsCustom: GridOptions;
 		allowRibbonActions?: boolean;
+		clearRowData?: boolean;
 	}
 
 	let {
@@ -34,6 +35,7 @@
 		headerTranslations,
 		gridOptionsCustom,
 		allowRibbonActions = true,
+		clearRowData = $bindable(false)
 	}: Props = $props();
 
 
@@ -61,9 +63,12 @@
 		disablePageTabs.value = true;
 
 		gridApi = createGrid(gridContainer, gridOptions);
-		gridApi.updateGridOptions(
-			getCSGridOptionsHandlers(table, updateIsEditing, isInitial, gridApi)
-		);
+
+		setTimeout(() => {
+			gridApi.updateGridOptions(
+				getCSGridOptionsHandlers(table, updateIsEditing, isInitial, gridApi)
+			);
+		}, 0)
 
 		mountCSGrid(gridApi, table, headerTranslations);
 		isInitial = false;
@@ -79,6 +84,7 @@
 			if (table.areInputParamsLoading) {
 				clearCache(table.name);
 				getCSData(gridApi, table);
+				isInitial = false;
 			} else {
 				getCSData(gridApi, table);
 			}
@@ -102,10 +108,17 @@
 
 	$effect(() => {
 		if (table.selectedPreset) {
+			console.log(table.selectedPreset)
 			onCSPresetSelected(gridApi, table);
 		}
 	})
 
+	$effect(() => {
+		if (clearRowData) {
+			gridApi.setGridOption("rowData", []);
+			clearRowData = false;
+		}
+	})
 
 	$effect(() => {
 		if (table.fulltextFilterValue.length > 1) {

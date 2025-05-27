@@ -96,8 +96,6 @@
 	});
 
 
-	$inspect(JSON.stringify(inputParams, null, 1))
-
 	// load selected input param into InputParam component
 	function onParamSelect(inputParam: FetchedInputParam) {
 		selectedParam = deepcopy(inputParam);
@@ -348,9 +346,9 @@
 							variant="secondary"
 							class={`${isEqual(defaultInputParams, inputParams) ? "hidden" : ""} size-10`}
 							onclick={() => {
-							inputParams = defaultInputParams;
-							selectedParam = undefined;
-							editedLabel = "";
+								inputParams = defaultInputParams;
+								selectedParam = undefined;
+								editedLabel = "";
 						}}
 						>
 							<Trash2 class="!size-[18px]"/>

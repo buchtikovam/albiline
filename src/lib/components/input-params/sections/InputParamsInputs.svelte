@@ -20,9 +20,15 @@
 
 
 	// Reactive state with deep equality check
-	let allInputs: InputParamsInput[] = $state(deepcopy(initialInputs));
+	let allInputs: InputParamsInput[] = $state(deepcopy(inputs));
 	let isUpdating = $state(false);
 
+
+	$effect(() => {
+		if (inputs.length > 0) {
+			allInputs = inputs;
+		}
+	})
 
 	// Updated to handle multiple value types
 	function handleInputChange(index: number, newValue: any) {
@@ -38,6 +44,18 @@
 		// }
 
 		isUpdating = false;
+	}
+
+	$inspect(inputs)
+
+	function getLabelByField(field:string) {
+		let input = initialInputs.find((input) => input.field === field);
+
+		if (input) {
+			return input.label()
+		}
+
+		return field;
 	}
 </script>
 
@@ -55,7 +73,7 @@
 				<div>
 					<InputLabelWithContext
 						contextMenuField={paramInput.field}
-						label={paramInput.label()}
+						label={getLabelByField(paramInput.field)}
 					/>
 
 					<Input
@@ -70,7 +88,7 @@
 				<div>
 					<InputLabelWithContext
 						contextMenuField={paramInput.field}
-						label={paramInput.label()}
+						label={getLabelByField(paramInput.field)}
 					/>
 
 					<Input
@@ -84,10 +102,10 @@
 			{#if paramInput.type === "date"}
 				<DatePicker
 					hasError={false}
-					bind:dateValue={paramInput.value}
-					label={paramInput.label()}
+					dateValue={paramInput.value}
+					label={getLabelByField(paramInput.field)}
 					field={paramInput.field}
-					onchange={() => handleInputChange(i, paramInput.value.split(" ")[0])}
+					onchange={(dateValue) => handleInputChange(i, dateValue.split(" ")[0])}
 				/>
 			{/if}
 
@@ -98,12 +116,12 @@
 						checked={paramInput.value}
 						onCheckedChange={(e) => handleInputChange(i, e)}
 					/>
-					{#if paramInput.label}
+					<!--{#if paramInput.label}-->
 						<InputLabelWithContext
 							contextMenuField={paramInput.field}
-							label={paramInput.label()}
+							label={getLabelByField(paramInput.field)}
 						/>
-					{/if}
+					<!--{/if}-->
 				</div>
 			{/if}
 		</div>

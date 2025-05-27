@@ -183,6 +183,7 @@ export function onColStateReset(
 	});
 
 	table.setColStateToDefault = false;
+	table.presetToSave = table.defaultColState;
 }
 
 

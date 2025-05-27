@@ -50,15 +50,7 @@ function getDiffFromBasePrice(
 
 
 export const SalesTotalByDivisionSubdetailProductlineAgGridDef: GridOptions = {
-	sideBar: {
-		toolPanels: [
-			"columns",
-			"filters",
-		],
-	},
-
 	statusBar: undefined,
-	suppressDragLeaveHidesColumns: true,
 	grandTotalRow: "bottom",
 	suppressStickyTotalRow: false,
 

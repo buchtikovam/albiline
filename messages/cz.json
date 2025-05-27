@@ -521,7 +521,40 @@
 	"routes_prodej_analyza_prodeju_table_column_margin_wholesaleexport_ay": "%",
 
 	"routes_prodej_analyza_prodeju_linie_table_column_itemId" : "Linie",
-	"routes_prodej_analyza_prodeju_linie_table_column_itemName" : "Název linie"
+	"routes_prodej_analyza_prodeju_linie_table_column_itemName" : "Název linie",
+
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_salesCountryCode" : "Země",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_dealerCode" : "OZ",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_managerCode" : "OM",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_customerNodeCode" : "Číslo zákazníka",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_customerNodeName" : "Zákazník",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_quantity_LY" : "Kusů vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_quantity_AY" : "Kusů letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_quantity_Diff" : "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_group_vratky" : "Vratky",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_returnQuantity_LY" : "Vráceno ks vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_returnQuantity_AY" : "Vráceno ks letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_salesPerItem_LY" : "Prodej/kus vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_salesPerItem_AY" : "Prodej/kus letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_salesPerItem_Diff" : "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_sales_LY" : "Prodej vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_sales_AY" : "Prodej letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_sales_DiffAbs" : "Nárůst",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_sales_Diff" : "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_returnSales_LY" : "Dobropisy vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_returnSales_AY" : "Dobropisy letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_basePrice_LY" : "ZC vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_basePrice_AY" : "ZC letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_basePrice_Diff" : "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discount_LY" : "Sleva vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discount_AY" : "Sleva letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discount_Diff" : "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discountPct_LY" : "% slevy vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discountPct_AY" : "% slevy letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn1" : "% z obratu vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn2" : "% z obratu letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_currency" : "Měna",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_group_slevy" : "Slevy"
 }
 
 
