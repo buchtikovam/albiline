@@ -1,5 +1,6 @@
 import { LocalStore, localStore } from '$lib/utils/browser-storage/localStorage.svelte';
 import type { ResponseDialogMessage } from "$lib/types/components/response";
+import {sessionStore, SessionStore} from "$lib/utils/browser-storage/sessionStorage.svelte";
 
 
 export const isMobile: { value: boolean } = $state({ value: false });
@@ -65,3 +66,21 @@ export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state
 // 		// },
 // 	]
 // });
+
+
+
+
+// -- page specific
+
+
+interface PageSections {
+	linieSection: boolean;
+	kspSection: boolean;
+	ksSection: boolean;
+}
+
+export const pageSectionsState: SessionStore<PageSections> = sessionStore("salesTotalPageSections", {
+	linieSection: false,
+	kspSection: false,
+	ksSection: false,
+})

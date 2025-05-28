@@ -59,7 +59,19 @@ export function getSSGridOptions (
 		tooltipShowDelay: 1000,
 
 		sideBar: {
-			toolPanels: ['columns', 'filters']
+			toolPanels: [
+				{
+					id: 'columns',
+					labelDefault: 'Columns',
+					labelKey: 'columns',
+					iconKey: 'columns',
+					toolPanel: 'agColumnsToolPanel',
+					toolPanelParams: {
+						suppressValues: true,
+					}
+				},
+				"filters",
+			]
 		},
 
 		cellSelection: {

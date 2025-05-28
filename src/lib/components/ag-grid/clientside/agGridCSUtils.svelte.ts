@@ -133,13 +133,23 @@ async function fetchAndCache(
 
 		if (Object.keys(table.presetToSave).length > 0) {
 			table.presetToSave.forEach(preset => {
-				if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+				if (
+					!preset.hide &&
+					!preset.colId.includes("ag-Grid") &&
+					!columnList.includes(preset.colId) &&
+					!preset.colId.includes("_computed")
+				) {
 					columnList.push(preset.colId)
 				}
 			})
 		} else {
 			table.defaultColState.forEach(preset => {
-				if (!preset.hide && !preset.colId.includes("ag-Grid") && !columnList.includes(preset.colId)) {
+				if (
+					!preset.hide &&
+					!preset.colId.includes("ag-Grid") &&
+					!columnList.includes(preset.colId) &&
+					!preset.colId.includes("_computed")
+				) {
 					columnList.push(preset.colId)
 				}
 			})

@@ -1,7 +1,10 @@
 <script lang="ts">
-	import {showFulltextSearch} from "$lib/runes/page.svelte.js";
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte.js";
+	import {pageSectionsState, showFulltextSearch} from "$lib/runes/page.svelte.js";
+	import {Separator} from "$lib/components/ui/separator";
+	import {Checkbox} from "$lib/components/ui/checkbox";
 	import {Input} from "$lib/components/ui/input";
+	import Info from "lucide-svelte/icons/info";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
@@ -9,10 +12,6 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Tabs from "$lib/components/ui/tabs";
-	import {Checkbox} from "$lib/components/ui/checkbox";
-	import {Separator} from "$lib/components/ui/separator";
-	import {setContext} from "svelte";
-	import Info from "lucide-svelte/icons/info";
 	import * as Popover from "$lib/components/ui/popover/index.js";
 
 
@@ -22,17 +21,6 @@
 
 	let { children }: Props = $props();
 
-	interface PageSections {
-		 linieSection: boolean;
-		 kspSection: boolean;
-		 ksSection: boolean;
-	}
-
-	let pageSectionsState: PageSections = $state({
-		linieSection: false,
-		kspSection: false,
-		ksSection: false,
-	})
 
 	pageKeys.value = {
 		value: [
@@ -45,7 +33,6 @@
 	};
 
 	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
-	setContext("pageSections", pageSectionsState);
 
 	let title = $derived.by(() => {
 		if (table.loadedInputParams.inputs) {
@@ -61,7 +48,7 @@
 			if (countryCode === "SK") currency = "EUR";
 			if (countryCode === "PL") currency = "PLN";
 
-			return `Prodeje za období ${formattedDateFrom}-${formattedDateTo}. Vše v ${currency} bez DPH.`;
+			return `Prodeje za období <b>${formattedDateFrom}-${formattedDateTo}</b>. Vše v <b>${currency}</b> bez DPH.`;
 		}
 
 		return "";
@@ -69,26 +56,28 @@
 
 	$effect(() => {
 		if (
-			pageSectionsState.kspSection === false &&
-			pageSectionsState.ksSection === true
+			pageSectionsState.value.kspSection === false &&
+			pageSectionsState.value.ksSection === true
 		) {
-			pageSectionsState.ksSection = false;
+			pageSectionsState.value.ksSection = false;
 		}
 
 		if (
-			pageSectionsState.linieSection === false &&
-			pageSectionsState.kspSection === true
+			pageSectionsState.value.linieSection === false &&
+			pageSectionsState.value.kspSection === true
 		) {
-			pageSectionsState.kspSection = false;
+			pageSectionsState.value.kspSection = false;
 		}
 	})
 </script>
+
 
 <svelte:head>
 	<title>
 		Analýza prodejů - celkem | Albiline
 	</title>
 </svelte:head>
+
 
 <PageWrapper>
 	<TabFulltextWrapper>
@@ -101,13 +90,13 @@
 						<Info strokeWidth="2" class="size-[18px]"/>
 					</Popover.Trigger>
 
-					<Popover.Content side="right" class="text-sm h-8 py-0 px-2 w-fit flex items-center border-albi-500">
-						<p>{title}</p>
+					<Popover.Content side="right" class="text-xs h-8 py-0 px-2 w-fit flex items-center border-albi-500">
+						<p>{@html title}</p>
 					</Popover.Content>
 				</Popover.Root>
 
 				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
-					<p class="text-sm ">{title}</p>
+					<p class="text-xs">{@html title}</p>
 				</div>
 			{:else}
 				<div class="w-1"></div>
@@ -120,7 +109,7 @@
 				<div class="flex items-center gap-1">
 					<Checkbox
 						class="size-4"
-						bind:checked={pageSectionsState.linieSection}
+						bind:checked={pageSectionsState.value.linieSection}
 					/>
 
 					<p>po liniích</p>
@@ -131,8 +120,8 @@
 				<div class="flex items-center gap-1">
 					<Checkbox
 						class="size-4"
-						disabled={!pageSectionsState.linieSection}
-						bind:checked={pageSectionsState.kspSection}
+						disabled={!pageSectionsState.value.linieSection}
+						bind:checked={pageSectionsState.value.kspSection}
 					/>
 
 					<p>po KLP</p>
@@ -146,8 +135,8 @@
 				<div class="flex items-center gap-1">
 					<Checkbox
 						class="size-4"
-						disabled={!pageSectionsState.kspSection}
-						bind:checked={pageSectionsState.ksSection}
+						disabled={!pageSectionsState.value.kspSection}
+						bind:checked={pageSectionsState.value.ksSection}
 					/>
 
 					<p>po kusech</p>

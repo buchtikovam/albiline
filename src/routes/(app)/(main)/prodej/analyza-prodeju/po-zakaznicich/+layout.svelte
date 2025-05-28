@@ -4,7 +4,6 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import Info from "lucide-svelte/icons/info";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
-	import {Separator} from "$lib/components/ui/separator/index.js";
 	import {Checkbox} from "$lib/components/ui/checkbox/index.js";
 	import {Input} from "$lib/components/ui/input/index.js";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
@@ -20,9 +19,28 @@
 
 	let { children }: Props = $props();
 
-	let title = $state("")
-
 	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+
+	let title = $derived.by(() => {
+		if (table.loadedInputParams.inputs) {
+			const inputs = table.loadedInputParams.inputs;
+
+			const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
+			const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
+			const dateRange = `${dateFrom.toString().replace(" 00:00:00:000", "")}-${dateTo.toString().replace(" 00:00:00:000", "")}`;
+			let linie = inputs.find(f => f.field === 'productlineid')?.value === -1 ? "vše" : inputs.find(f => f.field === 'productlineid')?.value;
+
+			return `
+				Detail pro: období <b>${dateFrom.toString().replace(" 00:00:00:000", "")}-${dateTo.toString().replace(" 00:00:00:000", "")}</b>,
+				země = <b>${inputs.find(f => f.field === 'salescountrycode')?.value || ''}</b>,
+				prodejní kanál = <b>${inputs.find(f => f.field === 'saleschannel')?.value || 'vše'}</b>,
+				divize = <b>${inputs.find(f => f.field === 'divisionid')?.value || 'vše'}</b>,
+				linie = <b>${linie}</b>,
+				KLP = <b>${inputs.find(f => f.field === 'costlevelcode')?.value || 'vše'}</b>`;
+		}
+
+		return "";
+	})
 
 </script>
 
@@ -39,25 +57,28 @@
 						<Info strokeWidth="2" class="size-[18px]"/>
 					</Popover.Trigger>
 
-					<Popover.Content side="right" class="text-sm h-8 py-0 px-2 w-fit flex items-center border-albi-500">
-						<p >{title}</p>
+					<Popover.Content
+						side="right"
+						class="text-xs h-8 py-0 px-2 w-fit flex items-center border-albi-500"
+					>
+						<p>{@html title}</p>
 					</Popover.Content>
 				</Popover.Root>
 
 				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
-					<p class="text-sm ">{title}</p>
+					<p class="text-xs">{@html title}</p>
 				</div>
 			{:else}
 				<div class="w-1"></div>
 			{/if}
 
 
-			<div class="flex items-center gap-1 h-8 bg-white px-2 rounded-md border border-slate-300">
+			<div class="flex min-w-[126px] items-center gap-1 h-8 bg-white px-2 rounded-md border border-slate-300">
 				<Checkbox
 					class="size-4"
 				/>
 
-				<p class="text-xs">Zobrazit vratky</p>
+				<p class="text-xs font-bold">Zobrazit vratky</p>
 			</div>
 		</div>
 

@@ -39,7 +39,21 @@ export function getCSGridOptions(
 		enableCellTextSelection: true,
 		ensureDomOrder: true,
 		rowData: [],
-		sideBar: { toolPanels: ["columns", "filters"] },
+		sideBar: {
+			toolPanels: [
+				{
+					id: 'columns',
+					labelDefault: 'Columns',
+					labelKey: 'columns',
+					iconKey: 'columns',
+					toolPanel: 'agColumnsToolPanel',
+					toolPanelParams: {
+						suppressValues: true,
+					}
+				},
+				"filters",
+			]
+		},
 		statusBar: getStatusBar(),
 		rowSelection: getRowSelection(),
 		defaultColDef: getDefaultColDef(),

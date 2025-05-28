@@ -1,6 +1,8 @@
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
-import type {IAggFuncParams, IRowNode} from "ag-grid-enterprise";
+import type {IAggFuncParams, IRowNode, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
+import {formatPercentage} from "$lib/utils/general/formatPercentage";
+import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 
 
 function getDiff(
@@ -29,7 +31,8 @@ function getDiff(
 function getDivision(
 	dividentField: string,
 	divisorField: string,
-	params: IAggFuncParams
+	params: IAggFuncParams,
+	substract?: boolean
 ) {
 	let dividentSum = 0;
 	let divisorSum = 0;
@@ -38,6 +41,10 @@ function getDivision(
 		dividentSum += node.data[dividentField];
 		divisorSum += node.data[divisorField];
 	});
+
+	if (substract) {
+		return (dividentSum / divisorSum) - 1;
+	}
 
 	if (divisorSum !== 0) {
 		return dividentSum / divisorSum;
@@ -63,21 +70,21 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 	columnDefs: [
 		getAgColumn(
 			"salesCountryCode", // Země
-			"text", 100,
+			"text", 65,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
 			"dealerCode", // OZ
-			"number", 100,
+			"number", 60,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
 			"managerCode", // OM
-			"number", 100,
+			"number", 60,
 			false, false, false,
 			[],
 		),
@@ -91,63 +98,79 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 
 		getAgColumn(
 			"customerNodeName", // Zákazník
-			"text", 100,
+			"text", 200,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
 			"quantity_LY", // Kusů vloni
-			"number", 100,
+			"number", 80,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
 		getAgColumn(
 			"quantity_AY", // Kusů letos
-			"number", 100,
+			"number", 80,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
 		getAgColumn(
 			"quantity_Diff", // %
-			"number", 100,
+			"number", 70,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
 					return getDiff("quantity_AY", "quantity_LY", params);
 				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0)
+				}
 			}
 		),
+
 
 		{
 			field: "group_vratky", // Vratky
 			children: [
 				getAgColumn(
 					"returnQuantity_LY", // Vráceno ks vloni
-					"number", 100,
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberToCzech(params.value)
+						}
 					}
 				),
 
 				getAgColumn(
 					"returnQuantity_AY", // Vráceno ks letos
-					"number", 100,
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberToCzech(params.value)
+						}
 					}
 				),
 			]
@@ -157,42 +180,88 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 
 		getAgColumn(
 			"salesPerItem_LY", // Prodej/kus vloni
-			"number", 100,
+			"number", 105,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
-					return getDivision("quantity_LY", "sales_LY", params);
+					return getDivision("sales_LY", "quantity_LY",  params);
 				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
 		getAgColumn(
 			"salesPerItem_AY", // Prodej/kus letos
-			"number", 100,
+			"number", 105,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
-					return getDivision("quantity_AY", "sales_AY", params);
+					return getDivision("sales_AY", "quantity_AY", params);
 				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
 		getAgColumn(
 			"salesPerItem_Diff", // %
-			"number", 100,
+			"number", 70,
 			false, false, false,
-			[],
+			["text-right"],
+			{
+				aggFunc: (params: IAggFuncParams) => { // todo: doesnt match
+					// if ( avg_salesperitem_ly <= 0 and avg_salesperitem_ay > 0, 1
+					// if ( avg_salesperitem_ly >= 0 and avg_salesperitem_ay < 0, -1
+					// if ( avg_salesperitem_ly = 0 and avg_salesperitem_ay = 0, 0
+					// avg_salesperitem_ay / avg_salesperitem_ly - 1 )))
+
+					let lyArr: number[] = [];
+					let ayArr: number[] = [];
+
+					params.api.forEachNode((node: IRowNode) => {
+						lyArr.push(node.data["salesPerItem_LY"]);
+						ayArr.push(node.data["salesPerItem_AY"])
+					})
+
+					const sumLy = lyArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+					const sumAy = ayArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+					let avg_salesperitem_ly = sumLy / lyArr.length;
+					let avg_salesperitem_ay = sumAy / ayArr.length;
+
+					console.log(avg_salesperitem_ly);
+					console.log(avg_salesperitem_ay);
+
+					if (avg_salesperitem_ly <= 0 && avg_salesperitem_ay > 0) return 1;
+
+					if (avg_salesperitem_ly >= 0 && avg_salesperitem_ay < 0) return -1;
+
+					if (avg_salesperitem_ly === 0 && avg_salesperitem_ay === 0) return 0;
+
+					return avg_salesperitem_ay / avg_salesperitem_ly - 1
+					// return getDiff("salesPerItem_AY", "salesPerItem_LY", params);
+				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0)
+				}
+			}
 		),
 
 		getAgColumn(
 			"sales_LY", // Prodej vloni
 			"number", 100,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
@@ -200,9 +269,12 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			"sales_AY", // Prodej letos
 			"number", 100,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
@@ -210,21 +282,27 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			"sales_DiffAbs", // Nárůst
 			"number", 100,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				}
 			}
 		),
 
 		getAgColumn(
 			"sales_Diff", // %
-			"number", 100,
+			"number", 70,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
 					return getDiff("sales_AY", "sales_LY", params);
 				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0)
+				}
 			}
 		),
 
@@ -233,20 +311,26 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			children: [
 				getAgColumn(
 					"returnSales_LY", // Dobropisy vloni
-					"number", 100,
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberToCzech(params.value)
+						},
 					}
 				),
 				getAgColumn(
 					"returnSales_AY", // Dobropisy letos
-					"number", 100,
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberToCzech(params.value)
+						},
 					}
 				),
 			]
@@ -254,31 +338,41 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 
 		getAgColumn(
 			"basePrice_LY", // ZC vloni
-			"number", 100,
+			"number", 90,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				},
 			}
 		),
+
 		getAgColumn(
 			"basePrice_AY", // ZC letos
-			"number", 100,
+			"number", 90,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: "sum",
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatNumberToCzech(params.value)
+				},
 			}
 		),
 
 		getAgColumn(
 			"basePrice_Diff", // %
-			"number", 100,
+			"number", 70,
 			false, false, false,
-			[],
+			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
 					return getDiff("basePrice_AY", "basePrice_LY", params);
+				},
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0)
 				},
 			}
 		),
@@ -288,56 +382,71 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			children: [
 				getAgColumn(
 					"discount_LY", // Sleva vloni
-					"number", 100,
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
 					{
 						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberToCzech(params.value)
+						},
 					}
 				),
 
 				getAgColumn(
 					"discount_AY", // Sleva letos
-					"number", 100,
+					"number", 90,
 					false, false, false,
-					[],
+					["text-right"],
 					{
 						aggFunc: "sum",
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatNumberToCzech(params.value)
+						},
 					}
 				),
 
 				getAgColumn(
 					"discount_Diff", // %
-					"number", 100,
+					"number", 70,
 					false, false, false,
-					[],
+					["text-right"],
 					{
 						aggFunc: (params: IAggFuncParams) => {
 							return getDiff("discount_AY", "discount_LY", params);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0)
 						},
 					}
 				),
 
 				getAgColumn(
 					"discountPct_LY", // % slevy vloni
-					"number", 100,
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => { // todo
-							// return getDivision("quantity_AY", "sales_AY", params);
+						aggFunc: (params: IAggFuncParams) => { // todo: doesnt match
+							return getDivision("sales_LY", "basePrice_LY", params, true);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0)
 						},
 					}
 				),
 
 				getAgColumn(
 					"discountPct_AY", // % slevy letos
-					"number", 100,
+					"number", 80,
 					false, false, false,
-					[],
+					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => { // todo
-							// return getDivision("quantity_AY", "sales_AY", params);
+						aggFunc: (params: IAggFuncParams) => {  // todo: doesnt match
+							return getDivision("sales_AY", "basePrice_AY", params, true);
+						},
+						valueFormatter: (params: ValueFormatterParams) => {
+							return formatPercentage(params.value, 0)
 						},
 					}
 				),
@@ -345,34 +454,84 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 		},
 
 		getAgColumn(
-			"computedColumn1", // % z obratu vloni
-			"number", 100,
+			"_computedColumn1", // % z obratu vloni
+			"number", 90,
 			false, false, false,
-			[],
+			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => { // todo
-					// return getDivision("quantity_AY", "sales_AY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// params.data contains the data for the current row.
+					if (!params.data || typeof params.data.sales_LY !== 'number') {
+						return null;
+					}
+
+					const currentRowSalesLY: number = params.data.sales_LY;
+					let totalSalesLY = 0;
+
+					params.api.forEachNode((node: IRowNode) => {
+						if (node.data && typeof node.data.sales_LY === 'number') {
+							totalSalesLY += node.data.sales_LY;
+						}
+					});
+
+					if (totalSalesLY === 0) {
+						return currentRowSalesLY === 0 ? 0 : null;
+					}
+
+					return currentRowSalesLY / totalSalesLY;
 				},
+
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0);
+				},
+
+				aggFunc: 'sum',
 			}
 		),
+
+
 		getAgColumn(
-			"computedColumn2", // % z obratu letos
-			"number", 100,
+			"_computedColumn2", // % z obratu letos
+			"number", 90,
 			false, false, false,
-			[],
+			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => { // todo
-					// return getDivision("quantity_AY", "sales_AY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// params.data contains the data for the current row.
+					if (!params.data || typeof params.data.sales_AY !== 'number') {
+						return null;
+					}
+
+					const currentRowSalesAY: number = params.data.sales_AY;
+					let totalSalesAY = 0;
+
+					params.api.forEachNode((node: IRowNode) => {
+						if (node.data && typeof node.data.sales_AY === 'number') {
+							totalSalesAY += node.data.sales_AY;
+						}
+					});
+
+					if (totalSalesAY === 0) {
+						return currentRowSalesAY === 0 ? 0 : null;
+					}
+
+					return currentRowSalesAY / totalSalesAY;
 				},
+
+				valueFormatter: (params: ValueFormatterParams) => {
+					return formatPercentage(params.value, 0);
+				},
+
+				aggFunc: 'sum',
 			}
 		),
 
 		getAgColumn(
-			"currency", // Měna // todo hidden ?
+			"currency", // Měna
 			"text", 100,
 			false, true, false,
 			[],
-		)
+		),
 	]
 }
 
@@ -405,8 +564,8 @@ export const SalesCustomdetailByCustomersHeaderTranslations = {
 	discount_Diff: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discount_Diff,
 	discountPct_LY: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discountPct_LY,
 	discountPct_AY: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_discountPct_AY,
-	computedColumn1: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn1,
-	computedColumn2: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn2,
+	_computedColumn1: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn1,
+	_computedColumn2: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn2,
 	currency: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_currency,
 	group_vratky: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_group_vratky,
 	group_slevy: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_group_slevy
