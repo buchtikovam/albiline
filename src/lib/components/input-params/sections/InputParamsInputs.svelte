@@ -5,6 +5,7 @@
 	import deepcopy from "deepcopy";
 	import DatePicker from "$lib/components/date/DatePicker.svelte";
 	import {Input} from "$lib/components/ui/input";
+	import ColumnFilterTypeEnum from "$lib/components/input-params/column-filters/ColumnFilterTypeEnum.svelte";
 
 	interface Props {
 		initialInputs: InputParamsInput[];
@@ -30,6 +31,8 @@
 		}
 	})
 
+	$inspect(inputs)
+
 	// Updated to handle multiple value types
 	function handleInputChange(index: number, newValue: any) {
 		isUpdating = true;
@@ -46,13 +49,11 @@
 		isUpdating = false;
 	}
 
-	$inspect(inputs)
-
 	function getLabelByField(field:string) {
 		let input = initialInputs.find((input) => input.field === field);
 
 		if (input) {
-			return input.label()
+			if (input.label) return input.label()
 		}
 
 		return field;
@@ -99,6 +100,7 @@
 				</div>
 			{/if}
 
+
 			{#if paramInput.type === "date"}
 				<DatePicker
 					hasError={false}
@@ -109,6 +111,7 @@
 				/>
 			{/if}
 
+
 			{#if paramInput.type === 'boolean'}
 				<div class="flex items-center  gap-2">
 					<Checkbox
@@ -116,13 +119,19 @@
 						checked={paramInput.value}
 						onCheckedChange={(e) => handleInputChange(i, e)}
 					/>
-					<!--{#if paramInput.label}-->
 						<InputLabelWithContext
 							contextMenuField={paramInput.field}
 							label={getLabelByField(paramInput.field)}
 						/>
-					<!--{/if}-->
 				</div>
+			{/if}
+
+
+			{#if paramInput.type === "enum"}
+				<ColumnFilterTypeEnum
+					bind:value={paramInput.value}
+					onchange={(newValue) => handleInputChange(i, newValue)}
+					dropdownOptions={paramInput.dropdownOptions}/>
 			{/if}
 		</div>
 	{/each}

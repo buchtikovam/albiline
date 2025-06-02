@@ -260,7 +260,7 @@ export const load: LayoutLoad = async () => {
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],
-			necessaryDataColumns: [],
+			necessaryDataColumns: ["returnQuantity_LY", "returnQuantity_AY", "returnSales_LY", "returnSales_AY", ],
 			recentFilters: [],
 			activeSelectedRowIndex: 0,
 			lastVisibleRowIndex: 0,

@@ -11,7 +11,7 @@
 
 	interface Props {
 		value: string|number|Date|boolean|null;
-		onchange: () => void;
+		onchange: (newValue?: string) => void;
 		asyncDropdownOptions?: () => Promise<string[]>;
 		dropdownOptions?: string[];
 	}
@@ -134,7 +134,7 @@
 											value = dropdownValue;
 										}
 
-										onchange();
+										onchange(dropdownValue);
 										closeAndFocusTrigger();
 									}}
 								>

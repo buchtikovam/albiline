@@ -62,6 +62,7 @@
 	onMount(() => {
 		disablePageTabs.value = true;
 
+
 		gridApi = createGrid(gridContainer, gridOptions);
 
 		setTimeout(() => {
@@ -72,6 +73,7 @@
 
 		mountCSGrid(gridApi, table, headerTranslations);
 		isInitial = false;
+
 
 		return(() => {
 			unmountCSGrid(table, gridApi);

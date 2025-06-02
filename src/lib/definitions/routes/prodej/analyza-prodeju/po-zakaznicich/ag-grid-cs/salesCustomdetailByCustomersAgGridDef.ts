@@ -13,7 +13,9 @@ function getDiff(
 	let dividendSum = 0;
 	let divisorSum = 0;
 
-	params.api.forEachNode((node: IRowNode) => {
+	params.api.onFilterChanged();
+
+	params.api.forEachNodeAfterFilter((node: IRowNode) => {
 		dividendSum += node.data[dividendField];
 		divisorSum += node.data[divisorField];
 	});
@@ -37,7 +39,9 @@ function getDivision(
 	let dividentSum = 0;
 	let divisorSum = 0;
 
-	params.api.forEachNode((node: IRowNode) => {
+	params.api.onFilterChanged();
+
+	params.api.forEachNodeAfterFilter((node: IRowNode) => {
 		dividentSum += node.data[dividentField];
 		divisorSum += node.data[divisorField];
 	});
@@ -145,6 +149,14 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 		),
 
 
+		getAgColumn(
+			"currency", // Měna
+			"text", 70,
+			false, false, false,
+			[],
+		),
+
+
 		{
 			field: "group_vratky", // Vratky
 			children: [
@@ -185,6 +197,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
+					console.log(params.api.getRenderedNodes())
 					return getDivision("sales_LY", "quantity_LY",  params);
 				},
 				valueFormatter: (params: ValueFormatterParams) => {
@@ -215,11 +228,6 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => { // todo: doesnt match
-					// if ( avg_salesperitem_ly <= 0 and avg_salesperitem_ay > 0, 1
-					// if ( avg_salesperitem_ly >= 0 and avg_salesperitem_ay < 0, -1
-					// if ( avg_salesperitem_ly = 0 and avg_salesperitem_ay = 0, 0
-					// avg_salesperitem_ay / avg_salesperitem_ly - 1 )))
-
 					let lyArr: number[] = [];
 					let ayArr: number[] = [];
 
@@ -234,9 +242,6 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 					let avg_salesperitem_ly = sumLy / lyArr.length;
 					let avg_salesperitem_ay = sumAy / ayArr.length;
 
-					console.log(avg_salesperitem_ly);
-					console.log(avg_salesperitem_ay);
-
 					if (avg_salesperitem_ly <= 0 && avg_salesperitem_ay > 0) return 1;
 
 					if (avg_salesperitem_ly >= 0 && avg_salesperitem_ay < 0) return -1;
@@ -244,7 +249,6 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 					if (avg_salesperitem_ly === 0 && avg_salesperitem_ay === 0) return 0;
 
 					return avg_salesperitem_ay / avg_salesperitem_ly - 1
-					// return getDiff("salesPerItem_AY", "salesPerItem_LY", params);
 				},
 				valueFormatter: (params: ValueFormatterParams) => {
 					return formatPercentage(params.value, 0)
@@ -378,7 +382,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 		),
 
 		{
-			field: "group_slevy", // Vratky
+			field: "group_slevy", // Slevy
 			children: [
 				getAgColumn(
 					"discount_LY", // Sleva vloni
@@ -461,6 +465,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			{
 				valueGetter: (params: ValueGetterParams) => {
 					// params.data contains the data for the current row.
+
 					if (!params.data || typeof params.data.sales_LY !== 'number') {
 						return null;
 					}
@@ -526,12 +531,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			}
 		),
 
-		getAgColumn(
-			"currency", // Měna
-			"text", 100,
-			false, true, false,
-			[],
-		),
+
 	]
 }
 

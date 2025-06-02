@@ -48,7 +48,9 @@
 			if (countryCode === "SK") currency = "EUR";
 			if (countryCode === "PL") currency = "PLN";
 
-			return `Prodeje za období <b>${formattedDateFrom}-${formattedDateTo}</b>. Vše v <b>${currency}</b> bez DPH.`;
+			let lastSentance = countryCode === "Vše" ? " Částky z cizích měn přepočteny do CZK kurzem příslušného měsíce." : "";
+
+			return `Prodeje za období <b>${formattedDateFrom}-${formattedDateTo}</b>. Vše v <b>${currency}</b> bez DPH.${lastSentance}`;
 		}
 
 		return "";
@@ -103,8 +105,8 @@
 					</Popover.Content>
 				</Popover.Root>
 
-				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
-					<p class="text-xs">
+				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center mr-2">
+					<p class="text-xs text-ellipsis line-clamp-1">
 						{@html title}
 					</p>
 				</div>

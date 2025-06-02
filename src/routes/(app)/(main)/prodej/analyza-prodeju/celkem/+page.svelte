@@ -196,8 +196,7 @@
 			const kinokoAndBakery = inputs.find(f => f.field === 'coverkinokoandbakery')?.value || '';
 
 			let countryCode = inputs.find(f => f.field === 'salescountrycode')?.value || '';
-			let decidedCountryCode = countryCode
-
+			let decidedCountryCode = countryCode === "Vše" ? "" : countryCode;
 			if (columnField.includes("CZ")) decidedCountryCode = "CZ";
 			if (columnField.includes("SK")) decidedCountryCode = "SK";
 			if (columnField.includes("PL")) decidedCountryCode = "PL";

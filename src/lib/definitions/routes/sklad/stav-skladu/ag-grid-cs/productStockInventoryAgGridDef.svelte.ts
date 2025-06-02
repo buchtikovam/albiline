@@ -23,12 +23,18 @@ export const productStockInventoryAgGridDef: GridOptions = {
 			}
 		],
 	},
+
 	suppressDragLeaveHidesColumns: true,
+
+	rowSelection: {
+		mode: "singleRow",
+		enableClickSelection: true,
+		hideDisabledCheckboxes: true,
+		checkboxes: false,
+	},
 
 	onRowSelected: async (event: RowSelectedEvent<any>) => {
 		const selectedRows = event.api.getSelectedRows();
-
-		// console.log(event.api.getColumnState())
 
 		if (selectedRows.length > 0 && event.node.isSelected()) {
 			const result = await apiServicePostHandled(

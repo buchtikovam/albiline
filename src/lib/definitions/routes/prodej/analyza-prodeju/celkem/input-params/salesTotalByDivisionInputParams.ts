@@ -18,9 +18,10 @@ export const InputParamsSalesTotalByDivision: InputParamsType = {
 		},
 		{
 			field: "salescountrycode",
-			type: "text",
+			type: "enum",
 			label: () => "Země",
-			value: "CZ"
+			value: "CZ",
+			dropdownOptions: ["CZ", "SK", "PL", "Vše"]
 		},
 		{
 			field: "coverkinokoandbakery",

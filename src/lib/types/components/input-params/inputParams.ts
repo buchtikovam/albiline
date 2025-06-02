@@ -84,6 +84,8 @@ type InputEnum = {
 	type: "enum";
 	label?: () => string;
 	value: string,
+	dropdownOptions?: string[];
+	asyncDropdownOptions?: () => Promise<string[]>;
 }
 
 

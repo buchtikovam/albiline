@@ -13,13 +13,14 @@ export const load: LayoutLoad = async () => {
 
 	// table for /prodej/analyza-prodeju/po-zakaznicich/po-liniich
 
+
 	if (!agGridTables.value["SalesCustomerorstoreByProductline"]) {
 		agGridTables.value["SalesCustomerorstoreByProductline"] = {
 			type: "clientSide",
 			name: "SalesCustomerorstoreByProductline",
 			index: 0,
-			requiredFields: ["customerNodeCode"],
-			identificationKey: "customerNodeCode",
+			requiredFields: ["productLineId"],
+			identificationKey: "productLineId",
 			defaultColState: [],
 			setColStateToDefault: false,
 			createdTableData: [],
@@ -32,7 +33,7 @@ export const load: LayoutLoad = async () => {
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],
-			necessaryDataColumns: [],
+			necessaryDataColumns: ["headerInfo"],
 			recentFilters: [],
 			activeSelectedRowIndex: 0,
 			lastVisibleRowIndex: 0,

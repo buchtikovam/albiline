@@ -33,6 +33,8 @@
 	})
 
 
+	$inspect(table.loadedInputParams)
+
 	const gridOptionsExtra: GridOptions = {
 		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
 			let inputs = table.loadedInputParams.inputs;
@@ -99,12 +101,12 @@
 					],
 				}
 
-				// loadInputParamsInTable(
-				// 	agGridTables.value["SalesCustomerorstoreByProductline"],
-				// 	salesCustomerorstoreByProductlineInputParams,
-				// 	"clientSide",
-				// 	{fulltextEnabled: true, columnFiltersEnabled: true}
-				// )
+				loadInputParamsInTable(
+					agGridTables.value["SalesCustomerorstoreByProductline"],
+					salesCustomerorstoreByProductlineInputParams,
+					"clientSide",
+					{fulltextEnabled: true, columnFiltersEnabled: true}
+				)
 
 				console.log(JSON.stringify(salesCustomerorstoreByProductlineInputParams, null, 1));
 				goto("/prodej/analyza-prodeju/po-zakaznicich/po-liniich");

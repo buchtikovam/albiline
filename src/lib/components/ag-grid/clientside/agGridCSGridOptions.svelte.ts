@@ -1,4 +1,5 @@
 import {
+	type BodyScrollEndEvent,
 	type BodyScrollEvent,
 	type ColumnMovedEvent, type ColumnPinnedEvent, type ColumnResizedEvent,
 	type ColumnVisibleEvent, type FilterChangedEvent,
@@ -32,6 +33,10 @@ export function getCSGridOptions(
 	table: AgGridTableType,
 ): GridOptions {
 	return {
+		// autoSizeStrategy: {
+		// 	type: 'fitCellContents',
+		// 	skipHeader: false
+		// },
 		theme: themeQuartz.withParams(themeAlbiBlueParams),
 		localeText: getAgGridLocale(),
 		loadThemeGoogleFonts: false,
@@ -48,10 +53,10 @@ export function getCSGridOptions(
 					iconKey: 'columns',
 					toolPanel: 'agColumnsToolPanel',
 					toolPanelParams: {
-						suppressValues: true,
+						suppressValues: true
 					}
 				},
-				"filters",
+				'filters'
 			]
 		},
 		statusBar: getStatusBar(),
@@ -59,7 +64,7 @@ export function getCSGridOptions(
 		defaultColDef: getDefaultColDef(),
 
 		getRowId: (params: GetRowIdParams) => getRowIdCS(params, table),
-	}
+	};
 }
 
 
