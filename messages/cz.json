@@ -554,7 +554,26 @@
 	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn1" : "% z obratu vloni",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn2" : "% z obratu letos",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_currency" : "Měna",
-	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_group_slevy" : "Slevy"
+	"routes_prodej_analyza_prodeju_po_zakaznicich_table_column_group_slevy" : "Slevy",
+
+
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_divisionName": "Divize",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_productLineName": "Linie",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_quantity_LY": "Kusů vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_quantity_AY": "Kusů letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_quantity_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_currency": "Měna",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_sales_LY": "Prodej vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_sales_AY": "Prodej letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_sales_DiffAbs": "Nárůst",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_sales_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_basePrice_LY": "ZC vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_basePrice_AY": "ZC letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_basePrice_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_discount_LY": "Sleva vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_discount_AY": "Sleva letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageBasePriceCurrency": "Sklad ZC",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageQuantity": "Sklad kusů"
 }
 
 

@@ -151,7 +151,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 				getAgColumn(
 					"returnQuantity_LY", // Vráceno ks vloni
 					"number", 80,
-					false, false, false,
+					false, true, false,
 					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
@@ -164,7 +164,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 				getAgColumn(
 					"returnQuantity_AY", // Vráceno ks letos
 					"number", 80,
-					false, false, false,
+					false, true, false,
 					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
@@ -312,7 +312,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 				getAgColumn(
 					"returnSales_LY", // Dobropisy vloni
 					"number", 90,
-					false, false, false,
+					false, true, false,
 					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
@@ -324,7 +324,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 				getAgColumn(
 					"returnSales_AY", // Dobropisy letos
 					"number", 90,
-					false, false, false,
+					false, true, false,
 					["text-right", "text-red-700"],
 					{
 						aggFunc: "sum",
