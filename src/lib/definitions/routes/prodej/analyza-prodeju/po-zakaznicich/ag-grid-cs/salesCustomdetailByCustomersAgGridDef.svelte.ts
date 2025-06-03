@@ -1,6 +1,6 @@
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
-import type {IAggFuncParams, IRowNode, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
 import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 
@@ -13,7 +13,7 @@ function getDiff(
 	let dividendSum = 0;
 	let divisorSum = 0;
 
-	params.api.onFilterChanged();
+	// console.log(params)
 
 	params.api.forEachNodeAfterFilter((node: IRowNode) => {
 		dividendSum += node.data[dividendField];
@@ -39,8 +39,6 @@ function getDivision(
 	let dividentSum = 0;
 	let divisorSum = 0;
 
-	params.api.onFilterChanged();
-
 	params.api.forEachNodeAfterFilter((node: IRowNode) => {
 		dividentSum += node.data[dividentField];
 		divisorSum += node.data[divisorField];
@@ -58,12 +56,23 @@ function getDivision(
 }
 
 
+let totalRowNodes = $state({ });
 
-export const SalesCustomdetailByCustomersAgGridDef = {
+
+export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 	statusBar: undefined,
-	grandTotalRow: "bottom",
+	grandTotalRow: "pinnedBottom",
 	suppressStickyTotalRow: false,
-
+	enableRowPinning: true,
+	// onFirstDataRendered: () => {
+	// 	const value = getGrandTotalRow();
+	// 	if (value === "isRowPinned") {
+	// 		setGrandTotalRow(gridApi, "bottom");
+	// 		setIsRowPinned(gridApi, "top");
+	// 	} else {
+	// 		setGrandTotalRow(gridApi, value);
+	// 	}
+	// },
 	rowSelection: {
 		mode: "singleRow",
 		enableClickSelection: true,
@@ -197,7 +206,7 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 			["text-right"],
 			{
 				aggFunc: (params: IAggFuncParams) => {
-					console.log(params.api.getRenderedNodes())
+					// console.log(params.api())
 					return getDivision("sales_LY", "quantity_LY",  params);
 				},
 				valueFormatter: (params: ValueFormatterParams) => {
@@ -456,80 +465,82 @@ export const SalesCustomdetailByCustomersAgGridDef = {
 				),
 			]
 		},
+		//
+		// getAgColumn(
+		// 	"_computedColumn1", // % z obratu vloni
+		// 	"number", 90,
+		// 	false, false, false,
+		// 	["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// params.data contains the data for the current row.
+		//
+		// 			if (!params.data || typeof params.data.sales_LY !== 'number') {
+		// 				return null;
+		// 			}
+		//
+		// 			const currentRowSalesLY: number = params.data.sales_LY;
+		// 			let totalSalesLY = 0;
+		//
+		// 			console.log(params)
+		//
+		// 			params.api.forEachNode((node: IRowNode) => {
+		// 				if (node.data && typeof node.data.sales_LY === 'number') {
+		// 					totalSalesLY += node.data.sales_LY;
+		// 				}
+		// 			});
+		//
+		// 			if (totalSalesLY === 0) {
+		// 				return currentRowSalesLY === 0 ? 0 : null;
+		// 			}
+		//
+		// 			return currentRowSalesLY / totalSalesLY;
+		// 		},
+		//
+		// 		valueFormatter: (params: ValueFormatterParams) => {
+		// 			return formatPercentage(params.value, 0);
+		// 		},
+		//
+		// 		aggFunc: 'sum',
+		// 	}
+		// ),
 
-		getAgColumn(
-			"_computedColumn1", // % z obratu vloni
-			"number", 90,
-			false, false, false,
-			["text-right"],
-			{
-				valueGetter: (params: ValueGetterParams) => {
-					// params.data contains the data for the current row.
-
-					if (!params.data || typeof params.data.sales_LY !== 'number') {
-						return null;
-					}
-
-					const currentRowSalesLY: number = params.data.sales_LY;
-					let totalSalesLY = 0;
-
-					params.api.forEachNode((node: IRowNode) => {
-						if (node.data && typeof node.data.sales_LY === 'number') {
-							totalSalesLY += node.data.sales_LY;
-						}
-					});
-
-					if (totalSalesLY === 0) {
-						return currentRowSalesLY === 0 ? 0 : null;
-					}
-
-					return currentRowSalesLY / totalSalesLY;
-				},
-
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0);
-				},
-
-				aggFunc: 'sum',
-			}
-		),
-
-
-		getAgColumn(
-			"_computedColumn2", // % z obratu letos
-			"number", 90,
-			false, false, false,
-			["text-right"],
-			{
-				valueGetter: (params: ValueGetterParams) => {
-					// params.data contains the data for the current row.
-					if (!params.data || typeof params.data.sales_AY !== 'number') {
-						return null;
-					}
-
-					const currentRowSalesAY: number = params.data.sales_AY;
-					let totalSalesAY = 0;
-
-					params.api.forEachNode((node: IRowNode) => {
-						if (node.data && typeof node.data.sales_AY === 'number') {
-							totalSalesAY += node.data.sales_AY;
-						}
-					});
-
-					if (totalSalesAY === 0) {
-						return currentRowSalesAY === 0 ? 0 : null;
-					}
-
-					return currentRowSalesAY / totalSalesAY;
-				},
-
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0);
-				},
-
-				aggFunc: 'sum',
-			}
-		),
+		//
+		// getAgColumn(
+		// 	"_computedColumn2", // % z obratu letos
+		// 	"number", 90,
+		// 	false, false, false,
+		// 	["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// params.data contains the data for the current row.
+		// 			if (!params.data || typeof params.data.sales_AY !== 'number') {
+		// 				return null;
+		// 			}
+		//
+		// 			const currentRowSalesAY: number = params.data.sales_AY;
+		// 			let totalSalesAY = 0;
+		//
+		// 			params.api.forEachNode((node: IRowNode) => {
+		// 				if (node.data && typeof node.data.sales_AY === 'number') {
+		// 					totalSalesAY += node.data.sales_AY;
+		// 				}
+		// 			});
+		//
+		// 			if (totalSalesAY === 0) {
+		// 				return currentRowSalesAY === 0 ? 0 : null;
+		// 			}
+		//
+		// 			return currentRowSalesAY / totalSalesAY;
+		// 		},
+		//
+		// 		valueFormatter: (params: ValueFormatterParams) => {
+		// 			return formatPercentage(params.value, 0);
+		// 		},
+		//
+		// 		aggFunc: 'sum',
+		// 	}
+		// ),
 
 
 	]

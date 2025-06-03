@@ -124,6 +124,8 @@
 
 	$effect(() => {
 		if (table.fulltextFilterValue.length > 1) {
+			console.log(table.fulltextFilterValue)
+
 			gridApi.setGridOption("quickFilterText", table.fulltextFilterValue);
 		} else {
 			gridApi.setGridOption("quickFilterText", "");

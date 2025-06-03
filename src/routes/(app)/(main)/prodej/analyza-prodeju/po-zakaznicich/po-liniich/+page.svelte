@@ -5,8 +5,8 @@
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 	import {
-		SalesCustomdetailByCustomersAgGridDef, SalesCustomdetailByCustomersHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef";
+		SalesCustomdetailByCustomersAgGridDefSvelte, SalesCustomdetailByCustomersHeaderTranslations
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef.svelte";
 	import {
 		SalesCustomerorstoreByProductlineAgGridDef, SalesCustomersorStoreByProductlineHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/po-liniich/ag-grid-cs/salesCustomerorstoreByProductlineAgGridDef";

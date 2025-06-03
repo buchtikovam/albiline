@@ -5,8 +5,8 @@
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 	import {
-		SalesCustomdetailByCustomersAgGridDef, SalesCustomdetailByCustomersHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef";
+		SalesCustomdetailByCustomersAgGridDefSvelte, SalesCustomdetailByCustomersHeaderTranslations
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef.svelte";
 	import type {CellDoubleClickedEvent, GridOptions, RowDoubleClickedEvent} from "ag-grid-enterprise";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 	import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
@@ -127,7 +127,7 @@
 
 {#if !destroy && table}
 	<AgGridCSWrapper
-		gridOptionsCustom={{...SalesCustomdetailByCustomersAgGridDef, ...gridOptionsExtra}}
+		gridOptionsCustom={{...SalesCustomdetailByCustomersAgGridDefSvelte, ...gridOptionsExtra}}
 		table={table}
 		headerTranslations={SalesCustomdetailByCustomersHeaderTranslations}
 	/>
