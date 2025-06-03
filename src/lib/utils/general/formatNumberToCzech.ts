@@ -3,5 +3,5 @@ export function formatNumberToCzech(number: number) {
 
 	return Math.round(number)
 		.toLocaleString('cs-CZ')
-		.replace(/,/g, ' ')
+		.replace(/,/g, ' ');
 }

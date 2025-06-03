@@ -50,8 +50,8 @@ function getDiffFromBasePrice(
 
 export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef = {
 	statusBar: undefined,
-	grandTotalRow: "bottom",
-	suppressStickyTotalRow: false,
+	grandTotalRow: "pinnedBottom",
+	enableRowPinning: true,
 
 	rowSelection: {
 		mode: "singleRow",

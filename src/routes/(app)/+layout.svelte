@@ -11,13 +11,74 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import {LicenseManager} from "ag-grid-enterprise";
+	import {
+		CellSelectionModule,
+		CellStyleModule, ClientSideRowModelApiModule,
+		ClientSideRowModelModule,
+		ColumnApiModule,
+		ColumnMenuModule,
+		ColumnsToolPanelModule,
+		ContextMenuModule,
+		FiltersToolPanelModule,
+		LicenseManager,
+		LocaleModule,
+		ModuleRegistry,
+		MultiFilterModule,
+		NumberFilterModule, PinnedRowModule,
+		QuickFilterModule,
+		RichSelectModule,
+		RowApiModule,
+		RowGroupingModule,
+		RowSelectionModule,
+		ScrollApiModule,
+		ServerSideRowModelApiModule,
+		ServerSideRowModelModule,
+		SideBarModule,
+		StatusBarModule,
+		TextEditorModule,
+		TextFilterModule,
+		UndoRedoEditModule,
+		ValidationModule,
+		ClipboardModule,
+
+	} from "ag-grid-enterprise";
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
 
 	let hiddenHeader = $state(false);
 
 	LicenseManager.setLicenseKey("Using_this_{AG_Charts_and_AG_Grid}_Enterprise_key_{AG-087435}_in_excess_of_the_licence_granted_is_not_permitted___Please_report_misuse_to_legal@ag-grid.com___For_help_with_changing_this_key_please_contact_info@ag-grid.com___{Albi_Ceska_republika_a.s.}_is_granted_a_{Single_Application}_Developer_License_for_the_application_{AlbiLine}_only_for_{1}_Front-End_JavaScript_developer___All_Front-End_JavaScript_developers_working_on_{AlbiLine}_need_to_be_licensed___{AlbiLine}_has_not_been_granted_a_Deployment_License_Add-on___This_key_works_with_{AG_Charts_and_AG_Grid}_Enterprise_versions_released_before_{5_May_2026}____[v3]_[0102]_MTc3NzkzNTYwMDAwMA==24483e25ceca3b5fd77ae13e65d1a610");
+
+	ModuleRegistry.registerModules([
+		ClientSideRowModelModule,
+		LocaleModule,
+		ValidationModule,
+		RowApiModule,
+		ScrollApiModule,
+		ColumnMenuModule,
+		ContextMenuModule,
+		QuickFilterModule,
+		ColumnApiModule,
+		TextFilterModule,
+		NumberFilterModule,
+		CellStyleModule,
+		RowGroupingModule,
+		MultiFilterModule,
+		RowSelectionModule,
+		StatusBarModule,
+		SideBarModule,
+		FiltersToolPanelModule,
+		ColumnsToolPanelModule,
+		TextEditorModule,
+		ServerSideRowModelModule,
+		UndoRedoEditModule,
+		CellSelectionModule,
+		RichSelectModule,
+		ServerSideRowModelApiModule,
+		PinnedRowModule,
+		ClientSideRowModelApiModule,
+		ClipboardModule
+	]);
 
 	authDetails.userName = data.auth.userName;
 	authDetails.sessionKey = data.auth.sessionKey;

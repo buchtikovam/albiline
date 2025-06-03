@@ -62,7 +62,6 @@ let totalRowNodes = $state({ });
 export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "pinnedBottom",
-	suppressStickyTotalRow: false,
 	enableRowPinning: true,
 	// onFirstDataRendered: () => {
 	// 	const value = getGrandTotalRow();
