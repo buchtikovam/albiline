@@ -237,7 +237,7 @@
 						{/if}
 
 
-						<Collapsible.Content >
+						<Collapsible.Content>
 							{#if item.children.length > 0}
 								<Sidebar.MenuSub>
 									{#each item.children as subItem (subItem.field)}

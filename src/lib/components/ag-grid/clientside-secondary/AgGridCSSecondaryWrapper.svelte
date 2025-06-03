@@ -48,7 +48,7 @@
 	const gridOptions: GridOptions = {
 		theme: themeQuartz.withParams(themeAlbiBlueParams),
 		localeText: getAgGridLocale(),
-		grandTotalRow: totalRow === true ? "pinnedBottom" : undefined,
+		grandTotalRow: totalRow === true ? "bottom" : undefined,
 		enableRowPinning: true,
 		rowSelection: undefined,
 		loadThemeGoogleFonts: false,

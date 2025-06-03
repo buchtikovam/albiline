@@ -79,6 +79,11 @@
 							value: rowData["customerNodeCode"]
 						},
 						{
+							field: "customerNodeName",
+							type: "text",
+							value: rowData["customerNodeName"]
+						},
+						{
 							field: "deliveryaddresscode",
 							type: "number",
 							value: -1,

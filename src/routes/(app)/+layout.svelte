@@ -52,7 +52,6 @@
 	ModuleRegistry.registerModules([
 		ClientSideRowModelModule,
 		LocaleModule,
-		ValidationModule,
 		RowApiModule,
 		ScrollApiModule,
 		ColumnMenuModule,
@@ -77,7 +76,8 @@
 		ServerSideRowModelApiModule,
 		PinnedRowModule,
 		ClientSideRowModelApiModule,
-		ClipboardModule
+		ClipboardModule,
+		...(process.env.NODE_ENV !== "production" ? [ValidationModule] : [])
 	]);
 
 	authDetails.userName = data.auth.userName;

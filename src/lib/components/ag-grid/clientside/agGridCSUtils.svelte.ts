@@ -104,7 +104,7 @@ export async function getCSData(
 		const cached = await getCachedTableData(table.name);
 
 		if (cached) {
-			console.log("cached", cached.length);
+			// console.log("cached", cached.length);
 			// @ts-ignore
 			gridApi.setGridOption("rowData", cached);
 			gridApi.setGridOption("loading", false)
@@ -125,20 +125,20 @@ export async function getCSData(
 			// setTimeout(() => {gridApi.autoSizeColumns(columnList, false)}, 100)
 
 			if (table.selectedRows.length > 0) {
-				console.log("cached sel rows")
+				// console.log("cached sel rows")
 				table.selectedRows.forEach((row) => {
 					let node = gridApi.getRowNode(String(row[table.identificationKey]));
 					node?.setSelected(true)
 				});
 			} else {
-				console.log("cached row pos")
+				// console.log("cached row pos")
 				if (gridApi.getDisplayedRowCount() > 0) {
 					let row = gridApi.getDisplayedRowAtIndex(0);
 					row?.setSelected(true)
 				}
 			}
 		} else {
-			console.log("else f&c")
+			// console.log("else f&c")
 			await fetchAndCache(gridApi, table);
 			table.areInputParamsLoading = false;
 		}
@@ -153,7 +153,7 @@ async function fetchAndCache(
 	table: AgGridTableType
 ) {
 	try {
-		console.log("fetchAndCache")
+		// console.log("fetchAndCache")
 		let columnList: string[] = deepcopy(table.requiredFields);
 
 		if (Object.keys(table.presetToSave).length > 0) {
@@ -184,7 +184,7 @@ async function fetchAndCache(
 			columnList = columnList.concat(table.necessaryDataColumns);
 		}
 
-		console.log("columnList finished");
+		// console.log("columnList finished");
 		let requestObj = deepcopy(table.loadedInputParams);
 		// @ts-ignore
 		requestObj["columnList"] = columnList
@@ -196,13 +196,13 @@ async function fetchAndCache(
 			table.name
 		);
 
-		console.log("bef data")
+		// console.log("bef data")
 		const data = await response.data;
-		console.log("after data")
+		// console.log("after data")
 		gridApi.setGridOption("rowData", data.items);
 		gridApi.setGridOption("loading", false);
 
-		console.log("test")
+		// console.log("test")
 		// setTimeout(() => {gridApi.autoSizeColumns(columnList, false)}, 100)
 		await cacheTableData(table.name, data.items);
 	} catch (e) {

@@ -13,7 +13,6 @@ export const load: LayoutLoad = async () => {
 
 	// table for /prodej/analyza-prodeju/po-zakaznicich/po-liniich
 
-
 	if (!agGridTables.value["SalesCustomerorstoreByProductline"]) {
 		agGridTables.value["SalesCustomerorstoreByProductline"] = {
 			type: "clientSide",
@@ -33,7 +32,7 @@ export const load: LayoutLoad = async () => {
 			selectedRows: [],
 			selectionState: { selectAll: false, toggledNodes: [] },
 			sortState: [],
-			necessaryDataColumns: ["headerInfo"],
+			necessaryDataColumns: [],
 			recentFilters: [],
 			activeSelectedRowIndex: 0,
 			lastVisibleRowIndex: 0,

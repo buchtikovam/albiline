@@ -61,17 +61,8 @@ let totalRowNodes = $state({ });
 
 export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 	statusBar: undefined,
-	grandTotalRow: "pinnedBottom",
-	enableRowPinning: true,
-	// onFirstDataRendered: () => {
-	// 	const value = getGrandTotalRow();
-	// 	if (value === "isRowPinned") {
-	// 		setGrandTotalRow(gridApi, "bottom");
-	// 		setIsRowPinned(gridApi, "top");
-	// 	} else {
-	// 		setGrandTotalRow(gridApi, value);
-	// 	}
-	// },
+	grandTotalRow: "bottom",
+
 	rowSelection: {
 		mode: "singleRow",
 		enableClickSelection: true,

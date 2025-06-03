@@ -1,6 +1,6 @@
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import * as m from '$lib/paraglide/messages.js';
-import type {IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
 import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
 
@@ -29,10 +29,9 @@ function getDiff(
 
 
 
-export const SalesCustomerorstoreByProductlineAgGridDef = {
+export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
 	statusBar: undefined,
-	grandTotalRow: "pinnedBottom",
-	enableRowPinning: true,
+	grandTotalRow: "bottom",
 
 	rowSelection: {
 		mode: "singleRow",

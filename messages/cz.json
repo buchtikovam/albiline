@@ -573,7 +573,15 @@
 	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_discount_LY": "Sleva vloni",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_discount_AY": "Sleva letos",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageBasePriceCurrency": "Sklad ZC",
-	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageQuantity": "Sklad kusů"
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageQuantity": "Sklad kusů",
+
+
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_po_klp_table_column_divisionName": "Divize",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_po_klp_table_column_productLineName": "Linie",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_po_klp_table_column_conceptionName": "Koncepce",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_po_klp_table_column_costLevelCode": "KLP",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_po_klp_table_column_costLevelName": "Název KLP",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_po_klp_table_column_": ""
 }
 
 

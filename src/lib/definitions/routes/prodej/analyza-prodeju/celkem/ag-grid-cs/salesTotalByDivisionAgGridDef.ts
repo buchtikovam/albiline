@@ -13,6 +13,7 @@ function getDiff(
 	let dividendSum = 0;
 	let divisorSum = 0;
 
+	// forEachNodeAfterFilter
 	params.api.forEachNode((node: IRowNode) => {
 		dividendSum += node.data[dividendField];
 		divisorSum += node.data[divisorField];
@@ -70,12 +71,9 @@ function getMargrinDiff(
 }
 
 
-
-
 export const SalesTotalByDivisionAgGridDef: GridOptions = {
 	statusBar: undefined,
-	grandTotalRow: "pinnedBottom",
-	enableRowPinning: true,
+	grandTotalRow: "bottom",
 
 	rowSelection: {
 		mode: "singleRow",
