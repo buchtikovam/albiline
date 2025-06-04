@@ -39,7 +39,7 @@
 		TextFilterModule,
 		UndoRedoEditModule,
 		ValidationModule,
-		ClipboardModule,
+		ClipboardModule, RenderApiModule,
 
 	} from "ag-grid-enterprise";
 
@@ -77,6 +77,7 @@
 		PinnedRowModule,
 		ClientSideRowModelApiModule,
 		ClipboardModule,
+		RenderApiModule,
 		...(process.env.NODE_ENV !== "production" ? [ValidationModule] : [])
 	]);
 

@@ -12,6 +12,7 @@ export const load: LayoutLoad = async () => {
 			url: "customers",
 			name: "CustomersGetList",
 			index: 0,
+			gridApi: undefined,
 			type: "serverSide",
 			requiredFields: ["customerAddressCode", "customerNodeCode"],
 			identificationKey: "rowNumber",

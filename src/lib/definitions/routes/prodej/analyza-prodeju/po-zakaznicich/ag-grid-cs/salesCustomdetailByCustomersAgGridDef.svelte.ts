@@ -1,67 +1,34 @@
+import {
+	compoundGenericRatioAggregator
+} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericRatioAggregator";
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
-import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
+import type {
+	GridOptions, IAggFuncParams,
+	ValueFormatterParams,
+	ValueGetterParams
+} from "ag-grid-enterprise";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
 import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
+import type {ICellRendererParams} from "ag-grid-community";
+import {
+	compoundDiffAggregator,
+} from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
+import { compoundGenericDiffAggregator } from '$lib/utils/components/ag-grid/agg-functions/compoundGenericDiffAggregator';
+import { compoundOverallRatioComparisonAggregator } from "$lib/utils/components/ag-grid/agg-functions/compoundOverallRatioComparisonAggregator";
 
-
-function getDiff(
-	dividendField: string,
-	divisorField: string,
-	params: IAggFuncParams
-) {
-	let dividendSum = 0;
-	let divisorSum = 0;
-
-	// console.log(params)
-
-	params.api.forEachNodeAfterFilter((node: IRowNode) => {
-		dividendSum += node.data[dividendField];
-		divisorSum += node.data[divisorField];
-	});
-
-	if (divisorSum <= 0 && dividendSum > 0) return 1; // 100% growth
-
-	if (divisorSum >= 0 && dividendSum < 0) return -1; // -100% decline
-
-	if (divisorSum === 0 && dividendSum === 0) return 0; // 0% change
-
-	return (dividendSum / divisorSum) - 1;
-}
-
-
-function getDivision(
-	dividentField: string,
-	divisorField: string,
-	params: IAggFuncParams,
-	substract?: boolean
-) {
-	let dividentSum = 0;
-	let divisorSum = 0;
-
-	params.api.forEachNodeAfterFilter((node: IRowNode) => {
-		dividentSum += node.data[dividentField];
-		divisorSum += node.data[divisorField];
-	});
-
-	if (substract) {
-		return (dividentSum / divisorSum) - 1;
-	}
-
-	if (divisorSum !== 0) {
-		return dividentSum / divisorSum;
-	}
-
-	return 0;
-}
-
-
-let totalRowNodes = $state({ });
 
 
 export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
+
+	aggFuncs: {
+		'diffPercentage': compoundDiffAggregator,
+		'division': compoundGenericRatioAggregator,
+		'divisionPercentage': compoundGenericDiffAggregator,
+		'averagePercentage': compoundOverallRatioComparisonAggregator,
+	},
 
 	rowSelection: {
 		mode: "singleRow",
@@ -113,6 +80,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			["text-right"],
 			{
 				aggFunc: "sum",
+				enableValue: true,
 				valueFormatter: (params: ValueFormatterParams) => {
 					return formatNumberToCzech(params.value)
 				}
@@ -138,12 +106,30 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("quantity_AY", "quantity_LY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.quantity_AY,
+							divisor: params.data.quantity_LY,
+							originalDiffValue: params.data.quantity_Diff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
-				}
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -195,13 +181,29 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					// console.log(params.api())
-					return getDivision("sales_LY", "quantity_LY",  params);
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_LY,
+							divisor: params.data.quantity_LY,
+							originalValue: params.data.salesPerItem_LY,
+						};
+					}
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
+				aggFunc: 'division',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatNumberToCzech(params.value);
+					}
+
+					if (params.value && typeof params.value.originalValue !== 'undefined') {
+						return formatNumberToCzech(params.value.originalValue);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -211,12 +213,29 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDivision("sales_AY", "quantity_AY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_AY,
+							divisor: params.data.quantity_AY,
+							originalValue: params.data.salesPerItem_AY,
+						};
+					}
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
+				aggFunc: 'division',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatNumberToCzech(params.value);
+					}
+
+					if (params.value && typeof params.value.originalValue !== 'undefined') {
+						return formatNumberToCzech(params.value.originalValue);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -226,32 +245,31 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => { // todo: doesnt match
-					let lyArr: number[] = [];
-					let ayArr: number[] = [];
-
-					params.api.forEachNode((node: IRowNode) => {
-						lyArr.push(node.data["salesPerItem_LY"]);
-						ayArr.push(node.data["salesPerItem_AY"])
-					})
-
-					const sumLy = lyArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-					const sumAy = ayArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-					let avg_salesperitem_ly = sumLy / lyArr.length;
-					let avg_salesperitem_ay = sumAy / ayArr.length;
-
-					if (avg_salesperitem_ly <= 0 && avg_salesperitem_ay > 0) return 1;
-
-					if (avg_salesperitem_ly >= 0 && avg_salesperitem_ay < 0) return -1;
-
-					if (avg_salesperitem_ly === 0 && avg_salesperitem_ay === 0) return 0;
-
-					return avg_salesperitem_ay / avg_salesperitem_ly - 1
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							currentPeriodSale: params.data.sales_AY,
+							currentPeriodQuantity: params.data.quantity_AY,
+							previousPeriodSale: params.data.sales_LY,
+							previousPeriodQuantity: params.data.quantity_LY,
+							originalValue: params.data.salesPerItem_Diff
+						};
+					}
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
-				}
+				aggFunc: 'averagePercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalValue !== 'undefined') {
+						return formatPercentage(params.value.originalValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -300,12 +318,30 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("sales_AY", "sales_LY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_AY,
+							divisor: params.data.sales_LY,
+							originalDiffValue: params.data.sales_Diff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
-				}
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -371,11 +407,29 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("basePrice_AY", "basePrice_LY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.basePrice_AY,
+							divisor: params.data.basePrice_LY,
+							originalDiffValue: params.data.basePrice_Diff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
 				},
 			}
 		),
@@ -415,11 +469,29 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("discount_AY", "discount_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.discount_AY,
+									divisor: params.data.discount_LY,
+									originalDiffValue: params.data.discount_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0)
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
 						},
 					}
 				),
@@ -430,11 +502,28 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => { // todo: doesnt match
-							return getDivision("sales_LY", "basePrice_LY", params, true);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_LY,
+									divisor: params.data.basePrice_LY,
+									originalValue: params.data.discountPct_LY,
+								};
+							}
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0)
+						aggFunc: 'divisionPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalValue !== 'undefined') {
+								return formatPercentage(params.value.originalValue, 0);
+							}
+
+							return '';
 						},
 					}
 				),
@@ -445,94 +534,91 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {  // todo: doesnt match
-							return getDivision("sales_AY", "basePrice_AY", params, true);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_AY,
+									divisor: params.data.basePrice_AY,
+									originalValue: params.data.discountPct_AY,
+								};
+							}
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0)
+						aggFunc: 'divisionPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalValue !== 'undefined') {
+								return formatPercentage(params.value.originalValue, 0);
+							}
+
+							return '';
 						},
 					}
 				),
 			]
 		},
-		//
-		// getAgColumn(
-		// 	"_computedColumn1", // % z obratu vloni
-		// 	"number", 90,
-		// 	false, false, false,
-		// 	["text-right"],
-		// 	{
-		// 		valueGetter: (params: ValueGetterParams) => {
-		// 			// params.data contains the data for the current row.
-		//
-		// 			if (!params.data || typeof params.data.sales_LY !== 'number') {
-		// 				return null;
-		// 			}
-		//
-		// 			const currentRowSalesLY: number = params.data.sales_LY;
-		// 			let totalSalesLY = 0;
-		//
-		// 			console.log(params)
-		//
-		// 			params.api.forEachNode((node: IRowNode) => {
-		// 				if (node.data && typeof node.data.sales_LY === 'number') {
-		// 					totalSalesLY += node.data.sales_LY;
-		// 				}
-		// 			});
-		//
-		// 			if (totalSalesLY === 0) {
-		// 				return currentRowSalesLY === 0 ? 0 : null;
-		// 			}
-		//
-		// 			return currentRowSalesLY / totalSalesLY;
-		// 		},
-		//
-		// 		valueFormatter: (params: ValueFormatterParams) => {
-		// 			return formatPercentage(params.value, 0);
-		// 		},
-		//
-		// 		aggFunc: 'sum',
-		// 	}
-		// ),
-
-		//
-		// getAgColumn(
-		// 	"_computedColumn2", // % z obratu letos
-		// 	"number", 90,
-		// 	false, false, false,
-		// 	["text-right"],
-		// 	{
-		// 		valueGetter: (params: ValueGetterParams) => {
-		// 			// params.data contains the data for the current row.
-		// 			if (!params.data || typeof params.data.sales_AY !== 'number') {
-		// 				return null;
-		// 			}
-		//
-		// 			const currentRowSalesAY: number = params.data.sales_AY;
-		// 			let totalSalesAY = 0;
-		//
-		// 			params.api.forEachNode((node: IRowNode) => {
-		// 				if (node.data && typeof node.data.sales_AY === 'number') {
-		// 					totalSalesAY += node.data.sales_AY;
-		// 				}
-		// 			});
-		//
-		// 			if (totalSalesAY === 0) {
-		// 				return currentRowSalesAY === 0 ? 0 : null;
-		// 			}
-		//
-		// 			return currentRowSalesAY / totalSalesAY;
-		// 		},
-		//
-		// 		valueFormatter: (params: ValueFormatterParams) => {
-		// 			return formatPercentage(params.value, 0);
-		// 		},
-		//
-		// 		aggFunc: 'sum',
-		// 	}
-		// ),
 
 
+
+		getAgColumn(
+			"_computedColumn1", // % z obratu letos TODO: dodělat agg funkci
+			"number", 90,
+			false, false, false,
+			["text-right"],
+			{
+				aggFunc: () => {
+					return 1;
+				},
+				valueGetter: (params: ValueGetterParams) => {
+					const totalSalesLY = params.context?.totalSalesLY;
+
+					if (
+						!params.data ||
+						typeof params.data.sales_LY !== 'number' ||
+						typeof totalSalesLY !== 'number'
+					) {
+						return null;
+					}
+					const currentRowSalesLY: number = params.data.sales_LY;
+
+					if (totalSalesLY === 0) {
+						return currentRowSalesLY === 0 ? 0 : null;
+					}
+					return currentRowSalesLY / totalSalesLY;
+				},
+				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+			}
+		),
+
+		getAgColumn(
+			"_computedColumn2", // % z obratu vloni TODO: dodělat agg funkci
+			"number", 90,
+			false, false, false,
+			["text-right"],
+			{
+				aggFunc: () => {
+					return 1
+				},
+				valueGetter: (params: ValueGetterParams) => {
+					const totalSalesAY = params.context?.totalSalesAY;
+
+					if (!params.data || typeof params.data.sales_AY !== 'number' || typeof totalSalesAY !== 'number') {
+						return null;
+					}
+					const currentRowSalesAY: number = params.data.sales_AY;
+
+					if (totalSalesAY === 0) {
+						return currentRowSalesAY === 0 ? 0 : null;
+					}
+					return currentRowSalesAY / totalSalesAY;
+				},
+				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+			}
+		),
 	]
 }
 

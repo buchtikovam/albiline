@@ -2,11 +2,11 @@
 	import {
 		createGrid,
 		type GridApi,
-		type GridOptions,
+		type GridOptions, type IAggFuncParams, type IRowNode,
 	} from 'ag-grid-enterprise';
 	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
-	import {agGridTables, pageKeys, tableViewSettings} from "$lib/runes/table.svelte";
+	import {tableViewSettings} from "$lib/runes/table.svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import {onMount} from "svelte";
 	import {disablePageTabs} from "$lib/runes/navigation.svelte";
@@ -20,7 +20,6 @@
 	import {mountCSGrid, unmountCSGrid} from "$lib/components/ag-grid/clientside/agGridCSLifecycle.svelte";
 	import {handleClickOutside} from "$lib/components/ag-grid/serverside/agGridSSUtils.svelte";
 	import {handleRibbonActionCS} from "$lib/components/ag-grid/clientside/agGridCSRibbonActionHandlers.svelte";
-	import {beforeNavigate} from "$app/navigation";
 
 	interface Props {
 		table: AgGridTableType,
@@ -35,7 +34,7 @@
 		headerTranslations,
 		gridOptionsCustom,
 		allowRibbonActions = true,
-		clearRowData = $bindable(false)
+		clearRowData = $bindable(false),
 	}: Props = $props();
 
 
@@ -62,7 +61,6 @@
 	onMount(() => {
 		disablePageTabs.value = true;
 
-
 		gridApi = createGrid(gridContainer, gridOptions);
 
 		setTimeout(() => {
@@ -71,8 +69,12 @@
 			);
 		}, 0)
 
+
 		mountCSGrid(gridApi, table, headerTranslations);
 		isInitial = false;
+
+
+
 
 
 		return(() => {
@@ -110,7 +112,6 @@
 
 	$effect(() => {
 		if (table.selectedPreset) {
-			console.log(table.selectedPreset)
 			onCSPresetSelected(gridApi, table);
 		}
 	})
@@ -123,9 +124,7 @@
 	})
 
 	$effect(() => {
-		if (table.fulltextFilterValue.length > 1) {
-			console.log(table.fulltextFilterValue)
-
+		if (table.fulltextFilterValue.length > 0) {
 			gridApi.setGridOption("quickFilterText", table.fulltextFilterValue);
 		} else {
 			gridApi.setGridOption("quickFilterText", "");

@@ -1,4 +1,4 @@
-import type {ColumnState, FilterModel, IServerSideGetRowsRequest} from "ag-grid-enterprise";
+import type {ColumnState, FilterModel, GridApi, IServerSideGetRowsRequest} from "ag-grid-enterprise";
 import type {StoredPresets} from "$lib/types/components/table/presets";
 import type {
 	IServerSideGroupSelectionState,
@@ -29,6 +29,8 @@ export interface AgGridTableType {
 	name: string;
 	// index in pagekeys.index
 	index: number;
+	// instance of ag grids grid api
+	gridApi: GridApi|undefined;
 	// used in inputParams after submit
 	type: "serverSide" | "clientSide";
 	// used for identifying cross tables records on the api

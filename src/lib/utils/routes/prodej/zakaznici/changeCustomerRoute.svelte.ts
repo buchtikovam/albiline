@@ -1,4 +1,4 @@
-import {agGridTables} from "$lib/runes/table.svelte";
+import {agGridTables} from "$lib/runes/table.svelte.js";
 import {processRoute} from '$lib/utils/navigation/processRoute';
 import {goto} from '$app/navigation';
 import {localizeHref} from "$lib/paraglide/runtime";

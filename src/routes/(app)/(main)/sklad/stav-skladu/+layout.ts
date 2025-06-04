@@ -13,6 +13,7 @@ export const load: LayoutLoad = async () => {
 			type: "clientSide",
 			name: "ProductStockInventory",
 			index: 0,
+			gridApi: undefined,
 			requiredFields: ["productId"],
 			identificationKey: "productId",
 			defaultColState: [],

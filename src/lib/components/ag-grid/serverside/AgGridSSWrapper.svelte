@@ -67,7 +67,7 @@
 
 		// initialize grid
 		if (gridContainer) gridApi = createGrid(gridContainer, gridOptions);
-
+		table.gridApi = gridApi;
 		gridApi.updateGridOptions(
 			getSSGridOptionsHandlers(updateIsEditing, isInitial, gridApi, table)
 		);

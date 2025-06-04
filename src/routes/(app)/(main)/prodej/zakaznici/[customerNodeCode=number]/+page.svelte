@@ -12,7 +12,7 @@
 	import {activeTabIndex, responseDialogMessages, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {page} from '$app/state';
 	import {apiSaveCustomerDetail} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
-	import {changeCustomerRoute} from '$lib/utils/navigation/zakaznici/changeCustomerRoute.svelte';
+	import {changeCustomerRoute} from '$lib/utils/routes/prodej/zakaznici/changeCustomerRoute.svelte';
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 	import {flipItems} from '$lib/utils/flipItems';
 	import {flip} from 'svelte/animate';
