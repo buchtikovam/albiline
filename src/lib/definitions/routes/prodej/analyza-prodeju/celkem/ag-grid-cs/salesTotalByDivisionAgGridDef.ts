@@ -1,32 +1,18 @@
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte.js";
-import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js';
 import { formatPercentage } from '$lib/utils/general/formatPercentage';
 import { formatNumberToCzech } from '$lib/utils/general/formatNumberToCzech';
+import {compoundDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
+import {
+	compoundGenericRatioAggregator
+} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericRatioAggregator";
+import {compoundGenericDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericDiffAggregator";
+import {
+	compoundOverallRatioComparisonAggregator
+} from "$lib/utils/components/ag-grid/agg-functions/compoundOverallRatioComparisonAggregator";
+import type {ICellRendererParams} from "ag-grid-community";
 
-
-function getDiff(
-	dividendField: string,
-	divisorField: string,
-	params: IAggFuncParams
-) {
-	let dividendSum = 0;
-	let divisorSum = 0;
-
-	// forEachNodeAfterFilter
-	params.api.forEachNode((node: IRowNode) => {
-		dividendSum += node.data[dividendField];
-		divisorSum += node.data[divisorField];
-	});
-
-	if (divisorSum <= 0 && dividendSum > 0) return 1; // 100% growth
-
-	if (divisorSum >= 0 && dividendSum < 0) return -1; // -100% decline
-
-	if (divisorSum === 0 && dividendSum === 0) return 0; // 0% change
-
-	return (dividendSum / divisorSum) - 1;
-}
 
 
 function getDiffFromBasePrice(
@@ -74,6 +60,13 @@ function getMargrinDiff(
 export const SalesTotalByDivisionAgGridDef: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
+
+	aggFuncs: {
+		'diffPercentage': compoundDiffAggregator,
+		'division': compoundGenericRatioAggregator,
+		'divisionPercentage': compoundGenericDiffAggregator,
+		'averagePercentage': compoundOverallRatioComparisonAggregator,
+	},
 
 	rowSelection: {
 		mode: "singleRow",
@@ -136,12 +129,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("sales_AY", "sales_LY", params);
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_AY,
+							divisor: params.data.sales_LY,
+							originalDiffValue: params.data.salesDiff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0);
-				}
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -180,12 +191,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_AY", "sales_CZ_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_AY,
+									divisor: params.data.sales_CZ_LY,
+									originalDiffValue: params.data.sales_CZ_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					},
 				),
 
@@ -221,12 +250,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Wholesale_AY", "sales_CZ_Wholesale_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Wholesale_AY,
+									divisor: params.data.sales_CZ_Wholesale_LY,
+									originalDiffValue: params.data.sales_CZ_Wholesale_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					},
 				),
 
@@ -262,12 +309,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Eshop_AY", "sales_CZ_Eshop_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Eshop_AY,
+									divisor: params.data.sales_CZ_Eshop_LY,
+									originalDiffValue: params.data.sales_CZ_Eshop_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -303,12 +368,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Retail_AY", "sales_CZ_Retail_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Retail_AY,
+									divisor: params.data.sales_CZ_Retail_LY,
+									originalDiffValue: params.data.sales_CZ_Retail_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]
@@ -349,12 +432,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_RetailBakery_AY", "sales_CZ_RetailBakery_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_RetailBakery_AY,
+									divisor: params.data.sales_CZ_RetailBakery_LY,
+									originalDiffValue: params.data.sales_CZ_RetailBakery_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]
@@ -395,12 +496,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_EshopKinoko_AY", "sales_CZ_EshopKinoko_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_EshopKinoko_AY,
+									divisor: params.data.sales_CZ_EshopKinoko_LY,
+									originalDiffValue: params.data.sales_CZ_EshopKinoko_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -436,12 +555,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_RetailKinoko_AY", "sales_CZ_RetailKinoko_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_RetailKinoko_AY,
+									divisor: params.data.sales_CZ_RetailKinoko_LY,
+									originalDiffValue: params.data.sales_CZ_RetailKinoko_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]
@@ -482,12 +619,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_AY", "sales_SK_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_AY,
+									divisor: params.data.sales_SK_LY,
+									originalDiffValue: params.data.sales_SK_LY_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -523,12 +678,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_Wholesale_AY", "sales_SK_Wholesale_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Wholesale_AY,
+									divisor: params.data.sales_SK_Wholesale_LY,
+									originalDiffValue: params.data.sales_SK_Wholesale_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -564,12 +737,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_Eshop_AY", "sales_SK_Eshop_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Eshop_AY,
+									divisor: params.data.sales_SK_Eshop_LY,
+									originalDiffValue: params.data.sales_SK_Eshop_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -605,12 +796,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_SK_Retail_AY", "sales_SK_Retail_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Retail_AY,
+									divisor: params.data.sales_SK_Retail_LY,
+									originalDiffValue: params.data.sales_SK_Retail_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]
@@ -651,12 +860,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_PL_AY", "sales_PL_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_AY,
+									divisor: params.data.sales_PL_LY,
+									originalDiffValue: params.data.sales_PL_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -692,12 +919,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_PL_Wholesale_AY", "sales_PL_Wholesale_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_Wholesale_AY,
+									divisor: params.data.sales_PL_Wholesale_LY,
+									originalDiffValue: params.data.sales_PL_Wholesale_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 
@@ -733,12 +978,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_PL_Eshop_AY", "sales_PL_Eshop_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_Eshop_AY,
+									divisor: params.data.sales_PL_Eshop_LY,
+									originalDiffValue: params.data.sales_PL_Eshop_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]
@@ -779,12 +1042,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("sales_CZ_Export_AY", "sales_CZ_Export_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Export_AY,
+									divisor: params.data.sales_CZ_Export_LY,
+									originalDiffValue: params.data.sales_CZ_Export_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]
@@ -825,12 +1106,30 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiff("basePrice_AY", "basePrice_LY", params);
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.basePrice_AY,
+									divisor: params.data.basePrice_LY,
+									originalDiffValue: params.data.basePrice_Diff
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						aggFunc: 'diffPercentage',
+						cellRenderer: (params: ICellRendererParams) => {
+							if (params.node && params.node.group) {
+								return formatPercentage(params.value, 0);
+							}
+
+							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+								return formatPercentage(params.value.originalDiffValue, 0);
+							}
+
+							return '';
+						},
 					}
 				),
 			]

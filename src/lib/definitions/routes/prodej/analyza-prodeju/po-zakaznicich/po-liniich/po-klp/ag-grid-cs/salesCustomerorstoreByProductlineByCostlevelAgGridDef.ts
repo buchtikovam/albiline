@@ -1,38 +1,20 @@
-import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import * as m from '$lib/paraglide/messages.js';
 import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
-
-
-function getDiff(
-	dividendField: string,
-	divisorField: string,
-	params: IAggFuncParams
-) {
-	let dividendSum = 0;
-	let divisorSum = 0;
-
-	params.api.forEachNode((node: IRowNode) => {
-		dividendSum += node.data[dividendField];
-		divisorSum += node.data[divisorField];
-	});
-
-	if (divisorSum <= 0 && dividendSum > 0) return 1; // 100% growth
-
-	if (divisorSum >= 0 && dividendSum < 0) return -1; // -100% decline
-
-	if (divisorSum === 0 && dividendSum === 0) return 0; // 0% change
-
-	return (dividendSum / divisorSum) - 1;
-}
-
+import type {ICellRendererParams} from "ag-grid-community";
+import {compoundDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
 
 
 
 export const SalesCustomerorstoreByProductlineByCostLevelAgGridDef: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
+
+	aggFuncs: {
+		'diffPercentage': compoundDiffAggregator,
+	},
 
 	rowSelection: {
 		mode: "singleRow",
@@ -109,12 +91,30 @@ export const SalesCustomerorstoreByProductlineByCostLevelAgGridDef: GridOptions 
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("quantity_AY", "quantity_LY", params)
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.quantity_AY,
+							divisor: params.data.quantity_LY,
+							originalDiffValue: params.data.quantity_Diff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
-				}
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -170,12 +170,30 @@ export const SalesCustomerorstoreByProductlineByCostLevelAgGridDef: GridOptions 
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("sales_AY", "sales_LY", params)
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_AY,
+							divisor: params.data.sales_LY,
+							originalDiffValue: params.data.sales_Diff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
-				}
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
@@ -211,12 +229,30 @@ export const SalesCustomerorstoreByProductlineByCostLevelAgGridDef: GridOptions 
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiff("basePrice_AY", "basePrice_LY", params)
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.basePrice_AY,
+							divisor: params.data.basePrice_LY,
+							originalDiffValue: params.data.basePrice_Diff
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0)
-				}
+				aggFunc: 'diffPercentage',
+				cellRenderer: (params: ICellRendererParams) => {
+					if (params.node && params.node.group) {
+						return formatPercentage(params.value, 0);
+					}
+
+					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+						return formatPercentage(params.value.originalDiffValue, 0);
+					}
+
+					return '';
+				},
 			}
 		),
 
