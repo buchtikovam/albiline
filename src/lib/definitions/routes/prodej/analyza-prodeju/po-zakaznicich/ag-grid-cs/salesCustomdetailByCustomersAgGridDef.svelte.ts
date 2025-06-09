@@ -4,7 +4,7 @@ import {
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
 import type {
-	GridOptions, IAggFuncParams,
+	GridOptions,
 	ValueFormatterParams,
 	ValueGetterParams
 } from "ag-grid-enterprise";

@@ -14,7 +14,6 @@
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import {Button} from "$lib/components/ui/button";
-	import {page} from "$app/state";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 
 	interface Props {
@@ -69,8 +68,8 @@
 				>
 					{m.routes_prodej_zakaznici_tabs_list()}
 				</Tabs.Trigger>
-				<TabSeparator/>
 
+				<TabSeparator/>
 				<Tabs.Trigger
 					class="font-bold"
 					disabled={activeTab !== "1" && (disableNavigation.value || disablePageTabs.value)}
@@ -81,8 +80,8 @@
 				>
 					{m.routes_prodej_zakaznici_tabs_address_detail()}
 				</Tabs.Trigger>
-				<TabSeparator/>
 
+				<TabSeparator/>
 				<Tabs.Trigger
 					class="font-bold"
 					disabled={activeTab !== "2" && (disableNavigation.value || disablePageTabs.value)}

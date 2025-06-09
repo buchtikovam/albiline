@@ -1,10 +1,10 @@
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
-import type {IAggFuncParams, ValueFormatterParams} from "ag-grid-enterprise";
+import type {GridOptions, ValueFormatterParams} from "ag-grid-enterprise";
 import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
 import * as m from "$lib/paraglide/messages";
 
-export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef = {
+export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef: GridOptions = {
 	statusBar: undefined,
 
 	rowSelection: {

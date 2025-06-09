@@ -62,6 +62,40 @@ export const allItems: SidebarItem[] = [
 						children: [],
 					},
 					{
+						field: 'analyza-prodeju-po-zakaznicich',
+						href: '/prodej/analyza-prodeju/po-zakaznicich',
+						open: false,
+						hide: false,
+						translation: () => "Po zákaznících", // todo
+						disabled: true,
+						popoverOpen: false,
+						icon: null,
+						children: [
+							{
+								field: 'analyza-prodeju-po-zakaznicich-a-liniich',
+								href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
+								open: false,
+								hide: false,
+								translation: () => "Po zákaznících a liniích", // todo
+								disabled: false,
+								popoverOpen: false,
+								icon: null,
+								children: [],
+							},
+							{
+								field: 'analyza-prodeju-po-zakaznicich-a-klp',
+								href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp',
+								open: false,
+								hide: false,
+								translation: () => "Po zákaznících a KLP", // todo
+								disabled: false,
+								popoverOpen: false,
+								icon: null,
+								children: [],
+							},
+						],
+					},
+					{
 						field: 'analyza-prodeju-prodeje-po-zakaznicich-a-prodejnach',
 						href: '/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach',
 						open: false,
@@ -70,7 +104,19 @@ export const allItems: SidebarItem[] = [
 						disabled: false,
 						popoverOpen: false,
 						icon: null,
-						children: [],
+						children: [
+							{
+								field: 'analyza-prodeju-po-zakaznicich-a-fakturach',
+								href: '/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/po-fakturach',
+								open: false,
+								hide: false,
+								translation: () => "Po zákaznících a fakturách", // todo
+								disabled: false,
+								popoverOpen: false,
+								icon: null,
+								children: [],
+							},
+						],
 					}
 				],
 			},

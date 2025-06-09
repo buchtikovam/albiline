@@ -13,6 +13,17 @@
 	import {SidebarRail} from "$lib/components/ui/sidebar/index.js";
 
 
+	interface Props {
+	    onmousedown: (event: MouseEvent) => void;
+		onclick: (event: MouseEvent) => void;
+	}
+
+	let {
+	    onmousedown,
+		onclick,
+	}: Props = $props();
+
+
 	let filteredItems: SidebarItem[] = $state(deepcopy(allItems));
 	let searchTerm = $state("");
 
@@ -70,5 +81,9 @@
 		<SidebarAvatar />
 	</Sidebar.Footer>
 
-	<SidebarRail class="hover:bg-albi-50 my-2"/>
+	<Sidebar.Rail
+		{onmousedown}
+		{onclick}
+		class="hover:bg-albi-50"
+	/>
 </Sidebar.Root>

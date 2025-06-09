@@ -1,4 +1,4 @@
-import type {IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
+import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams} from "ag-grid-enterprise";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
@@ -48,7 +48,7 @@ function getDiffFromBasePrice(
 }
 
 
-export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef = {
+export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
 

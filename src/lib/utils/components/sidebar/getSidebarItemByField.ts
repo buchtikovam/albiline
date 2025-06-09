@@ -6,7 +6,7 @@ export function getSidebarItemByField(items: SidebarItem[], field: string): Side
 
 
 	items.map((item: SidebarItem) => {
-		if (item.field.toLowerCase().includes(field.toLowerCase())) {
+		if (item.field.toLowerCase() === field.toLowerCase()) {
 			firstFound = item;
 		}
 

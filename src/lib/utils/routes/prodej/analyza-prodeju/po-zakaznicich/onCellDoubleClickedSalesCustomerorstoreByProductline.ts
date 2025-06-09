@@ -84,8 +84,8 @@ export function onCellDoubleClickedSalesCustomerorstoreByProductline( // todo: m
 			salesCustomerorstoreByProductlineInputParams,
 			"clientSide",
 			{fulltextEnabled: true, columnFiltersEnabled: true}
-		).then(r => {
-			goto(localizeHref("/prodej/analyza-prodeju/po-zakaznicich/po-liniich")).then(r => "");
-		})
+		).then(r => r)
+
+		goto("/prodej/analyza-prodeju/po-zakaznicich").then(r => r);
 	}
 }

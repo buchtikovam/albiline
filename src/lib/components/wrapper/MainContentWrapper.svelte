@@ -4,14 +4,15 @@
 	interface Props {
 		children: Snippet,
 		border?: boolean,
+		background?: boolean,
 	}
 
-	let { children, border = true } : Props = $props();
+	let { children, border = true, background = true } : Props = $props();
 </script>
 
 
 <div
-	class={`${border ? "border" : ""} h-full overflow-auto rounded-lg border-slate-300`}
+	class={`${border ? "border" : ""} ${background ? "bg-white" : ""} h-full overflow-auto rounded-lg border-slate-300`}
 >
 	{@render children()}
 </div>

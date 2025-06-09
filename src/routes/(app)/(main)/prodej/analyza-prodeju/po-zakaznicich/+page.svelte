@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { activeTabIndex, showFulltextSearch } from "$lib/runes/page.svelte";
-	import { agGridTables, pageKeys } from "$lib/runes/table.svelte";
-	import { beforeNavigate } from "$app/navigation";
+	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import type { AgGridTableType } from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 	import {
-		SalesCustomdetailByCustomersAgGridDefSvelte, // Renamed for clarity
+		SalesCustomdetailByCustomersAgGridDefSvelte,
 		SalesCustomdetailByCustomersHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef.svelte"; // Ensure this path is correct
-	import type { CellDoubleClickedEvent, GridApi, GridOptions, IRowNode, ColDef, Column } from "ag-grid-enterprise"; // Added GridApi, IRowNode, ColDef
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef.svelte";
+	import type {CellDoubleClickedEvent, GridApi, GridOptions, IRowNode} from "ag-grid-enterprise";
 	import {
 		onCellDoubleClickedSalesCustomerorstoreByProductline
 	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/onCellDoubleClickedSalesCustomerorstoreByProductline";
+	import {beforeNavigate} from "$app/navigation";
 
 	pageKeys.value = {
 		value: ["SalesCustomdetailByCustomers"],
@@ -24,9 +24,7 @@
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let destroy = $state(false);
 
-	let gridApi: GridApi | null = $state(null); // Store Grid API reference
 
-	// Reactive context to hold overall totals
 	let gridContext = $state({
 		totalSalesLY: 0,
 		totalSalesAY: 0
@@ -38,7 +36,8 @@
 
 	/**
 	 * Calculates total sales for LY and AY across all rows and updates the grid context.
-	 */
+	**/
+
 	function calculateAndRefreshTotals(api: GridApi | null) {
 		if (!api) {
 			console.warn("calculateAndRefreshTotals called with null API");
@@ -83,11 +82,15 @@
 	};
 </script>
 
+
+
 <svelte:head>
 	<title>
 		Analýza prodejů - po zákaznících | Albiline
 	</title>
 </svelte:head>
+
+
 
 {#if !destroy && table}
 	<AgGridCSWrapper
