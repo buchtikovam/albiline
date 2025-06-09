@@ -80,7 +80,6 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			["text-right"],
 			{
 				aggFunc: "sum",
-				enableValue: true,
 				valueFormatter: (params: ValueFormatterParams) => {
 					return formatNumberToCzech(params.value)
 				}
@@ -585,9 +584,14 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 					}
 					const currentRowSalesLY: number = params.data.sales_LY;
 
+					console.log("current", currentRowSalesLY)
+					console.log("total", totalSalesLY)
+
 					if (totalSalesLY === 0) {
-						return currentRowSalesLY === 0 ? 0 : null;
+						return currentRowSalesLY === 1;
 					}
+
+
 					return currentRowSalesLY / totalSalesLY;
 				},
 				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
