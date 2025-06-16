@@ -27,6 +27,7 @@
 		gridOptionsCustom: GridOptions;
 		allowRibbonActions?: boolean;
 		clearRowData?: boolean;
+		disableLoading?: boolean;
 	}
 
 	let {
@@ -35,6 +36,7 @@
 		gridOptionsCustom,
 		allowRibbonActions = true,
 		clearRowData = $bindable(false),
+		disableLoading,
 	}: Props = $props();
 
 
@@ -87,10 +89,10 @@
 		if (Object.keys(table.loadedInputParams).length > 0) {
 			if (table.areInputParamsLoading) {
 				clearCache(table.name);
-				getCSData(gridApi, table);
+				getCSData(gridApi, table, disableLoading);
 				isInitial = false;
 			} else {
-				getCSData(gridApi, table);
+				getCSData(gridApi, table, disableLoading);
 			}
 		}
 	});

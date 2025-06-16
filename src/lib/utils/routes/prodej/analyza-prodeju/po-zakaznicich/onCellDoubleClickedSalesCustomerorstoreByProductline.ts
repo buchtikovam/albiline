@@ -6,7 +6,7 @@ import {localizeHref} from "$lib/paraglide/runtime";
 import type {AgGridTableType} from "$lib/types/components/table/table";
 import type {CellDoubleClickedEvent} from "ag-grid-enterprise";
 
-export function onCellDoubleClickedSalesCustomerorstoreByProductline( // todo: move to ag grid def
+export function onCellDoubleClickedSalesCustomerorstoreByProductline(
 	table: AgGridTableType,
 	event:CellDoubleClickedEvent
 ) {
@@ -21,8 +21,6 @@ export function onCellDoubleClickedSalesCustomerorstoreByProductline( // todo: m
 		const formattedDateTo = dateTo.toString().replace(" 00:00:00:000", "");
 		const currency = inputs.find(f => f.field === 'currency')?.value || '';
 		const divisionId = inputs.find(f => f.field === 'divisionid')?.value;
-
-		console.log(inputs)
 
 		let salesCustomerorstoreByProductlineInputParams: InputParamsType = {
 			inputs: [
@@ -86,6 +84,6 @@ export function onCellDoubleClickedSalesCustomerorstoreByProductline( // todo: m
 			{fulltextEnabled: true, columnFiltersEnabled: true}
 		).then(r => r)
 
-		goto("/prodej/analyza-prodeju/po-zakaznicich").then(r => r);
+		goto("/prodej/analyza-prodeju/po-zakaznicich/po-liniich").then(r => r);
 	}
 }

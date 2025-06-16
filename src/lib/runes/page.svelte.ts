@@ -11,8 +11,6 @@ export const pageCompact: LocalStore<boolean>= localStore("pageCompact", false )
 
 export const showFulltextSearch: { value: boolean } = $state({ value: false });
 
-export const fulltextFilterValue: { value: string } = $state({ value: "" });
-
 export const activeTabIndex: { value: number } = $state({ value: 0 });
 
 export const authDetails: { sessionKey: string|null, userName: string|null, email: string|null, icon: any } = $state({ sessionKey: null, userName: null, email: null, icon: null });
@@ -84,3 +82,21 @@ export const pageSectionsState: SessionStore<PageSections> = sessionStore("sales
 	kspSection: false,
 	ksSection: false,
 })
+
+
+export interface PageState {
+	[routeId: string] : {
+		disableInputs?: boolean,
+		resizablePageSections?: Record<string, ResizablePageSection>
+	}
+}
+
+export interface ResizablePageSection {
+	open: boolean,
+	size: number|null,
+	focused: boolean,
+	index: number,
+}
+
+
+export const pageStates: SessionStore<PageState> = sessionStore("pageStates", {})

@@ -96,10 +96,11 @@ export function getRowSelection(): "single" | "multiple" | RowSelectionOptions<a
 
 export async function getCSData(
 	gridApi: GridApi,
-	table: AgGridTableType
+	table: AgGridTableType,
+	disableLoading?: boolean,
 ) {
 	try {
-		gridApi.setGridOption("loading", true)
+		if (!disableLoading) gridApi.setGridOption("loading", true)
 
 		const cached = await getCachedTableData(table.name);
 
@@ -107,7 +108,7 @@ export async function getCSData(
 			// console.log("cached", cached.length);
 			// @ts-ignore
 			gridApi.setGridOption("rowData", cached);
-			gridApi.setGridOption("loading", false)
+			if (!disableLoading) gridApi.setGridOption("loading", false)
 			// let columnList: string[] = [];
 
 			// table.defaultColState.forEach(preset => {
@@ -136,7 +137,7 @@ export async function getCSData(
 				}
 			}
 		} else {
-			await fetchAndCache(gridApi, table);
+			await fetchAndCache(gridApi, table, disableLoading);
 			table.areInputParamsLoading = false;
 		}
 	} catch (e) {
@@ -147,7 +148,8 @@ export async function getCSData(
 
 async function fetchAndCache(
 	gridApi: GridApi,
-	table: AgGridTableType
+	table: AgGridTableType,
+	disableLoading?: boolean,
 ) {
 	try {
 		let columnList: string[] = deepcopy(table.requiredFields);
@@ -184,7 +186,7 @@ async function fetchAndCache(
 		// @ts-ignore
 		requestObj["columnList"] = columnList
 
-		gridApi.setGridOption("loading", true)
+		if (!disableLoading) gridApi.setGridOption("loading", true)
 		const response = await apiServicePostHandled(
 			'pageData',
 			requestObj,
@@ -193,10 +195,7 @@ async function fetchAndCache(
 
 		const data = await response.data;
 		gridApi.setGridOption("rowData", data.items);
-		gridApi.setGridOption("loading", false);
-
-		// console.log("test")
-		// setTimeout(() => {gridApi.autoSizeColumns(columnList, false)}, 100)
+		if (!disableLoading) gridApi.setGridOption("loading", false);
 		await cacheTableData(table.name, data.items);
 	} catch (e) {
 		console.log("Fetch and cache error: ", e instanceof Error ? e.message : "");

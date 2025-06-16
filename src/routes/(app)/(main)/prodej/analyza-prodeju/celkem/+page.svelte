@@ -1,147 +1,198 @@
 <script lang="ts">
+	import {onMount, untrack} from 'svelte';
+	import { Pane, PaneGroup, PaneResizer } from 'paneforge';
+	import { pageStates, showFulltextSearch } from '$lib/runes/page.svelte';
+	import { agGridTables, pageKeys } from '$lib/runes/table.svelte';
+	import type { AgGridTableType } from '$lib/types/components/table/table';
+	import {beforeNavigate, onNavigate} from '$app/navigation';
+	import InputParams from '$lib/components/input-params/InputParams.svelte';
+	import { InputParamsSalesTotalByDivision } from '$lib/definitions/routes/prodej/analyza-prodeju/celkem/input-params/salesTotalByDivisionInputParams';
+	import { loadInputParamsInTable } from '$lib/utils/components/input-params/loadInputParamsInTable';
+	import deepcopy from 'deepcopy';
+	import type { CellDoubleClickedEvent, GridOptions } from 'ag-grid-enterprise';
+	import { onDoubleClickedSalesTotalByDivision } from '$lib/utils/routes/prodej/analyza-prodeju/celkem/onDoubleClickedSalesTotalByDivision';
+	import { page } from '$app/state';
+	import * as m from '$lib/paraglide/messages';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import FilterAndPresetButtons from '$lib/components/button/FilterAndPresetButtons.svelte';
+	import PageWrapper from '$lib/components/wrapper/PageWrapper.svelte';
+	import Info from 'lucide-svelte/icons/info';
+	import { Separator } from '$lib/components/ui/separator';
+	import MainContentWrapper from '$lib/components/wrapper/MainContentWrapper.svelte';
+	import TabFulltextWrapper from '$lib/components/wrapper/TabFulltextWrapper.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { salesTotalByDivisionGetPageTitle } from '$lib/utils/routes/prodej/analyza-prodeju/celkem/salesTotalByDivisionGetPageTitle';
+	import * as Popover from '$lib/components/ui/popover/index.js';
 	import {
 		SalesTotalByDivisionAgGridDef, salesTotalByDivisionHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionAgGridDef.js";
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionAgGridDef";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
-	import {onMount} from "svelte";
-	import {PaneGroup, Pane, PaneResizer} from "paneforge";
-	import {pageSectionsState, showFulltextSearch} from "$lib/runes/page.svelte";
-	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
-	import {beforeNavigate, goto} from "$app/navigation";
-	import InputParams from "$lib/components/input-params/InputParams.svelte";
 	import {
-		InputParamsSalesTotalByDivision
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/input-params/salesTotalByDivisionInputParams";
-	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
-	import deepcopy from "deepcopy";
+		salesTotalByDivisionHandlePaneLayoutChange
+	} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/salesTotalByDivisionHandlePaneLayoutChange";
+	import {setPaneFocus} from "$lib/utils/components/pane-forge/setPaneFocus";
 	import {
-		SalesTotalByDivisionSubdetailProductlineAgGridDef, SalesTotalByDivisionSubdetailProductlineHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineAgGridDef.js";
+		SalesTotalByDivisionSubdetailProductlineAgGridDef,
+		SalesTotalByDivisionSubdetailProductlineHeaderTranslations
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineAgGridDef";
 	import {
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef,
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef.js";
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef";
 	import {
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef,
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef.js";
-	import type {CellDoubleClickedEvent, GridOptions} from "ag-grid-enterprise";
-	import {
-		onDoubleClickedSalesTotalByDivision
-	} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/onDoubleClickedSalesTotalByDivision";
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef";
 
+	// Use the reactive $page store to get the routeId
+	const routeId = $state(page.route.id || "");
 
-	let pageSections = $derived(pageSectionsState.value)
-
+	// Initialize runes and other state variables
 	showFulltextSearch.value = true;
+
+	// State for tables and UI
+	let divisionTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivision']);
+	let linieTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductline']);
+	let linieClearRowData = $state(false);
+	let klpTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel']);
+	let klpClearRowData = $state(false);
+	let ksTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity']);
+	let ksClearRowData = $state(false);
+	let activeTable = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+
+	// Initialize pageCodes for all tables on current page
 	pageKeys.value = {
 		value: [
-			"SalesTotalByDivision",
-			"SalesTotalByDivisionSubdetailProductline",
-			"SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel",
-			"SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity"
+			'SalesTotalByDivision',
+			'SalesTotalByDivisionSubdetailProductline',
+			'SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel',
+			'SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity'
 		],
 		index: 0
 	};
 
-	let divisionTable: AgGridTableType = $state(agGridTables.value["SalesTotalByDivision"]);
-	let linieTable: AgGridTableType = $state(agGridTables.value["SalesTotalByDivisionSubdetailProductline"])
-	let klpTable: AgGridTableType = $state(agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel"]);
-	let ksTable: AgGridTableType = $state(agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity"]);
+	// Safely initialize the state for the current page if it doesn't exist
+	if (routeId && !pageStates.value[routeId]?.resizablePageSections) {
+		pageStates.value[routeId] = {
+			resizablePageSections: {
+				divisionSection: { open: true, size: 50, focused: true, index: 0 },
+				linieSection: { open: false, size: 50, focused: false, index: 1 },
+				klpSection: { open: false, size: 50, focused: false, index: 2 },
+				ksSection: { open: false, size: 50, focused: false, index: 3 }
+			}
+		};
+	}
+
+	// Derived rune for easy, reactive access to the current page's sections state
+	let sections = $derived.by(() => {
+		return pageStates.value[routeId]?.resizablePageSections;
+	});
 
 
+	// Reactive page title based on division table inputParams
+	let title = $derived.by(() => {
+		return divisionTable.loadedInputParams.inputs
+			? salesTotalByDivisionGetPageTitle(divisionTable.loadedInputParams.inputs)
+			: '';
+	});
+
+
+	// Effect to manage cascading checkbox logic
 	$effect(() => {
-		if (
-			divisionTable.selectedRows.length > 0 &&
-			pageSections.linieSection
-		) {
-			let linieInputParams = deepcopy(divisionTable.loadedInputParams);
+		if (!routeId || !sections) return;
+		const currentSections = pageStates.value[routeId].resizablePageSections;
 
-			if (linieInputParams.inputs) {
-				linieInputParams.inputs = linieInputParams.inputs.concat([{
-					field: "divisionId",
-					type: "number",
-					value: divisionTable.selectedRows[0][divisionTable.identificationKey],
-				}])
+		if (currentSections) {
+			if (!currentSections.linieSection.open && currentSections.klpSection.open) {
+				currentSections.klpSection.open = false;
 			}
 
-			loadInputParamsInTable(
-				linieTable,
-				linieInputParams,
-				"clientSide",
-				{ fulltextEnabled: true, columnFiltersEnabled: true }
-			);
+			if (!currentSections.klpSection.open && currentSections.ksSection.open) {
+				currentSections.ksSection.open = false;
+			}
 		}
-	})
+	});
 
 
+
+	// Effect to load data for 'linie' section
+	$effect(() => {
+		if (divisionTable.selectedRows.length > 0 && sections?.linieSection.open) {
+			const linieInputParams = deepcopy(divisionTable.loadedInputParams);
+
+			if (linieInputParams.inputs) {
+				linieInputParams.inputs.push({
+					field: 'divisionId',
+					type: 'number',
+					value: divisionTable.selectedRows[0][divisionTable.identificationKey]
+				});
+			}
+			loadInputParamsInTable(linieTable, linieInputParams, 'clientSide', {
+				fulltextEnabled: true,
+				columnFiltersEnabled: true
+			});
+		}
+	});
+
+
+	let destroy = $state(false);
+
+
+	// Effect to load data for 'ksp' (KLP) section
 	$effect(() => {
 		if (linieTable.selectedRows.length > 0) {
-			if (pageSections.kspSection) {
-				let klpInputParams = deepcopy(linieTable.loadedInputParams);
-
+			if (sections?.klpSection.open) {
+				const klpInputParams = deepcopy(linieTable.loadedInputParams);
 				if (klpInputParams.inputs) {
-					klpInputParams.inputs = klpInputParams.inputs.concat([{
-						field: "productlineid",
-						type: "number",
-						value: linieTable.selectedRows[0][linieTable.identificationKey],
-					}])
+					klpInputParams.inputs.push({
+						field: 'productlineid',
+						type: 'number',
+						value: linieTable.selectedRows[0][linieTable.identificationKey]
+					});
 				}
-
-				loadInputParamsInTable(
-					klpTable,
-					klpInputParams,
-					"clientSide",
-					{fulltextEnabled: true, columnFiltersEnabled: true}
-				);
+				loadInputParamsInTable(klpTable, klpInputParams, 'clientSide', {
+					fulltextEnabled: true,
+					columnFiltersEnabled: true
+				});
 			}
 		} else {
 			klpClearRowData = true;
 		}
-	})
+	});
 
+
+
+	// Effect to load data for 'ks' section
 	$effect(() => {
 		if (klpTable.selectedRows.length > 0) {
-			if (pageSections.ksSection) {
-				let ksInputParams = deepcopy(divisionTable.loadedInputParams);
-
+			if (sections?.ksSection.open) {
+				const ksInputParams = deepcopy(divisionTable.loadedInputParams);
 				if (ksInputParams.inputs) {
-					ksInputParams.inputs = ksInputParams.inputs.concat([{
-						field: "costlevelcode",
-						type: "text",
-						value: klpTable.selectedRows[0][klpTable.identificationKey],
-					}])
+					ksInputParams.inputs.push({
+						field: 'costlevelcode',
+						type: 'text',
+						value: klpTable.selectedRows[0][klpTable.identificationKey]
+					});
 				}
-
-				loadInputParamsInTable(
-					ksTable,
-					ksInputParams,
-					"clientSide",
-					{fulltextEnabled: true, columnFiltersEnabled: true}
-				);
+				loadInputParamsInTable(ksTable, ksInputParams, 'clientSide', {
+					fulltextEnabled: true,
+					columnFiltersEnabled: true
+				});
 			}
 		} else {
-			ksClearRowData = true
+			ksClearRowData = true;
 		}
-	})
+	});
 
 	let open = $state(false);
-	let destroy = $state(false);
-	let divisionPaneFocused = $state(true);
-	let liniePaneFocused = $state(false);
-	let klpPaneFocused = $state(false);
-	let ksPaneFocused = $state(false);
-	let klpClearRowData = $state(false);
-	let ksClearRowData = $state(false);
 
 	$effect(() => {
 		open = divisionTable.openInputParams;
-	})
+	});
 
 	onMount(() => {
 		open = !divisionTable.hasInputParams;
-	})
+	});
 
 	beforeNavigate(() => {
 		divisionTable.openInputParams = false;
@@ -149,81 +200,28 @@
 	})
 
 
-	$effect(() => {
-		if (
-			pageSections.linieSection === false &&
-			(liniePaneFocused || klpPaneFocused || ksPaneFocused)
-		) {
-			divisionPaneFocused = true;
-			liniePaneFocused = false;
-			klpPaneFocused = false;
-			ksPaneFocused = false;
-			pageKeys.value.index = 0;
-		}
-
-		if (
-			pageSections.kspSection === false &&
-			(klpPaneFocused || ksPaneFocused)
-		) {
-			divisionPaneFocused = false;
-			liniePaneFocused = true;
-			klpPaneFocused = false;
-			ksPaneFocused = false;
-			pageKeys.value.index = 1;
-		}
-
-		if (
-			pageSections.ksSection === false &&
-			ksPaneFocused
-		) {
-			divisionPaneFocused = false;
-			liniePaneFocused = false;
-			klpPaneFocused = true;
-			ksPaneFocused = false;
-			pageKeys.value.index = 2;
-		}
-	})
-
-
-
+	// Custom grid options with double-click handlers
 	const divisionCustomGridOptions: GridOptions = {
-		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
-			onDoubleClickedSalesTotalByDivision(
-				"division",
-				divisionTable,
-				linieTable,
-				klpTable,
-				event
-			);
-		},
-	}
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
+			onDoubleClickedSalesTotalByDivision('division', divisionTable, linieTable, klpTable, event)
+	};
 
 	const linieCustomGridOptions: GridOptions = {
-		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
-			onDoubleClickedSalesTotalByDivision(
-				"linie",
-				divisionTable,
-				linieTable,
-				klpTable,
-				event
-			);
-		},
-	}
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
+			onDoubleClickedSalesTotalByDivision('linie', divisionTable, linieTable, klpTable, event)
+	};
 
 	const klpCustomGridOptions: GridOptions = {
-		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
-			onDoubleClickedSalesTotalByDivision(
-				"costLevel",
-				divisionTable,
-				linieTable,
-				klpTable,
-				event
-			);
-		},
-	}
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
+			onDoubleClickedSalesTotalByDivision('costLevel', divisionTable, linieTable, klpTable, event)
+	};
 </script>
 
 
+
+<svelte:head>
+	<title>Analýza prodejů - celkem | Albiline</title>
+</svelte:head>
 
 
 
@@ -238,104 +236,175 @@
 
 
 
-{#if !destroy}
-	<PaneGroup direction="vertical" class="rounded">
-		<Pane
-			defaultSize={50}
-			minSize={10}
-			class={`${divisionPaneFocused && pageSections.linieSection ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
-			onclick={() => {
-				divisionPaneFocused = true;
-				liniePaneFocused = false;
-				klpPaneFocused = false;
-				ksPaneFocused = false;
-				pageKeys.value.index = 0;
-			}}
-		>
-			<AgGridCSWrapper
-				table={divisionTable}
-				gridOptionsCustom={{...SalesTotalByDivisionAgGridDef, ...divisionCustomGridOptions}}
-				headerTranslations={salesTotalByDivisionHeaderTranslations}
-				allowRibbonActions={divisionPaneFocused}
-			/>
-		</Pane>
+<PageWrapper>
+	<TabFulltextWrapper>
+		<div class="flex-1 flex justify-between items-center mr-2">
+			{#if title.length > 0}
+				<Popover.Root>
+					<Popover.Trigger
+						class="size-8 bg-white border border-slate-300 rounded-md flex 2xl:hidden justify-center items-center"
+					>
+						<Info strokeWidth="2" class="size-[18px]" />
+					</Popover.Trigger>
+					<Popover.Content side="right" class="text-xs h-8 py-0 px-2 w-fit flex items-center border-albi-500">
+						<p>{@html title}</p>
+					</Popover.Content>
+				</Popover.Root>
+				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center mr-2">
+					<p class="text-xs text-ellipsis line-clamp-1">
+						{@html title}
+					</p>
+				</div>
+			{:else}
+				<div class="w-1"></div>
+			{/if}
 
+			{#if sections}
+				<div
+					class="min-w-[304px] flex text-xs justify-end items-center gap-1.5 bg-white h-8 border border-slate-300 rounded-md w-fit px-2"
+				>
+					<b>Detail: </b>
+					{#if pageStates.value[routeId].resizablePageSections}
+						<div class="flex items-center gap-1">
+							<Checkbox
+								class="size-4"
+								bind:checked={pageStates.value[routeId].resizablePageSections.linieSection.open}
+							/>
+							<p>po liniích</p>
+						</div>
 
-		{#if pageSections.linieSection}
-			<PaneResizer class="bg-slate-100 h-1" />
+						<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]" />
 
-			<Pane
-				defaultSize={50}
-				minSize={10}
-				onclick={() => {
-					divisionPaneFocused = false;
-					liniePaneFocused = true;
-					klpPaneFocused = false;
-					ksPaneFocused = false;
-					pageKeys.value.index = 1;
-				}}
+						<div class="flex items-center gap-1">
+							<Checkbox
+								class="size-4"
+								disabled={!sections.linieSection.open}
+								bind:checked={pageStates.value[routeId].resizablePageSections.klpSection.open}
+							/>
+							<p>po KLP</p>
+						</div>
 
-				class={`${liniePaneFocused ? "border-albi-500 " : "border-slate-300"} rounded-lg border bg-white`}
-			>
-				<AgGridCSWrapper
-					bind:table={agGridTables.value["SalesTotalByDivisionSubdetailProductline"]}
-					gridOptionsCustom={{...SalesTotalByDivisionSubdetailProductlineAgGridDef, ...linieCustomGridOptions}}
-					headerTranslations={SalesTotalByDivisionSubdetailProductlineHeaderTranslations}
-					allowRibbonActions={liniePaneFocused}
+						<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]" />
+
+						<div class="flex items-center gap-1">
+							<Checkbox
+								class="size-4"
+								disabled={!sections.klpSection.open}
+								bind:checked={pageStates.value[routeId].resizablePageSections.ksSection.open}
+							/>
+							<p>po kusech</p>
+						</div>
+					{/if}
+				</div>
+			{/if}
+		</div>
+
+		<FilterAndPresetButtons bind:table={activeTable} {routeId} />
+		{#if showFulltextSearch.value === true}
+			<div class="hidden md:flex items-center h-8">
+				<Input
+					class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
+					placeholder={m.components_header_search_placeholder()}
+					type="text"
+					bind:value={activeTable.fulltextFilterValue}
 				/>
-			</Pane>
+			</div>
 		{/if}
+	</TabFulltextWrapper>
 
-
-		{#if pageSections.kspSection}
-			<PaneResizer class="bg-slate-100 h-1" />
-
-			<Pane
-				minSize={10}
-				defaultSize={50}
-				onclick={() => {
-					divisionPaneFocused = false;
-					liniePaneFocused = false;
-					klpPaneFocused = true;
-					ksPaneFocused = false;
-					pageKeys.value.index = 2;
+	<MainContentWrapper border={false}>
+		{#if !destroy && sections && pageStates.value[routeId].resizablePageSections}
+			<PaneGroup
+				direction="vertical"
+				class="rounded"
+				onLayoutChange={(sizes: number[]) => {
+					if (pageStates.value[routeId].resizablePageSections) {
+						salesTotalByDivisionHandlePaneLayoutChange(
+							pageStates.value[routeId].resizablePageSections,
+							sizes
+						);
+					}
 				}}
-				class={`${klpPaneFocused ? "border-albi-500 " : "border-slate-300"} rounded-lg border bg-white`}
 			>
-				<AgGridCSWrapper
-					bind:table={agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel"]}
-					gridOptionsCustom={{...SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef, ...klpCustomGridOptions}}
-					headerTranslations={SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelHeaderTranslations}
-					allowRibbonActions={klpPaneFocused}
-					bind:clearRowData={klpClearRowData}
-				/>
-			</Pane>
+				<Pane
+					defaultSize={sections.divisionSection.size || 50}
+					minSize={10}
+					class={`${sections.divisionSection.focused && sections.linieSection.open ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
+					onclick={() => setPaneFocus(sections, routeId, 'divisionSection')}
+				>
+					<AgGridCSWrapper
+						bind:table={divisionTable}
+						gridOptionsCustom={{ ...SalesTotalByDivisionAgGridDef, ...divisionCustomGridOptions }}
+						headerTranslations={salesTotalByDivisionHeaderTranslations}
+						allowRibbonActions={sections.divisionSection.focused}
+					/>
+				</Pane>
+
+				{#if sections.linieSection.open}
+					<PaneResizer class="bg-slate-100 h-1" />
+					<Pane
+						defaultSize={sections.linieSection.size || 50}
+						minSize={10}
+						class={`${sections.linieSection.focused ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
+						onclick={() => setPaneFocus(sections, routeId, 'linieSection')}
+					>
+						<AgGridCSWrapper
+							bind:table={linieTable}
+							gridOptionsCustom={{
+								...SalesTotalByDivisionSubdetailProductlineAgGridDef,
+								...linieCustomGridOptions
+							}}
+							headerTranslations={SalesTotalByDivisionSubdetailProductlineHeaderTranslations}
+							allowRibbonActions={sections.linieSection.focused}
+							bind:clearRowData={linieClearRowData}
+							disableLoading={true}
+						/>
+					</Pane>
+				{/if}
+
+				{#if sections.klpSection.open}
+					<PaneResizer class="bg-slate-100 h-1" />
+					<Pane
+						defaultSize={sections.klpSection.size || 50}
+						minSize={10}
+						class={`${sections.klpSection.focused ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
+						onclick={() => setPaneFocus(sections, routeId, 'klpSection')}
+					>
+						<AgGridCSWrapper
+							bind:table={klpTable}
+							gridOptionsCustom={{
+								...SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef,
+								...klpCustomGridOptions
+							}}
+							headerTranslations={SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelHeaderTranslations}
+							allowRibbonActions={sections.klpSection.focused}
+							bind:clearRowData={klpClearRowData}
+							disableLoading={true}
+						/>
+					</Pane>
+				{/if}
+
+				{#if sections.ksSection.open}
+					<PaneResizer class="bg-slate-100 h-1" />
+					<Pane
+						defaultSize={sections.ksSection.size || 50}
+						minSize={10}
+						class={`${sections.ksSection.focused ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
+						onclick={() => setPaneFocus(sections, routeId, 'ksSection')}
+					>
+						<AgGridCSWrapper
+							bind:table={ksTable}
+							gridOptionsCustom={SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef}
+							headerTranslations={
+								SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityHeaderTranslations
+							}
+							allowRibbonActions={sections.ksSection.focused}
+							bind:clearRowData={ksClearRowData}
+							disableLoading={true}
+						/>
+					</Pane>
+				{/if}
+			</PaneGroup>
 		{/if}
-
-
-		{#if pageSections.ksSection}
-			<PaneResizer class="bg-slate-100 h-1" />
-
-			<Pane
-				defaultSize={20}
-				minSize={10}
-				onclick={() => {
-					divisionPaneFocused = false;
-					liniePaneFocused = false;
-					klpPaneFocused = false;
-					ksPaneFocused = true;
-					pageKeys.value.index = 3;
-				}}
-				class={`${ksPaneFocused ? "border-albi-500 " : "border-slate-300"} rounded-lg border bg-white`}
-			>
-				<AgGridCSWrapper
-					bind:table={agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity"]}
-					gridOptionsCustom={SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef}
-					headerTranslations={SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityHeaderTranslations}
-					allowRibbonActions={ksPaneFocused}
-					bind:clearRowData={ksClearRowData}
-				/>
-			</Pane>
-		{/if}
-	</PaneGroup>
-{/if}
+	</MainContentWrapper>
+</PageWrapper>
