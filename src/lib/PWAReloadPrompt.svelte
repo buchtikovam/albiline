@@ -6,6 +6,8 @@
 	// import {goto} from "$app/navigation";
 	// import {redirect} from "@sveltejs/kit";
 	import {clearCache} from "$lib/cacheManager";
+	import {pageStates} from "$lib/runes/page.svelte";
+	import {redirect} from "@sveltejs/kit";
 
 	const autoreload = true;
 	// console.log('PWAReloadPrompt');
@@ -41,14 +43,16 @@
 	<div class="pwa-toast" role="alert">
 		<div class="message">
 			<span>
-				Albiline byl aktualizován. Doporučujeme přenačíst aplikaci.
+				Albiline byl aktualizován. Ulož si prosím práci a přenačti aplikaci.
 			</span>
 		</div>
 		{#if $needRefresh}
 			<button onclick={async () => {
 				await updateServiceWorker(true);
 				agGridTables.value = {};
+				pageStates.value = {};
 				await clearCache();
+				throw redirect(303, "/");
 			}}>
 				Přenačíst
 			</button>

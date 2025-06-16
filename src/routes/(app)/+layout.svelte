@@ -41,6 +41,7 @@
 		ValidationModule,
 		ClipboardModule,
 		RenderApiModule,
+		ColumnAutoSizeModule,
 		CheckboxEditorModule
 	} from "ag-grid-enterprise";
 
@@ -78,6 +79,7 @@
 		ClipboardModule,
 		RenderApiModule,
 		CheckboxEditorModule,
+		ColumnAutoSizeModule,
 		...(process.env.NODE_ENV !== "production" ? [ValidationModule] : [])
 	]);
 

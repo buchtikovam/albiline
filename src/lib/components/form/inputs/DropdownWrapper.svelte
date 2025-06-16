@@ -32,7 +32,7 @@
 	let errorMessage = $state("");
 	let options: string[] = $state([]);
 	let changed = $state(false)
-
+	let initialValue = $state(value)
 
 	if (!value) {
 		dropdownValue = "‎"
@@ -84,12 +84,13 @@
 
 			hasError = false;
 			errorMessage = "";
-			addToEditedFormData(selectedValue, value);
+			console.log("far")
+			addToEditedFormData(selectedValue.trim(), initialValue);
 		} catch (e) {
 			console.log(e)
 			hasError = true;
 			errorMessage = e.issues[0].message;
-			addToEditedFormData(selectedValue, value);
+			addToEditedFormData(selectedValue.trim(), initialValue);
 			console.log(e);
 		}
 	}

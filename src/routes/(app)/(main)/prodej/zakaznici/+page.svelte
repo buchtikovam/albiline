@@ -11,6 +11,8 @@
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerOrAddressDecisionDialog.svelte";
 	import InputParams from "$lib/components/input-params/InputParams.svelte";
 	import AgGridSSWrapper from "$lib/components/ag-grid/serverside/AgGridSSWrapper.svelte";
+	import {ribbonAction} from "$lib/runes/ribbon.svelte";
+	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
 
 
 	interface Props {
@@ -59,6 +61,9 @@
 	beforeNavigate(() => {
 		table.openInputParams = false;
 	})
+
+	console.log("page", ribbonAction.value);
+
 </script>
 
 
@@ -86,6 +91,9 @@
 	gridOptionsCustom={customerGridOptions}
 	url="customers"
 	headerTranslations={customerHeaderTranslations}
+	customRibbonActions={[
+		RibbonActionEnum.NEW,
+	]}
 />
 
 

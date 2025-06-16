@@ -56,6 +56,7 @@
 	function updateFormValues(newValue: any, initialValue: any, field: string) {
 		editedFormValues[field] = newValue;
 
+		console.log(initialValue, newValue)
 		if (initialValue === newValue) {
 			delete editedFormValues[field];
 		}

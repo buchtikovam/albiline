@@ -25,13 +25,15 @@
 	interface Props {
 		url: string;
 		gridOptionsCustom: GridOptions;
-		headerTranslations: Record<string, () => string>
+		headerTranslations: Record<string, () => string>,
+		customRibbonActions: RibbonActionEnum[],
 	}
 
 	let {
 		url,
 		gridOptionsCustom,
-		headerTranslations
+		headerTranslations,
+		customRibbonActions,
 	}: Props = $props();
 
 
@@ -169,7 +171,9 @@
 			excelFileInput
 		);
 
-		ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		if (!customRibbonActions.includes(ribbonAction.value)) {
+			ribbonAction.value = RibbonActionEnum.UNKNOWN;
+		}
 	});
 </script>
 

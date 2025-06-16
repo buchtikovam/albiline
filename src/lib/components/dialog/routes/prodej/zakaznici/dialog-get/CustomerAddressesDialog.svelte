@@ -25,17 +25,8 @@
 		open = $bindable()
 	}: Props = $props();
 
-	let openNewAddressDialog: boolean = $state(false);
-
-
-	function newCustomerAddressDialog() {
-		open = false;
-		openNewAddressDialog = true;
-	}
-
 
 	onNavigate(() => {
-		openNewAddressDialog = false;
 		open = false;
 	})
 </script>
@@ -54,15 +45,6 @@
 {#snippet header()}
 	<Dialog.Title class="flex items-center gap-2">
 		{m.routes_prodej_zakaznici_address_detail_ag_select_label()}
-
-		<button
-			onclick={newCustomerAddressDialog}
-		>
-			<Plus
-				strokeWidth={2.5}
-				class="text-albi-500 size-5 hover:text-albi-700"
-			/>
-		</button>
 	</Dialog.Title>
 {/snippet}
 
@@ -74,10 +56,3 @@
 		headerTranslations={customerAddressHeaderTranslations}
 	/>
 {/snippet}
-
-
-<NewCustomerAddressDialog
-	bind:dialogOpen={openNewAddressDialog}
-	formDef={newCustomerAddressFormDef}
-/>
-

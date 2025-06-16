@@ -28,8 +28,8 @@
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionAgGridDef";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
 	import {
-		salesTotalByDivisionHandlePaneLayoutChange
-	} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/salesTotalByDivisionHandlePaneLayoutChange";
+		handlePaneLayoutChange
+	} from "$lib/utils/components/pane-forge/handlePaneLayoutChange";
 	import {setPaneFocus} from "$lib/utils/components/pane-forge/setPaneFocus";
 	import {
 		SalesTotalByDivisionSubdetailProductlineAgGridDef,
@@ -43,22 +43,13 @@
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef,
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef";
-
-	// Use the reactive $page store to get the routeId
-	const routeId = $state(page.route.id || "");
+	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 
 	// Initialize runes and other state variables
+	const routeId = $state(page.route.id || "");
+	let destroy = $state(false);
+	let open = $state(false);
 	showFulltextSearch.value = true;
-
-	// State for tables and UI
-	let divisionTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivision']);
-	let linieTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductline']);
-	let linieClearRowData = $state(false);
-	let klpTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel']);
-	let klpClearRowData = $state(false);
-	let ksTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity']);
-	let ksClearRowData = $state(false);
-	let activeTable = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 
 	// Initialize pageCodes for all tables on current page
 	pageKeys.value = {
@@ -70,6 +61,18 @@
 		],
 		index: 0
 	};
+
+
+	// State for tables and UI
+	let divisionTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivision']); // todo: rename all to page codes
+	let linieTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductline']);
+	let linieClearRowData = $state(false);
+	let klpTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel']);
+	let klpClearRowData = $state(false);
+	let ksTable: AgGridTableType = $state(agGridTables.value['SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity']);
+	let ksClearRowData = $state(false);
+	let activeTable = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+
 
 	// Safely initialize the state for the current page if it doesn't exist
 	if (routeId && !pageStates.value[routeId]?.resizablePageSections) {
@@ -119,6 +122,9 @@
 	$effect(() => {
 		if (divisionTable.selectedRows.length > 0 && sections?.linieSection.open) {
 			const linieInputParams = deepcopy(divisionTable.loadedInputParams);
+			linieClearRowData = true;
+			klpClearRowData = true;
+			ksClearRowData = true;
 
 			if (linieInputParams.inputs) {
 				linieInputParams.inputs.push({
@@ -135,7 +141,16 @@
 	});
 
 
-	let destroy = $state(false);
+	$effect(() => {
+		if (divisionTable.loadedInputParams) {
+			linieClearRowData = true;
+			klpClearRowData = true;
+			ksClearRowData = true;
+
+		}
+	})
+
+
 
 
 	// Effect to load data for 'ksp' (KLP) section
@@ -143,6 +158,9 @@
 		if (linieTable.selectedRows.length > 0) {
 			if (sections?.klpSection.open) {
 				const klpInputParams = deepcopy(linieTable.loadedInputParams);
+				klpClearRowData = true;
+				ksClearRowData = true;
+
 				if (klpInputParams.inputs) {
 					klpInputParams.inputs.push({
 						field: 'productlineid',
@@ -161,12 +179,13 @@
 	});
 
 
-
 	// Effect to load data for 'ks' section
 	$effect(() => {
 		if (klpTable.selectedRows.length > 0) {
 			if (sections?.ksSection.open) {
 				const ksInputParams = deepcopy(divisionTable.loadedInputParams);
+				ksClearRowData = true;
+
 				if (ksInputParams.inputs) {
 					ksInputParams.inputs.push({
 						field: 'costlevelcode',
@@ -184,15 +203,19 @@
 		}
 	});
 
-	let open = $state(false);
 
 	$effect(() => {
 		open = divisionTable.openInputParams;
 	});
 
+
 	onMount(() => {
 		open = !divisionTable.hasInputParams;
+		linieClearRowData = true;
+		klpClearRowData = true;
+		ksClearRowData = true;
 	});
+
 
 	beforeNavigate(() => {
 		divisionTable.openInputParams = false;
@@ -202,8 +225,9 @@
 
 	// Custom grid options with double-click handlers
 	const divisionCustomGridOptions: GridOptions = {
-		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
 			onDoubleClickedSalesTotalByDivision('division', divisionTable, linieTable, klpTable, event)
+		},
 	};
 
 	const linieCustomGridOptions: GridOptions = {
@@ -215,6 +239,7 @@
 		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
 			onDoubleClickedSalesTotalByDivision('costLevel', divisionTable, linieTable, klpTable, event)
 	};
+
 </script>
 
 
@@ -250,6 +275,7 @@
 						<p>{@html title}</p>
 					</Popover.Content>
 				</Popover.Root>
+
 				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center mr-2">
 					<p class="text-xs text-ellipsis line-clamp-1">
 						{@html title}
@@ -299,7 +325,11 @@
 			{/if}
 		</div>
 
-		<FilterAndPresetButtons bind:table={activeTable} {routeId} />
+		<FilterAndPresetButtons
+			bind:table={activeTable}
+			{routeId}
+		/>
+
 		{#if showFulltextSearch.value === true}
 			<div class="hidden md:flex items-center h-8">
 				<Input
@@ -319,7 +349,7 @@
 				class="rounded"
 				onLayoutChange={(sizes: number[]) => {
 					if (pageStates.value[routeId].resizablePageSections) {
-						salesTotalByDivisionHandlePaneLayoutChange(
+						handlePaneLayoutChange(
 							pageStates.value[routeId].resizablePageSections,
 							sizes
 						);
@@ -328,7 +358,7 @@
 			>
 				<Pane
 					defaultSize={sections.divisionSection.size || 50}
-					minSize={10}
+					minSize={18}
 					class={`${sections.divisionSection.focused && sections.linieSection.open ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
 					onclick={() => setPaneFocus(sections, routeId, 'divisionSection')}
 				>
@@ -344,7 +374,7 @@
 					<PaneResizer class="bg-slate-100 h-1" />
 					<Pane
 						defaultSize={sections.linieSection.size || 50}
-						minSize={10}
+						minSize={18}
 						class={`${sections.linieSection.focused ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
 						onclick={() => setPaneFocus(sections, routeId, 'linieSection')}
 					>
@@ -366,7 +396,7 @@
 					<PaneResizer class="bg-slate-100 h-1" />
 					<Pane
 						defaultSize={sections.klpSection.size || 50}
-						minSize={10}
+						minSize={18}
 						class={`${sections.klpSection.focused ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
 						onclick={() => setPaneFocus(sections, routeId, 'klpSection')}
 					>
@@ -388,7 +418,7 @@
 					<PaneResizer class="bg-slate-100 h-1" />
 					<Pane
 						defaultSize={sections.ksSection.size || 50}
-						minSize={10}
+						minSize={13}
 						class={`${sections.ksSection.focused ? "border-albi-500 " : "border-slate-300"} bg-white rounded-lg border`}
 						onclick={() => setPaneFocus(sections, routeId, 'ksSection')}
 					>
