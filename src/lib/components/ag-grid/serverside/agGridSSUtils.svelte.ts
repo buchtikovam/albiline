@@ -36,10 +36,7 @@ export function onTablePresetSelected (
 
 export function resetTable(
 	gridApi: GridApi,
-	datasource: IServerSideDatasource
 ) {
-	gridApi.setFilterModel(null);
-	gridApi.setGridOption('serverSideDatasource', datasource);
 	gridApi.setServerSideSelectionState({ toggledNodes: [], selectAll: false })
 	gridApi.applyColumnState({
 		state: [],

@@ -734,7 +734,59 @@
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_transportCost_LY": "Náklady doprava loni",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_LY": "% (ZC)",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_transportCost_AY": "Náklady doprava",
-	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_AY": "% (ZC)"
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_AY": "% (ZC)",
+
+
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_divisionId": "Divize",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_divisionName": "Název divize",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_sales_LY": "Prodej vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_sales_AY": "Prodej letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_sales_DiffAbs": "Nárůst",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_sales_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_basePrice_LY": "ZC vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_basePrice_AY": "ZC letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_basePrice_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_discount_LY": "Sleva vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_discount_AY": "Sleva letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_storesCountLY": "Prodejen vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_storesCountAY": "Prodejen letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_daysWithoutOrder": "Dnů bez objednávky",
+
+
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_divisionName": "Divize",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_productLineName": "Linie",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_conceptionName": "Koncepce",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_costLevelCode": "KLP",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_costLevelName": "Název KLP",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_sales_LY": "Prodej vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_sales_AY": "Prodej letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_sales_DiffAbs": "Nárůst",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_sales_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_basePrice_LY": "ZC vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_basePrice_AY": "ZC letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_basePrice_Diff": "%",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_discount_LY": "Sleva vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_discount_AY": "Sleva letos",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_quantity_LY": "Kusů vloni",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_costLevel_detail_table_column_quantity_AY": "Kusů letos",
+
+
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_salesCountryCode": "Země",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_currency": "Měna",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_isOriginalCurrency": "Pův. měna",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_documentCode": "Číslo faktury",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_customerNodeCode": "Číslo zákazníka",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_deliveryAddressCode": "Číslo prodejny",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_customerName": "Zákazník",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_storeName": "Prodejna",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_street": "Ulice",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_city": "Město",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_deliveryDate": "DUZP",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_basePrice": "ZC",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_sales": "Cena bez DPH po slevě",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_discount": "Sleva",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_salesWithVat": "Cena vč. DPH po slevě",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_fakturach_table_column_paymentInfo": "Informace o úhradě"
 }
 
 

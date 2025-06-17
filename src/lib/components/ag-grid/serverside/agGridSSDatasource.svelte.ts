@@ -12,6 +12,8 @@ export function getSSDatasource(
 ): IServerSideDatasource {
 	return {
 		getRows: (params: IServerSideGetRowsParams) => {
+			console.log("--- get ds")
+
 			const currentFilter = gridApi.getFilterModel();
 			const lastStoredFilter = table.recentFilters[table.recentFilters.length - 1] || {};
 			const updatedParamsRequest: TableRowRequest = params.request

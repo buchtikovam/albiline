@@ -1,8 +1,5 @@
 <script lang="ts">
 	import {Button} from '$lib/components/ui/button';
-	import {createCleanCustomerAddress} from "$lib/api/routes/prodej/zakaznici/customerService.svelte.js";
-	import type {CustomerAddressType} from '$lib/types/routes/prodej/zakaznici/customers';
-	import type {AutoFormSimpleType} from "$lib/types/components/form/autoform";
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
@@ -10,8 +7,13 @@
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import TabSeparator from "$lib/components/tabs/TabSeparator.svelte";
 	import {
-		newCustomerAddressFormDef, newCustomerAddressOzFormDef, newCustomerAddressSettingsFormDef
+		newCustomerAddressFormDef,
+		newCustomerAddressOstatniFormDef,
+		newCustomerAddressOzFormDef,
+		newCustomerAddressSettingsFormDef
 	} from "$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerAddressFormDef";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
+	import type {AgGridTableType} from "$lib/types/components/table/table";
 
 
 	interface Props {
@@ -22,13 +24,11 @@
 		dialogOpen = $bindable(false),
 	}: Props = $props();
 
+	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+	let row = $derived(table.selectedRows[table.activeSelectedRowIndex])
 
-	let customerAddress: CustomerAddressType = $state( {
-		id: null,
-		customerNodeCode: null,
-		customerName: null,
+	let customerAddress = $state({
 		name: null,
-		customerAddressCode: null,
 		companyName: null,
 		street: null,
 		city: null,
@@ -55,7 +55,37 @@
 		areaId: null
 	});
 
-
+	$effect(() => {
+		if (dialogOpen) {
+			customerAddress = {
+				name: null,
+				companyName: null,
+				street: null,
+				city: null,
+				postalCode: null,
+				countryCode: null,
+				note: null,
+				paymentTypeCode: null,
+				dueDays: null,
+				invoiceCopies: null,
+				deliveryNoteCopies: null,
+				customerRank: null,
+				retailStoreTypeId: null,
+				customerStoreCode: null,
+				customerStoreEan: null,
+				packingNote: null,
+				consignmentSaleEnabled: false,
+				isReturnAllowed: false,
+				isForConsignmentReturn: false,
+				useAssortedEanCodes: false,
+				pickingBoxPacking: false,
+				splitOrderByFood: false,
+				dealerCode: null,
+				areaCode: null,
+				areaId: null
+			}
+		}
+	})
 </script>
 
 
@@ -72,11 +102,21 @@
 	<Dialog.Title>
 		Nová doručovací adresa
 	</Dialog.Title>
+
+	{#if row}
+		<Dialog.Description>
+			pro zákazníka <b>{row.i_Name} ({row.customerNodeCode})</b>
+		</Dialog.Description>
+	{/if}
 {/snippet}
 
+
 {#snippet content()}
-	<div class="flex flex-1 flex-col min-h-0 w-full">
-		<Tabs.Root value="adresa" class="flex h-full w-full flex-col ">
+	<div class="flex flex-1 flex-col min-h-0 w-full -mt-1">
+		<Tabs.Root
+			value="adresa"
+			class="flex h-full w-full flex-col"
+		>
 			<Tabs.List class="border w-fit border-slate-300">
 				<Tabs.Trigger value="adresa">
 					Adresa
@@ -127,12 +167,23 @@
 					autoform={newCustomerAddressOzFormDef}
 				/>
 			</Tabs.Content>
+
+			<Tabs.Content
+				value="ostatni"
+				class="overflow-y-auto rounded-md bg-slate-50 p-4 pt-2 border"
+			>
+				<AutoFormSimple
+					bind:formValues={customerAddress}
+					autoform={newCustomerAddressOstatniFormDef}
+				/>
+			</Tabs.Content>
 		</Tabs.Root>
 	</div>
 
 	<Dialog.Footer>
 		<Button
 			class="w-full bg-albi-500 text-background font-bolder"
+			onclick={() => console.log(JSON.stringify(customerAddress, null, 1))}
 		>
 			{m.generics_save()}
 		</Button>

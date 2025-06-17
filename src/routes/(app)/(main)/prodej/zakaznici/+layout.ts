@@ -14,7 +14,7 @@ export const load: LayoutLoad = async () => {
 			index: 0,
 			gridApi: undefined,
 			type: "serverSide",
-			requiredFields: ["customerAddressCode", "customerNodeCode"],
+			requiredFields: ["customerAddressCode", "customerNodeCode", "i_Name"],
 			identificationKey: "rowNumber",
 			defaultColState: [],
 			setColStateToDefault: false,

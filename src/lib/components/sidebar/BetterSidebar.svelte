@@ -1,6 +1,7 @@
 <script lang="ts">
-	import {favoriteItems, recentItems, sidebarCategory} from "$lib/runes/sidebar.svelte.js";
+	import {recentItems, sidebarCategory} from "$lib/runes/sidebar.svelte.js";
 	import {allItems} from "$lib/definitions/components/sidebar/sidebar";
+	import {apiServiceGETHandled} from "$lib/api/apiService.svelte";
 	import {filterItemsCategory} from "$lib/utils/components/sidebar/filterItemsCategory";
 	import {filterItemsSearch} from "$lib/utils/components/sidebar/filterItemsSearch";
 	import deepcopy from "deepcopy";
@@ -10,8 +11,6 @@
 	import SidebarInput from "$lib/components/sidebar/SidebarInput.svelte";
 	import SidebarMain from "$lib/components/sidebar/SidebarMain.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
-	import {SidebarRail} from "$lib/components/ui/sidebar/index.js";
-
 
 	interface Props {
 	    onmousedown: (event: MouseEvent) => void;
@@ -28,27 +27,48 @@
 	let searchTerm = $state("");
 
 
+	async function getFavoriteSidebarItems() {
+		const response = await apiServiceGETHandled("userMenuFavorites");
+		return response.data;
+	}
+
+
 	// vyhledávání přes input v sidebaru pomocí rekurzivního filtrování
-	function search(
+	async function search(
 		searchTerm: string,
 		category: "all"|"recent"|"favorite"
-	): void {
+	): Promise<void> {
 		if (category === 'all') {
-			filteredItems = deepcopy(filterItemsSearch(deepcopy(allItems), searchTerm));
+			filteredItems = deepcopy(
+				filterItemsSearch(
+					deepcopy(allItems),
+					searchTerm
+				)
+			);
 		}
 
 		if (category === 'recent') {
-			filteredItems = deepcopy(filterItemsSearch(
-				deepcopy(filterItemsCategory(deepcopy(allItems), recentItems.value)),
-				searchTerm
-			));
+			filteredItems = deepcopy(
+				filterItemsSearch(
+					deepcopy(filterItemsCategory(
+						deepcopy(allItems),
+						recentItems.value)
+					),
+					searchTerm
+				)
+			);
 		}
 
 		if (category === 'favorite') {
-			filteredItems = deepcopy(filterItemsSearch(
-				deepcopy(filterItemsCategory(deepcopy(allItems), favoriteItems.value)),
-				searchTerm
-			));
+			filteredItems = deepcopy(
+				filterItemsSearch(
+					deepcopy(filterItemsCategory(
+						deepcopy(allItems),
+						await getFavoriteSidebarItems())
+					),
+					searchTerm
+				)
+			);
 		}
 	}
 
@@ -69,13 +89,11 @@
 		<SidebarInput bind:searchTerm />
 	</Sidebar.Header>
 
-
 	<Sidebar.Content class="bg-white">
 		<SidebarMain
 			bind:sidebarItems={filteredItems}
 		/>
 	</Sidebar.Content>
-
 
 	<Sidebar.Footer class="bg-white">
 		<SidebarAvatar />

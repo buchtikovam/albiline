@@ -213,8 +213,6 @@ export async function apiServicePUT(
 	body = {},
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	// console.log("put", endpoint, pageKey);
-
 	const response = await fetch(url + endpoint + "/" +  id, {
 		method: 'PUT',
 		headers: 	{
@@ -306,6 +304,7 @@ export async function apiServiceDELETEHandled(
 	endpoint: string,
 	id: number,
 	pageKeyCustom?: string,
+
 ) {
 	try {
 		let response = await apiServiceDELETE(endpoint, id, pageKeyCustom);

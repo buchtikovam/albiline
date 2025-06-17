@@ -3,9 +3,9 @@ import * as m from "$lib/paraglide/messages";
 
 export function validateNumberSchema(
 	inputValue: number,
-	value: number | null,
+	initialValue: number | null,
 	schema: ZodSchema,
-	processData: (inputValue: number, value: number) => void
+	processData: (inputValue: number, initialValue: number|null) => void
 ): {
 	errorMessage: string;
 	hasError: boolean;
@@ -15,7 +15,7 @@ export function validateNumberSchema(
 
 	try {
 		schema.parse(inputValue);
-		if (value !== null) processData(inputValue, value);
+		processData(inputValue, initialValue);
 	} catch (error) {
 		hasErr = true;
 		console.log(error)
@@ -54,7 +54,7 @@ export function validateNumberSchema(
 				break;
 		}
 
-		if (value !== null) processData(inputValue, value);
+		processData(inputValue, initialValue);
 	}
 
 	return {

@@ -178,6 +178,7 @@ export function handleSortChanged(
 		});
 	}
 
+	table.selectedRows = [];
 	table.presetToSave = e.api.getColumnState() || [];
 }
 

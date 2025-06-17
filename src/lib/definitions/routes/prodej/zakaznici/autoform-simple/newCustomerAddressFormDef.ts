@@ -233,18 +233,14 @@ export const newCustomerAddressOzFormDef: AutoFormSimpleType = [
 
 
 export const newCustomerAddressOstatniFormDef: AutoFormSimpleType = [
-
 	{
 		rowType: "row",
 		rowInputs: [
 			{
-				type: "number",
-				field: "areaId",
-				translation: m.routes_prodej_zakaznici_address_detail_form_input_area_id,
-				schema: z.number(),
-			},
-			{
-				type: "empty",
+				type: "text",
+				field: "note",
+				translation: m.routes_prodej_zakaznici_address_detail_form_input_note,
+				schema: z.string(),
 			},
 		]
 	},

@@ -1,49 +1,48 @@
 <script lang="ts">
-	import {onMount, untrack} from 'svelte';
-	import { Pane, PaneGroup, PaneResizer } from 'paneforge';
-	import { pageStates, showFulltextSearch } from '$lib/runes/page.svelte';
-	import { agGridTables, pageKeys } from '$lib/runes/table.svelte';
-	import type { AgGridTableType } from '$lib/types/components/table/table';
-	import {beforeNavigate, onNavigate} from '$app/navigation';
-	import InputParams from '$lib/components/input-params/InputParams.svelte';
-	import { InputParamsSalesTotalByDivision } from '$lib/definitions/routes/prodej/analyza-prodeju/celkem/input-params/salesTotalByDivisionInputParams';
-	import { loadInputParamsInTable } from '$lib/utils/components/input-params/loadInputParamsInTable';
-	import deepcopy from 'deepcopy';
-	import type { CellDoubleClickedEvent, GridOptions } from 'ag-grid-enterprise';
-	import { onDoubleClickedSalesTotalByDivision } from '$lib/utils/routes/prodej/analyza-prodeju/celkem/onDoubleClickedSalesTotalByDivision';
-	import { page } from '$app/state';
-	import * as m from '$lib/paraglide/messages';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import FilterAndPresetButtons from '$lib/components/button/FilterAndPresetButtons.svelte';
-	import PageWrapper from '$lib/components/wrapper/PageWrapper.svelte';
-	import Info from 'lucide-svelte/icons/info';
-	import { Separator } from '$lib/components/ui/separator';
-	import MainContentWrapper from '$lib/components/wrapper/MainContentWrapper.svelte';
-	import TabFulltextWrapper from '$lib/components/wrapper/TabFulltextWrapper.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import { salesTotalByDivisionGetPageTitle } from '$lib/utils/routes/prodej/analyza-prodeju/celkem/salesTotalByDivisionGetPageTitle';
-	import * as Popover from '$lib/components/ui/popover/index.js';
 	import {
-		SalesTotalByDivisionAgGridDef, salesTotalByDivisionHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionAgGridDef";
-	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
-	import {
-		handlePaneLayoutChange
-	} from "$lib/utils/components/pane-forge/handlePaneLayoutChange";
-	import {setPaneFocus} from "$lib/utils/components/pane-forge/setPaneFocus";
-	import {
-		SalesTotalByDivisionSubdetailProductlineAgGridDef,
-		SalesTotalByDivisionSubdetailProductlineHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineAgGridDef";
+		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityHeaderTranslations,
+		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef";
 	import {
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef,
 		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelAgGridDef";
 	import {
-		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef,
-		SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityHeaderTranslations
-	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef";
-	import {ribbonAction} from "$lib/runes/ribbon.svelte";
+		SalesTotalByDivisionSubdetailProductlineAgGridDef,
+		SalesTotalByDivisionSubdetailProductlineHeaderTranslations
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionSubdetailProductlineAgGridDef";
+	import {
+		SalesTotalByDivisionAgGridDef,
+		salesTotalByDivisionHeaderTranslations
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/celkem/ag-grid-cs/salesTotalByDivisionAgGridDef";
+	import {InputParamsSalesTotalByDivision} from '$lib/definitions/routes/prodej/analyza-prodeju/celkem/input-params/salesTotalByDivisionInputParams';
+	import {pageStates, showFulltextSearch} from '$lib/runes/page.svelte';
+	import {agGridTables, pageKeys} from '$lib/runes/table.svelte';
+	import {Separator} from '$lib/components/ui/separator';
+	import {Checkbox} from '$lib/components/ui/checkbox';
+	import {Input} from '$lib/components/ui/input';
+	import {page} from '$app/state';
+	import {onDoubleClickedSalesTotalByDivision} from '$lib/utils/routes/prodej/analyza-prodeju/celkem/onDoubleClickedSalesTotalByDivision';
+	import {salesTotalByDivisionGetPageTitle} from '$lib/utils/routes/prodej/analyza-prodeju/celkem/salesTotalByDivisionGetPageTitle';
+	import {Pane, PaneGroup, PaneResizer} from 'paneforge';
+	import {loadInputParamsInTable} from '$lib/utils/components/input-params/loadInputParamsInTable';
+	import {beforeNavigate} from '$app/navigation';
+	import {setPaneFocus} from "$lib/utils/components/pane-forge/setPaneFocus";
+	import {onMount} from 'svelte';
+	import deepcopy from 'deepcopy';
+	import {
+		handlePaneLayoutChange
+	} from "$lib/utils/components/pane-forge/handlePaneLayoutChange";
+	import type { AgGridTableType } from '$lib/types/components/table/table';
+	import FilterAndPresetButtons from '$lib/components/button/FilterAndPresetButtons.svelte';
+	import TabFulltextWrapper from '$lib/components/wrapper/TabFulltextWrapper.svelte';
+	import MainContentWrapper from '$lib/components/wrapper/MainContentWrapper.svelte';
+	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
+	import InputParams from '$lib/components/input-params/InputParams.svelte';
+	import PageWrapper from '$lib/components/wrapper/PageWrapper.svelte';
+	import PageTitle from "$lib/components/page/PageTitle.svelte";
+	import type { CellDoubleClickedEvent, GridOptions } from 'ag-grid-enterprise';
+	import * as m from '$lib/paraglide/messages';
 
 	// Initialize runes and other state variables
 	const routeId = $state(page.route.id || "");
@@ -86,6 +85,7 @@
 		};
 	}
 
+
 	// Derived rune for easy, reactive access to the current page's sections state
 	let sections = $derived.by(() => {
 		return pageStates.value[routeId]?.resizablePageSections;
@@ -115,7 +115,6 @@
 			}
 		}
 	});
-
 
 
 	// Effect to load data for 'linie' section
@@ -149,8 +148,6 @@
 
 		}
 	})
-
-
 
 
 	// Effect to load data for 'ksp' (KLP) section
@@ -239,7 +236,6 @@
 		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
 			onDoubleClickedSalesTotalByDivision('costLevel', divisionTable, linieTable, klpTable, event)
 	};
-
 </script>
 
 
@@ -264,26 +260,7 @@
 <PageWrapper>
 	<TabFulltextWrapper>
 		<div class="flex-1 flex justify-between items-center mr-2">
-			{#if title.length > 0}
-				<Popover.Root>
-					<Popover.Trigger
-						class="size-8 bg-white border border-slate-300 rounded-md flex 2xl:hidden justify-center items-center"
-					>
-						<Info strokeWidth="2" class="size-[18px]" />
-					</Popover.Trigger>
-					<Popover.Content side="right" class="text-xs h-8 py-0 px-2 w-fit flex items-center border-albi-500">
-						<p>{@html title}</p>
-					</Popover.Content>
-				</Popover.Root>
-
-				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center mr-2">
-					<p class="text-xs text-ellipsis line-clamp-1">
-						{@html title}
-					</p>
-				</div>
-			{:else}
-				<div class="w-1"></div>
-			{/if}
+			<PageTitle {title}/>
 
 			{#if sections}
 				<div
@@ -299,7 +276,10 @@
 							<p>po liniích</p>
 						</div>
 
-						<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]" />
+						<Separator
+							orientation="vertical"
+							class="bg-albi-500 min-h-3 w-[2px]"
+						/>
 
 						<div class="flex items-center gap-1">
 							<Checkbox
@@ -310,7 +290,10 @@
 							<p>po KLP</p>
 						</div>
 
-						<Separator orientation="vertical" class="bg-albi-500 min-h-3 w-[2px]" />
+						<Separator
+							orientation="vertical"
+							class="bg-albi-500 min-h-3 w-[2px]"
+						/>
 
 						<div class="flex items-center gap-1">
 							<Checkbox
@@ -341,6 +324,7 @@
 			</div>
 		{/if}
 	</TabFulltextWrapper>
+
 
 	<MainContentWrapper border={false}>
 		{#if !destroy && sections && pageStates.value[routeId].resizablePageSections}

@@ -84,27 +84,33 @@
 
 	// used for waiting for API to cache data based on new input params
 	$effect(() => {
-		table.areInputParamsLoading
-			? gridApi.setGridOption("loading", true)
-			: gridApi.setGridOption("loading", false);
+		if (table.areInputParamsLoading) {
+			gridApi.setGridOption("loading", true);
+		} else {
+			gridApi.setGridOption("loading", false);
+			gridApi.onFilterChanged()
+			resetTable(gridApi);
+		}
+
 	})
 
+	let isRegistered = $state(false);
 
 	// register datasource if user has added input params
 	$effect(() => {
-		if (Object.keys(table.loadedInputParams).length > 0 ) {
-			resetTable(
+		if (Object.keys(table.loadedInputParams).length > 0 && !isRegistered) {
+			gridApi.setGridOption('serverSideDatasource', getSSDatasource(
 				gridApi,
-				getSSDatasource(
-					gridApi,
-					table,
-					url,
-					rowBufferSize,
-					isInitial
-				)
-			);
+				table,
+				url,
+				rowBufferSize,
+				isInitial
+			));
+
+			isRegistered = true;
 		}
 	})
+
 
 
 	// reset table to default column definitions

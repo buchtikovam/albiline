@@ -25,15 +25,17 @@
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/ag-grid-cs/salesSubdetailByCostlevelAgGridDef";
 	import {Checkbox} from "$lib/components/ui/checkbox";
 	import {setPaneFocus} from "$lib/utils/components/pane-forge/setPaneFocus";
+	import InputParams from "$lib/components/input-params/InputParams.svelte";
+	import {onMount} from "svelte";
+	import {beforeNavigate} from "$app/navigation";
+	import {
+		SalesTotalByStoreInputParams
+	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/input-params/salesTotalByStoreInputParams";
 
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
-
-	let { children }: Props = $props();
 
 	// Use the reactive page state to get the routeId
 	const routeId = $state(page.route.id || "");
+	let open = $state(false);
 	let destroy = $state(false);
 
 	// Initialize runes and other state variables
@@ -50,19 +52,19 @@
 	}
 
 
-	// State for tables and UI
+	// state for tables and UI
 	let salesTotalByStoreTable: AgGridTableType = $state(agGridTables.value['SalesTotalByStore'])
 	let salesTotalByStoreDetailTable: AgGridTableType = $state(agGridTables.value['SalesTotalByStoreDetail'])
 	let salesSubdetailByCostLevelTable: AgGridTableType = $state(agGridTables.value['SalesSubdetailByCostlevel'])
 	let activeTable: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 
 
-	// Safely initialize the state for the current page if it doesn't exist
+	// initialize the state for current page if it doesn't exist
 	if (routeId && !pageStates.value[routeId]?.resizablePageSections) {
 		pageStates.value[routeId] = {
 			resizablePageSections: {
 				salesTotalByStoreSection: { open: true, size: 50, focused: true, index: 0 },
-				salesTotalSubdetailGroupSection: { open: false, size: 50, focused: false, index: null },
+				salesTotalSubdetailGroupSection: { open: false, size: 50, focused: false, index: 0 }, // wrapper section
 				salesTotalByStoreDetailSection: { open: true, size: 50, focused: false, index: 1 },
 				salesSubdetailByCostlevelSection: { open: true, size: 50, focused: false, index: 2 }
 			}
@@ -79,7 +81,31 @@
 	let title = $derived.by(() => {
 		return "";
 	})
+
+	$effect(() => {
+		open = salesTotalByStoreTable.openInputParams;
+	})
+
+	onMount(() => {
+		open = !salesTotalByStoreTable.hasInputParams;
+	})
+
+	beforeNavigate(() => {
+		salesTotalByStoreTable.openInputParams = false;
+		destroy = true;
+	})
 </script>
+
+
+{#if open}
+	<InputParams
+		bind:open
+		type="clientSide"
+		defaultInputParams={SalesTotalByStoreInputParams}
+		selectOptions={[]}
+	/>
+{/if}
+
 
 
 <PageWrapper>

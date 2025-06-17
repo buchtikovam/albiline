@@ -1,11 +1,12 @@
 import type {ZodError, ZodSchema} from "zod";
 import * as m from "$lib/paraglide/messages";
 
+
 export function validateStringSchema(
 	inputValue: string,
-	value: string|null,
+	initialValue: string|null,
 	schema: ZodSchema,
-	processData: (inputValue: string, value: string) => void
+	processData: (inputValue: string, initialValue: string|null) => void
 ): {
 	errorMessage: string;
 	hasError: boolean;
@@ -17,21 +18,15 @@ export function validateStringSchema(
 		schema.parse(inputValue);
 		errMessage = "";
 		hasErr = false;
-
-		if (value) {
-			processData(inputValue, value);
-		}
+		processData(inputValue, initialValue);
 	} catch (e: any) {
-		console.log(e);
-		hasErr = true;
-
 		const issue = (e as ZodError).errors?.[0];
+		console.error(issue.code);
 
+		hasErr = true;
 		errMessage = issue.code;
 
-		if (value) {
-			processData(inputValue, value);
-		}
+		processData(inputValue, initialValue);
 
 		switch (issue.code) {
 			case "invalid_string":
