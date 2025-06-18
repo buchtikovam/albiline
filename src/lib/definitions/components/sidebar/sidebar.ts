@@ -34,7 +34,7 @@ export const allItems: SidebarItem[] = [
 		field: 'prodej',
 		open: false,
 		hide: false,
-		disabled: false,
+		disabled: true,
 		translation: m.components_sidebar_item_prodej,
 		icon: HandCoins,
 		popoverOpen: false,
@@ -65,32 +65,33 @@ export const allItems: SidebarItem[] = [
 						open: false,
 						hide: false,
 						translation: () => "Po zákaznících", // todo
-						disabled: false,
+						disabled: true,
+						disabledTooltip: () => "Na tuhle tabulku se dostaneš proklikem z Analýza prodejů - Celkem",
 						popoverOpen: false,
 						icon: null,
 						children: [
-							{
-								field: 'analyza-prodeju-po-zakaznicich-a-liniich',
-								href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
-								open: false,
-								hide: false,
-								translation: () => "Po zákaznících a liniích", // todo
-								disabled: false,
-								popoverOpen: false,
-								icon: null,
-								children: [],
-							},
-							{
-								field: 'analyza-prodeju-po-zakaznicich-a-klp',
-								href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp',
-								open: false,
-								hide: false,
-								translation: () => "Po zákaznících a KLP", // todo
-								disabled: false,
-								popoverOpen: false,
-								icon: null,
-								children: [],
-							},
+							// {
+							// 	field: 'analyza-prodeju-po-zakaznicich-a-liniich',
+							// 	href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
+							// 	open: false,
+							// 	hide: false,
+							// 	translation: () => "Po zákaznících a liniích", // todo
+							// 	disabled: false,
+							// 	popoverOpen: false,
+							// 	icon: null,
+							// 	children: [],
+							// },
+							// {
+							// 	field: 'analyza-prodeju-po-zakaznicich-a-klp',
+							// 	href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp',
+							// 	open: false,
+							// 	hide: false,
+							// 	translation: () => "Po zákaznících a KLP", // todo
+							// 	disabled: false,
+							// 	popoverOpen: false,
+							// 	icon: null,
+							// 	children: [],
+							// },
 						],
 					},
 					{
@@ -103,17 +104,17 @@ export const allItems: SidebarItem[] = [
 						popoverOpen: false,
 						icon: null,
 						children: [
-							{
-								field: 'analyza-prodeju-po-zakaznicich-a-fakturach',
-								href: '/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/po-fakturach',
-								open: false,
-								hide: false,
-								translation: () => "Po zákaznících a fakturách", // todo
-								disabled: false,
-								popoverOpen: false,
-								icon: null,
-								children: [],
-							},
+							// {
+							// 	field: 'analyza-prodeju-po-zakaznicich-a-fakturach',
+							// 	href: '/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/po-fakturach',
+							// 	open: false,
+							// 	hide: false,
+							// 	translation: () => "Po zákaznících a fakturách", // todo
+							// 	disabled: false,
+							// 	popoverOpen: false,
+							// 	icon: null,
+							// 	children: [],
+							// },
 						],
 					}
 				],

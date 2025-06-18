@@ -128,11 +128,14 @@
 										open={sidebarItems[i].open}
 										onOpenChange={() => toggleOpen(sidebarItems[i])}
 										class="group/collapsible"
+										disabled={item.disabled}
 									>
-										<Collapsible.Trigger class="w-full">
+										<Collapsible.Trigger class={`${item.disabled ? 'text-slate-400' : ''} w-full`}>
 											<Sidebar.MenuButton>
+
 												{@const Icon = item.icon}
-												{#if Icon}<Icon />{/if}
+												{#if Icon}<Icon class="size-4"/>{/if}
+
 												{#if item.href}
 													<a
 														href={item.href}
@@ -140,8 +143,11 @@
 														onclick={(event) => {
 															event.preventDefault();
 															event.stopPropagation();
-															handleTabClick(item, 0);
-															goto(item.href);
+
+															if (!item.disabled) {
+																handleTabClick(item, 0);
+																if (item.href) goto(item.href);
+															}
 														}}
 													>
 														{item.translation()}
@@ -157,6 +163,7 @@
 												{/if}
 											</Sidebar.MenuButton>
 										</Collapsible.Trigger>
+
 										<Collapsible.Content>
 											<Sidebar.MenuSub>
 												{#each item.children as subItem, j (subItem.field)}
@@ -189,7 +196,7 @@
 												data-sveltekit-preload-data="off"
 												onclick={() => handleTabClick(item, 0)}
 											>
-												{#if Icon}<Icon />{/if}
+												{#if Icon}<Icon class="size-4 mr-2"/>{/if}
 												<span>{item.translation()}</span>
 											</a>
 										</Sidebar.MenuButton>

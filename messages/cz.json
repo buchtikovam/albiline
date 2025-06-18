@@ -191,10 +191,10 @@
 
 	"routes_prodej_zakaznici_tabs_list" : "Seznam",
 	"routes_prodej_zakaznici_tabs_customer_detail" : "Zákazník",
-	"routes_prodej_zakaznici_tabs_address_detail" : "Prodejna",
+	"routes_prodej_zakaznici_tabs_address_detail" : "Doručovací adresa",
 
-	"routes_prodej_zakaznici_table_column_customer_address_code" : "ID prodejny",
-	"routes_prodej_zakaznici_table_column_name" : "Prodejna",
+	"routes_prodej_zakaznici_table_column_customer_address_code" : "ID doruč. adresy",
+	"routes_prodej_zakaznici_table_column_name" : "Doručovací adresa",
 	"routes_prodej_zakaznici_table_column_customer_node_code" : "ID zákazníka",
 	"routes_prodej_zakaznici_table_column_i_name" : "Zákazník",
 	"routes_prodej_zakaznici_table_column_street" : "Ulice",
@@ -296,17 +296,17 @@
 
 
 
-	"routes_prodej_zakaznici_address_detail_label" : "Prodejny zákazníka {customerName} ({customerAddressCode})",
-	"routes_prodej_zakaznici_address_detail_label_mobile" : "Prodejny zákazníka {customerAddressCode}",
-	"routes_prodej_zakaznici_address_detail_form_section_address_detail" : "Detail adresy",
+	"routes_prodej_zakaznici_address_detail_label" : "Doručovací adresy zákazníka {customerName} ({customerAddressCode})",
+	"routes_prodej_zakaznici_address_detail_label_mobile" : "Doručovací adresy zákazníka {customerAddressCode}",
+	"routes_prodej_zakaznici_address_detail_form_section_address_detail" : "Detail doručovací adresy",
 	"routes_prodej_zakaznici_address_detail_form_section_oz" : "OZ a oblasti",
 	"routes_prodej_zakaznici_address_detail_form_section_settings" : "Nastavení",
 	"routes_prodej_zakaznici_address_detail_form_section_other" : "Ostatní",
 
-	"routes_prodej_zakaznici_address_detail_ag_select_label" : "Výběr prodejny",
+	"routes_prodej_zakaznici_address_detail_ag_select_label" : "Výběr doručovací adresy",
 
 	"routes_prodej_zakaznici_address_detail_form_input_name" : "Název",
-	"routes_prodej_zakaznici_address_detail_form_input_customer_address_code" : "Číslo prodejny",
+	"routes_prodej_zakaznici_address_detail_form_input_customer_address_code" : "Číslo doručovací adresy",
 	"routes_prodej_zakaznici_address_detail_form_input_company_name" : "Společnost",
 	"routes_prodej_zakaznici_address_detail_form_input_street" : "Ulice",
 	"routes_prodej_zakaznici_address_detail_form_input_city" : "Město",
@@ -332,7 +332,7 @@
 	"routes_prodej_zakaznici_address_detail_form_input_split_order_by_food" : "Food/Nonfood",
 	"routes_prodej_zakaznici_address_detail_form_input_note" : "Poznámka",
 
-	"routes_prodej_zakaznici_address_detail_new_address_label" : "Nová prodejna",
+	"routes_prodej_zakaznici_address_detail_new_address_label" : "Nová doručovací adresa",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_name" : "Název",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_company_name" : "Společnost",
 	"routes_prodej_zakaznici_address_detail_new_address_form_input_street" : "Ulice",
