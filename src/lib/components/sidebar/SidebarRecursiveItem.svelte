@@ -1,117 +1,125 @@
-<!-- src/lib/components/sidebar/SidebarRecursiveItem.svelte -->
 <script lang="ts">
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
 	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import SidebarContextMenu from './SidebarContextMenu.svelte';
+	import Self from './SidebarRecursiveItem.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import SidebarContextMenu from './SidebarContextMenu.svelte';
-	import Self from './SidebarRecursiveItem.svelte';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		item: SidebarItem;
 		level: number;
-		toggleOpen: (item: SidebarItem) => void; // Expect the callback function
-		onChildClick?: () => void;
+		toggleOpen: (item: SidebarItem) => void;
+		setRecursiveOpenState: (item: SidebarItem, open: boolean) => void;
+		onChildClick?: (isHref: boolean) => void;
 	}
 
-	let {
-		item = $bindable(),
-		level,
-		toggleOpen,
-		onChildClick
-	}: Props = $props();
+	let { item = $bindable(), level, toggleOpen, onChildClick, setRecursiveOpenState }: Props =
+		$props();
 </script>
-
-
-<!--todo add disabling-->
-
 
 <div class={item.hide ? 'hidden' : 'block'}>
 	{#if item.children && item.children.length > 0}
 		<ContextMenu.Root>
-			<ContextMenu.Trigger>
-			<Collapsible.Root
-				open={item.open}
-				onOpenChange={() => toggleOpen(item)}	 class="group/collapsible"
+			<ContextMenu.Trigger
+				oncontextmenu={(e) => e.stopPropagation()}
 			>
+				<Collapsible.Root
+					open={item.open}
+					onOpenChange={() => {
+						toggleOpen(item);
+					}}
+					class="group/collapsible"
+				>
+					<Sidebar.MenuSubItem
+						onclick={(e) => e.stopPropagation()}
+					>
+						<Collapsible.Trigger
+							class="w-full"
+							onclick={(e) => e.stopPropagation()}
+						>
+							<Sidebar.MenuSubButton class="lin">
+								{@const Icon = item.icon}
+								{#if Icon}
+									<Icon />
+								{/if}
 
-				<Sidebar.MenuSubItem>
-					<Collapsible.Trigger class="w-full">
-						<Sidebar.MenuSubButton class="lin">
-							{@const Icon = item.icon}
-							{#if Icon}
-								<Icon />
-							{/if}
+								{#if item.href}
+									<a
+										href={item.href}
+										class="w-fit hover:underline text-left line-clamp-1"
+										data-sveltekit-preload-data="off"
+										onclick={(event) => {
+											event.preventDefault();
+											event.stopPropagation();
+											handleTabClick(item, level);
+											onChildClick?.(true);
+											if (item.href) goto(item.href);
+										}}
+									>
+										{item.translation()}
+									</a>
+								{:else}
+									<span>{item.translation()}</span>
+								{/if}
 
-							{#if item.href}
-								<a
-									href={item.href}
-									class=" w-fit hover:underline text-left line-clamp-1"
-									data-sveltekit-preload-data="off"
-									onclick={() => {
-									handleTabClick(item, level);
-										onChildClick?.();
-									}}
-								>
-									{item.translation()}
-								</a>
-							{:else}
-								<span>
-									{item.translation()}
-								</span>
-							{/if}
-
-							{#if item.open}
-								<ChevronDown class="ml-auto h-4 w-4" />
-							{:else}
-								<ChevronRight class="ml-auto h-4 w-4" />
-							{/if}
-						</Sidebar.MenuSubButton>
-					</Collapsible.Trigger>
-				</Sidebar.MenuSubItem>
-				<Collapsible.Content>
-					<Sidebar.MenuSub>
-						{#each item.children as child (child.field)}
-							<!-- Recursive call, passing the toggleOpen function down -->
-							<Self
-								item={child}
-								level={level + 1}
-								{onChildClick}
-								{toggleOpen}
-							/>
-						{/each}
-					</Sidebar.MenuSub>
-				</Collapsible.Content>
-			</Collapsible.Root>
+								{#if item.open}
+									<ChevronDown class="ml-auto h-4 w-4" />
+								{:else}
+									<ChevronRight class="ml-auto h-4 w-4" />
+								{/if}
+							</Sidebar.MenuSubButton>
+						</Collapsible.Trigger>
+					</Sidebar.MenuSubItem>
+					<Collapsible.Content>
+						<Sidebar.MenuSub>
+							{#each item.children as child, i (child.field)}
+								<Self
+									bind:item={item.children[i]}
+									level={level + 1}
+									{onChildClick}
+									{toggleOpen}
+									{setRecursiveOpenState}
+								/>
+							{/each}
+						</Sidebar.MenuSub>
+					</Collapsible.Content>
+				</Collapsible.Root>
 			</ContextMenu.Trigger>
-			<SidebarContextMenu sidebarItem={item} />
+
+			<SidebarContextMenu bind:sidebarItem={item} {setRecursiveOpenState} />
 		</ContextMenu.Root>
 	{:else}
 		<!-- leaf node -->
 		<ContextMenu.Root>
-			<ContextMenu.Trigger>
+			<ContextMenu.Trigger
+				oncontextmenu={(e) => e.stopPropagation()}
+			>
 				<Sidebar.MenuSubItem>
 					<Sidebar.MenuSubButton>
 						<a
 							href={item.href}
-							class="flex w-full items-center"
+							class="flex w-full items-center "
 							data-sveltekit-preload-data="off"
-							onclick={() => {
+							onclick={(event) => {
+								event.preventDefault();
+								event.stopPropagation();
 								handleTabClick(item, level);
-								onChildClick?.();
+								onChildClick?.(true);
+								if (item.href) goto(item.href);
 							}}
 						>
-							<span>
-								{item.translation()}
-							</span>
+							<span class="line-clamp-1"> {item.translation()} </span>
 						</a>
 					</Sidebar.MenuSubButton>
 				</Sidebar.MenuSubItem>
 			</ContextMenu.Trigger>
-			<SidebarContextMenu sidebarItem={item} />
+
+			<SidebarContextMenu bind:sidebarItem={item} {setRecursiveOpenState} />
 		</ContextMenu.Root>
 	{/if}
 </div>

@@ -7,4 +7,4 @@ export const sidebarCategory: LocalStore<'all' | "favorite" | "recent"> = localS
 
 export const recentItems: SessionStore<string[]> = sessionStore('recentSidebarItems', []);
 
-export const favoriteItems: LocalStore<string[]> = localStore("favoriteSidebarItems", []);
+export const openedSidebarItems: SessionStore<string[]> = sessionStore("openedSidebarItems", []);

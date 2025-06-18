@@ -12,8 +12,6 @@ export async function apiServiceGET(
 	endpoint: string,
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	// console.log("get", endpoint, pageKey, pageKeyCustom);
-
 	const response = await fetch(url + endpoint, {
 		method: 'GET',
 		headers: {
@@ -77,8 +75,6 @@ export async function apiServicePOST(
 	body = {},
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	// console.log("post", endpoint, pageKey, pageKeyCustom);
-
 	const response = await fetch(url + endpoint, {
 		method: 'POST',
 		headers: {
@@ -145,8 +141,6 @@ export async function apiServicePATCH(
 	body = {},
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	// console.log("patch", endpoint, pageKey);
-
 	const response = await fetch(url + endpoint, {
 		method: 'PATCH',
 		headers: 	{
@@ -276,11 +270,9 @@ export async function apiServicePUTHandled(
 
 export async function apiServiceDELETE(
 	endpoint: string,
-	id: number,
+	id: string|number,
 	pageKeyCustom?: string,
 ): Promise<Response> {
-	// console.log("delete", endpoint, pageKey);
-
 	const response = await fetch(url + endpoint + "/" + id, {
 		method: 'DELETE',
 		headers: {
@@ -302,7 +294,7 @@ export async function apiServiceDELETE(
 
 export async function apiServiceDELETEHandled(
 	endpoint: string,
-	id: number,
+	id: string|number,
 	pageKeyCustom?: string,
 
 ) {

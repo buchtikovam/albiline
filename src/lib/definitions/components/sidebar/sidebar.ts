@@ -1,6 +1,4 @@
-import TableProperties from 'lucide-svelte/icons/table-properties';
 import Warehouse from 'lucide-svelte/icons/warehouse';
-import Hammer from 'lucide-svelte/icons/hammer';
 import * as m from '$lib/paraglide/messages.js'
 import HandCoins from 'lucide-svelte/icons/hand-coins';
 
@@ -19,7 +17,7 @@ export const allItems: SidebarItem[] = [
 		popoverOpen: false,
 		children: [
 			{
-				field: 'stav_skladu',
+				field: 'stav-skladu',
 				href: '/sklad/stav-skladu',
 				open: false,
 				hide: false,
@@ -67,7 +65,7 @@ export const allItems: SidebarItem[] = [
 						open: false,
 						hide: false,
 						translation: () => "Po zákaznících", // todo
-						disabled: true,
+						disabled: false,
 						popoverOpen: false,
 						icon: null,
 						children: [
