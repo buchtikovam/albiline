@@ -1,4 +1,4 @@
-import {apiServiceGETHandled} from "$lib/api/apiService.svelte";
+import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 
 
 interface PaymentTypeCode {
@@ -9,8 +9,16 @@ interface PaymentTypeCode {
 
 export async function getPaymentTypeCode() {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/paymentType');
-		return response.data.items.map((item: PaymentTypeCode) => item.paymentTypeCode);
+		const response = await apiServicePostHandled(
+			'dropdowns/paymentType',
+			{
+				paramValue: [],
+			},
+			"paymentType"
+		);
+
+		const responseData = await response.data;
+		return await responseData.items.map((item: PaymentTypeCode) => item.paymentTypeCode);
 	} catch (error) {
 		console.error('Error fetching payment type codes:', error);
 		return [];
@@ -19,8 +27,16 @@ export async function getPaymentTypeCode() {
 
 export async function getPaymentTypeWithName() {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/paymentType');
-		return response.data.items.map((item: PaymentTypeCode) => item.paymentTypeCode + " - " + item.name);
+		const response = await apiServicePostHandled(
+			'dropdowns/paymentType',
+			{
+				paramValue: [],
+			},
+			"paymentType"
+		);
+
+		const responseData = await response.data;
+		return responseData.items.map((item: PaymentTypeCode) => item.paymentTypeCode + " - " + item.name);
 	} catch (error) {
 		console.error('Error fetching payment type codes:', error);
 		return [];

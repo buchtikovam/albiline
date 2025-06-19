@@ -31,6 +31,9 @@
 	import {
 		SalesTotalByStoreInputParams
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/input-params/salesTotalByStoreInputParams";
+	import deepcopy from "deepcopy";
+	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
+	import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
 
 
 	// Use the reactive page state to get the routeId
@@ -55,6 +58,8 @@
 	// state for tables and UI
 	let salesTotalByStoreTable: AgGridTableType = $state(agGridTables.value['SalesTotalByStore'])
 	let salesTotalByStoreDetailTable: AgGridTableType = $state(agGridTables.value['SalesTotalByStoreDetail'])
+	let clearSalesTotalByStoreDetailTable = $state(false);
+	let clearsalesSubdetailByCostLevelTable = $state(false);
 	let salesSubdetailByCostLevelTable: AgGridTableType = $state(agGridTables.value['SalesSubdetailByCostlevel'])
 	let activeTable: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 
@@ -75,6 +80,106 @@
 	let sections = $derived.by(() => {
 		return pageStates.value[routeId]?.resizablePageSections;
 	});
+
+
+	// Effect to load data for 'linie' section
+	$effect(() => {
+		if (sections) {
+			if (
+				sections.salesTotalSubdetailGroupSection.open &&
+				salesTotalByStoreTable.selectedRows.length > 0
+			) {
+				const mainInputs = deepcopy(salesTotalByStoreTable.loadedInputParams);
+				const selectedRow = salesTotalByStoreTable.selectedRows[0];
+
+
+				let salesTotalByStoreDetailSectionInputParams = mainInputs;
+
+
+				if (mainInputs.inputs) {
+					clearSalesTotalByStoreDetailTable = true;
+					clearsalesSubdetailByCostLevelTable = true;
+
+					const dateFrom = mainInputs.inputs.find(f => f.field === 'datefrom')?.value || '';
+					const dateTo = mainInputs.inputs.find(f => f.field === 'dateto')?.value || '';
+					const formattedDateFrom = dateFrom.toString().replace(" 00:00:00:000", "");
+					const formattedDateTo = dateTo.toString().replace(" 00:00:00:000", "");
+					const onlyconsignments = mainInputs.inputs.find(f => f.field === 'onlyconsignments')?.value || false;
+					const covercreditnotes = mainInputs.inputs.find(f => f.field === 'covercreditnotes')?.value || false;
+
+					delete salesTotalByStoreDetailSectionInputParams.inputs;
+
+
+					salesTotalByStoreDetailSectionInputParams.inputs = [
+						{
+							field: "datefrom",
+							type: "date",
+							value: formattedDateFrom,
+						},
+						{
+							field: "dateto",
+							type: "date",
+							value: formattedDateTo,
+						},
+						{
+							field: "salescountrycode",
+							type: "enum",
+							value: selectedRow.salesCountryCode,
+						},
+						{
+							field: "currency",
+							type: "text",
+							value: selectedRow.currency,
+						},
+						{
+							field: "customernodecode",
+							type: "number",
+							value: selectedRow.customerNodeCode
+						},
+						{
+							field: "deliveryaddresscode",
+							type: "number",
+							value: selectedRow.deliveryAddressCode
+						},
+						{
+							field: "onlyconsignments",
+							type: "boolean",
+							value: Boolean(onlyconsignments),
+						},
+						{
+							field: "covercreditnotes",
+							type: "boolean",
+							value: Boolean(covercreditnotes),
+						},
+					]
+
+					console.log(JSON.stringify(salesTotalByStoreDetailSectionInputParams, null, 1))
+
+					loadInputParamsInTable(
+						salesTotalByStoreDetailTable,
+						salesTotalByStoreDetailSectionInputParams,
+						'clientSide',
+						{
+							fulltextEnabled: true,
+							columnFiltersEnabled: true
+						}
+					);
+
+					loadInputParamsInTable(
+						salesSubdetailByCostLevelTable,
+						salesTotalByStoreDetailSectionInputParams,
+						'clientSide',
+						{
+							fulltextEnabled: true,
+							columnFiltersEnabled: true
+						}
+					);
+				}
+
+			}
+		}
+	});
+
 
 
 	//  Reactive page title based on salesTotalByStore table inputParams
@@ -240,6 +345,7 @@
 									table={salesTotalByStoreDetailTable}
 									gridOptionsCustom={SalesTotalByStoreDetailAgGridDef}
 									headerTranslations={SalesTotalByStoreDetailHeaderTranslations}
+									clearRowData={clearSalesTotalByStoreDetailTable}
 								/>
 							</Pane>
 
@@ -259,6 +365,7 @@
 									table={salesSubdetailByCostLevelTable}
 									gridOptionsCustom={SalesSubdetailByCostlevelAgGridDef}
 									headerTranslations={SalesSubdetailByCostlevelHeaderTranslations}
+									clearRowData={clearsalesSubdetailByCostLevelTable}
 								/>
 							</Pane>
 						</PaneGroup>

@@ -10,6 +10,7 @@
 	import type {CellDoubleClickedEvent, GridOptions} from "ag-grid-enterprise";
 	import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
+	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 
 	pageKeys.value = {
 		value: ["SalesCustomerorstoreByProductline"],
@@ -109,6 +110,20 @@
 
 				console.log(JSON.stringify(salesCustomerorstoreByProductlineInputParams, null, 1));
 				goto("/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp");
+
+				handleTabClick(
+					{
+						field: 'analyza-prodeju-po-zakaznicich-a-klp',
+						href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp',
+						open: false,
+						hide: false,
+						translation: () => "Po zákaznících a KLP", // todo
+						disabled: false,
+						popoverOpen: false,
+						icon: null,
+						children: [],
+					},
+				3)
 			}
 
 		}

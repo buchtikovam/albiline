@@ -12,6 +12,7 @@
 		onCellDoubleClickedSalesCustomerorstoreByProductline
 	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/onCellDoubleClickedSalesCustomerorstoreByProductline";
 	import {beforeNavigate} from "$app/navigation";
+	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 
 	pageKeys.value = {
 		value: ["SalesCustomdetailByCustomers"],
@@ -70,6 +71,20 @@
 	const gridOptionsExtra: GridOptions = {
 		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
 			onCellDoubleClickedSalesCustomerorstoreByProductline(table, event)
+
+			handleTabClick(
+			{
+				field: 'analyza-prodeju-po-zakaznicich-a-liniich',
+				href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
+				open: false,
+				hide: false,
+				translation: () => "Po zákaznících a liniích", // todo
+				disabled: false,
+				popoverOpen: false,
+				icon: null,
+				children: [],
+			},
+			3)
 		},
 
 		context: gridContext,        // Reactive context with totals

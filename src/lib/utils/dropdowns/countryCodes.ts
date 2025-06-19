@@ -1,4 +1,4 @@
-import {apiServiceGETHandled, apiServicePostHandled} from "$lib/api/apiService.svelte";
+import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 
 
 interface CountryCode {
@@ -18,7 +18,8 @@ export async function getDeliveryCountryCodes(): Promise<string[]> {
 			"deliveryCountryCodes"
 		);
 
-		return response.data.items.map((item: CountryCode) => item.countryCode);
+		const responseData = await response.data;
+		return responseData.items.map((item: CountryCode) => item.countryCode);
 	} catch (error) {
 		console.error('Error fetching delivery country codes:', error);
 		return [];
@@ -29,8 +30,16 @@ export async function getDeliveryCountryCodes(): Promise<string[]> {
 
 export async function getDeliveryCountryCodesWithName(): Promise<string[]> {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/deliveryCountryCodes');
-		return response.data.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
+		const response = await apiServicePostHandled(
+			'dropdowns/deliveryCountryCodes',
+			{
+				paramValue: [],
+			},
+			"deliveryCountryCodes"
+		);
+
+		const responseData = await response.data;
+		return responseData.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
 	} catch (error) {
 		console.error('Error fetching delivery country codes:', error);
 		return [];
@@ -41,7 +50,14 @@ export async function getDeliveryCountryCodesWithName(): Promise<string[]> {
 
 export async function getInvoiceCountryCodes(): Promise<string[]> {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/invoiceCountryCodes');
+		const response = await apiServicePostHandled(
+			'dropdowns/invoiceCountryCodes',
+			{
+				paramValue: [],
+			},
+			"invoiceCountryCodes"
+		);
+
 		return response.data.items.map((item: CountryCode) => item.countryCode);
 	} catch (error) {
 		console.error('Error fetching invoice country codes:', error);
@@ -52,7 +68,14 @@ export async function getInvoiceCountryCodes(): Promise<string[]> {
 
 export async function getInvoiceCountryCodesWithName(): Promise<string[]> {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/invoiceCountryCodes');
+		const response = await apiServicePostHandled(
+			'dropdowns/invoiceCountryCodes',
+			{
+				paramValue: [],
+			},
+			"invoiceCountryCodes"
+		);
+
 		return response.data.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
 	} catch (error) {
 		console.error('Error fetching delivery country codes:', error);

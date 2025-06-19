@@ -107,7 +107,6 @@ export type CustomerContactType = {
 	note: string|null,
 	pdfInvoice: boolean,
 	pdfDeliveryNote: boolean,
-	csvInvoice: boolean,
 	csvDeliveryNote: boolean,
 	consignmentReturnInfo: boolean,
 	consignmentInfo: boolean,

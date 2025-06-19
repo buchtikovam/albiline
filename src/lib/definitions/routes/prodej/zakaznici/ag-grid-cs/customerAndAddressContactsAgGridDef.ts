@@ -85,13 +85,6 @@ export const customerAndAddressContactsGridOptions: GridOptions = {
 			{ filter: false },
 		),
 
-		getAgColumn(
-			"csvInvoice", // FA emailem v CSV
-			"boolean", 82,
-			true, false, false,
-			[],
-			{ filter: false },
-		),
 
 		getAgColumn(
 			"csvDeliveryNote", // DL emailem v CSV
@@ -140,7 +133,6 @@ export const customerAndAddressContactsHeaderTranslations = {
 	enabled: m.routes_prodej_zakaznici_detail_contacts_input_enabled,
 	pdfInvoice: m.routes_prodej_zakaznici_detail_contacts_input_pdf_invoice,
 	pdfDeliveryNote: m.routes_prodej_zakaznici_detail_contacts_input_pdf_delivery_note,
-	csvInvoice: m.routes_prodej_zakaznici_detail_contacts_input_csv_invoice,
 	csvDeliveryNote: m.routes_prodej_zakaznici_detail_contacts_input_csv_delivery_note,
 	consignmentReturnInfo: m.routes_prodej_zakaznici_detail_contacts_input_consignment_return_info,
 	consignmentInfo: m.routes_prodej_zakaznici_detail_contacts_input_consignment_info,

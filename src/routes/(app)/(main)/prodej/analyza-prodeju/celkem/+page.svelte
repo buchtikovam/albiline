@@ -43,6 +43,7 @@
 	import PageTitle from "$lib/components/page/PageTitle.svelte";
 	import type { CellDoubleClickedEvent, GridOptions } from 'ag-grid-enterprise';
 	import * as m from '$lib/paraglide/messages';
+	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 
 	// Initialize runes and other state variables
 	const routeId = $state(page.route.id || "");
@@ -224,17 +225,58 @@
 	const divisionCustomGridOptions: GridOptions = {
 		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
 			onDoubleClickedSalesTotalByDivision('division', divisionTable, linieTable, klpTable, event)
+
+			handleTabClick({
+				field: 'analyza-prodeju-po-zakaznicich',
+				href: '/prodej/analyza-prodeju/po-zakaznicich',
+				open: false,
+				hide: false,
+				translation: () => "Po zákaznících", // todo
+				disabled: true,
+				disabledTooltip: () => "Na tuhle tabulku se dostaneš proklikem z Analýza prodejů - Celkem",
+				popoverOpen: false,
+				icon: null,
+				children: []
+			}, 2)
 		},
 	};
 
 	const linieCustomGridOptions: GridOptions = {
-		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
 			onDoubleClickedSalesTotalByDivision('linie', divisionTable, linieTable, klpTable, event)
+
+			handleTabClick({
+				field: 'analyza-prodeju-po-zakaznicich',
+				href: '/prodej/analyza-prodeju/po-zakaznicich',
+				open: false,
+				hide: false,
+				translation: () => "Po zákaznících", // todo
+				disabled: true,
+				disabledTooltip: () => "Na tuhle tabulku se dostaneš proklikem z Analýza prodejů - Celkem",
+				popoverOpen: false,
+				icon: null,
+				children: []
+			}, 2)
+		}
 	};
 
 	const klpCustomGridOptions: GridOptions = {
-		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) =>
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
 			onDoubleClickedSalesTotalByDivision('costLevel', divisionTable, linieTable, klpTable, event)
+
+			handleTabClick({
+				field: 'analyza-prodeju-po-zakaznicich',
+				href: '/prodej/analyza-prodeju/po-zakaznicich',
+				open: false,
+				hide: false,
+				translation: () => "Po zákaznících", // todo
+				disabled: true,
+				disabledTooltip: () => "Na tuhle tabulku se dostaneš proklikem z Analýza prodejů - Celkem",
+				popoverOpen: false,
+				icon: null,
+				children: []
+			}, 2)
+		}
 	};
 </script>
 

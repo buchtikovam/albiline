@@ -1,4 +1,4 @@
-import {apiServiceGETHandled} from "$lib/api/apiService.svelte";
+import {apiServicePostHandled} from "$lib/api/apiService.svelte";
 
 
 interface CustomerRank {
@@ -8,9 +8,18 @@ interface CustomerRank {
 
 
 export async function getCustomerRanks(): Promise<string[]> {
+
 	try {
-		const response = await apiServiceGETHandled('dropdowns/customerRank');
-		return response.data.items.map((item: CustomerRank) => item.customerRank);
+		const response = await apiServicePostHandled(
+			'dropdowns/customerRank',
+			{
+				paramValue: [],
+			},
+			"customerRank"
+		);
+
+		const responseData = await response.data;
+		return responseData.items.map((item: CustomerRank) => item.customerRank);
 	} catch (error) {
 		console.error('Error fetching customer ranks:', error);
 		return [];
@@ -20,8 +29,16 @@ export async function getCustomerRanks(): Promise<string[]> {
 
 export async function getCustomerRanksWithDescription(): Promise<string[]> {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/customerRank');
-		return response.data.items.map((item: CustomerRank) => item.customerRank + " - " + item.description);
+		const response = await apiServicePostHandled(
+			'dropdowns/customerRank',
+			{
+				paramValue: [],
+			},
+			"customerRank"
+		);
+
+		const responseData = await response.data;
+		return responseData.items.map((item: CustomerRank) => item.customerRank + " - " + item.description);
 	} catch (error) {
 		console.error('Error fetching customer ranks:', error);
 		return [];

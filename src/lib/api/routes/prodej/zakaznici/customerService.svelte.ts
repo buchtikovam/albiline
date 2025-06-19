@@ -63,7 +63,6 @@ export function createCleanCustomerOrAddressContact(
 		note: null,
 		pdfInvoice: false,
 		pdfDeliveryNote: false,
-		csvInvoice: false,
 		csvDeliveryNote: false,
 		consignmentReturnInfo: false,
 		consignmentInfo: false,

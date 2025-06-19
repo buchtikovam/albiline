@@ -353,7 +353,6 @@
 	"routes_prodej_zakaznici_detail_contacts_input_enabled" : "Aktivní",
 	"routes_prodej_zakaznici_detail_contacts_input_pdf_invoice" : "FA emailem v PDF",
 	"routes_prodej_zakaznici_detail_contacts_input_pdf_delivery_note" : "DL emailem v PDF",
-	"routes_prodej_zakaznici_detail_contacts_input_csv_invoice" : "FA emailem v CSV",
 	"routes_prodej_zakaznici_detail_contacts_input_csv_delivery_note" : "DL emailem v CSV",
 	"routes_prodej_zakaznici_detail_contacts_input_consignment_return_info" : "AZ o svozu zásilky",
 	"routes_prodej_zakaznici_detail_contacts_input_consignment_info" : "AZ o expedici zásilky",

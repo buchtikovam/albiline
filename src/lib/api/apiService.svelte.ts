@@ -99,7 +99,7 @@ export async function apiServicePostHandled(
 	endpoint: string,
 	body = {},
 	pageKeyCustom?: string,
-) {
+): Promise<{success: boolean, data: any}> {
 	try {
 		let response = await apiServicePOST(endpoint, body, pageKeyCustom);
 

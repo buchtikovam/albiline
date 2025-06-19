@@ -1,4 +1,4 @@
-import {apiServiceGETHandled} from "$lib/api/apiService.svelte";
+import {apiServiceGETHandled, apiServicePostHandled} from "$lib/api/apiService.svelte";
 
 
 interface RetailStoreType {
@@ -9,8 +9,16 @@ interface RetailStoreType {
 
 export async function getRetailStoreTypeName() {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/retailStoreType');
-		return response.data.items.map((item: RetailStoreType) => item.retailStoreTypeName);
+		const response = await apiServicePostHandled(
+			'dropdowns/retailStoreType',
+			{
+				paramValue: [],
+			},
+			"retailStoreType"
+		);
+
+		const responseData = await response.data;
+		return responseData.items.map((item: RetailStoreType) => item.retailStoreTypeName);
 	} catch (error) {
 		console.error('Error fetching retail store type name:', error);
 		return [];
@@ -19,8 +27,16 @@ export async function getRetailStoreTypeName() {
 
 export async function getRetailStoreTypeIdWithName() {
 	try {
-		const response = await apiServiceGETHandled('dropdowns/retailStoreType');
-		return response.data.items.map((item: RetailStoreType) => item.retailStoreTypeId + " - " + item.retailStoreTypeName);
+		const response = await apiServicePostHandled(
+			'dropdowns/retailStoreType',
+			{
+				paramValue: [],
+			},
+			"retailStoreType"
+		);
+
+		const responseData = await response.data;
+		return responseData.items.map((item: RetailStoreType) => item.retailStoreTypeId + " - " + item.retailStoreTypeName);
 	} catch (error) {
 		console.error('Error fetching retail store type name:', error);
 		return [];

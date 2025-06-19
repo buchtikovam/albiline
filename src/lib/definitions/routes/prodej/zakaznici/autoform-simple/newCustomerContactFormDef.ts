@@ -86,12 +86,6 @@ export const newCustomerContactFormDef: AutoFormSimpleType = [
 				schema: z.boolean(),
 			},
 			{
-				field: "csvInvoice",
-				translation: m.routes_prodej_zakaznici_detail_contacts_input_csv_invoice,
-				type: "checkbox",
-				schema: z.boolean(),
-			},
-			{
 				field: "csvDeliveryNote",
 				translation: m.routes_prodej_zakaznici_detail_contacts_input_csv_delivery_note,
 				type: "checkbox",
