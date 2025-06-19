@@ -13,13 +13,12 @@ export async function getDeliveryCountryCodes(): Promise<string[]> {
 		const response = await apiServicePostHandled(
 			'dropdowns/deliveryCountryCodes',
 			{
-				paramValue: [].toString(),
+				paramValue: [],
 			},
 			"deliveryCountryCodes"
 		);
 
-		return [];
-		// return response.data.items.map((item: CountryCode) => item.countryCode);
+		return response.data.items.map((item: CountryCode) => item.countryCode);
 	} catch (error) {
 		console.error('Error fetching delivery country codes:', error);
 		return [];

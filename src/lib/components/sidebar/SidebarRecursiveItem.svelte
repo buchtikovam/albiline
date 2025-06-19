@@ -34,13 +34,15 @@
 						toggleOpen(item);
 					}}
 					class="group/collapsible"
+					disabled={item.disabled}
+
 				>
 					<Sidebar.MenuSubItem
 						onclick={(e) => e.stopPropagation()}
 					>
 						<Collapsible.Trigger
-							class="w-full"
 							onclick={(e) => e.stopPropagation()}
+							class={`${item.disabled ? 'text-slate-400' : ''} w-full`}
 						>
 							<Sidebar.MenuSubButton class="lin">
 								{@const Icon = item.icon}
@@ -104,6 +106,7 @@
 						<a
 							href={item.href}
 							class="flex w-full items-center "
+							disabled={true}
 							data-sveltekit-preload-data="off"
 							onclick={(event) => {
 								event.preventDefault();

@@ -34,7 +34,7 @@ export const allItems: SidebarItem[] = [
 		field: 'prodej',
 		open: false,
 		hide: false,
-		disabled: true,
+		disabled: false,
 		translation: m.components_sidebar_item_prodej,
 		icon: HandCoins,
 		popoverOpen: false,

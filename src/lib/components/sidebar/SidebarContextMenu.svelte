@@ -27,7 +27,7 @@
 	}
 
 	async function removeFromFavorites(item: SidebarItem) {
-		await apiServiceDELETEHandled('userMenuFavorites', item.field);
+		await apiServiceDELETEHandled('userMenuFavorites', `?MenuFavoritesValue=${item.field}`);
 		sidebarCategory.value = 'all';
 		sidebarCategory.value = 'favorite';
 	}
