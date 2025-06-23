@@ -3,7 +3,7 @@ import * as m from '$lib/paraglide/messages.js'
 import type { AutoFormSimpleType } from '$lib/types/components/form/autoform';
 
 
-export const newCustomerContactFormDef: AutoFormSimpleType = [
+export const customerOrCustomerAddressContactFormDef: AutoFormSimpleType = [
 	{
 		rowType: "row",
 		rowInputs: [

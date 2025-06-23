@@ -32,7 +32,8 @@
 	});
 
 	beforeNavigate(() => {
-		destroy = true;
+		table.openInputParams = false;
+		// destroy = true;
 	});
 
 	/**

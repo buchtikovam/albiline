@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { openedSidebarItems, sidebarOpen } from '$lib/runes/sidebar.svelte.js';
-	import { isMobile } from '$lib/runes/page.svelte.js';
-	import { handleTabClick } from '$lib/utils/components/sidebar/handleTabClick';
-	import { onMount } from 'svelte';
+	import {openedSidebarItems, sidebarOpen} from '$lib/runes/sidebar.svelte.js';
+	import {isMobile} from '$lib/runes/page.svelte.js';
+	import {handleTabClick} from '$lib/utils/components/sidebar/handleTabClick';
+	import {onMount} from 'svelte';
+	import {goto} from '$app/navigation';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import type { SidebarItem } from '$lib/types/components/sidebar/sidebar';
@@ -12,7 +13,6 @@
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { goto } from '$app/navigation';
 
 	interface Props {
 		sidebarItems: SidebarItem[];
@@ -178,6 +178,7 @@
 										</Collapsible.Content>
 									</Collapsible.Root>
 								</ContextMenu.Trigger>
+
 								<SidebarContextMenu
 									bind:sidebarItem={sidebarItems[i]}
 									{setRecursiveOpenState}
@@ -202,6 +203,7 @@
 										</Sidebar.MenuButton>
 									</Sidebar.MenuItem>
 								</ContextMenu.Trigger>
+
 								<SidebarContextMenu
 									bind:sidebarItem={sidebarItems[i]}
 									{setRecursiveOpenState}

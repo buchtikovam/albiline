@@ -5,12 +5,12 @@
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
 	import {pageKeys, agGridTables} from '$lib/runes/table.svelte';
 	import {activeTabIndex, isMobile, responseDialogMessages, showFulltextSearch} from '$lib/runes/page.svelte';
-	import {customerAddressDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressFormDef';
+	import {customerAddressDetailAutoFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerAddressAutoFormDef';
 	import {
 		customerAddressCustomGridOptions,
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAddressesAgGridDef.svelte.js';
 	import {customerAddressPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerAddressPageLayout';
-	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
+	import {customerOrCustomerAddressContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/form/customerOrCustomerAddressContactFormDef';
 	import {disableNavigation} from '$lib/runes/navigation.svelte';
 	import {ribbonAction} from '$lib/runes/ribbon.svelte';
 	import {page} from '$app/state';
@@ -75,7 +75,7 @@
 	let initialFormValues: Record<string, any> = $derived(data.item);
 	let editedFormValues: Record<string, any> = $state({});
 	let pageLayout = $state(customerAddressPageLayout);
-	let autoformDef = $state(customerAddressDetailFormDef);
+	let autoformDef = $state(customerAddressDetailAutoFormDef);
 
 	// contacts ag grid
 	let contactValues: CustomerContactType[] = $derived(data.contacts);
@@ -331,7 +331,7 @@
 
 <!-- new customer form -->
 <NewCustomerContactDialog
-	formDef={newCustomerContactFormDef}
+	formDef={customerOrCustomerAddressContactFormDef}
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
 	origin="address"

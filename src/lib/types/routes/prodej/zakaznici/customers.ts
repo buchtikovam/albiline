@@ -1,33 +1,33 @@
-export type CustomerType = {
-	customerNodeCode: number;
-	customerAddressCode: number;
-	customerName: number;
-	name: string;
-	companyName: string;
-	street: string;
-	city: string;
-	postalCode: string;
-	countryCode: string;
-	ico: string;
-	dic: string;
-	icDph: string;
-	paymentTypeCode: string;
-	dueDays: number;
-	invoiceCopies: number;
-	deliveryNoteCopies: number;
-	customerStoreCode: number;
+export type CustomerTypeWithNullables = {
+	customerNodeCode: number | null;
+	customerAddressCode: number | null;
+	customerName: number | null;
+	name: string | null;
+	companyName: string | null;
+	street: string | null;
+	city: string | null;
+	postalCode: string | null;
+	countryCode: string | null;
+	ico: string | null;
+	dic: string | null;
+	icDph: string | null;
+	paymentTypeCode: string | null;
+	dueDays: number | null;
+	invoiceCopies: number | null;
+	deliveryNoteCopies: number | null;
+	customerStoreCode: number | null;
 	consignmentSaleEnabled: boolean;
 	isReturnAllowed: boolean;
 	useAssortedEanCodes: boolean;
-	customerAlbiCode: number;
-	keyCustomerTypeId: number;
-	creditLimit: number;
-	unpaidAmount: number;
-	lastPaymentDate: Date;
-	email: string;
-	ediInboxEanCode: number;
-	ediInboxEanCodeForInvoice: number;
-	customerStoreEan: number;
+	customerAlbiCode: number | null;
+	keyCustomerTypeId: number | null;
+	creditLimit: number | null;
+	unpaidAmount: number | null;
+	lastPaymentDate: Date | null;
+	email: string | null;
+	ediInboxEanCode: number | null;
+	ediInboxEanCodeForInvoice: number | null;
+	customerStoreEan: number | null;
 	sendDeliveryNoteViaEdi: boolean;
 	sendInvoiceViaEdi: boolean;
 	sendCreditNoteViaEdi: boolean;
@@ -45,7 +45,7 @@ export type CustomerType = {
 	invoiceConfirmationNotRequired: boolean;
 	isBlocked: boolean;
 	contractReceived: boolean;
-}
+};
 
 
 export type CustomerDetailSaveObjectType = {

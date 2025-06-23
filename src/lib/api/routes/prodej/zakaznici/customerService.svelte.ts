@@ -3,7 +3,7 @@ import type {
 	CustomerAddressType,
 	CustomerContactType,
 	CustomerDetailSaveObjectType,
-	CustomerInvoiceAddressType
+	CustomerInvoiceAddressType, CustomerType
 } from "$lib/types/routes/prodej/zakaznici/customers";
 import {apiServiceGETHandled} from "$lib/api/apiService.svelte.js";
 import {page} from "$app/state";
@@ -46,6 +46,17 @@ export async function apiGetCustomerAddresses(): Promise<CustomerAddressType[]> 
 }
 
 
+export async function apiGetCustomer(customerNodeCode: number): Promise<any> {
+	const response = await apiServiceGETHandled(`customers/${customerNodeCode}`);
+
+	if (response.success) {
+		return response.data ;
+	}
+
+	throw new Error('Failed to fetch customer');
+}
+
+
 
 export function createCleanCustomerOrAddressContact(
 	createdContacts: CustomerContactType[]
@@ -67,41 +78,5 @@ export function createCleanCustomerOrAddressContact(
 		consignmentReturnInfo: false,
 		consignmentInfo: false,
 		carrierInfo: false
-	};
-}
-
-
-
-export function createCleanCustomerAddress(): CustomerAddressType {
-	return {
-		id: null,
-		customerNodeCode: null,
-		customerName: null,
-		name: null,
-		customerAddressCode: null,
-		companyName: null,
-		street: null,
-		city: null,
-		postalCode: null,
-		countryCode: null,
-		note: null,
-		paymentTypeCode: null,
-		dueDays: null,
-		invoiceCopies: null,
-		deliveryNoteCopies: null,
-		customerRank: null,
-		retailStoreTypeId: null,
-		customerStoreCode: null,
-		customerStoreEan: null,
-		packingNote: null,
-		consignmentSaleEnabled: false,
-		isReturnAllowed: false,
-		isForConsignmentReturn: false,
-		useAssortedEanCodes: false,
-		pickingBoxPacking: false,
-		splitOrderByFood: false,
-		dealerCode: null,
-		areaCode: null,
-		areaId: null
 	};
 }

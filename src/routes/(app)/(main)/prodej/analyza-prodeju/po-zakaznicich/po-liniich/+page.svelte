@@ -22,10 +22,10 @@
 
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let destroy = $state(false);
-
-	beforeNavigate(() => {
-		destroy = true;
-	})
+	//
+	// beforeNavigate(() => {
+	// 	destroy = true;
+	// })
 
 	const customGridOptions: GridOptions = {
 		onCellDoubleClicked: (event: CellDoubleClickedEvent) => {

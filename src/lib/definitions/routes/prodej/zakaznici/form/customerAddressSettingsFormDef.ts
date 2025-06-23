@@ -1,76 +1,14 @@
-import { z } from 'zod';
-import * as m from '$lib/paraglide/messages.js'
-import type { AutoFormSimpleType } from '$lib/types/components/form/autoform';
+import type {AutoFormSimpleType} from "$lib/types/components/form/autoform";
+import * as m from "$lib/paraglide/messages";
+import {getPaymentTypeWithName} from "$lib/utils/dropdowns/paymentTypeCode";
+import {z} from "zod";
 import {getCustomerRanksWithDescription} from "$lib/utils/dropdowns/customerRank";
 import {getRetailStoreTypeIdWithName} from "$lib/utils/dropdowns/retailStoreType";
-import {getPaymentTypeWithName} from "$lib/utils/dropdowns/paymentTypeCode";
-import {getDeliveryCountryCodesWithName} from "$lib/utils/dropdowns/countryCodes";
 
 
-export const newCustomerAddressFormDef: AutoFormSimpleType = [
-	{
-		rowType: "row",
-		rowInputs: [
-			{
-				field: "name",
-				type: "text",
-				translation: m.routes_prodej_zakaznici_address_detail_new_address_form_input_name,
-				schema: z.string(),
-			},
-		],
-	},
-	{
-		rowType: "row",
-		rowInputs: [
-			{
-				field: "companyName",
-				type: "text",
-				translation: m.routes_prodej_zakaznici_address_detail_new_address_form_input_company_name,
-				schema: z.string(),
-			},
-		],
-	},
-	{
-		rowType: "row",
-		rowInputs: [
-			{
-				field: "street",
-				type: "text",
-				translation: m.routes_prodej_zakaznici_address_detail_new_address_form_input_street,
-				schema: z.string(),
-			},
 
-			{
-				field: "city",
-				type: "text",
-				translation: m.routes_prodej_zakaznici_address_detail_new_address_form_input_city,
-				schema: z.string(),
-			},
-		],
-	},
-	{
-		rowType: "row",
-		rowInputs: [
-			{
-				field: "postalCode",
-				type: "text",
-				translation: m.routes_prodej_zakaznici_address_detail_new_address_form_input_postal_code,
-				schema: z.string().email(),
-			},
-			{
-				type: "dropdown",
-				field: "countryCode",
-				translation: m.routes_prodej_zakaznici_address_detail_form_input_country_code,
-				schema: z.string(),
-				asyncDropdownOptions: getDeliveryCountryCodesWithName,
-			},
-		],
-	},
-]
-
-
-export const newCustomerAddressSettingsFormDef: AutoFormSimpleType = [
-	{
+export const customerAddressSettingsFormDef: AutoFormSimpleType = [
+	{ // row 1
 		rowType: "row",
 		rowInputs: [
 			{
@@ -81,14 +19,14 @@ export const newCustomerAddressSettingsFormDef: AutoFormSimpleType = [
 				schema: z.string(),
 			},
 			{
-				field: "dueDays",
 				type: "number",
-				translation: m.routes_prodej_zakaznici_table_column_due_days,
-				schema: z.string(),
+				field: "dueDays",
+				translation: m.routes_prodej_zakaznici_address_detail_form_input_due_days,
+				schema: z.number(),
 			},
-		],
+		]
 	},
-	{
+	{ // row 2
 		rowType: "row",
 		rowInputs: [
 			{
@@ -103,9 +41,9 @@ export const newCustomerAddressSettingsFormDef: AutoFormSimpleType = [
 				translation: m.routes_prodej_zakaznici_address_detail_form_input_delivery_note_copies,
 				schema: z.number(),
 			},
-		],
+		]
 	},
-	{
+	{ // row 3
 		rowType: "row",
 		rowInputs: [
 			{
@@ -122,9 +60,9 @@ export const newCustomerAddressSettingsFormDef: AutoFormSimpleType = [
 				asyncDropdownOptions: getRetailStoreTypeIdWithName,
 				schema: z.string(),
 			},
-		],
+		]
 	},
-	{
+	{ // row 4
 		rowType: "row",
 		rowInputs: [
 			{
@@ -139,7 +77,7 @@ export const newCustomerAddressSettingsFormDef: AutoFormSimpleType = [
 				translation: m.routes_prodej_zakaznici_address_detail_form_input_customer_store_ean,
 				schema: z.string(),
 			},
-		],
+		]
 	},
 	{ // row 5
 		rowType: "row",
@@ -191,56 +129,6 @@ export const newCustomerAddressSettingsFormDef: AutoFormSimpleType = [
 				field: "splitOrderByFood",
 				translation: m.routes_prodej_zakaznici_address_detail_form_input_split_order_by_food,
 				schema: z.boolean(),
-			},
-		]
-	},
-]
-
-
-export const newCustomerAddressOzFormDef: AutoFormSimpleType = [
-	{ // row 5
-		rowType: "row",
-		rowInputs: [
-			{
-				type: "number",
-				field: "dealerCode",
-				translation: m.routes_prodej_zakaznici_address_detail_form_input_dealer_code,
-				schema: z.number(),
-			},
-			{
-				type: "number",
-				field: "areaCode",
-				translation: m.routes_prodej_zakaznici_address_detail_form_input_area_code,
-				schema: z.number(),
-			},
-		]
-	},
-	{ // row 6
-		rowType: "row",
-		rowInputs: [
-			{
-				type: "number",
-				field: "areaId",
-				translation: m.routes_prodej_zakaznici_address_detail_form_input_area_id,
-				schema: z.number(),
-			},
-			{
-				type: "empty",
-			},
-		]
-	},
-]
-
-
-export const newCustomerAddressOstatniFormDef: AutoFormSimpleType = [
-	{
-		rowType: "row",
-		rowInputs: [
-			{
-				type: "text",
-				field: "note",
-				translation: m.routes_prodej_zakaznici_address_detail_form_input_note,
-				schema: z.string(),
 			},
 		]
 	},

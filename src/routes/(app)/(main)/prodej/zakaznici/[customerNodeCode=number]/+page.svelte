@@ -3,9 +3,9 @@
 		customerAndAddressContactsGridOptions,
 		customerAndAddressContactsHeaderTranslations
 	} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-cs/customerAndAddressContactsAgGridDef';
-	import {newCustomerContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerContactFormDef';
+	import {customerOrCustomerAddressContactFormDef} from '$lib/definitions/routes/prodej/zakaznici/form/customerOrCustomerAddressContactFormDef';
 	import {openedRibbonDialog, ribbonAction} from "$lib/runes/ribbon.svelte";
-	import {customerDetailFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerDetailFormDef';
+	import {customerDetailAutoFormDef} from '$lib/definitions/routes/prodej/zakaznici/autoform/customerDetailAutoFormDef';
 	import {customerPageLayout} from '$lib/definitions/routes/prodej/zakaznici/detail-page-layout/customerPageLayout';
 	import {disableNavigation, disablePageTabs} from '$lib/runes/navigation.svelte';
 	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
@@ -64,7 +64,7 @@
 	let initialFormValues: Record<string, any> = $derived(data.item);
 	let editedFormValues: Record<string, any> = $state({ })
 	let pageLayout = $state(customerPageLayout);
-	let autoformDef: AutoFormType = $state(customerDetailFormDef);
+	let autoformDef: AutoFormType = $state(customerDetailAutoFormDef);
 
 	// contacts ag grid
 	let contactValues: CustomerContactType[] = $derived(data.contacts)
@@ -289,7 +289,7 @@
 
 <!-- opened from contacts section -->
 <NewCustomerContactDialog
-	formDef={newCustomerContactFormDef}
+	formDef={customerOrCustomerAddressContactFormDef}
 	bind:createdContacts={createdContacts}
 	bind:dialogOpen={openNewContactDialog}
 	origin="customer"

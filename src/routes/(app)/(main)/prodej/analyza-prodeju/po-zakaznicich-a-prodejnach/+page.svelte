@@ -197,7 +197,7 @@
 
 	beforeNavigate(() => {
 		salesTotalByStoreTable.openInputParams = false;
-		destroy = true;
+		// destroy = true;
 	})
 </script>
 

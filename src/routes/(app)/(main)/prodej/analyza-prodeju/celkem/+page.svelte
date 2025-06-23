@@ -26,7 +26,7 @@
 	import {salesTotalByDivisionGetPageTitle} from '$lib/utils/routes/prodej/analyza-prodeju/celkem/salesTotalByDivisionGetPageTitle';
 	import {Pane, PaneGroup, PaneResizer} from 'paneforge';
 	import {loadInputParamsInTable} from '$lib/utils/components/input-params/loadInputParamsInTable';
-	import {beforeNavigate} from '$app/navigation';
+	import {afterNavigate, beforeNavigate} from '$app/navigation';
 	import {setPaneFocus} from "$lib/utils/components/pane-forge/setPaneFocus";
 	import {onMount} from 'svelte';
 	import deepcopy from 'deepcopy';
@@ -217,7 +217,6 @@
 
 	beforeNavigate(() => {
 		divisionTable.openInputParams = false;
-		destroy = true;
 	})
 
 

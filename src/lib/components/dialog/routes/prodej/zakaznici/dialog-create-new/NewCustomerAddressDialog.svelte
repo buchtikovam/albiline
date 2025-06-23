@@ -1,33 +1,32 @@
 <script lang="ts">
-	import {Button} from '$lib/components/ui/button';
-	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
-	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
-	import * as m from '$lib/paraglide/messages.js'
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Tabs from "$lib/components/ui/tabs/index.js";
-	import TabSeparator from "$lib/components/tabs/TabSeparator.svelte";
 	import {
-		newCustomerAddressFormDef,
-		newCustomerAddressOstatniFormDef,
-		newCustomerAddressOzFormDef,
-		newCustomerAddressSettingsFormDef
-	} from "$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerAddressFormDef";
-	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
-	import ChevronsRight from "lucide-svelte/icons/chevrons-right";
-
+		newCustomerAddressStepperItems
+	} from '$lib/definitions/routes/prodej/zakaznici/stepper/newCustomerAddressStepperItems';
+	import { agGridTables, pageKeys } from '$lib/runes/table.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import type { AgGridTableType } from '$lib/types/components/table/table';
+	import DialogWrapper from '$lib/components/dialog/DialogWrapper.svelte';
+	import Stepper from '$lib/components/stepper/Stepper.svelte';
+	import * as m from '$lib/paraglide/messages.js';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import {apiGetCustomer} from '$lib/api/routes/prodej/zakaznici/customerService.svelte';
+	import type { CustomerType } from '$lib/types/routes/prodej/zakaznici/customers';
+	import NewCustomerTabs
+		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerTabs.svelte";
+	import NewCustomerAddressTabs
+		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressTabs.svelte";
 
 	interface Props {
 		dialogOpen: boolean;
 	}
 
-	let {
-		dialogOpen = $bindable(false),
-	}: Props = $props();
+	let { dialogOpen = $bindable(false) }: Props = $props();
 
 	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
-	let row = $derived(table.selectedRows[table.activeSelectedRowIndex])
+	let row = $derived(table.selectedRows[table.activeSelectedRowIndex]);
+	let stepperItems = $state(newCustomerAddressStepperItems);
 
+	let customer: CustomerType | undefined = $state();
 	let customerAddress = $state({
 		name: null,
 		companyName: null,
@@ -56,6 +55,8 @@
 		areaId: null
 	});
 
+
+	// Effect to reset the form state whenever the dialog opens
 	$effect(() => {
 		if (dialogOpen) {
 			customerAddress = {
@@ -84,9 +85,28 @@
 				dealerCode: null,
 				areaCode: null,
 				areaId: null
-			}
+			};
+			customer = undefined; // Clear previous customer data
 		}
-	})
+	});
+
+
+	// Effect to fetch customer data when the dialog is open and a row is selected
+	$effect(() => {
+		if (!dialogOpen || !row?.customerNodeCode) {
+			return;
+		}
+
+		(async () => {
+			try {
+				const fetchedCustomer = await apiGetCustomer(row.customerNodeCode);
+				customer = fetchedCustomer.item;
+			} catch (error) {
+				console.error('Failed to fetch customer:', error);
+				customer = undefined;
+			}
+		})();
+	});
 </script>
 
 
@@ -99,115 +119,29 @@
 	{content}
 />
 
+
+
 {#snippet header()}
-	<Dialog.Title>
-		Nová doručovací adresa
-	</Dialog.Title>
- 
+	<Dialog.Title>Nová doručovací adresa</Dialog.Title>
+
 	{#if row}
 		<Dialog.Description class="pt-1">
-			<div class="flex gap-2 w-full justify-center h-6 items-center">
-				<div class="flex gap-2 items-center">
-					<div class="flex justify-center items-center font-bold text-xs size-5 rounded-full bg-albi-500 text-white">
-						1
-					</div>
-
-					<p class="text-sm font-bold text-albi-500">Zákazník</p>
-
-					<ChevronsRight class="text-albi-500 size-5"/>
-				</div>
-
-				<div class="flex gap-2 items-center">
-					<div class="flex text-slate-400 justify-center items-center font-bold text-xs size-5 rounded-full border border-slate-400">
-						2
-					</div>
-
-					<p class="text-sm text-slate-400 font-bold">Doručovací adresa</p>
-				</div>
-			</div>
-
-
-			<!--			pro zákazníka <b>{row.i_Name} ({row.customerNodeCode})</b>-->
+			<Stepper bind:stepperItems />
 		</Dialog.Description>
 	{/if}
 {/snippet}
 
 
+
 {#snippet content()}
 	<div class="flex flex-1 flex-col min-h-0 w-full -mt-1">
+		{#if stepperItems[0].isActive}
+			<NewCustomerTabs bind:formValues={customer} />
+		{/if}
 
-
-
-
-
-
-
-
-		<Tabs.Root
-			value="adresa"
-			class="flex h-full w-full flex-col"
-		>
-			<Tabs.List class="border w-fit border-slate-300">
-				<Tabs.Trigger value="adresa">
-					Adresa
-				</Tabs.Trigger>
-				<TabSeparator/>
-
-				<Tabs.Trigger value="nastaveni">
-					Nastavení
-				</Tabs.Trigger>
-				<TabSeparator/>
-
-				<Tabs.Trigger value="oblasti">
-					OZ a oblasti
-				</Tabs.Trigger>
-				<TabSeparator/>
-
-				<Tabs.Trigger value="ostatni">
-					Ostatní
-				</Tabs.Trigger>
-			</Tabs.List>
-
-			<Tabs.Content
-				value="adresa"
-				class="overflow-y-auto rounded-md bg-slate-50 p-4 pt-2 border"
-			>
-				<AutoFormSimple
-					bind:formValues={customerAddress}
-					autoform={newCustomerAddressFormDef}
-				/>
-			</Tabs.Content>
-
-			<Tabs.Content
-				value="nastaveni"
-				class="overflow-y-auto rounded-md bg-slate-50 p-4 pt-2 border"
-			>
-				<AutoFormSimple
-					bind:formValues={customerAddress}
-					autoform={newCustomerAddressSettingsFormDef}
-				/>
-			</Tabs.Content>
-
-			<Tabs.Content
-				value="oblasti"
-				class="overflow-y-auto rounded-md bg-slate-50 p-4 pt-2 border"
-			>
-				<AutoFormSimple
-					bind:formValues={customerAddress}
-					autoform={newCustomerAddressOzFormDef}
-				/>
-			</Tabs.Content>
-
-			<Tabs.Content
-				value="ostatni"
-				class="overflow-y-auto rounded-md bg-slate-50 p-4 pt-2 border"
-			>
-				<AutoFormSimple
-					bind:formValues={customerAddress}
-					autoform={newCustomerAddressOstatniFormDef}
-				/>
-			</Tabs.Content>
-		</Tabs.Root>
+		{#if stepperItems[1].isActive}
+			<NewCustomerAddressTabs bind:formValues={customerAddress} />
+		{/if}
 	</div>
 
 	<Dialog.Footer>
