@@ -19,6 +19,8 @@ export const actions = {
 
 			// Input validation
 			if (!userCode || !password) {
+				console.log("input validation failed")
+
 				return fail(400, {
 					messages: [{
 						title: "Chybějící údaje",
@@ -70,6 +72,7 @@ export const actions = {
 			}
 
 			if (responseData.sessionKey) {
+				console.log("input validation failed")
 				// Set session cookie
 				cookies.set("auth", JSON.stringify({
 					sessionKey: responseData.sessionKey,

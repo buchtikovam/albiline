@@ -14,6 +14,7 @@
 	} from "$lib/definitions/routes/prodej/zakaznici/autoform-simple/newCustomerAddressFormDef";
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
+	import ChevronsRight from "lucide-svelte/icons/chevrons-right";
 
 
 	interface Props {
@@ -102,10 +103,31 @@
 	<Dialog.Title>
 		Nová doručovací adresa
 	</Dialog.Title>
-
+ 
 	{#if row}
-		<Dialog.Description>
-			pro zákazníka <b>{row.i_Name} ({row.customerNodeCode})</b>
+		<Dialog.Description class="pt-1">
+			<div class="flex gap-2 w-full justify-center h-6 items-center">
+				<div class="flex gap-2 items-center">
+					<div class="flex justify-center items-center font-bold text-xs size-5 rounded-full bg-albi-500 text-white">
+						1
+					</div>
+
+					<p class="text-sm font-bold text-albi-500">Zákazník</p>
+
+					<ChevronsRight class="text-albi-500 size-5"/>
+				</div>
+
+				<div class="flex gap-2 items-center">
+					<div class="flex text-slate-400 justify-center items-center font-bold text-xs size-5 rounded-full border border-slate-400">
+						2
+					</div>
+
+					<p class="text-sm text-slate-400 font-bold">Doručovací adresa</p>
+				</div>
+			</div>
+
+
+			<!--			pro zákazníka <b>{row.i_Name} ({row.customerNodeCode})</b>-->
 		</Dialog.Description>
 	{/if}
 {/snippet}
@@ -113,6 +135,14 @@
 
 {#snippet content()}
 	<div class="flex flex-1 flex-col min-h-0 w-full -mt-1">
+
+
+
+
+
+
+
+
 		<Tabs.Root
 			value="adresa"
 			class="flex h-full w-full flex-col"

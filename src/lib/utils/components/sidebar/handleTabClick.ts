@@ -7,7 +7,11 @@ export function handleTabClick(
 	item: SidebarItem,
 	treeDepth: number
 ): void {
+	console.log("handle tab")
+
 	if (item.href) {
+		console.log("if", item)
+
 		const tab: HeaderTab = {
 			field: item.field,
 			url: item.href,

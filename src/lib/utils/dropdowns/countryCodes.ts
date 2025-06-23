@@ -58,7 +58,8 @@ export async function getInvoiceCountryCodes(): Promise<string[]> {
 			"invoiceCountryCodes"
 		);
 
-		return response.data.items.map((item: CountryCode) => item.countryCode);
+		const responseData = await response.data;
+		return responseData.items.map((item: CountryCode) => item.countryCode);
 	} catch (error) {
 		console.error('Error fetching invoice country codes:', error);
 		return [];
@@ -76,7 +77,8 @@ export async function getInvoiceCountryCodesWithName(): Promise<string[]> {
 			"invoiceCountryCodes"
 		);
 
-		return response.data.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
+		const responseData = await response.data;
+		return responseData.items.map((item: CountryCode) => item.countryCode + " - " + item.countryName );
 	} catch (error) {
 		console.error('Error fetching delivery country codes:', error);
 		return [];

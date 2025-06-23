@@ -18,8 +18,13 @@
 		onChildClick?: (isHref: boolean) => void;
 	}
 
-	let { item = $bindable(), level, toggleOpen, onChildClick, setRecursiveOpenState }: Props =
-		$props();
+	let {
+		item = $bindable(),
+		level,
+		toggleOpen,
+		onChildClick,
+		setRecursiveOpenState
+	}: Props = $props();
 </script>
 
 <div class={item.hide ? 'hidden' : 'block'}>
@@ -106,7 +111,6 @@
 						<a
 							href={item.href}
 							class="flex w-full items-center "
-							disabled={true}
 							data-sveltekit-preload-data="off"
 							onclick={(event) => {
 								event.preventDefault();

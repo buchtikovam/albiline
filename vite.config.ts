@@ -3,10 +3,12 @@ import {sveltekit} from '@sveltejs/kit/vite';
 import {defineConfig} from 'vite';
 import {SvelteKitPWA} from "@vite-pwa/sveltekit";
 const env = process.env;
+import devtoolsJson from 'vite-plugin-devtools-json';
 
 export default defineConfig({
 	plugins: [
 		sveltekit(),
+		devtoolsJson(),
 
 		paraglideVitePlugin({
 			project: './project.inlang',
