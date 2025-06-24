@@ -734,6 +734,7 @@
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_LY": "% (ZC)",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_transportCost_AY": "Náklady doprava",
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_AY": "% (ZC)",
+	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_documents": "Faktury",
 
 
 	"routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_detail_table_column_divisionId": "Divize",

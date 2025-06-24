@@ -10,7 +10,7 @@
 	import Ribbon from '$lib/components/ribbon/Ribbon.svelte';
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import {sessionStore, type SessionStore} from "$lib/utils/browser-storage/sessionStorage.svelte";
+	import {sessionStore, type SessionStore} from "$lib/utils/storage/sessionStorage.svelte";
 	import {
 		CellSelectionModule,
 		CellStyleModule, ClientSideRowModelApiModule,

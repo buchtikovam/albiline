@@ -1,6 +1,6 @@
 import type {InputParamsInput} from "$lib/types/components/input-params/inputParams";
 
-export function salesTotalByDivisionGetPageTitle(inputs: InputParamsInput[]): string { // todo překlad
+export function getPageTitleSalesTotalByDivision(inputs: InputParamsInput[]): string { // todo překlad
 	const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
 	const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
 	const countryCode = inputs.find(f => f.field === 'salescountrycode')?.value || '';

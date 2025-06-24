@@ -28,7 +28,7 @@
 			return `
 				Prodeje po KLP v rámci linie <b>${inputs.find(f => f.field === 'productLineName')?.value || ''}</b> za období
 				<b>${dateFrom.toString().replace(" 00:00:00:000", "")}-${dateTo.toString().replace(" 00:00:00:000", "")}</b>,
-				za <b>${inputs.find(f => f.field === 'customerNodeName')?.value || ''}</b>`;
+				za <b>${inputs.find(f => f.field === 'customernodename')?.value || ''}</b>`;
 		}
 
 		return "";
@@ -38,7 +38,6 @@
 
 
 <PageWrapper>
-
 	<TabFulltextWrapper>
 		<div class="flex-1 flex justify-between items-center mr-2">
 			<PageTitle {title}/>

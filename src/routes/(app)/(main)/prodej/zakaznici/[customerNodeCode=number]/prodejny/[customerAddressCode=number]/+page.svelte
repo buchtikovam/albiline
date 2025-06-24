@@ -58,7 +58,7 @@
 
 	// --- initialize variables and state
 	// page
-	let pageKey: string = $derived(pageKeys.value.value[pageKeys.value.index]);
+	let pageKey: string = $state(pageKeys.value.value[pageKeys.value.index]);
 	let table: AgGridTableType = $state(agGridTables.value[pageKey]);
 	let disableLeft = $state(false);
 	let disableRight = $state(false);

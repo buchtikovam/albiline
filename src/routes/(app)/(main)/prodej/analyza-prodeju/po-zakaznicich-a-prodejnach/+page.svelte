@@ -3,14 +3,11 @@
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
-	import {pageStates, showFulltextSearch} from "$lib/runes/page.svelte";
-	import * as m from "$lib/paraglide/messages";
+	import {pageCodes, pageStates, showFulltextSearch} from "$lib/runes/page.svelte";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
 	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
-	import Info from "lucide-svelte/icons/info";
-	import {Input} from "$lib/components/ui/input/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
 	import * as Tabs from "$lib/components/ui/tabs";
 	import {page} from "$app/state";
@@ -33,7 +30,18 @@
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/input-params/salesTotalByStoreInputParams";
 	import deepcopy from "deepcopy";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
-	import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
+	import PageTitle from "$lib/components/page/PageTitle.svelte";
+	import type {CellDoubleClickedEvent, GridOptions} from "ag-grid-enterprise";
+	import Fulltext from "$lib/components/form/Fulltext.svelte";
+	import {
+		getPageTitleSalesTotalByStore
+	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/getPageTitleSalesTotalByStore";
+	import {
+		onCellDoubleClickedSalesTotalByStore
+	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/onCellDoubleClickedSalesTotalByStore";
+	import {
+		onCellDoubleClickedSalesTotalByStoreDetail
+	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/onCellDoubleClickedSalesTotalByStoreDetail";
 
 
 	// Use the reactive page state to get the routeId
@@ -46,11 +54,7 @@
 
 	// Initialize pageCodes for all tables on current page
 	pageKeys.value = {
-		value: [
-			"SalesTotalByStore",
-			"SalesTotalByStoreDetail",
-			"SalesSubdetailByCostlevel"
-		],
+		value: pageCodes.value.get(routeId)||[],
 		index: 0,
 	}
 
@@ -62,6 +66,9 @@
 	let clearsalesSubdetailByCostLevelTable = $state(false);
 	let salesSubdetailByCostLevelTable: AgGridTableType = $state(agGridTables.value['SalesSubdetailByCostlevel'])
 	let activeTable: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+
+	//  Reactive page title based on salesTotalByStore table inputParams
+	let title = $derived(getPageTitleSalesTotalByStore(salesTotalByStoreTable.loadedInputParams.inputs))
 
 
 	// initialize the state for current page if it doesn't exist
@@ -82,7 +89,7 @@
 	});
 
 
-	// Effect to load data for 'linie' section
+	// Effect to load data for detail section tables
 	$effect(() => {
 		if (sections) {
 			if (
@@ -91,10 +98,7 @@
 			) {
 				const mainInputs = deepcopy(salesTotalByStoreTable.loadedInputParams);
 				const selectedRow = salesTotalByStoreTable.selectedRows[0];
-
-
 				let salesTotalByStoreDetailSectionInputParams = mainInputs;
-
 
 				if (mainInputs.inputs) {
 					clearSalesTotalByStoreDetailTable = true;
@@ -108,7 +112,6 @@
 					const covercreditnotes = mainInputs.inputs.find(f => f.field === 'covercreditnotes')?.value || false;
 
 					delete salesTotalByStoreDetailSectionInputParams.inputs;
-
 
 					salesTotalByStoreDetailSectionInputParams.inputs = [
 						{
@@ -137,6 +140,11 @@
 							value: selectedRow.customerNodeCode
 						},
 						{
+							field: "customernodename",
+							type: "text",
+							value: selectedRow.customerNodeName,
+						},
+						{
 							field: "deliveryaddresscode",
 							type: "number",
 							value: selectedRow.deliveryAddressCode
@@ -152,8 +160,6 @@
 							value: Boolean(covercreditnotes),
 						},
 					]
-
-					console.log(JSON.stringify(salesTotalByStoreDetailSectionInputParams, null, 1))
 
 					loadInputParamsInTable(
 						salesTotalByStoreDetailTable,
@@ -181,12 +187,6 @@
 	});
 
 
-
-	//  Reactive page title based on salesTotalByStore table inputParams
-	let title = $derived.by(() => {
-		return "";
-	})
-
 	$effect(() => {
 		open = salesTotalByStoreTable.openInputParams;
 	})
@@ -197,9 +197,31 @@
 
 	beforeNavigate(() => {
 		salesTotalByStoreTable.openInputParams = false;
-		// destroy = true;
 	})
+
+
+	// Custom grid options with double-click handlers
+	const salesTotalByStoreCustomGridOptions: GridOptions = {
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
+			onCellDoubleClickedSalesTotalByStore(salesTotalByStoreTable, event);
+		},
+	};
+
+
+	const salesTotalByStoreDetailCustomGridOptions: GridOptions = {
+		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
+			onCellDoubleClickedSalesTotalByStoreDetail(salesTotalByStoreDetailTable, event);
+		},
+	}
 </script>
+
+
+<svelte:head>
+	<title>
+		Analýza prodejů - Po zákaznících a prodejnách | Albiline
+	</title>
+</svelte:head>
+
 
 
 {#if open}
@@ -215,38 +237,7 @@
 
 <PageWrapper>
 	<TabFulltextWrapper>
-		<div class="flex-1 flex justify-between items-center mr-2">
-			{#if title.length > 0}
-				<Popover.Root>
-					<Popover.Trigger
-						class="size-8 bg-white border border-slate-300 rounded-md flex 2xl:hidden justify-center items-center"
-					>
-						<Info
-							strokeWidth="2"
-							class="size-[18px]"
-						/>
-					</Popover.Trigger>
-
-					<Popover.Content
-						side="right"
-						class="text-xs h-8 py-0 px-2 w-fit flex items-center border-albi-500"
-					>
-						<p>
-							{@html title}
-						</p>
-					</Popover.Content>
-				</Popover.Root>
-
-				<div class="h-8 hidden border border-slate-300 rounded-md px-2 bg-white 2xl:flex items-center">
-					<p class="text-xs text-ellipsis line-clamp-1">
-						{@html title}
-					</p>
-				</div>
-			{:else}
-				<div class="w-1"></div>
-			{/if}
-		</div>
-
+		<PageTitle {title}/>
 
 		{#if pageStates.value[routeId].resizablePageSections}
 			<div class="flex items-center gap-1 h-8 bg-white px-2 mr-2 rounded-md border border-slate-300">
@@ -265,19 +256,7 @@
 			{routeId}
 		/>
 
-
-		{#if showFulltextSearch.value === true}
-			<div
-				class="hidden md:flex items-center h-8"
-			>
-				<Input
-					class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
-					placeholder={m.components_header_search_placeholder()}
-					type="text"
-					bind:value={activeTable.fulltextFilterValue}
-				/>
-			</div>
-		{/if}
+		<Fulltext bind:table={activeTable} />
 	</TabFulltextWrapper>
 
 
@@ -308,7 +287,7 @@
 				>
 					<AgGridCSWrapper
 						table={salesTotalByStoreTable}
-						gridOptionsCustom={SalesTotalByStoreAgGridDef}
+						gridOptionsCustom={{...salesTotalByStoreCustomGridOptions, ...SalesTotalByStoreAgGridDef}}
 						headerTranslations={SalesTotalByStoreHeaderTranslations}
 					/>
 				</Pane>
@@ -343,7 +322,7 @@
 							>
 								<AgGridCSWrapper
 									table={salesTotalByStoreDetailTable}
-									gridOptionsCustom={SalesTotalByStoreDetailAgGridDef}
+									gridOptionsCustom={{...salesTotalByStoreDetailCustomGridOptions, ...SalesTotalByStoreDetailAgGridDef}}
 									headerTranslations={SalesTotalByStoreDetailHeaderTranslations}
 									clearRowData={clearSalesTotalByStoreDetailTable}
 								/>

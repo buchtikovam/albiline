@@ -1,5 +1,5 @@
-import { LocalStore, localStore } from '$lib/utils/browser-storage/localStorage.svelte';
-import { SessionStore, sessionStore } from '$lib/utils/browser-storage/sessionStorage.svelte';
+import { LocalStore, localStore } from '$lib/utils/storage/localStorage.svelte';
+import { SessionStore, sessionStore } from '$lib/utils/storage/sessionStorage.svelte';
 
 export const sidebarOpen: LocalStore<boolean> = localStore("sidebarOpen", true);
 

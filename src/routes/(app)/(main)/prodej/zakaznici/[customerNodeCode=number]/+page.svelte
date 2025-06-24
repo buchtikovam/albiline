@@ -18,7 +18,7 @@
 	import {flip} from 'svelte/animate';
 	import ArrowUpDown from 'lucide-svelte/icons/arrow-up-down';
 	import Plus from 'lucide-svelte/icons/plus';
-	import type {CustomerContactType, CustomerType} from '$lib/types/routes/prodej/zakaznici/customers';
+	import type {CustomerContactType} from '$lib/types/routes/prodej/zakaznici/customers';
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import type {AutoFormType} from '$lib/types/components/form/autoform';
 	import CustomerDetailInvoiceAdressesDialog
@@ -35,7 +35,7 @@
 
 	interface Props {
 		data: {
-			item: CustomerType,
+			item: any,
 			contacts: CustomerContactType[],
 		};
 	}
@@ -46,7 +46,6 @@
 	// page settings
 	activeTabIndex.value = 2;
 	showFulltextSearch.value = false;
-
 
 	// --- initialize variables and state
 	// page

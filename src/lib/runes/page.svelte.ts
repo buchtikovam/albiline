@@ -1,6 +1,6 @@
-import { LocalStore, localStore } from '$lib/utils/browser-storage/localStorage.svelte';
+import {LocalStore, localStore} from '$lib/utils/storage/localStorage.svelte';
+import {sessionStore, SessionStore} from "$lib/utils/storage/sessionStorage.svelte";
 import type { ResponseDialogMessage } from "$lib/types/components/response";
-import {sessionStore, SessionStore} from "$lib/utils/browser-storage/sessionStorage.svelte";
 
 
 export const isMobile: { value: boolean } = $state({ value: false });
@@ -18,6 +18,59 @@ export const authDetails: { sessionKey: string|null, userName: string|null, emai
 export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
 	value: []
 });
+
+export const pageCodes: { value: Map<string, string[]> } = $state({
+	value: new Map([
+		[ // Zákazníci
+			"/(app)/(main)/prodej/zakaznici",
+			["CustomersGetList"]
+		],
+
+		[ // Analýza prodejů - Celkem
+			"/(app)/(main)/prodej/analyza-prodeju/celkem",
+			[
+				"SalesTotalByDivision", // *Po divizích
+				"SalesTotalByDivisionSubdetailProductline", // Detail po liniích
+				"SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel", // Detail po KLP
+				"SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity" // Detail po KS
+			]
+		],
+
+		[ // Analýza prodejů - Po zákaznících
+			"/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich",
+			["SalesCustomdetailByCustomers"]
+		],
+
+		[ // Analýza prodejů - Po zákaznících a liniích
+			"/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich/po-liniich",
+			["SalesCustomerorstoreByProductline"]
+		],
+
+		[ // Analýza prodejů - Po zákaznících a KLP
+			"/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp",
+			["SalesCustomerorstoreByProductlineByCostlevel"]
+		],
+
+		[ // Analýza prodejů - Po zákaznících a prodejnách
+			"/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach",
+			[
+				"SalesTotalByStore", // *Celkové po divizích
+				"SalesTotalByStoreDetail", // Detail po divizích
+				"SalesSubdetailByCostlevel", // Detail po KLP
+			]
+		],
+
+		[ // Analýza prodejů - Po zákaznících a fakturách
+			"/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/po-fakturach",
+			["SalesDocumentByCustomerorstore"]
+		],
+
+		[ // Stav skladu
+			"/(app)/(main)/sklad/stav-skladu",
+			["ProductStockInventory"]
+		]
+	])
+})
 
 
 // export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state({
@@ -69,19 +122,6 @@ export const responseDialogMessages: { value: ResponseDialogMessage[] } = $state
 
 
 // -- page specific
-
-
-interface PageSections {
-	linieSection: boolean;
-	kspSection: boolean;
-	ksSection: boolean;
-}
-
-export const pageSectionsState: SessionStore<PageSections> = sessionStore("salesTotalPageSections", {
-	linieSection: false,
-	kspSection: false,
-	ksSection: false,
-})
 
 
 export interface PageState {

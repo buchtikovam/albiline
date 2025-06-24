@@ -3,13 +3,14 @@
 		SalesCustomerorstoreByProductlineByCostLevelAgGridDef,
 		SalesCustomerorstoreByProductlineByCostLevelHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp/ag-grid-cs/salesCustomerorstoreByProductlineByCostlevelAgGridDef";
-	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
+	import {activeTabIndex, pageCodes, showFulltextSearch} from "$lib/runes/page.svelte";
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
+	import {page} from "$app/state";
 
 	pageKeys.value = {
-		value: ["SalesCustomerorstoreByProductlineByCostlevel"],
+		value: pageCodes.value.get(page.route.id||"")||[],
 		index: 0,
 	}
 
@@ -24,7 +25,7 @@
 
 <svelte:head>
 	<title>
-		Analýza prodejů - po zákaznících a klp | Albiline
+		Analýza prodejů - Po zákaznících a klp | Albiline
 	</title>
 </svelte:head>
 

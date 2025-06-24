@@ -1,5 +1,5 @@
 import { RibbonActionEnum } from '$lib/enums/ribbon/ribbonAction';
-import { localStore, type LocalStore } from '$lib/utils/browser-storage/localStorage.svelte';
+import { localStore, type LocalStore } from '$lib/utils/storage/localStorage.svelte';
 import type { GlobalDialogOptions } from '$lib/types/components/dialog/globalDialogOptions';
 
 

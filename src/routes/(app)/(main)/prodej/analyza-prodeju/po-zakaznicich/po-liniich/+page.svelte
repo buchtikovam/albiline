@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
+	import {activeTabIndex, pageCodes, showFulltextSearch} from "$lib/runes/page.svelte";
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import {beforeNavigate, goto} from "$app/navigation";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
@@ -11,9 +11,10 @@
 	import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
+	import {page} from "$app/state";
 
 	pageKeys.value = {
-		value: ["SalesCustomerorstoreByProductline"],
+		value: pageCodes.value.get(page.route.id||"")||[],
 		index: 0,
 	}
 
@@ -22,10 +23,6 @@
 
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let destroy = $state(false);
-	//
-	// beforeNavigate(() => {
-	// 	destroy = true;
-	// })
 
 	const customGridOptions: GridOptions = {
 		onCellDoubleClicked: (event: CellDoubleClickedEvent) => {
@@ -66,12 +63,12 @@
 						{
 							field: "customernodecode",
 							type: "number",
-							value: Number(inputs.find(f => f.field === 'customerNodeCode')?.value),
+							value: Number(inputs.find(f => f.field === 'customernodecode')?.value),
 						},
 						{
-							field: "customerNodeName",
+							field: "customernodename",
 							type: "text",
-							value: String(inputs.find(f => f.field === 'customerNodeName')?.value),
+							value: String(inputs.find(f => f.field === 'customernodename')?.value),
 						},
 						{
 							field: "deliveryaddresscode",
@@ -134,7 +131,7 @@
 
 <svelte:head>
 	<title>
-		Analýza prodejů - po zákaznících a liniích | Albiline
+		Analýza prodejů - Po zákaznících a liniích | Albiline
 	</title>
 </svelte:head>
 

@@ -2,6 +2,7 @@ import {pageCompact} from "$lib/runes/page.svelte";
 import type {ICellRendererParams} from "ag-grid-community";
 
 
+
 export function selectButton(
 	params: ICellRendererParams,
 	onclickFn: (params: ICellRendererParams) => void,

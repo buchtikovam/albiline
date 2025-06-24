@@ -1,5 +1,22 @@
 import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
-import type { LayoutLoad } from './$types';
+import {
+	initTableSalesTotalByStore
+} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/initTableSalesTotalByStore";
+import {
+	initTableSalesTotalByStoreDetail
+} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/initTableSalesTotalByStoreDetail";
+import {
+	initTableSalesSubdetailByCostlevel
+} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/initTableSalesSubdetailByCostlevel";
+import {
+	initTableSalesDocumentByCustomerorstore
+} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/po-fakturach/initTableSalesDocumentByCustomerorstore";
+import type {LayoutLoad} from './$types';
+import {
+	initTableSalesCustomerorstoreByProductline
+} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/po-liniich/initTableSalesCustomerorstoreByProductline";
+
+
 
 export const load: LayoutLoad = async () => {
 	pageKeys.value = {
@@ -11,96 +28,34 @@ export const load: LayoutLoad = async () => {
 		index: 0,
 	}
 
+	// *Celkové po divizích
 	if (!agGridTables.value["SalesTotalByStore"]) {
-		agGridTables.value["SalesTotalByStore"] = {
-			type: "clientSide",
-			name: "SalesTotalByStore",
-			index: 0,
-			gridApi: undefined,
-			requiredFields: [],
-			identificationKey: "deliveryAddressCode",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			fulltextFilterValue: "",
-			openInputParams: true,
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			necessaryDataColumns: [],
-			recentFilters: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-		}
+		agGridTables.value["SalesTotalByStore"] = initTableSalesTotalByStore();
 	}
 
+	// Detail po divizích
 	if (!agGridTables.value["SalesTotalByStoreDetail"]) {
-		agGridTables.value["SalesTotalByStoreDetail"] = {
-			type: "clientSide",
-			name: "SalesTotalByStoreDetail",
-			index: 0,
-			gridApi: undefined,
-			requiredFields: [],
-			identificationKey: "divisionId",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			fulltextFilterValue: "",
-			openInputParams: true,
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			necessaryDataColumns: [],
-			recentFilters: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-		}
+		agGridTables.value["SalesTotalByStoreDetail"] = initTableSalesTotalByStoreDetail();
 	}
 
+	// Detail po KLP
 	if (!agGridTables.value["SalesSubdetailByCostlevel"]) {
-		agGridTables.value["SalesSubdetailByCostlevel"] = {
-			type: "clientSide",
-			name: "SalesSubdetailByCostlevel",
-			index: 0,
-			gridApi: undefined,
-			requiredFields: [],
-			identificationKey: "costLevelCode",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			fulltextFilterValue: "",
-			openInputParams: true,
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			necessaryDataColumns: [],
-			recentFilters: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-		}
+		agGridTables.value["SalesSubdetailByCostlevel"] = initTableSalesSubdetailByCostlevel();
+	}
+
+
+	// Table definitions for redirect to /prodej/analyza-prodeju/po-zakaznicich-a-prodejnach/po-fakturach
+
+	// Po zákaznících a fakturách
+	if (!agGridTables.value["SalesDocumentByCustomerorstore"]) {
+		agGridTables.value["SalesDocumentByCustomerorstore"] = initTableSalesDocumentByCustomerorstore();
+	}
+
+
+	// 	Table definitions for redirect to /prodej/analyza-prodeju/po-zakaznicich/po-liniich
+
+	// Po zákaznících a liniích
+	if (!agGridTables.value["SalesCustomerorstoreByProductline"]) {
+		agGridTables.value["SalesCustomerorstoreByProductline"] = initTableSalesCustomerorstoreByProductline();
 	}
 };

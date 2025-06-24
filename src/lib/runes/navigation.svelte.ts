@@ -1,5 +1,5 @@
 import type { HeaderTab } from '$lib/types/components/sidebar/sidebar';
-import {SessionStore, sessionStore} from '$lib/utils/browser-storage/sessionStorage.svelte';
+import {SessionStore, sessionStore} from '$lib/utils/storage/sessionStorage.svelte';
 
 
 export const openedTabs: SessionStore<HeaderTab[]> = sessionStore("openedTabs", []);

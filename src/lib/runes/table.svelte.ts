@@ -1,5 +1,5 @@
 import type {AgGridTables} from "$lib/types/components/table/table";
-import {SessionStore, sessionStore} from "$lib/utils/browser-storage/sessionStorage.svelte";
+import {SessionStore, sessionStore} from "$lib/utils/storage/sessionStorage.svelte";
 
 export interface TableSettings {
 	headerHeight: number;

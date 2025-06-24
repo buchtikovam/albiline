@@ -1,6 +1,9 @@
 import type {GridOptions} from "ag-grid-enterprise";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import * as m from '$lib/paraglide/messages.js';
+import type {ICellRendererParams} from "ag-grid-community";
+import ArrowRightCellRenderer from "$lib/components/ag-grid/cell-renderer/ArrowRightCellRenderer.svelte";
+import {ArrowRightComp} from "$lib/utils/components/ag-grid/cell-renderers/arrowRight.svelte";
 
 export const SalesTotalByStoreAgGridDef: GridOptions = {
 	statusBar: undefined,
@@ -14,6 +17,13 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 	},
 
 	columnDefs: [
+		getAgColumn("documents", "text", 60, false, false, false, [], {
+			cellRenderer: ArrowRightComp,
+			sortable: false,
+			filterable: false,
+			suppressHeaderFilterButton: true,
+		}),
+
 		// Země
 		getAgColumn("salesCountryCode", "text", 100, false, false, false, []),
 		// Měna
@@ -212,6 +222,9 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 		getAgColumn("daysWithoutOrder_2", "number", 150, false, false, false, []),
 		// HRY dnů bez obj.
 		getAgColumn("daysWithoutOrder_3", "number", 150, false, false, false, []),
+
+		// TODO
+
 		// Počet dodávek letos
 		getAgColumn("deliveries", "number", 180, false, false, false, []),
 		// Prodeje B2B eshop vloni
@@ -504,4 +517,5 @@ export const SalesTotalByStoreHeaderTranslations = {
 	margin_TransportCost_LY: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_LY,
 	transportCost_AY: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_transportCost_AY,
 	margin_TransportCost_AY: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_AY,
+	documents: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_documents,
 }

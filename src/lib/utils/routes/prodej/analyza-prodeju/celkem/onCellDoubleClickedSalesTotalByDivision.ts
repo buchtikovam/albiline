@@ -4,8 +4,9 @@ import type {InputParamsType} from "$lib/types/components/input-params/inputPara
 import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 import {agGridTables} from "$lib/runes/table.svelte";
 import {goto} from "$app/navigation";
+import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 
-export function onDoubleClickedSalesTotalByDivision(
+export function onCellDoubleClickedSalesTotalByDivision(
 	origin: "division"|"linie"|"costLevel",
 	divisionTable: AgGridTableType,
 	linieTable: AgGridTableType,
@@ -121,6 +122,19 @@ export function onDoubleClickedSalesTotalByDivision(
 			"clientSide",
 			{fulltextEnabled: true, columnFiltersEnabled: true}
 		).then(r => r)
+
+		handleTabClick({
+			field: 'analyza-prodeju-po-zakaznicich',
+			href: '/prodej/analyza-prodeju/po-zakaznicich',
+			open: false,
+			hide: false,
+			translation: () => "Po zákaznících", // todo
+			disabled: true,
+			disabledTooltip: () => "Na tuhle tabulku se dostaneš proklikem z Analýza prodejů - Celkem",
+			popoverOpen: false,
+			icon: null,
+			children: []
+		}, 2)
 
 		goto("/prodej/analyza-prodeju/po-zakaznicich").then(r => r);
 	}

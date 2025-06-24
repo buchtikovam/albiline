@@ -1,5 +1,20 @@
 import {agGridTables, pageKeys} from "$lib/runes/table.svelte.js";
 import type {LayoutLoad} from "../../../../../../../.svelte-kit/types/src/routes/(app)/$types";
+import {
+	initTableSalesTotalByDivision
+} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/initTableSalesTotalByDivision";
+import {
+	initTableSalesTotalByDivisionSubdetailProductline
+} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/initTableSalesTotalByDivisionSubdetailProductline";
+import {
+	initTableSalesTotalByDivisionSubdetailProductlineSubdetailCostlevel
+} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/initTableSalesTotalByDivisionSubdetailProductlineSubdetailCostlevel";
+import {
+	initTableSalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity
+} from "$lib/utils/routes/prodej/analyza-prodeju/celkem/initTableSalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity";
+import {
+	initTableSalesCustomdetailByCustomers
+} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/initTableSalesCustomdetailByCustomers";
 
 
 
@@ -14,266 +29,32 @@ export const load: LayoutLoad = async () => {
 		index: 0
 	};
 
-	if (!agGridTables.value[pageKeys.value.value[0]]) {
-		agGridTables.value[pageKeys.value.value[0]] = {
-			type: "clientSide",
-			name: "SalesTotalByDivision",
-			index: 0,
-			gridApi: undefined,
-			requiredFields: ["itemId"],
-			identificationKey: "itemId",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			openInputParams: false,
-			fulltextFilterValue: "",
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			recentFilters: [],
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-			necessaryDataColumns: [
-				"basePrice_CZ_LY",
-				"basePrice_CZ_AY",
-				"basePrice_CZ_Wholesale_LY",
-				"basePrice_CZ_Wholesale_AY",
-				"basePrice_CZ_Eshop_LY",
-				"basePrice_CZ_Eshop_AY",
-				"basePrice_CZ_Retail_LY",
-				"basePrice_CZ_Retail_AY",
-				"basePrice_CZ_RetailBakery_LY",
-				"basePrice_CZ_RetailBakery_AY",
-				"basePrice_CZ_EshopKinoko_LY",
-				"basePrice_CZ_EshopKinoko_AY",
-				"basePrice_CZ_RetailKinoko_LY",
-				"basePrice_CZ_RetailKinoko_AY",
-				"basePrice_SK_LY",
-				"basePrice_SK_AY",
-				"basePrice_SK_Wholesale_LY",
-				"basePrice_SK_Wholesale_AY",
-				"basePrice_SK_Eshop_LY",
-				"basePrice_SK_Eshop_AY",
-				"basePrice_SK_Retail_LY",
-				"basePrice_SK_Retail_AY",
-				"basePrice_PL_LY",
-				"basePrice_PL_AY",
-				"basePrice_PL_Wholesale_LY",
-				"basePrice_PL_Wholesale_AY",
-				"basePrice_PL_Eshop_LY",
-				"basePrice_PL_Eshop_AY",
-				"basePrice_CZ_Export_LY",
-				"basePrice_CZ_Export_AY",
-				"sales_Wholesale_LY",
-				"sales_Wholesale_AY",
-				"sales_Eshop_LY",
-				"sales_Eshop_AY",
-				"sales_Retail_LY",
-				"sales_Retail_AY",
-				"sales_WholesaleExport_LY",
-				"sales_WholesaleExport_AY",
-				"sales_RetailBakery_LY",
-				"sales_RetailBakery_AY",
-				"sales_Kinoko_LY",
-				"sales_Kinoko_AY"
-			]
-		}
+	// *Po divizích
+	if (!agGridTables.value["SalesTotalByDivision"]) {
+		agGridTables.value["SalesTotalByDivision"] = initTableSalesTotalByDivision();
 	}
 
-	if (!agGridTables.value[pageKeys.value.value[1]]) {
-		agGridTables.value[pageKeys.value.value[1]] = {
-			type: "clientSide",
-			name: "SalesTotalByDivisionSubdetailProductline",
-			index: 1,
-			gridApi: undefined,
-			requiredFields: ["itemId"],
-			identificationKey: "itemId",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			openInputParams: false,
-			fulltextFilterValue: "",
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			recentFilters: [],
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-			necessaryDataColumns: [
-				"basePrice_CZ_LY",
-				"basePrice_CZ_AY",
-				"basePrice_CZ_Wholesale_LY",
-				"basePrice_CZ_Wholesale_AY",
-				"basePrice_CZ_Eshop_LY",
-				"basePrice_CZ_Eshop_AY",
-				"basePrice_CZ_Retail_LY",
-				"basePrice_CZ_Retail_AY",
-				"basePrice_CZ_RetailBakery_LY",
-				"basePrice_CZ_RetailBakery_AY",
-				"basePrice_CZ_EshopKinoko_LY",
-				"basePrice_CZ_EshopKinoko_AY",
-				"basePrice_CZ_RetailKinoko_LY",
-				"basePrice_CZ_RetailKinoko_AY",
-				"basePrice_SK_LY",
-				"basePrice_SK_AY",
-				"basePrice_SK_Wholesale_LY",
-				"basePrice_SK_Wholesale_AY",
-				"basePrice_SK_Eshop_LY",
-				"basePrice_SK_Eshop_AY",
-				"basePrice_SK_Retail_LY",
-				"basePrice_SK_Retail_AY",
-				"basePrice_PL_LY",
-				"basePrice_PL_AY",
-				"basePrice_PL_Wholesale_LY",
-				"basePrice_PL_Wholesale_AY",
-				"basePrice_PL_Eshop_LY",
-				"basePrice_PL_Eshop_AY",
-				"basePrice_CZ_Export_LY",
-				"basePrice_CZ_Export_AY"
-			]
-		}
+	// Detail po liniích
+	if (!agGridTables.value["SalesTotalByDivisionSubdetailProductline"]) {
+		agGridTables.value["SalesTotalByDivisionSubdetailProductline"] = initTableSalesTotalByDivisionSubdetailProductline();
 	}
 
-	if (!agGridTables.value[pageKeys.value.value[2]]) {
-		agGridTables.value[pageKeys.value.value[2]] = {
-			type: "clientSide",
-			name: "SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel",
-			index: 2,
-			gridApi: undefined,
-			requiredFields: ["itemId"],
-			identificationKey: "itemId",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			openInputParams: false,
-			fulltextFilterValue: "",
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			recentFilters: [],
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-			necessaryDataColumns: [
-				"basePrice_CZ_LY",
-				"basePrice_CZ_AY",
-				"basePrice_CZ_Wholesale_LY",
-				"basePrice_CZ_Wholesale_AY",
-				"basePrice_CZ_Eshop_LY",
-				"basePrice_CZ_Eshop_AY",
-				"basePrice_CZ_Retail_LY",
-				"basePrice_CZ_Retail_AY",
-				"basePrice_CZ_RetailBakery_LY",
-				"basePrice_CZ_RetailBakery_AY",
-				"basePrice_CZ_EshopKinoko_LY",
-				"basePrice_CZ_EshopKinoko_AY",
-				"basePrice_CZ_RetailKinoko_LY",
-				"basePrice_CZ_RetailKinoko_AY",
-				"basePrice_SK_LY",
-				"basePrice_SK_AY",
-				"basePrice_SK_Wholesale_LY",
-				"basePrice_SK_Wholesale_AY",
-				"basePrice_SK_Eshop_LY",
-				"basePrice_SK_Eshop_AY",
-				"basePrice_SK_Retail_LY",
-				"basePrice_SK_Retail_AY",
-				"basePrice_PL_LY",
-				"basePrice_PL_AY",
-				"basePrice_PL_Wholesale_LY",
-				"basePrice_PL_Wholesale_AY",
-				"basePrice_PL_Eshop_LY",
-				"basePrice_PL_Eshop_AY",
-				"basePrice_CZ_Export_LY",
-				"basePrice_CZ_Export_AY"
-			]
-		}
+	// Detail po KLP
+	if (!agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel"]) {
+		agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevel"] = initTableSalesTotalByDivisionSubdetailProductlineSubdetailCostlevel();
 	}
 
-	if (!agGridTables.value[pageKeys.value.value[3]]) {
-		agGridTables.value[pageKeys.value.value[3]] = {
-			type: "clientSide",
-			name: "SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity",
-			index: 3,
-			gridApi: undefined,
-			requiredFields: ["itemId"],
-			identificationKey: "itemId",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			openInputParams: false,
-			fulltextFilterValue: "",
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			recentFilters: [],
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-			necessaryDataColumns: []
-		}
+	// Detail po KS
+	if (!agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity"]) {
+		agGridTables.value["SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity"] = initTableSalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantity();
 	}
 
 
-	// table for /prodej/analyza-prodeju/po-zakaznicich
+	// 	Table definitions for redirect to /prodej/analyza-prodeju/po-zakaznicich
 
+
+	// Po zákaznících
 	if (!agGridTables.value["SalesCustomdetailByCustomers"]) {
-		agGridTables.value["SalesCustomdetailByCustomers"] = {
-			type: "clientSide",
-			name: "SalesCustomdetailByCustomers",
-			index: 0,
-			gridApi: undefined,
-			requiredFields: ["customerNodeCode"],
-			identificationKey: "customerNodeCode",
-			defaultColState: [],
-			setColStateToDefault: false,
-			createdTableData: [],
-			editedTableData: [],
-			deletedTableData: [],
-			filtersToSave: {},
-			presetToSave: [],
-			fulltextFilterValue: "",
-			openInputParams: true,
-			selectedRows: [],
-			selectionState: { selectAll: false, toggledNodes: [] },
-			sortState: [],
-			necessaryDataColumns: ["returnQuantity_LY", "returnQuantity_AY", "returnSales_LY", "returnSales_AY", ],
-			recentFilters: [],
-			activeSelectedRowIndex: 0,
-			lastVisibleRowIndex: 0,
-			areInputParamsLoading: false,
-			hasInputParams: false,
-			loadedInputParams: {},
-			showRefreshDataButton: false,
-		}
+		agGridTables.value["SalesCustomdetailByCustomers"] = initTableSalesCustomdetailByCustomers();
 	}
 };

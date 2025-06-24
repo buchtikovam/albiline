@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {InputParamsZakaznici, InputParamsZakazniciSelectOptions} from "$lib/definitions/routes/prodej/zakaznici/input-params/InputParamsZakaznici";
 	import {customerGridOptions, customerHeaderTranslations} from '$lib/definitions/routes/prodej/zakaznici/ag-grid-ss/customerAgGridDef.svelte';
-	import {activeTabIndex, showFulltextSearch} from '$lib/runes/page.svelte';
+	import {activeTabIndex, pageCodes, showFulltextSearch} from '$lib/runes/page.svelte';
 	import {pageKeys, agGridTables} from "$lib/runes/table.svelte";
 	import {parseUrlErrors} from "$lib/utils/navigation/parseUrlErrors.svelte";
 	import {beforeNavigate} from "$app/navigation";
@@ -13,6 +13,7 @@
 	import AgGridSSWrapper from "$lib/components/ag-grid/serverside/AgGridSSWrapper.svelte";
 	import {ribbonAction} from "$lib/runes/ribbon.svelte";
 	import {RibbonActionEnum} from "$lib/enums/ribbon/ribbonAction";
+	import {page} from "$app/state";
 
 
 	interface Props {
@@ -25,7 +26,7 @@
 	showFulltextSearch.value = true;
 
 	pageKeys.value = {
-		value: ["CustomersGetList"],
+		value: pageCodes.value.get(page.route.id || "") || [],
 		index: 0
 	};
 

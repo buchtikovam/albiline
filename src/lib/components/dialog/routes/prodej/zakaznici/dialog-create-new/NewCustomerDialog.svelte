@@ -1,18 +1,17 @@
 <script lang="ts">
+	import {newCustomerStepperItems} from "$lib/definitions/routes/prodej/zakaznici/stepper/newCustomerStepperItems";
+	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import {Button} from '$lib/components/ui/button';
 	import AutoFormSimple from '$lib/components/form/AutoFormSimple.svelte';
 	import DialogWrapper from "$lib/components/dialog/DialogWrapper.svelte";
 	import * as m from '$lib/paraglide/messages.js'
 	import * as Dialog from '$lib/components/ui/dialog';
-	import {newCustomerStepperItems} from "$lib/definitions/routes/prodej/zakaznici/stepper/newCustomerStepperItems";
-	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import Stepper from "$lib/components/stepper/Stepper.svelte";
 	import NewCustomerTabs
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerTabs.svelte";
 	import NewCustomerAddressTabs
 		from "$lib/components/dialog/routes/prodej/zakaznici/dialog-create-new/NewCustomerAddressTabs.svelte";
-	import type {CustomerType} from "$lib/types/routes/prodej/zakaznici/customers";
 
 	interface Props {
 		dialogOpen: boolean;
@@ -54,7 +53,7 @@
 		areaId: null
 	});
 
-	let customer: CustomerType = $state({
+	let customer = $state({
 		customerNodeCode: null,
 		customerAddressCode: null,
 		customerName: null,

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {activeTabIndex, showFulltextSearch} from "$lib/runes/page.svelte";
+	import {activeTabIndex, pageCodes, showFulltextSearch} from "$lib/runes/page.svelte";
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import type { AgGridTableType } from "$lib/types/components/table/table";
 	import AgGridCSWrapper from "$lib/components/ag-grid/clientside/AgGridCSWrapper.svelte";
@@ -13,9 +13,10 @@
 	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/onCellDoubleClickedSalesCustomerorstoreByProductline";
 	import {beforeNavigate} from "$app/navigation";
 	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
+	import {page} from "$app/state";
 
 	pageKeys.value = {
-		value: ["SalesCustomdetailByCustomers"],
+		value: pageCodes.value.get(page.route.id||"")||[],
 		index: 0,
 	}
 
@@ -102,7 +103,7 @@
 
 <svelte:head>
 	<title>
-		Analýza prodejů - po zákaznících | Albiline
+		Analýza prodejů - Po zákaznících | Albiline
 	</title>
 </svelte:head>
 
