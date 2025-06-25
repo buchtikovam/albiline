@@ -4,10 +4,12 @@ import {defineConfig} from 'vite';
 import {SvelteKitPWA} from "@vite-pwa/sveltekit";
 const env = process.env;
 import devtoolsJson from 'vite-plugin-devtools-json';
+// import basicSsl from "@vitejs/plugin-basic-ssl"
 
 
 export default defineConfig({
 	plugins: [
+		// basicSsl(),
 		sveltekit(),
 		devtoolsJson(),
 		paraglideVitePlugin({
