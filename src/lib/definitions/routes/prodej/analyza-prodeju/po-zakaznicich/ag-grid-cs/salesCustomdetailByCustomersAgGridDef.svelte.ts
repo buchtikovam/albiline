@@ -4,7 +4,7 @@ import {
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
 import type {
-	GridOptions,
+	GridOptions, IAggFuncParams,
 	ValueFormatterParams,
 	ValueGetterParams
 } from "ag-grid-enterprise";
@@ -16,6 +16,7 @@ import {
 } from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
 import { compoundGenericDiffAggregator } from '$lib/utils/components/ag-grid/agg-functions/compoundGenericDiffAggregator';
 import { compoundOverallRatioComparisonAggregator } from "$lib/utils/components/ag-grid/agg-functions/compoundOverallRatioComparisonAggregator";
+import {sumBy} from "lodash-es";
 
 
 
@@ -563,34 +564,23 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 
 
 
-		getAgColumn(
-			"_computedColumn1", // % z obratu letos TODO: dodělat agg funkci
-			"number", 90,
-			false, false, false,
-			["text-right"],
+		getAgColumn( // % z obratu letos
+			"_computedColumn1", "number", 90,
+			false, false, false, ["text-right"],
 			{
-				aggFunc: () => {
-					return 1;
-				},
+				aggFunc: "sum",
 				valueGetter: (params: ValueGetterParams) => {
 					const totalSalesLY = params.context?.totalSalesLY;
 
-					if (
-						!params.data ||
-						typeof params.data.sales_LY !== 'number' ||
-						typeof totalSalesLY !== 'number'
-					) {
+					if (!params.data || typeof params.data.sales_LY !== 'number' || typeof totalSalesLY !== 'number') {
 						return null;
 					}
-					const currentRowSalesLY: number = params.data.sales_LY;
 
-					console.log("current", currentRowSalesLY)
-					console.log("total", totalSalesLY)
+					const currentRowSalesLY: number = params.data.sales_LY;
 
 					if (totalSalesLY === 0) {
 						return currentRowSalesLY === 1;
 					}
-
 
 					return currentRowSalesLY / totalSalesLY;
 				},
@@ -598,26 +588,24 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			}
 		),
 
-		getAgColumn(
-			"_computedColumn2", // % z obratu vloni TODO: dodělat agg funkci
-			"number", 90,
-			false, false, false,
-			["text-right"],
+		getAgColumn( // % z obratu vloni
+			"_computedColumn2", "number", 90,
+			false, false, false, ["text-right"],
 			{
-				aggFunc: () => {
-					return 1
-				},
+				aggFunc: "sum",
 				valueGetter: (params: ValueGetterParams) => {
 					const totalSalesAY = params.context?.totalSalesAY;
 
 					if (!params.data || typeof params.data.sales_AY !== 'number' || typeof totalSalesAY !== 'number') {
 						return null;
 					}
+
 					const currentRowSalesAY: number = params.data.sales_AY;
 
 					if (totalSalesAY === 0) {
-						return currentRowSalesAY === 0 ? 0 : null;
+						return null;
 					}
+
 					return currentRowSalesAY / totalSalesAY;
 				},
 				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),

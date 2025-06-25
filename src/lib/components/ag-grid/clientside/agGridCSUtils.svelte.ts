@@ -160,7 +160,7 @@ async function fetchAndCache(
 					!preset.hide &&
 					!preset.colId.includes("ag-Grid") &&
 					!columnList.includes(preset.colId) &&
-					!preset.colId.includes("_computed")
+					!preset.colId.startsWith("_")
 				) {
 					columnList.push(preset.colId)
 				}
@@ -171,7 +171,7 @@ async function fetchAndCache(
 					!preset.hide &&
 					!preset.colId.includes("ag-Grid") &&
 					!columnList.includes(preset.colId) &&
-					!preset.colId.includes("_computed")
+					!preset.colId.startsWith("_")
 				) {
 					columnList.push(preset.colId)
 				}

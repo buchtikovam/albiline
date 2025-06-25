@@ -5,11 +5,11 @@ import {SvelteKitPWA} from "@vite-pwa/sveltekit";
 const env = process.env;
 import devtoolsJson from 'vite-plugin-devtools-json';
 
+
 export default defineConfig({
 	plugins: [
 		sveltekit(),
 		devtoolsJson(),
-
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
@@ -80,7 +80,6 @@ export default defineConfig({
 				},
 			]
 		}),
-
 		SvelteKitPWA({
 			srcDir: './src',
 			strategies: 'generateSW',
@@ -121,9 +120,8 @@ export default defineConfig({
 				includeVersionFile: true,
 			}
 		}),
-
 	],
 	build: {
 		chunkSizeWarningLimit: 3000,
-	}
+	},
 });

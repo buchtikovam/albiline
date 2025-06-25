@@ -31,7 +31,7 @@
 	import deepcopy from "deepcopy";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
 	import PageTitle from "$lib/components/page/PageTitle.svelte";
-	import type {CellDoubleClickedEvent, GridOptions} from "ag-grid-enterprise";
+	import type {CellDoubleClickedEvent, GridApi, GridOptions, IRowNode, ModelUpdatedEvent} from "ag-grid-enterprise";
 	import Fulltext from "$lib/components/form/Fulltext.svelte";
 	import {
 		getPageTitleSalesTotalByStore
@@ -76,7 +76,7 @@
 		pageStates.value[routeId] = {
 			resizablePageSections: {
 				salesTotalByStoreSection: { open: true, size: 50, focused: true, index: 0 },
-				salesTotalSubdetailGroupSection: { open: false, size: 50, focused: false, index: 0 }, // wrapper section
+				salesTotalSubdetailGroupSection: { open: false, size: 50, focused: false, index: -1 }, // wrapper section
 				salesTotalByStoreDetailSection: { open: true, size: 50, focused: false, index: 1 },
 				salesSubdetailByCostlevelSection: { open: true, size: 50, focused: false, index: 2 }
 			}
@@ -199,9 +199,54 @@
 		salesTotalByStoreTable.openInputParams = false;
 	})
 
+	let gridContext = $state({
+		totalSalesLY: 0,
+		totalSalesAY: 0
+	});
+
+	function calculateAndRefreshTotals(api: GridApi | null) {
+		if (!api) {
+			return;
+		}
+
+		let currentTotalLY = 0;
+		let currentTotalAY = 0;
+
+		// Use forEachNodeAfterFilter to only consider rows that are currently displayed.
+		api.forEachNodeAfterFilter((node: IRowNode) => {
+			if (node.data) {
+				// Safely add to totals, ensuring the value is a valid number.
+				if (typeof node.data.sales_LY === 'number' && isFinite(node.data.sales_LY)) {
+					currentTotalLY += node.data.sales_LY;
+				}
+				if (typeof node.data.sales_AY === 'number' && isFinite(node.data.sales_AY)) {
+					currentTotalAY += node.data.sales_AY;
+				}
+			}
+		});
+
+		// Update the reactive context object
+		gridContext.totalSalesLY = currentTotalLY;
+		gridContext.totalSalesAY = currentTotalAY;
+
+		// Force the grid to re-run valueGetters and cellRenderers for the computed columns.
+		api.refreshCells({
+			columns: ['_computedColumn1', '_computedColumn2'],
+			force: true
+		});
+
+		api.refreshClientSideRowModel()
+	}
+
 
 	// Custom grid options with double-click handlers
 	const salesTotalByStoreCustomGridOptions: GridOptions = {
+		context: gridContext,
+
+		onModelUpdated: (event: ModelUpdatedEvent) => {
+			calculateAndRefreshTotals(event.api);
+		},
+
 		onCellDoubleClicked: (event: CellDoubleClickedEvent<any>) => {
 			onCellDoubleClickedSalesTotalByStore(salesTotalByStoreTable, event);
 		},

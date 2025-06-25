@@ -1,13 +1,87 @@
-import type {GridOptions} from "ag-grid-enterprise";
+import type {GridOptions, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
 import * as m from '$lib/paraglide/messages.js';
 import type {ICellRendererParams} from "ag-grid-community";
 import ArrowRightCellRenderer from "$lib/components/ag-grid/cell-renderer/ArrowRightCellRenderer.svelte";
 import {ArrowRightComp} from "$lib/utils/components/ag-grid/cell-renderers/arrowRight.svelte";
+import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
+import {compoundDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
+import {formatPercentage} from "$lib/utils/general/formatPercentage";
+import {compoundGenericDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericDiffAggregator";
+import {
+	compoundGenericRatioAggregator
+} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericRatioAggregator";
+
+
+function getSumObj() {
+	return {
+		aggFunc: "sum",
+		valueFormatter: (params: ValueFormatterParams) => {
+			return formatNumberToCzech(params.value)
+		}
+	}
+}
+
+function getDiffPercentageObj() {
+	return {
+		aggFunc: 'diffPercentage',
+		cellRenderer: (params: ICellRendererParams) => {
+			if (params.node && params.node.group) {
+				return formatPercentage(params.value, 0);
+			}
+
+			if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+				return formatPercentage(params.value.originalDiffValue, 0);
+			}
+
+			return '';
+		},
+	}
+}
+
+function getDivisionPercentageObj() {
+	return {
+		aggFunc: 'divisionPercentage',
+		cellRenderer: (params: ICellRendererParams) => {
+			if (params.node && params.node.group) {
+				return formatPercentage(params.value, 0);
+			}
+
+			if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+				return formatPercentage(params.value.originalDiffValue, 0);
+			}
+
+			return '';
+		},
+	}
+}
+
+function getDivisionObj() {
+	return {
+		aggFunc: 'division',
+		cellRenderer: (params: ICellRendererParams) => {
+			if (params.node && params.node.group) {
+				return formatPercentage(params.value, 0);
+			}
+
+			if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
+				return formatPercentage(params.value.originalDiffValue, 0);
+			}
+
+			return '';
+		},
+	}
+}
 
 export const SalesTotalByStoreAgGridDef: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
+
+	aggFuncs: {
+		'diffPercentage': compoundDiffAggregator,
+		'divisionPercentage' : compoundGenericDiffAggregator,
+		'division' : compoundGenericRatioAggregator,
+	},
 
 	rowSelection: {
 		mode: "singleRow",
@@ -17,232 +91,941 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 	},
 
 	columnDefs: [
-		getAgColumn("documents", "text", 60, false, false, false, [], {
-			cellRenderer: ArrowRightComp,
-			sortable: false,
-			filterable: false,
-			suppressHeaderFilterButton: true,
-		}),
+		// // Země
+		// getAgColumn("salesCountryCode", "text", 100, false, false, false, []),
+		// // Měna
+		// getAgColumn("currency", "text", 100, false, false, false, []),
+		// // B
+		// getAgColumn("customerRank", "text", 100, false, false, false, []),
+		// // OZ
+		// getAgColumn("dealerCode", "number", 120, false, false, false, []),
+		// // OM
+		// getAgColumn("managerCode", "number", 120, false, false, false, []),
+		// // Číslo zákazníka
+		// getAgColumn("customerNodeCode", "number", 150, false, false, false, []),
+		// // Číslo prodejny
+		// getAgColumn("deliveryAddressCode", "number", 150, false, false, false, []),
+		// // Zákazník
+		// getAgColumn("customerNodeName", "text", 200, false, false, false, []),
+		// // Prodejna
+		// getAgColumn("deliveryAddress", "text", 200, false, false, false, []),
+		// // Ulice
+		// getAgColumn("street", "text", 150, false, false, false, []),
+		// // Město
+		// getAgColumn("city", "text", 150, false, false, false, []),
+		// // PSČ
+		// getAgColumn("postCode", "text", 100, false, false, false, []),
+		// // Typ prodejny
+		// getAgColumn("retailStoreType", "text", 150, false, false, false, []),
+		// // První prodej
+		// getAgColumn("firstSalesDate", "date", 150, false, false, false, []),
+		//
+		// getAgColumn( // Celkem vloni
+		// 	"sales_LY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // Celkem letos
+		// 	"sales_AY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // Nárůst
+		// 	"sales_DiffAbs", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // %
+		// 	"sales_Diff", "number", 80,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.sales_AY,
+		// 					divisor: params.data.sales_LY,
+		// 					originalDiffValue: params.data.sales_Diff
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		...getDiffPercentageObj(),
+		// 	}
+		// ),
+		//
+		// getAgColumn( // % z obratu letos
+		// 	"_computedColumn1", "number", 90,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		aggFunc: "sum",
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			const totalSalesLY = params.context?.totalSalesLY;
+		//
+		// 			if (!params.data || typeof params.data.sales_LY !== 'number' || typeof totalSalesLY !== 'number') {
+		// 				return null;
+		// 			}
+		//
+		// 			const currentRowSalesLY: number = params.data.sales_LY;
+		//
+		// 			if (totalSalesLY === 0) {
+		// 				return currentRowSalesLY === 1;
+		// 			}
+		//
+		// 			return currentRowSalesLY / totalSalesLY;
+		// 		},
+		// 		valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+		// 	}
+		// ),
+		//
+		// getAgColumn( // % z obratu vloni
+		// 	"_computedColumn2", "number", 90,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		aggFunc: "sum",
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			const totalSalesAY = params.context?.totalSalesAY;
+		//
+		// 			if (!params.data || typeof params.data.sales_AY !== 'number' || typeof totalSalesAY !== 'number') {
+		// 				return null;
+		// 			}
+		//
+		// 			const currentRowSalesAY: number = params.data.sales_AY;
+		//
+		// 			if (totalSalesAY === 0) {
+		// 				return null;
+		// 			}
+		//
+		// 			return currentRowSalesAY / totalSalesAY;
+		// 		},
+		// 		valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+		// 	}
+		// ),
+		//
+		// {
+		// 	field: "group_hry_vo",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_3_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ... getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_3_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ... getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_3_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_3_AY,
+		// 							divisor: params.data.sales_3_LY,
+		// 							originalDiffValue: params.data.sales_3_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_3_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ... getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_kouzelne_cteni",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_8_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_8_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 			),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_8_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_8_AY,
+		// 							divisor: params.data.sales_8_LY,
+		// 							originalDiffValue: params.data.sales_8_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_8_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_kvido_a_skoly",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_10_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_10_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_10_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_10_AY,
+		// 							divisor: params.data.sales_10_LY,
+		// 							originalDiffValue: params.data.sales_10_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_10_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_science",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_6_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_6_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_6_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_6_AY,
+		// 							divisor: params.data.sales_6_LY,
+		// 							originalDiffValue: params.data.sales_6_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_6_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		//
+		// {
+		// 	field: "group_darky",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_1_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_1_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_1_Diff", "number", 70,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_1_AY,
+		// 							divisor: params.data.sales_1_LY,
+		// 							originalDiffValue: params.data.sales_1_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_1_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_stationery",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_7_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_7_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_7_Diff", "number", 70,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 			valueGetter: (params: ValueGetterParams) => {
+		// 				// @ts-ignore
+		// 				if (params.data && !params.node.group) {
+		// 					return {
+		// 						dividend: params.data.sales_7_AY,
+		// 						divisor: params.data.sales_7_LY,
+		// 						originalDiffValue: params.data.sales_7_Diff
+		// 					};
+		// 				}
+		//
+		// 				return null;
+		// 			},
+		// 			...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_7_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_pdo",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_0_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_0_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_0_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_0_AY,
+		// 							divisor: params.data.sales_0_LY,
+		// 							originalDiffValue: params.data.sales_0_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_0_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_mementerra",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_11_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_11_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_11_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_11_AY,
+		// 							divisor: params.data.sales_11_LY,
+		// 							originalDiffValue: params.data.sales_11_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_11_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_baleni_darku",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_2_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_2_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_2_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_2_AY,
+		// 							divisor: params.data.sales_2_LY,
+		// 							originalDiffValue: params.data.sales_2_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_2_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_party",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_5_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_5_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_5_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_5_AY,
+		// 							divisor: params.data.sales_5_LY,
+		// 							originalDiffValue: params.data.sales_5_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_5_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_prodejny_mo",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_4_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_4_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_4_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_4_AY,
+		// 							divisor: params.data.sales_4_LY,
+		// 							originalDiffValue: params.data.sales_4_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_4_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_knihy",
+		// 	children: [
+		// 		getAgColumn( // loni
+		// 			"sales_12_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_12_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_12_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_12_AY,
+		// 							divisor: params.data.sales_12_LY,
+		// 							originalDiffValue: params.data.sales_12_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_12_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_posli_prani",
+		// 	children: [
+		// 		getAgColumn( // loni
+		// 			"sales_13_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_13_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_13_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_13_AY,
+		// 							divisor: params.data.sales_13_LY,
+		// 							originalDiffValue: params.data.sales_13_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_13_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// {
+		// 	field: "group_ostatni",
+		// 	children: [
+		// 		getAgColumn( // vloni
+		// 			"sales_9_LY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // letos
+		// 			"sales_9_AY", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"sales_9_Diff", "number", 80,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.sales_9_AY,
+		// 							divisor: params.data.sales_9_LY,
+		// 							originalDiffValue: params.data.sales_9_Diff
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				...getDiffPercentageObj(),
+		// 			}
+		// 		),
+		//
+		// 		getAgColumn( // Nárůst
+		// 			"sales_9_DiffAbs", "number", 110,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		// 	]
+		// },
+		//
+		// getAgColumn( // ZC celkem vloni
+		// 	"basePrice_LY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // ZC celkem letos
+		// 	"basePrice_AY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // %
+		// 	"basePrice_Diff", "number", 80,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.basePrice_AY,
+		// 					divisor: params.data.basePrice_LY,
+		// 					originalDiffValue: params.data.basePrice_Diff
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		...getDiffPercentageObj(),
+		// 	}
+		// ),
+		//
+		// getAgColumn( // Vč. DPH vloni
+		// 	"salesWithVat_LY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // Vč. DPH letos
+		// 	"salesWithVat_AY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // %
+		// 	"salesWithVatDiff", "number", 70,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.salesWithVat_AY,
+		// 					divisor: params.data.salesWithVat_LY,
+		// 					originalDiffValue: params.data.salesWithVatDiff
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		...getDiffPercentageObj(),
+		// 	}
+		// ),
+		//
+		//
+		// getAgColumn( // % slevy vloni
+		// 	"discountPct_LY", "number", 100,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.sales_LY,
+		// 					divisor: params.data.basePrice_LY,
+		// 					originalDiffValue: params.data.discountPct_LY
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		...getDivisionPercentageObj(),
+		// 	}
+		// ),
+		//
+		// getAgColumn( // % slevy letos
+		// 	"discountPct_AY", "number", 100,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.sales_AY,
+		// 					divisor: params.data.basePrice_AY,
+		// 					originalDiffValue: params.data.discountPct_AY
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		...getDivisionPercentageObj(),
+		// 	}
+		// ),
+		//
+		//
+		// // TODO - secret fields
+		// // Email
+		// getAgColumn("email", "text", 160, false, false, false, []),
+		// // První závoz
+		// getAgColumn("firstOrderDate", "date", 110, false, false, false, []),
+		// // Poslední závoz
+		// getAgColumn("lastOrderDate", "date", 110, false, false, false, []),
+		// // Prodejen vloni
+		// getAgColumn("storesCountLY", "number", 90, false, false, false, []),
+		// // Prodejen letos
+		// getAgColumn("storesCountAY", "number", 90, false, false, false, []),
+		// // PDO dnů bez obj.
+		// getAgColumn("daysWithoutOrder_0", "number", 90, false, false, false, []),
+		// // DY dnů bez obj.
+		// getAgColumn("daysWithoutOrder_1", "number", 90, false, false, false, []),
+		// // BD dnů bez obj.
+		// getAgColumn("daysWithoutOrder_2", "number", 90, false, false, false, []),
+		// // HRY dnů bez obj.
+		// getAgColumn("daysWithoutOrder_3", "number", 90, false, false, false, []),
+		//
+		// // Faktury
+		// getAgColumn(
+		// 	"_documents", "text", 60,
+		// 	false, false, false, [],
+		// 	{
+		// 		cellRenderer: ArrowRightComp,
+		// 		sortable: false,
+		// 		suppressHeaderFilterButton: true,
+		// 	}
+		// ),
+		//
+		// getAgColumn( // Počet dodávek letos
+		// 	"deliveries", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // Prodeje B2B eshop vloni
+		// 	"sales_B2B_LY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // Prodeje B2B eshop letos
+		// 	"sales_B2B_AY", "number", 110,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // %
+		// 	"sales_B2B_Diff", "number", 80,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.sales_B2B_AY,
+		// 					divisor: params.data.sales_B2B_LY,
+		// 					originalDiffValue: params.data.sales_B2B_Diff
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		...getDiffPercentageObj(),
+		// 	}
+		// ),
 
-		// Země
-		getAgColumn("salesCountryCode", "text", 100, false, false, false, []),
-		// Měna
-		getAgColumn("currency", "text", 100, false, false, false, []),
-		// B
-		getAgColumn("customerRank", "text", 100, false, false, false, []),
-		// OZ
-		getAgColumn("dealerCode", "number", 120, false, false, false, []),
-		// OM
-		getAgColumn("managerCode", "number", 120, false, false, false, []),
-		// Číslo zákazníka
-		getAgColumn("customerNodeCode", "number", 150, false, false, false, []),
-		// Číslo prodejny
-		getAgColumn("deliveryAddressCode", "number", 150, false, false, false, []),
-		// Zákazník
-		getAgColumn("customerNodeName", "text", 200, false, false, false, []),
-		// Prodejna
-		getAgColumn("deliveryAddress", "text", 200, false, false, false, []),
-		// Ulice
-		getAgColumn("street", "text", 150, false, false, false, []),
-		// Město
-		getAgColumn("city", "text", 150, false, false, false, []),
-		// PSČ
-		getAgColumn("postCode", "text", 100, false, false, false, []),
-		// Typ prodejny
-		getAgColumn("retailStoreType", "text", 150, false, false, false, []),
-		// První prodej
-		getAgColumn("firstSalesDate", "date", 150, false, false, false, []),
-		// Celkem vloni
-		getAgColumn("sales_LY", "number", 150, false, false, false, []),
-		// Celkem letos
-		getAgColumn("sales_AY", "number", 150, false, false, false, []),
-		// Nárůst
-		getAgColumn("sales_DiffAbs", "number", 120, false, false, false, []),
-		// %
-		getAgColumn("sales_Diff", "number", 100, false, false, false, []),
+		getAgColumn( // Marže letos
+			"profit_AY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumObj() }
+		),
+
+		getAgColumn( // %
+			"margin_AY", "number", 70,
+			false, false, false, ["text-right"],
+			{
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.profit_AY,
+							divisor: params.data.sales_AY,
+							originalDiffValue: params.data.margin_AY
+						};
+					}
+
+					return null;
+				},
+				...getDiffPercentageObj(),
+			}
+		),
+
+		// TODO: secret fields
 
 		{
 			field: "group_hry_vo",
 			children: [
-				getAgColumn("sales_3_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_3_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_3_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_3_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_kouzelne_cteni",
-			children: [
-				getAgColumn("sales_8_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_8_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_8_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_8_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_kvido_a_skoly",
-			children: [
-				getAgColumn("sales_10_LY", "number", 120, false, false, false, []),     // vloni
-				getAgColumn("sales_10_AY", "number", 120, false, false, false, []),     // letos
-				getAgColumn("sales_10_Diff", "number", 100, false, false, false, []),   // %
-				getAgColumn("sales_10_DiffAbs", "number", 120, false, false, false, []),// Nárůst
-			]
-		},
-		{
-			field: "group_science",
-			children: [
-				getAgColumn("sales_6_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_6_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_6_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_6_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_darky",
-			children: [
-				getAgColumn("sales_1_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_1_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_1_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_1_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_stationery",
-			children: [
-				getAgColumn("sales_7_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_7_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_7_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_7_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_pdo",
-			children: [
-				getAgColumn("sales_0_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_0_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_0_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_0_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_mementerra",
-			children: [
-				getAgColumn("sales_11_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_11_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_11_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_11_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_baleni_darku",
-			children: [
-				getAgColumn("sales_2_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_2_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_2_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_2_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_party",
-			children: [
-				getAgColumn("sales_5_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_5_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_5_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_5_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_prodejny_mo",
-			children: [
-				getAgColumn("sales_4_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_4_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_4_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_4_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
-		{
-			field: "group_knihy",
-			children: [
-				getAgColumn("sales_12_LY", "number", 120, false, false, false, []),     // loni
-				getAgColumn("sales_12_AY", "number", 120, false, false, false, []),     // letos
-				getAgColumn("sales_12_Diff", "number", 100, false, false, false, []),   // %
-				getAgColumn("sales_12_DiffAbs", "number", 120, false, false, false, []),// Nárůst
-			]
-		},
-		{
-			field: "group_posli_prani",
-			children: [
-				getAgColumn("sales_13_LY", "number", 120, false, false, false, []),     // loni
-				getAgColumn("sales_13_AY", "number", 120, false, false, false, []),     // letos
-				getAgColumn("sales_13_Diff", "number", 100, false, false, false, []),   // %
-				getAgColumn("sales_13_DiffAbs", "number", 120, false, false, false, []),// Nárůst
-			]
-		},
-		{
-			field: "group_ostatni",
-			children: [
-				getAgColumn("sales_9_LY", "number", 120, false, false, false, []),      // vloni
-				getAgColumn("sales_9_AY", "number", 120, false, false, false, []),      // letos
-				getAgColumn("sales_9_Diff", "number", 100, false, false, false, []),    // %
-				getAgColumn("sales_9_DiffAbs", "number", 120, false, false, false, []), // Nárůst
-			]
-		},
+				getAgColumn(
+					"profit_3_AY", "number", 120,
+					false, false, false, ["text-right"],
+					{}
+				), // Marže letos
 
-		// ZC celkem vloni
-		getAgColumn("basePrice_LY", "number", 150, false, false, false, []),
-		// ZC celkem letos
-		getAgColumn("basePrice_AY", "number", 150, false, false, false, []),
-		// %
-		getAgColumn("basePrice_Diff", "number", 100, false, false, false, []),
-		// Vč. DPH vloni
-		getAgColumn("salesWithVat_LY", "number", 150, false, false, false, []),
-		// Vč. DPH letos
-		getAgColumn("salesWithVat_AY", "number", 150, false, false, false, []),
-		// %
-		getAgColumn("salesWithVatDiff", "number", 100, false, false, false, []),
-		// % slevy vloni
-		getAgColumn("discountPct_LY", "number", 120, false, false, false, []),
-		// % slevy letos
-		getAgColumn("discountPct_AY", "number", 120, false, false, false, []),
-		// Email
-		getAgColumn("email", "text", 200, false, false, false, []),
-		// První závoz
-		getAgColumn("firstOrderDate", "date", 150, false, false, false, []),
-		// Poslední závoz
-		getAgColumn("lastOrderDate", "date", 150, false, false, false, []),
-		// Prodejen vloni
-		getAgColumn("storesCountLY", "number", 150, false, false, false, []),
-		// Prodejen letos
-		getAgColumn("storesCountAY", "number", 150, false, false, false, []),
-		// PDO dnů bez obj.
-		getAgColumn("daysWithoutOrder_0", "number", 150, false, false, false, []),
-		// DY dnů bez obj.
-		getAgColumn("daysWithoutOrder_1", "number", 150, false, false, false, []),
-		// BD dnů bez obj.
-		getAgColumn("daysWithoutOrder_2", "number", 150, false, false, false, []),
-		// HRY dnů bez obj.
-		getAgColumn("daysWithoutOrder_3", "number", 150, false, false, false, []),
-
-		// TODO
-
-		// Počet dodávek letos
-		getAgColumn("deliveries", "number", 180, false, false, false, []),
-		// Prodeje B2B eshop vloni
-		getAgColumn("sales_B2B_LY", "number", 200, false, false, false, []),
-		// Prodeje B2B eshop letos
-		getAgColumn("sales_B2B_AY", "number", 200, false, false, false, []),
-		// %
-		getAgColumn("sales_B2B_Diff", "number", 100, false, false, false, []),
-		// Marže letos
-		getAgColumn("profit_AY", "number", 120, false, false, false, []),
-		// %
-		getAgColumn("margin_AY", "number", 100, false, false, false, []),
-
-		{
-			field: "group_hry_vo",
-			children: [
-				getAgColumn("profit_3_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_3_AY", "number", 100, false, false, false, []), // %
+				getAgColumn(
+					"margin_3_AY", "number", 100,
+					false, false, false, ["text-right"],
+					{}
+				), // %
 			]
 		},
 		{
@@ -517,5 +1300,7 @@ export const SalesTotalByStoreHeaderTranslations = {
 	margin_TransportCost_LY: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_LY,
 	transportCost_AY: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_transportCost_AY,
 	margin_TransportCost_AY: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_margin_TransportCost_AY,
-	documents: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_documents,
+	_documents: m.routes_prodej_analyza_prodeju_po_zakaznicich_a_prodejnach_table_column_documents,
+	_computedColumn1: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn1,
+	_computedColumn2: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn2,
 }

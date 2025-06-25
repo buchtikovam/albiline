@@ -45,12 +45,12 @@ export function onCellDoubleClickedSalesCustomerorstoreByProductline(
 					value: currency
 				},
 				{
-					field: "customerNodeCode",
+					field: "customernodecode",
 					type: "number",
 					value: rowData["customerNodeCode"]
 				},
 				{
-					field: "customerNodeName",
+					field: "customernodename",
 					type: "text",
 					value: rowData["customerNodeName"]
 				},

@@ -7,7 +7,14 @@
 		SalesCustomdetailByCustomersAgGridDefSvelte,
 		SalesCustomdetailByCustomersHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef.svelte";
-	import type {CellDoubleClickedEvent, GridApi, GridOptions, IRowNode} from "ag-grid-enterprise";
+	import type {
+		CellDoubleClickedEvent,
+		FilterChangedEvent,
+		GridApi,
+		GridOptions, GridReadyEvent, IAggFuncParams,
+		IRowNode,
+		ModelUpdatedEvent, RowDataUpdatedEvent
+	} from "ag-grid-enterprise";
 	import {
 		onCellDoubleClickedSalesCustomerorstoreByProductline
 	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/onCellDoubleClickedSalesCustomerorstoreByProductline";
@@ -32,26 +39,22 @@
 		totalSalesAY: 0
 	});
 
+
 	beforeNavigate(() => {
 		table.openInputParams = false;
-		// destroy = true;
 	});
 
-	/**
-	 * Calculates total sales for LY and AY across all rows and updates the grid context.
-	**/
 
 	function calculateAndRefreshTotals(api: GridApi | null) {
-		if (!api) {
-			console.warn("calculateAndRefreshTotals called with null API");
-			return;
-		}
+		if (!api) return;
 
 		let currentTotalLY = 0;
 		let currentTotalAY = 0;
 
+		// Use forEachNodeAfterFilter to only consider rows that are currently displayed.
 		api.forEachNodeAfterFilter((node: IRowNode) => {
 			if (node.data) {
+				// Safely add to totals, ensuring the value is a valid number.
 				if (typeof node.data.sales_LY === 'number' && isFinite(node.data.sales_LY)) {
 					currentTotalLY += node.data.sales_LY;
 				}
@@ -61,40 +64,40 @@
 			}
 		});
 
+		// Update the reactive context object
 		gridContext.totalSalesLY = currentTotalLY;
 		gridContext.totalSalesAY = currentTotalAY;
 
+		// Force the grid to re-run valueGetters and cellRenderers for the computed columns.
 		api.refreshCells({
 			columns: ['_computedColumn1', '_computedColumn2'],
 			force: true
 		});
+
+		api.refreshClientSideRowModel()
 	}
 
+	// These options are merged with the base grid definition.
 	const gridOptionsExtra: GridOptions = {
-		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
-			onCellDoubleClickedSalesCustomerorstoreByProductline(table, event)
+		context: gridContext,
 
-			handleTabClick(
-			{
-				field: 'analyza-prodeju-po-zakaznicich-a-liniich',
-				href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
-				open: false,
-				hide: false,
-				translation: () => "Po zákaznících a liniích", // todo
-				disabled: false,
-				popoverOpen: false,
-				icon: null,
-				children: [],
-			},
-			3)
+		onModelUpdated: (event: ModelUpdatedEvent) => {
+			calculateAndRefreshTotals(event.api);
 		},
 
-		context: gridContext,        // Reactive context with totals
-		onModelUpdated: (params) => { // When rowData prop changes on the grid itself
-			calculateAndRefreshTotals(params.api);
-			if (SalesCustomdetailByCustomersAgGridDefSvelte.onRowDataUpdated) {
-				SalesCustomdetailByCustomersAgGridDefSvelte.onRowDataUpdated(params);
-			}
+		// --- Cell Click Handler for Navigation ---
+		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
+			onCellDoubleClickedSalesCustomerorstoreByProductline(table, event);
+			handleTabClick(
+				{
+					field: 'analyza-prodeju-po-zakaznicich-a-liniich',
+					href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
+					open: false, hide: false,
+					translation: () => "Po zákaznících a liniích",
+					disabled: false, popoverOpen: false, icon: null, children: [],
+				},
+				3
+			);
 		},
 	};
 </script>
