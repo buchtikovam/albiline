@@ -11,6 +11,7 @@ export function compoundGenericRatioAggregator(params: IAggFuncParams): number |
 	let totalDividend = 0;
 	let totalDivisor = 0;
 
+	console.log("test")
 	params.values.forEach(value => {
 		// 'value' is the result from the valueGetter of child rows/groups
 		if (value && typeof value.dividend === 'number' && typeof value.divisor === 'number') {
@@ -18,6 +19,8 @@ export function compoundGenericRatioAggregator(params: IAggFuncParams): number |
 			totalDivisor += value.divisor;
 		}
 	});
+
+	console.log(totalDividend, totalDivisor);
 
 	if (totalDivisor === 0) return 0;
 

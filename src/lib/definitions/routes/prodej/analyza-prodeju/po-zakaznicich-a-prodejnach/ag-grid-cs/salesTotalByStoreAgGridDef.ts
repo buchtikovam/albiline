@@ -983,51 +983,65 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 		// 		...getDiffPercentageObj(),
 		// 	}
 		// ),
-
-		getAgColumn( // Marže letos
-			"profit_AY", "number", 110,
-			false, false, false, ["text-right"],
-			{ ...getSumObj() }
-		),
-
-		getAgColumn( // %
-			"margin_AY", "number", 70,
-			false, false, false, ["text-right"],
-			{
-				valueGetter: (params: ValueGetterParams) => {
-					// @ts-ignore
-					if (params.data && !params.node.group) {
-						return {
-							dividend: params.data.profit_AY,
-							divisor: params.data.sales_AY,
-							originalDiffValue: params.data.margin_AY
-						};
-					}
-
-					return null;
-				},
-				...getDiffPercentageObj(),
-			}
-		),
+		//
+		// getAgColumn( // Marže letos
+		// 	"profit_AY", "number", 100,
+		// 	false, false, false, ["text-right"],
+		// 	{ ...getSumObj() }
+		// ),
+		//
+		// getAgColumn( // %
+		// 	"margin_AY", "number", 70,
+		// 	false, false, false, ["text-right"],
+		// 	{
+		// 		valueGetter: (params: ValueGetterParams) => {
+		// 			// @ts-ignore
+		// 			if (params.data && !params.node.group) {
+		// 				return {
+		// 					dividend: params.data.profit_AY,
+		// 					divisor: params.data.sales_AY,
+		// 					originalDiffValue: params.data.margin_AY
+		// 				};
+		// 			}
+		//
+		// 			return null;
+		// 		},
+		// 		// ...getDivisionObj(),
+		// 	}
+		// ),
 
 		// TODO: secret fields
 
-		{
-			field: "group_hry_vo",
-			children: [
-				getAgColumn(
-					"profit_3_AY", "number", 120,
-					false, false, false, ["text-right"],
-					{}
-				), // Marže letos
-
-				getAgColumn(
-					"margin_3_AY", "number", 100,
-					false, false, false, ["text-right"],
-					{}
-				), // %
-			]
-		},
+		// {
+			// field: "group_hry_vo",
+		// 	children: [
+		// 		getAgColumn( // Marže letos
+		// 			"profit_3_AY", "number", 100,
+		// 			false, false, false, ["text-right"],
+		// 			{ ...getSumObj() }
+		// 		),
+		//
+		// 		getAgColumn( // %
+		// 			"margin_3_AY", "number", 70,
+		// 			false, false, false, ["text-right"],
+		// 			{
+		// 				valueGetter: (params: ValueGetterParams) => {
+		// 					// @ts-ignore
+		// 					if (params.data && !params.node.group) {
+		// 						return {
+		// 							dividend: params.data.profit_3_AY,
+		// 							divisor: params.data.sales_3_AY,
+		// 							originalDiffValue: params.data.margin_3_AY
+		// 						};
+		// 					}
+		//
+		// 					return null;
+		// 				},
+		// 				// ...getDivisionObj(),
+		// 			}
+		// 		),
+		// 	]
+		// },
 		{
 			field: "group_kouzelne_cteni",
 			children: [
