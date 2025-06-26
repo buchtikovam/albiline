@@ -4,7 +4,7 @@ import {getLocale} from "$lib/paraglide/runtime";
 import {triggerLogout} from "$lib/utils/lifecycle/triggerLogout";
 
 
-const url = "http://10.2.2.10/albiline.test/api/v1/";
+const url = "https://sklad.albi.cz/albiline.test/api/v1/";
 const pageKey = $derived(pageKeys.value.value[pageKeys.value.index]);
 
 

@@ -5,7 +5,7 @@ import { albiInfo } from '$lib/constants/info/albiInfo';
 
 
 export const load: PageLoad = async ({ params, fetch }) => {
-	const res = await fetch(`http://10.2.2.10/albiline.test/api/v1/invoices/${params.invoiceNumber}/pdf`)
+	const res = await fetch(`https://sklad.albi.cz/albiline.test/api/v1/invoices/${params.invoiceNumber}/pdf`)
 
 	console.log("LOAD")
 

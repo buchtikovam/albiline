@@ -10,7 +10,7 @@ export const load: PageLoad = async (
 	const pageKey = pageKeys.value.value[pageKeys.value.index];
 
 	let response = await fetch(
-		`http://10.2.2.10/albiline.test/api/v1/page-metadata?pageCode=${pageKey}`,
+		`https://sklad.albi.cz/albiline.test/api/v1/page-metadata?pageCode=${pageKey}`,
 		{
 			headers: {
 				'Content-Type': 'application/json',

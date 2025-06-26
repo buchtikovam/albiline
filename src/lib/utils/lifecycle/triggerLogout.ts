@@ -6,7 +6,7 @@ import {openedTabs} from "$lib/runes/navigation.svelte";
 import {pageStates} from "$lib/runes/page.svelte";
 
 
-export async function triggerLogout() {
+export async function triggerLogout(){
 	const formData = new FormData(); // Create empty form data
 
 	await clearCache();

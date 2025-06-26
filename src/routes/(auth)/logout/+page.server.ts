@@ -5,6 +5,8 @@ import {clearCache} from "$lib/cacheManager";
 export const actions: Actions = {
 	default: async ({ cookies }) => {
 		try {
+			console.log("logout try")
+
 			const response = await apiServicePOST("logout");
 
 			if (response.ok) {
@@ -33,6 +35,8 @@ export const actions: Actions = {
 				});
 			}
 		} catch (err) {
+			console.log("logout catch")
+
 			// @ts-ignore
 			if (err.status === 303 && err.location) {
 				throw err;

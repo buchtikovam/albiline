@@ -14,7 +14,7 @@ export const load: PageLoad = async (
 	contacts: CustomerContactType[];
 }> => {
 	const res = await fetch(
-		`http://10.2.2.10/albiline.test/api/v1/customers/${params.customerNodeCode}/addresses/${params.customerAddressCode}/`,
+		`https://sklad.albi.cz/albiline.test/api/v1/customers/${params.customerNodeCode}/addresses/${params.customerAddressCode}/`,
 		{
 			headers: {
 				'Content-Type': 'application/json',
