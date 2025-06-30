@@ -24,6 +24,8 @@
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let destroy = $state(false);
 
+
+
 	const customGridOptions: GridOptions = {
 		onCellDoubleClicked: (event: CellDoubleClickedEvent) => {
 			let inputs = table.loadedInputParams.inputs;

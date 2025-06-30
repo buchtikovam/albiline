@@ -79,7 +79,7 @@ export const SalesSubdetailByCostlevelAgGridDef: GridOptions = {
 						return {
 							dividend: params.data.sales_AY,
 							divisor: params.data.sales_LY,
-							originalDiffValue: params.data.sales_Diff
+							originalValue: params.data.sales_Diff
 						};
 					}
 
@@ -111,7 +111,7 @@ export const SalesSubdetailByCostlevelAgGridDef: GridOptions = {
 						return {
 							dividend: params.data.basePrice_AY,
 							divisor: params.data.basePrice_LY,
-							originalDiffValue: params.data.basePrice_Diff
+							originalValue: params.data.basePrice_Diff
 						};
 					}
 

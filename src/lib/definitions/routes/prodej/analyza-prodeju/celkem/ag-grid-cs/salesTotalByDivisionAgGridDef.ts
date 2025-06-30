@@ -75,7 +75,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 						return {
 							dividend: params.data.sales_AY,
 							divisor: params.data.sales_LY,
-							originalDiffValue: params.data.salesDiff
+							originalValue: params.data.salesDiff
 						};
 					}
 
@@ -116,7 +116,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_AY,
 									divisor: params.data.sales_CZ_LY,
-									originalDiffValue: params.data.sales_CZ_Diff
+									originalValue: params.data.sales_CZ_Diff
 								};
 							}
 
@@ -154,7 +154,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Wholesale_AY,
 									divisor: params.data.sales_CZ_Wholesale_LY,
-									originalDiffValue: params.data.sales_CZ_Wholesale_Diff
+									originalValue: params.data.sales_CZ_Wholesale_Diff
 								};
 							}
 
@@ -192,7 +192,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Eshop_AY,
 									divisor: params.data.sales_CZ_Eshop_LY,
-									originalDiffValue: params.data.sales_CZ_Eshop_Diff
+									originalValue: params.data.sales_CZ_Eshop_Diff
 								};
 							}
 
@@ -230,7 +230,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Retail_AY,
 									divisor: params.data.sales_CZ_Retail_LY,
-									originalDiffValue: params.data.sales_CZ_Retail_Diff
+									originalValue: params.data.sales_CZ_Retail_Diff
 								};
 							}
 
@@ -273,7 +273,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_RetailBakery_AY,
 									divisor: params.data.sales_CZ_RetailBakery_LY,
-									originalDiffValue: params.data.sales_CZ_RetailBakery_Diff
+									originalValue: params.data.sales_CZ_RetailBakery_Diff
 								};
 							}
 
@@ -316,7 +316,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_EshopKinoko_AY,
 									divisor: params.data.sales_CZ_EshopKinoko_LY,
-									originalDiffValue: params.data.sales_CZ_EshopKinoko_Diff
+									originalValue: params.data.sales_CZ_EshopKinoko_Diff
 								};
 							}
 
@@ -354,7 +354,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_RetailKinoko_AY,
 									divisor: params.data.sales_CZ_RetailKinoko_LY,
-									originalDiffValue: params.data.sales_CZ_RetailKinoko_Diff
+									originalValue: params.data.sales_CZ_RetailKinoko_Diff
 								};
 							}
 
@@ -397,7 +397,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_AY,
 									divisor: params.data.sales_SK_LY,
-									originalDiffValue: params.data.sales_SK_LY_Diff
+									originalValue: params.data.sales_SK_LY_Diff
 								};
 							}
 
@@ -435,7 +435,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Wholesale_AY,
 									divisor: params.data.sales_SK_Wholesale_LY,
-									originalDiffValue: params.data.sales_SK_Wholesale_Diff
+									originalValue: params.data.sales_SK_Wholesale_Diff
 								};
 							}
 
@@ -473,7 +473,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Eshop_AY,
 									divisor: params.data.sales_SK_Eshop_LY,
-									originalDiffValue: params.data.sales_SK_Eshop_Diff
+									originalValue: params.data.sales_SK_Eshop_Diff
 								};
 							}
 
@@ -511,7 +511,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Retail_AY,
 									divisor: params.data.sales_SK_Retail_LY,
-									originalDiffValue: params.data.sales_SK_Retail_Diff
+									originalValue: params.data.sales_SK_Retail_Diff
 								};
 							}
 
@@ -554,7 +554,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_AY,
 									divisor: params.data.sales_PL_LY,
-									originalDiffValue: params.data.sales_PL_Diff
+									originalValue: params.data.sales_PL_Diff
 								};
 							}
 
@@ -592,7 +592,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_Wholesale_AY,
 									divisor: params.data.sales_PL_Wholesale_LY,
-									originalDiffValue: params.data.sales_PL_Wholesale_Diff
+									originalValue: params.data.sales_PL_Wholesale_Diff
 								};
 							}
 
@@ -630,7 +630,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_Eshop_AY,
 									divisor: params.data.sales_PL_Eshop_LY,
-									originalDiffValue: params.data.sales_PL_Eshop_Diff
+									originalValue: params.data.sales_PL_Eshop_Diff
 								};
 							}
 
@@ -673,7 +673,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Export_AY,
 									divisor: params.data.sales_CZ_Export_LY,
-									originalDiffValue: params.data.sales_CZ_Export_Diff
+									originalValue: params.data.sales_CZ_Export_Diff
 								};
 							}
 
@@ -716,7 +716,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.basePrice_AY,
 									divisor: params.data.basePrice_LY,
-									originalDiffValue: params.data.basePrice_Diff
+									originalValue: params.data.basePrice_Diff
 								};
 							}
 
@@ -740,7 +740,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 						return {
 							dividend: params.data.sales_LY,
 							divisor: params.data.basePrice_LY,
-							originalDiffValue: params.data.discount_LY
+							originalValue: params.data.discount_LY
 						};
 					}
 
@@ -762,7 +762,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 						return {
 							dividend: params.data.sales_AY,
 							divisor: params.data.basePrice_AY,
-							originalDiffValue: params.data.discount_AY
+							originalValue: params.data.discount_AY
 						};
 					}
 
@@ -787,7 +787,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_LY,
 									divisor: params.data.basePrice_CZ_LY,
-									originalDiffValue: params.data.discount_CZ_LY
+									originalValue: params.data.discount_CZ_LY
 								};
 							}
 
@@ -809,7 +809,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_AY,
 									divisor: params.data.basePrice_CZ_AY,
-									originalDiffValue: params.data.discount_CZ_AY
+									originalValue: params.data.discount_CZ_AY
 								};
 							}
 
@@ -831,7 +831,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Wholesale_LY,
 									divisor: params.data.basePrice_CZ_Wholesale_LY,
-									originalDiffValue: params.data.discount_CZ_Wholesale_LY
+									originalValue: params.data.discount_CZ_Wholesale_LY
 								};
 							}
 
@@ -853,7 +853,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Wholesale_AY,
 									divisor: params.data.basePrice_CZ_Wholesale_AY,
-									originalDiffValue: params.data.discount_CZ_Wholesale_AY
+									originalValue: params.data.discount_CZ_Wholesale_AY
 								};
 							}
 
@@ -875,7 +875,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Eshop_LY,
 									divisor: params.data.basePrice_CZ_Eshop_LY,
-									originalDiffValue: params.data.discount_CZ_Eshop_LY
+									originalValue: params.data.discount_CZ_Eshop_LY
 								};
 							}
 
@@ -897,7 +897,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Eshop_AY,
 									divisor: params.data.basePrice_CZ_Eshop_AY,
-									originalDiffValue: params.data.discount_CZ_Eshop_AY
+									originalValue: params.data.discount_CZ_Eshop_AY
 								};
 							}
 
@@ -919,7 +919,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Retail_LY,
 									divisor: params.data.basePrice_CZ_Retail_LY,
-									originalDiffValue: params.data.discount_CZ_Retail_LY
+									originalValue: params.data.discount_CZ_Retail_LY
 								};
 							}
 
@@ -941,7 +941,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Retail_AY,
 									divisor: params.data.basePrice_CZ_Retail_AY,
-									originalDiffValue: params.data.discount_CZ_Retail_AY
+									originalValue: params.data.discount_CZ_Retail_AY
 								};
 							}
 
@@ -968,7 +968,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_RetailBakery_LY,
 									divisor: params.data.basePrice_CZ_RetailBakery_LY,
-									originalDiffValue: params.data.discount_CZ_RetailBakery_LY
+									originalValue: params.data.discount_CZ_RetailBakery_LY
 								};
 							}
 
@@ -990,7 +990,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_RetailBakery_AY,
 									divisor: params.data.basePrice_CZ_RetailBakery_AY,
-									originalDiffValue: params.data.discount_CZ_RetailBakery_AY
+									originalValue: params.data.discount_CZ_RetailBakery_AY
 								};
 							}
 
@@ -1017,7 +1017,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_EshopKinoko_LY,
 									divisor: params.data.basePrice_CZ_EshopKinoko_LY,
-									originalDiffValue: params.data.discount_CZ_EshopKinoko_LY
+									originalValue: params.data.discount_CZ_EshopKinoko_LY
 								};
 							}
 
@@ -1039,7 +1039,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_EshopKinoko_AY,
 									divisor: params.data.basePrice_CZ_EshopKinoko_AY,
-									originalDiffValue: params.data.discount_CZ_EshopKinoko_AY
+									originalValue: params.data.discount_CZ_EshopKinoko_AY
 								};
 							}
 
@@ -1061,7 +1061,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_RetailKinoko_LY,
 									divisor: params.data.basePrice_CZ_RetailKinoko_LY,
-									originalDiffValue: params.data.discount_CZ_RetailKinoko_LY
+									originalValue: params.data.discount_CZ_RetailKinoko_LY
 								};
 							}
 
@@ -1083,7 +1083,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_RetailKinoko_AY,
 									divisor: params.data.basePrice_CZ_RetailKinoko_AY,
-									originalDiffValue: params.data.discount_CZ_RetailKinoko_AY
+									originalValue: params.data.discount_CZ_RetailKinoko_AY
 								};
 							}
 
@@ -1110,7 +1110,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_LY,
 									divisor: params.data.basePrice_SK_LY,
-									originalDiffValue: params.data.discount_SK_LY
+									originalValue: params.data.discount_SK_LY
 								};
 							}
 
@@ -1132,7 +1132,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_AY,
 									divisor: params.data.basePrice_SK_AY,
-									originalDiffValue: params.data.discount_SK_AY
+									originalValue: params.data.discount_SK_AY
 								};
 							}
 
@@ -1154,7 +1154,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Wholesale_LY,
 									divisor: params.data.basePrice_SK_Wholesale_LY,
-									originalDiffValue: params.data.discount_SK_Wholesale_LY
+									originalValue: params.data.discount_SK_Wholesale_LY
 								};
 							}
 
@@ -1176,7 +1176,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Wholesale_AY,
 									divisor: params.data.basePrice_SK_Wholesale_AY,
-									originalDiffValue: params.data.discount_SK_Wholesale_AY
+									originalValue: params.data.discount_SK_Wholesale_AY
 								};
 							}
 
@@ -1198,7 +1198,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Eshop_LY,
 									divisor: params.data.basePrice_SK_Eshop_LY,
-									originalDiffValue: params.data.discount_SK_Eshop_LY
+									originalValue: params.data.discount_SK_Eshop_LY
 								};
 							}
 
@@ -1220,7 +1220,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Eshop_AY,
 									divisor: params.data.basePrice_SK_Eshop_AY,
-									originalDiffValue: params.data.discount_SK_Eshop_AY
+									originalValue: params.data.discount_SK_Eshop_AY
 								};
 							}
 
@@ -1242,7 +1242,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Retail_LY,
 									divisor: params.data.basePrice_SK_Retail_LY,
-									originalDiffValue: params.data.discount_SK_Retail_LY
+									originalValue: params.data.discount_SK_Retail_LY
 								};
 							}
 
@@ -1264,7 +1264,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_SK_Retail_AY,
 									divisor: params.data.basePrice_SK_Retail_AY,
-									originalDiffValue: params.data.discount_SK_Retail_AY
+									originalValue: params.data.discount_SK_Retail_AY
 								};
 							}
 
@@ -1291,7 +1291,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_LY,
 									divisor: params.data.basePrice_PL_LY,
-									originalDiffValue: params.data.discount_PL_LY
+									originalValue: params.data.discount_PL_LY
 								};
 							}
 
@@ -1313,7 +1313,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_AY,
 									divisor: params.data.basePrice_PL_AY,
-									originalDiffValue: params.data.discount_PL_AY
+									originalValue: params.data.discount_PL_AY
 								};
 							}
 
@@ -1335,7 +1335,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_Wholesale_LY,
 									divisor: params.data.basePrice_PL_Wholesale_LY,
-									originalDiffValue: params.data.discount_PL_Wholesale_LY
+									originalValue: params.data.discount_PL_Wholesale_LY
 								};
 							}
 
@@ -1357,7 +1357,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_Wholesale_AY,
 									divisor: params.data.basePrice_PL_Wholesale_AY,
-									originalDiffValue: params.data.discount_PL_Wholesale_AY
+									originalValue: params.data.discount_PL_Wholesale_AY
 								};
 							}
 
@@ -1379,7 +1379,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_Eshop_LY,
 									divisor: params.data.basePrice_PL_Eshop_LY,
-									originalDiffValue: params.data.discount_PL_Eshop_LY
+									originalValue: params.data.discount_PL_Eshop_LY
 								};
 							}
 
@@ -1401,7 +1401,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_PL_Eshop_AY,
 									divisor: params.data.basePrice_PL_Eshop_AY,
-									originalDiffValue: params.data.discount_PL_Eshop_AY
+									originalValue: params.data.discount_PL_Eshop_AY
 								};
 							}
 
@@ -1428,7 +1428,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Export_LY,
 									divisor: params.data.basePrice_CZ_Export_LY,
-									originalDiffValue: params.data.discount_CZ_Export_LY
+									originalValue: params.data.discount_CZ_Export_LY
 								};
 							}
 
@@ -1450,7 +1450,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.sales_CZ_Export_AY,
 									divisor: params.data.basePrice_CZ_Export_AY,
-									originalDiffValue: params.data.discount_CZ_Export_AY
+									originalValue: params.data.discount_CZ_Export_AY
 								};
 							}
 
@@ -1485,7 +1485,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_Wholesale_LY,
 									divisor: params.data.sales_Wholesale_LY,
-									originalDiffValue: params.data.margin_Wholesale_LY
+									originalValue: params.data.margin_Wholesale_LY
 								};
 							}
 
@@ -1515,7 +1515,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_Wholesale_AY,
 									divisor: params.data.sales_Wholesale_AY,
-									originalDiffValue: params.data.margin_Wholesale_AY
+									originalValue: params.data.margin_Wholesale_AY
 								};
 							}
 
@@ -1545,7 +1545,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_Eshop_LY,
 									divisor: params.data.sales_Eshop_LY,
-									originalDiffValue: params.data.margin_Eshop_LY
+									originalValue: params.data.margin_Eshop_LY
 								};
 							}
 
@@ -1575,7 +1575,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_Eshop_AY,
 									divisor: params.data.sales_Eshop_AY,
-									originalDiffValue: params.data.margin_Eshop_AY
+									originalValue: params.data.margin_Eshop_AY
 								};
 							}
 
@@ -1605,7 +1605,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_Retail_LY,
 									divisor: params.data.sales_Retail_LY,
-									originalDiffValue: params.data.margin_Retail_LY
+									originalValue: params.data.margin_Retail_LY
 								};
 							}
 
@@ -1635,7 +1635,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_Retail_AY,
 									divisor: params.data.sales_Retail_AY,
-									originalDiffValue: params.data.margin_Retail_AY
+									originalValue: params.data.margin_Retail_AY
 								};
 							}
 
@@ -1665,7 +1665,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_RetailBakery_LY,
 									divisor: params.data.sales_RetailBakery_LY,
-									originalDiffValue: params.data.margin_RetailBakery_LY
+									originalValue: params.data.margin_RetailBakery_LY
 								};
 							}
 
@@ -1695,7 +1695,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_RetailBakery_AY,
 									divisor: params.data.sales_RetailBakery_AY,
-									originalDiffValue: params.data.margin_RetailBakery_AY
+									originalValue: params.data.margin_RetailBakery_AY
 								};
 							}
 
@@ -1725,7 +1725,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_RetailKinoko_LY,
 									divisor: params.data.sales_Kinoko_LY,
-									originalDiffValue: params.data.margin_Kinoko_LY
+									originalValue: params.data.margin_Kinoko_LY
 								};
 							}
 
@@ -1755,7 +1755,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_RetailKinoko_AY,
 									divisor: params.data.sales_Kinoko_AY,
-									originalDiffValue: params.data.margin_Kinoko_AY
+									originalValue: params.data.margin_Kinoko_AY
 								};
 							}
 
@@ -1785,7 +1785,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_WholesaleExport_LY,
 									divisor: params.data.sales_WholesaleExport_LY,
-									originalDiffValue: params.data.margin_WholesaleExport_LY
+									originalValue: params.data.margin_WholesaleExport_LY
 								};
 							}
 
@@ -1815,7 +1815,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 								return {
 									dividend: params.data.profit_WholesaleExport_AY,
 									divisor: params.data.sales_WholesaleExport_AY,
-									originalDiffValue: params.data.margin_WholesaleExport_AY
+									originalValue: params.data.margin_WholesaleExport_AY
 								};
 							}
 

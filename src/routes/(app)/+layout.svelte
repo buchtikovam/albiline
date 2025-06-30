@@ -42,7 +42,7 @@
 		ClipboardModule,
 		RenderApiModule,
 		ColumnAutoSizeModule,
-		CheckboxEditorModule
+		CheckboxEditorModule, CellApiModule
 	} from "ag-grid-enterprise";
 
 	let { children, data }: { children?: Snippet, data: LayoutData } = $props();
@@ -80,6 +80,7 @@
 		RenderApiModule,
 		CheckboxEditorModule,
 		ColumnAutoSizeModule,
+		CellApiModule,
 		...(process.env.NODE_ENV !== "production" ? [ValidationModule] : [])
 	]);
 

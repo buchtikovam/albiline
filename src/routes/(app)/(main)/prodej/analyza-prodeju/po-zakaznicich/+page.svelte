@@ -21,6 +21,7 @@
 	import {beforeNavigate} from "$app/navigation";
 	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 	import {page} from "$app/state";
+	import {setContext} from "svelte";
 
 	pageKeys.value = {
 		value: pageCodes.value.get(page.route.id||"")||[],
@@ -32,7 +33,7 @@
 
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let destroy = $state(false);
-
+	let refresh = $state(true);
 
 	let gridContext = $state({
 		totalSalesLY: 0,
@@ -64,7 +65,6 @@
 			}
 		});
 
-		// Update the reactive context object
 		gridContext.totalSalesLY = currentTotalLY;
 		gridContext.totalSalesAY = currentTotalAY;
 
@@ -74,7 +74,7 @@
 			force: true
 		});
 
-		api.refreshClientSideRowModel()
+		let cells = Array.from(document.getElementsByClassName("computed2"))
 	}
 
 	// These options are merged with the base grid definition.
@@ -82,7 +82,9 @@
 		context: gridContext,
 
 		onModelUpdated: (event: ModelUpdatedEvent) => {
-			calculateAndRefreshTotals(event.api);
+			// if (refresh) {
+				calculateAndRefreshTotals(event.api);
+			// }
 		},
 
 		// --- Cell Click Handler for Navigation ---

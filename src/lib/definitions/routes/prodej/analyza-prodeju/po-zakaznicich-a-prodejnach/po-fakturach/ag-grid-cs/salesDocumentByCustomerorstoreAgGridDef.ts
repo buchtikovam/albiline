@@ -105,7 +105,7 @@ export const SalesDocumentByCustomerorstoreAgGridDef: GridOptions = {
 						return {
 							dividend: params.data.sales,
 							divisor: params.data.basePrice,
-							originalDiffValue: params.data.discount
+							originalValue: params.data.discount
 						};
 					}
 

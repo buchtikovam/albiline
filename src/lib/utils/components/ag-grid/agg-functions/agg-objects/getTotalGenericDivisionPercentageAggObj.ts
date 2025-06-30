@@ -9,8 +9,8 @@ export function getTotalGenericDivisionPercentageAggObj() {
 				return formatPercentage(params.value, 0);
 			}
 
-			if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-				return formatPercentage(params.value.originalDiffValue, 0);
+			if (params.value && typeof params.value.originalValue !== 'undefined') {
+				return formatPercentage(params.value.originalValue, 0);
 			}
 
 			return '';

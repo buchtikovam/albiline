@@ -4,7 +4,7 @@ import {
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
 import type {
-	GridOptions,
+	GridOptions, IAggFuncParams,
 	ValueFormatterParams,
 	ValueGetterParams
 } from "ag-grid-enterprise";
@@ -12,19 +12,14 @@ import {formatPercentage} from "$lib/utils/general/formatPercentage";
 import {
 	totalDivisionPercentageAggregator,
 } from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalDivisionPercentageAggregator";
-import { totalGenericDivisionPercentageAggregator } from '$lib/utils/components/ag-grid/agg-functions/aggregators/totalGenericDivisionPercentageAggregator';
-import { totalAvgDivisionPercentageAggregator } from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalAvgDivisionPercentageAggregator";
+import {totalGenericDivisionPercentageAggregator} from '$lib/utils/components/ag-grid/agg-functions/aggregators/totalGenericDivisionPercentageAggregator';
+import {totalAvgDivisionPercentageAggregator} from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalAvgDivisionPercentageAggregator";
 import {getSumAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getSumAggObj";
-import {
-	getTotalDivisionPercentageAggObj
-} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionPercentageAggObj";
+import {getTotalDivisionPercentageAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionPercentageAggObj";
 import {getTotalDivisionAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionAggObj";
-import {
-	getTotalAvgDivisionPercentageAggObj
-} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalAvgDivisionPercentageAggObj";
-import {
-	getTotalGenericDivisionPercentageAggObj
-} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalGenericDivisionPercentageAggObj";
+import {getTotalAvgDivisionPercentageAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalAvgDivisionPercentageAggObj";
+import {getTotalGenericDivisionPercentageAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalGenericDivisionPercentageAggObj";
+import {getContext} from "svelte";
 
 
 
@@ -47,6 +42,57 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 	},
 
 	columnDefs: [
+		getAgColumn( // % z obratu letos
+			"_computedColumn1", "number", 90,
+			false, false, false, ["text-right"],
+			{
+				aggFunc: (params: IAggFuncParams) => {
+					console.log("agg", params.context)
+					return 2
+				},
+				valueGetter: (params: ValueGetterParams) => {
+					const totalSalesLY = params.context?.totalSalesLY;
+
+					if (!params.data || typeof params.data.sales_LY !== 'number' || typeof totalSalesLY !== 'number') {
+						return null;
+					}
+
+					const currentRowSalesLY: number = params.data.sales_LY;
+
+					if (totalSalesLY === 0) {
+						return currentRowSalesLY === 1;
+					}
+
+					return currentRowSalesLY / totalSalesLY;
+				},
+				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+			}
+		),
+
+		getAgColumn( // % z obratu vloni
+			"_computedColumn2", "number", 90,
+			false, false, false, ["text-right", "computed2"],
+			{
+				aggFunc: "sum",
+				valueGetter: (params: ValueGetterParams) => {
+					const totalSalesAY = params.context?.totalSalesAY;
+
+					if (!params.data || typeof params.data.sales_AY !== 'number' || typeof totalSalesAY !== 'number') {
+						return null;
+					}
+
+					const currentRowSalesAY: number = params.data.sales_AY;
+
+					if (totalSalesAY === 0) {
+						return null;
+					}
+
+					return currentRowSalesAY / totalSalesAY;
+				},
+				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+			}
+		),
+
 		getAgColumn(
 			"salesCountryCode", // Země
 			"text", 65,
@@ -110,7 +156,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 						return {
 							dividend: params.data.quantity_AY,
 							divisor: params.data.quantity_LY,
-							originalDiffValue: params.data.quantity_Diff
+							originalValue: params.data.quantity_Diff
 						};
 					}
 
@@ -160,6 +206,9 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 			{
 				valueGetter: (params: ValueGetterParams) => {
 					// @ts-ignore
+					// console.log(params)
+
+
 					if (params.data && !params.node.group) {
 						return {
 							dividend: params.data.sales_LY,
@@ -169,7 +218,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 					}
 					return null;
 				},
-				...getTotalDivisionAggObj(),
+				...getTotalDivisionAggObj(true),
 			}
 		),
 
@@ -188,9 +237,11 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 							originalValue: params.data.salesPerItem_AY,
 						};
 					}
+
+					console.log(params)
 					return null;
 				},
-				...getTotalDivisionAggObj(),
+				...getTotalDivisionAggObj(true),
 			}
 		),
 
@@ -249,7 +300,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 						return {
 							dividend: params.data.sales_AY,
 							divisor: params.data.sales_LY,
-							originalDiffValue: params.data.sales_Diff
+							originalValue: params.data.sales_Diff
 						};
 					}
 
@@ -307,7 +358,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 						return {
 							dividend: params.data.basePrice_AY,
 							divisor: params.data.basePrice_LY,
-							originalDiffValue: params.data.basePrice_Diff
+							originalValue: params.data.basePrice_Diff
 						};
 					}
 
@@ -348,7 +399,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 								return {
 									dividend: params.data.discount_AY,
 									divisor: params.data.discount_LY,
-									originalDiffValue: params.data.discount_Diff
+									originalValue: params.data.discount_Diff
 								};
 							}
 
@@ -404,53 +455,7 @@ export const SalesCustomdetailByCustomersAgGridDefSvelte: GridOptions = {
 
 
 
-		getAgColumn( // % z obratu letos
-			"_computedColumn1", "number", 90,
-			false, false, false, ["text-right"],
-			{
-				aggFunc: "sum",
-				valueGetter: (params: ValueGetterParams) => {
-					const totalSalesLY = params.context?.totalSalesLY;
 
-					if (!params.data || typeof params.data.sales_LY !== 'number' || typeof totalSalesLY !== 'number') {
-						return null;
-					}
-
-					const currentRowSalesLY: number = params.data.sales_LY;
-
-					if (totalSalesLY === 0) {
-						return currentRowSalesLY === 1;
-					}
-
-					return currentRowSalesLY / totalSalesLY;
-				},
-				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
-			}
-		),
-
-		getAgColumn( // % z obratu vloni
-			"_computedColumn2", "number", 90,
-			false, false, false, ["text-right"],
-			{
-				aggFunc: "sum",
-				valueGetter: (params: ValueGetterParams) => {
-					const totalSalesAY = params.context?.totalSalesAY;
-
-					if (!params.data || typeof params.data.sales_AY !== 'number' || typeof totalSalesAY !== 'number') {
-						return null;
-					}
-
-					const currentRowSalesAY: number = params.data.sales_AY;
-
-					if (totalSalesAY === 0) {
-						return null;
-					}
-
-					return currentRowSalesAY / totalSalesAY;
-				},
-				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
-			}
-		),
 	]
 }
 

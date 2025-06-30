@@ -385,6 +385,7 @@
 										gridOptionsCustom={{...salesTotalByStoreDetailCustomGridOptions, ...SalesTotalByStoreDetailAgGridDef}}
 										headerTranslations={SalesTotalByStoreDetailHeaderTranslations}
 										clearRowData={clearSalesTotalByStoreDetailTable}
+										disableLoading={true}
 									/>
 								{/if}
 							</Pane>
@@ -407,6 +408,7 @@
 										gridOptionsCustom={SalesSubdetailByCostlevelAgGridDef}
 										headerTranslations={SalesSubdetailByCostlevelHeaderTranslations}
 										clearRowData={clearsalesSubdetailByCostLevelTable}
+										disableLoading={true}
 									/>
 								{/if}
 							</Pane>
