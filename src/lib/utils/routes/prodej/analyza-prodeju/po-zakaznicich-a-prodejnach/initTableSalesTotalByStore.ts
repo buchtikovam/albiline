@@ -32,6 +32,22 @@ export function initTableSalesTotalByStore(): AgGridTableType {
 			"margin_90_AY",
 			"margin_97_AY",
 			"margin_99_AY",
+			"sales_3_AY",
+			"sales_8_AY",
+			"sales_10_AY",
+			"sales_6_AY",
+			"sales_1_AY",
+			"sales_7_AY",
+			"sales_0_AY",
+			"sales_11_AY",
+			"sales_2_AY",
+			"sales_5_AY",
+			"sales_4_AY",
+			"sales_12_AY",
+			"sales_13_AY",
+			"sales_9_AY",
+			"basePrice_LY",
+			"basePrice_AY"
 		],
 		...getAgGridTableFields()
 	}

@@ -4,6 +4,7 @@ import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
 import {formatPercentage} from "$lib/utils/general/formatPercentage";
 import * as m from "$lib/paraglide/messages";
 
+
 export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityAgGridDef: GridOptions = {
 	statusBar: undefined,
 
@@ -16,14 +17,14 @@ export const SalesTotalByDivisionSubdetailProductlineSubdetailCostlevelQuantityA
 
 	columnDefs: [
 		getAgColumn(
-			"itemId", // Linie
+			"itemId", // KLP
 			"number", 65,
 			false, false, false,
 			[],
 		),
 
 		getAgColumn(
-			"itemName", // Název linie
+			"itemName", // Název KLP
 			"text", 170,
 			false, false, false,
 			[],

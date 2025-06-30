@@ -338,7 +338,7 @@
 				{routeId}
 			/>
 
-			<Fulltext bind:table={activeTable}>
+			<Fulltext bind:table={activeTable} />
 		{/if}
 	</TabFulltextWrapper>
 

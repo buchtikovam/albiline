@@ -1,10 +1,11 @@
-import {compoundDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
-import {formatNumberToCzech} from "$lib/utils/general/formatNumberToCzech";
-import {formatPercentage} from "$lib/utils/general/formatPercentage";
+import {
+	getTotalDivisionPercentageAggObj
+} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionPercentageAggObj";
+import {totalDivisionPercentageAggregator} from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalDivisionPercentageAggregator";
+import {getSumAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getSumAggObj";
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte";
+import type {GridOptions, ValueGetterParams} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js';
-import type {GridOptions, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
-import type {ICellRendererParams} from "ag-grid-community";
 
 
 export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
@@ -12,7 +13,7 @@ export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
 	grandTotalRow: "bottom",
 
 	aggFuncs: {
-		'diffPercentage': compoundDiffAggregator,
+		'totalDivisionPercentageAgg': totalDivisionPercentageAggregator,
 	},
 
 	rowSelection: {
@@ -23,51 +24,31 @@ export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
 	},
 
 	columnDefs: [
-		getAgColumn(
-			"divisionName", // Divize
-			"text", 120,
-			false, false, false,
-			[]
+		getAgColumn( // Divize
+			"divisionName", "text", 120,
+			false, false, false, []
 		),
 
-		getAgColumn(
-			"productLineName", // Linie
-			"text", 200,
-			false, false, false,
-			[]
+		getAgColumn( // Linie
+			"productLineName", "text", 200,
+			false, false, false, []
 		),
 
-		getAgColumn(
-			"quantity_LY", // Kusů vloni
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Kusů vloni
+			"quantity_LY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"quantity_AY", // Kusů letos
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Kusů letos
+			"quantity_AY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"quantity_Diff", // %
-			"number", 70,
-			false, false, false,
-			["text-right"],
+		getAgColumn( // %
+			"quantity_Diff", "number", 70,
+			false, false, false, ["text-right"],
 			{
 				valueGetter: (params: ValueGetterParams) => {
 					// @ts-ignore
@@ -81,72 +62,36 @@ export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
 
 					return null;
 				},
-				aggFunc: 'diffPercentage',
-				cellRenderer: (params: ICellRendererParams) => {
-					if (params.node && params.node.group) {
-						return formatPercentage(params.value, 0);
-					}
-
-					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-						return formatPercentage(params.value.originalDiffValue, 0);
-					}
-
-					return '';
-				},
+				...getTotalDivisionPercentageAggObj(),
 			}
 		),
 
-		getAgColumn(
-			"currency", // Měna
-			"text", 70,
-			false, false, false,
-			[]
+		getAgColumn( // Měna
+			"currency", "text", 70,
+			false, false, false, []
 		),
 
-		getAgColumn(
-			"sales_LY", // Prodej vloni
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Prodej vloni
+			"sales_LY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"sales_AY", // Prodej letos
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Prodej letos
+			"sales_AY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"sales_DiffAbs", // Nárůst
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Nárůst
+			"sales_DiffAbs", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"sales_Diff", // %
-			"number", 70,
-			false, false, false,
-			["text-right"],
+		getAgColumn( // %
+			"sales_Diff", "number", 70,
+			false, false, false, ["text-right"],
 			{
 				valueGetter: (params: ValueGetterParams) => {
 					// @ts-ignore
@@ -160,52 +105,25 @@ export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
 
 					return null;
 				},
-				aggFunc: 'diffPercentage',
-				cellRenderer: (params: ICellRendererParams) => {
-					if (params.node && params.node.group) {
-						return formatPercentage(params.value, 0);
-					}
-
-					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-						return formatPercentage(params.value.originalDiffValue, 0);
-					}
-
-					return '';
-				},
+				...getTotalDivisionPercentageAggObj(),
 			}
 		),
 
-		getAgColumn(
-			"basePrice_LY", // ZC vloni
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // ZC vloni
+			"basePrice_LY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"basePrice_AY", // ZC letos
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // ZC letos
+			"basePrice_AY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"basePrice_Diff", // %
-			"number", 70,
-			false, false, false,
-			["text-right"],
+		getAgColumn( // %
+			"basePrice_Diff", "number", 70,
+			false, false, false, ["text-right"],
 			{
 				valueGetter: (params: ValueGetterParams) => {
 					// @ts-ignore
@@ -219,71 +137,32 @@ export const SalesCustomerorstoreByProductlineAgGridDef: GridOptions = {
 
 					return null;
 				},
-				aggFunc: 'diffPercentage',
-				cellRenderer: (params: ICellRendererParams) => {
-					if (params.node && params.node.group) {
-						return formatPercentage(params.value, 0);
-					}
-
-					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-						return formatPercentage(params.value.originalDiffValue, 0);
-					}
-
-					return '';
-				},
+				...getTotalDivisionPercentageAggObj(),
 			}
 		),
 
-		getAgColumn(
-			"discount_LY", // Sleva vloni
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Sleva vloni
+			"discount_LY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"discount_AY", // Sleva letos
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Sleva letos
+			"discount_AY", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"storageBasePriceCurrency", // Sklad ZC
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Sklad ZC
+			"storageBasePriceCurrency", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 
-		getAgColumn(
-			"storageQuantity", // Sklad kusů
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: "sum",
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+		getAgColumn( // Sklad kusů
+			"storageQuantity", "number", 105,
+			false, false, false, ["text-right"],
+			{...getSumAggObj()}
 		),
 	]
 }

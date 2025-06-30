@@ -1,12 +1,20 @@
-import type {GridOptions} from "ag-grid-enterprise";
+import type { GridOptions, ValueGetterParams } from 'ag-grid-enterprise';
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
+import {getSumAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getSumAggObj";
+import { totalDivisionPercentageAggregator } from '$lib/utils/components/ag-grid/agg-functions/aggregators/totalDivisionPercentageAggregator';
+import { getTotalDivisionPercentageAggObj } from '$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionPercentageAggObj';
+import {getMaxAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getMaxAggObj";
 
 
 export const SalesTotalByStoreDetailAgGridDef: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
 
+	aggFuncs: {
+		totalDivisionPercentageAgg: totalDivisionPercentageAggregator,
+	},
+	
 	rowSelection: {
 		mode: "singleRow",
 		enableClickSelection: true,
@@ -15,34 +23,114 @@ export const SalesTotalByStoreDetailAgGridDef: GridOptions = {
 	},
 
 	columnDefs: [
-		// Divize
-		getAgColumn("divisionId", "number", 120, false, false, false, []),
-		// Název divize
-		getAgColumn("divisionName", "text", 200, false, false, false, []),
-		// Prodej vloni
-		getAgColumn("sales_LY", "number", 150, false, false, false, []),
-		// Prodej letos
-		getAgColumn("sales_AY", "number", 150, false, false, false, []),
-		// Nárůst
-		getAgColumn("sales_DiffAbs", "number", 120, false, false, false, []),
-		// %
-		getAgColumn("sales_Diff", "number", 100, false, false, false, []),
-		// ZC vloni
-		getAgColumn("basePrice_LY", "number", 150, false, false, false, []),
-		// ZC letos
-		getAgColumn("basePrice_AY", "number", 150, false, false, false, []),
-		// %
-		getAgColumn("basePrice_Diff", "number", 100, false, false, false, []),
-		// Sleva vloni
-		getAgColumn("discount_LY", "number", 150, false, false, false, []),
-		// Sleva letos
-		getAgColumn("discount_AY", "number", 150, false, false, false, []),
-		// Prodejen vloni
-		getAgColumn("storesCountLY", "number", 150, false, false, false, []),
-		// Prodejen letos
-		getAgColumn("storesCountAY", "number", 150, false, false, false, []),
-		// Dnů bez objednávky
-		getAgColumn("daysWithoutOrder", "number", 180, false, false, false, []),
+		getAgColumn( // Divize
+			"divisionId", "number", 70,
+			false, false, false, []
+		),
+
+		getAgColumn( // Název divize
+			"divisionName", "text", 160,
+			false, false, false, []
+		),
+
+		getAgColumn( // Prodej vloni
+			"sales_LY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Prodej letos
+			"sales_AY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Nárůst
+			"sales_DiffAbs", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // %
+			"sales_Diff", "number", 70,
+			false, false, false, ["text-right"],
+			{
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_AY,
+							divisor: params.data.sales_LY,
+							originalDiffValue: params.data.sales_Diff
+						};
+					}
+
+					return null;
+				},
+				...getTotalDivisionPercentageAggObj()
+			}
+		),
+
+		getAgColumn( // ZC vloni
+			"basePrice_LY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // ZC letos
+			"basePrice_AY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // %
+			"basePrice_Diff", "number", 70,
+			false, false, false, ["text-right"],
+			{
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.basePrice_AY,
+							divisor: params.data.basePrice_LY,
+							originalDiffValue: params.data.basePrice_Diff
+						};
+					}
+
+					return null;
+				},
+				...getTotalDivisionPercentageAggObj()
+			}
+		),
+
+		getAgColumn( // Sleva vloni
+			"discount_LY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Sleva letos
+			"discount_AY", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Prodejen vloni
+			"storesCountLY", "number", 90,
+			false, false, false, ["text-right"],
+			{ ...getMaxAggObj() }
+		),
+
+		getAgColumn( // Prodejen letos
+			"storesCountAY", "number", 90,
+			false, false, false, ["text-right"],
+			{ ...getMaxAggObj() }
+		),
+
+		getAgColumn( // Dnů bez objednávky
+			"daysWithoutOrder", "number", 100,
+			false, false, false, ["text-right"],
+		),
 	]
 }
 

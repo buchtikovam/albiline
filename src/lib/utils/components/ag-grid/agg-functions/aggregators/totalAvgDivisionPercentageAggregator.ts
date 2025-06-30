@@ -1,6 +1,6 @@
 import type {IAggFuncParams} from "ag-grid-enterprise";
 
-export function compoundOverallRatioComparisonAggregator(params: IAggFuncParams): number | null {
+export function totalAvgDivisionPercentageAggregator(params: IAggFuncParams): number | null {
 	let totalCurrentSale = 0;
 	let totalCurrentQuantity = 0;
 	let totalPreviousSale = 0;
@@ -22,7 +22,9 @@ export function compoundOverallRatioComparisonAggregator(params: IAggFuncParams)
 
 	if (overall_avg_item_ly <= 0 && overall_avg_item_ay > 0) {
 		result = 1;
-	} else if (overall_avg_item_ly >= 0 && overall_avg_item_ay < 0) {
+	}
+
+	if (overall_avg_item_ly >= 0 && overall_avg_item_ay < 0) {
 		result = -1;
 	} else if (overall_avg_item_ly === 0 && overall_avg_item_ay === 0) {
 		result = 0;

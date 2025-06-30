@@ -1,6 +1,6 @@
 import { type Actions, redirect, fail } from "@sveltejs/kit";
 import { apiServicePOST } from "$lib/api/apiService.svelte";
-import {clearCache} from "$lib/cacheManager";
+
 
 export const actions: Actions = {
 	default: async ({ cookies }) => {
@@ -53,7 +53,6 @@ export const actions: Actions = {
 					}
 				]
 			});
-
 		}
 	}
 } satisfies Actions;

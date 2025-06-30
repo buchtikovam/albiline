@@ -7,13 +7,11 @@ import type {IAggFuncParams} from "ag-grid-enterprise";
  * It sums these 'dividend' and 'divisor' values and then computes the percentage difference.
  */
 
-export function compoundDiffAggregator(params: IAggFuncParams): number | null {
+export function totalDivisionPercentageAggregator(params: IAggFuncParams): number | null {
 	let totalDividend = 0;
 	let totalDivisor = 0;
 
 	params.values.forEach(value => {
-		// 'value' is the result from the valueGetter of child rows/groups,
-		// or the result of this same aggFunc from a lower group level.
 		if (
 			value &&
 			typeof value.dividend === 'number' &&
@@ -28,5 +26,5 @@ export function compoundDiffAggregator(params: IAggFuncParams): number | null {
 	if (totalDivisor >= 0 && totalDividend < 0) return -1;
 	if (totalDivisor === 0 && totalDividend === 0) return 0;
 
-	return (totalDividend / totalDivisor) - 1;
+	return totalDividend / totalDivisor - 1;
 }

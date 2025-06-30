@@ -7,7 +7,7 @@ import type {IAggFuncParams} from "ag-grid-enterprise";
  */
 
 
-export function compoundGenericDiffAggregator(params: IAggFuncParams): number | null {
+export function totalGenericDivisionPercentageAggregator(params: IAggFuncParams): number | null {
 	let totalDividend = 0;
 	let totalDivisor = 0;
 

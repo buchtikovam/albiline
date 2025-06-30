@@ -245,8 +245,6 @@
 			columns: ['_computedColumn1', '_computedColumn2'],
 			force: true
 		});
-
-		api.refreshClientSideRowModel()
 	}
 
 

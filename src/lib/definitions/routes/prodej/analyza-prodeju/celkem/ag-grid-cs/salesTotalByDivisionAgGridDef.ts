@@ -1,60 +1,19 @@
 import {getAgColumn} from "$lib/utils/components/ag-grid/getAgColumn.svelte.js";
-import type {GridOptions, IAggFuncParams, IRowNode, ValueFormatterParams, ValueGetterParams} from "ag-grid-enterprise";
+import type {GridOptions, ValueGetterParams} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js';
-import { formatPercentage } from '$lib/utils/general/formatPercentage';
-import { formatNumberToCzech } from '$lib/utils/general/formatNumberToCzech';
-import {compoundDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundRatioDiffAggregator";
+import {totalDivisionPercentageAggregator} from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalDivisionPercentageAggregator";
 import {
-	compoundGenericRatioAggregator
-} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericRatioAggregator";
-import {compoundGenericDiffAggregator} from "$lib/utils/components/ag-grid/agg-functions/compoundGenericDiffAggregator";
+	totalDivisionAggregator
+} from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalDivisionAggregator";
+import {totalGenericDivisionPercentageAggregator} from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalGenericDivisionPercentageAggregator";
 import {
-	compoundOverallRatioComparisonAggregator
-} from "$lib/utils/components/ag-grid/agg-functions/compoundOverallRatioComparisonAggregator";
-import type {ICellRendererParams} from "ag-grid-community";
-
-
-
-function getDiffFromBasePrice(
-	salesField: string,
-	basePriceField: string,
-	params: IAggFuncParams
-) {
-	let sales = 0;
-	let baseprice = 0;
-
-	params.api.forEachNode((node: IRowNode) => {
-		sales += node.data[salesField];
-		baseprice += node.data[basePriceField];
-	});
-
-	if (baseprice !== 0) {
-		return (sales / baseprice) - 1;
-	}
-
-	return 0;
-}
-
-
-function getMargrinDiff(
-	profitField: string,
-	salesField: string,
-	params: IAggFuncParams
-) {
-	let profit = 0;
-	let sales = 0;
-
-	params.api.forEachNode((node: IRowNode) => {
-		profit += node.data[profitField];
-		sales += node.data[salesField];
-	});
-
-	if (sales !== 0) {
-		return (profit / sales);
-	}
-
-	return 0;
-}
+	getTotalDivisionPercentageAggObj
+} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionPercentageAggObj";
+import {getSumAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getSumAggObj";
+import {
+	getTotalGenericDivisionPercentageAggObj
+} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalGenericDivisionPercentageAggObj";
+import {getTotalDivisionAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalDivisionAggObj";
 
 
 export const SalesTotalByDivisionAgGridDef: GridOptions = {
@@ -62,10 +21,9 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 	grandTotalRow: "bottom",
 
 	aggFuncs: {
-		'diffPercentage': compoundDiffAggregator,
-		'division': compoundGenericRatioAggregator,
-		'divisionPercentage': compoundGenericDiffAggregator,
-		'averagePercentage': compoundOverallRatioComparisonAggregator,
+		'totalDivisionPercentageAgg': totalDivisionPercentageAggregator,
+		'totalGenericDivisionPercentageAgg' : totalGenericDivisionPercentageAggregator,
+		'totalDivisionAgg' : totalDivisionAggregator,
 	},
 
 	rowSelection: {
@@ -76,38 +34,25 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 	},
 
 	columnDefs: [
-		getAgColumn(
-			"itemId", // Divize
-			"number", 65,
-			false, false, false,
-			[],
+		getAgColumn( // Divize
+			"itemId", "number", 65,
+			false, false, false, [],
 		),
 
-		getAgColumn(
-			"itemName", // Název divize
-			"text", 170,
-			false, false, false,
-			[],
+		getAgColumn( // Název divize
+			"itemName", "text", 170,
+			false, false, false, [],
 		),
 
-		getAgColumn(
-			"currency", // Měna
-			"text", 70,
-			false, false, false,
-			[],
+		getAgColumn( // Měna
+			"currency", "text", 70,
+			false, false, false, [],
 		),
 
-		getAgColumn(
-			"sales_LY", // Celkem vloni
-			"number", 105,
-			false, false, false,
-			["text-right"],
-			{
-				aggFunc: 'sum',
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value);
-				},
-			}
+		getAgColumn( // Celkem vloni
+			"sales_LY", "number", 105,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() },
 		),
 
 		getAgColumn(
@@ -115,12 +60,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			"number", 105,
 			false, false, false,
 			["text-right"],
-			{
-				aggFunc: 'sum',
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatNumberToCzech(params.value)
-				}
-			}
+			{ ...getSumAggObj() },
 		),
 
 		getAgColumn(
@@ -141,18 +81,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 					return null;
 				},
-				aggFunc: 'diffPercentage',
-				cellRenderer: (params: ICellRendererParams) => {
-					if (params.node && params.node.group) {
-						return formatPercentage(params.value, 0);
-					}
-
-					if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-						return formatPercentage(params.value.originalDiffValue, 0);
-					}
-
-					return '';
-				},
+				...getTotalDivisionPercentageAggObj()
 			}
 		),
 
@@ -164,12 +93,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -177,12 +101,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -203,18 +122,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					},
 				),
 
@@ -223,12 +131,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -236,12 +139,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -262,18 +160,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					},
 				),
 
@@ -282,12 +169,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -295,12 +177,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -321,18 +198,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -341,12 +207,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -354,12 +215,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -380,18 +236,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -405,12 +250,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -418,12 +258,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -444,18 +279,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -469,12 +293,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -482,12 +301,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -508,18 +322,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -528,12 +331,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -541,12 +339,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -567,18 +360,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -592,12 +374,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -605,12 +382,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -631,18 +403,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -651,12 +412,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -664,12 +420,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -690,18 +441,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -710,12 +450,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -723,12 +458,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -749,18 +479,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -769,12 +488,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -782,12 +496,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -808,18 +517,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -833,12 +531,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -846,12 +539,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -872,18 +560,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -892,12 +569,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -905,12 +577,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -931,18 +598,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 
@@ -951,12 +607,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -964,12 +615,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -990,18 +636,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -1015,12 +650,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1028,12 +658,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1054,18 +679,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -1079,12 +693,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1092,12 +701,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: 'sum',
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value)
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1118,18 +722,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 
 							return null;
 						},
-						aggFunc: 'diffPercentage',
-						cellRenderer: (params: ICellRendererParams) => {
-							if (params.node && params.node.group) {
-								return formatPercentage(params.value, 0);
-							}
-
-							if (params.value && typeof params.value.originalDiffValue !== 'undefined') {
-								return formatPercentage(params.value.originalDiffValue, 0);
-							}
-
-							return '';
-						},
+						...getTotalDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -1141,12 +734,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiffFromBasePrice("sales_LY", "basePrice_LY", params)
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_LY,
+							divisor: params.data.basePrice_LY,
+							originalDiffValue: params.data.discount_LY
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0);
-				}
+				...getTotalGenericDivisionPercentageAggObj(),
 			}
 		),
 
@@ -1156,12 +756,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 			false, false, false,
 			["text-right"],
 			{
-				aggFunc: (params: IAggFuncParams) => {
-					return getDiffFromBasePrice("sales_AY", "basePrice_AY", params)
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales_AY,
+							divisor: params.data.basePrice_AY,
+							originalDiffValue: params.data.discount_AY
+						};
+					}
+
+					return null;
 				},
-				valueFormatter: (params: ValueFormatterParams) => {
-					return formatPercentage(params.value, 0);
-				}
+				...getTotalGenericDivisionPercentageAggObj(),
 			}
 		),
 
@@ -1174,12 +781,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_LY", "basePrice_CZ_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_LY,
+									divisor: params.data.basePrice_CZ_LY,
+									originalDiffValue: params.data.discount_CZ_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1189,12 +803,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_AY", "basePrice_CZ_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_AY,
+									divisor: params.data.basePrice_CZ_AY,
+									originalDiffValue: params.data.discount_CZ_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1204,12 +825,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Wholesale_LY", "basePrice_CZ_Wholesale_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Wholesale_LY,
+									divisor: params.data.basePrice_CZ_Wholesale_LY,
+									originalDiffValue: params.data.discount_CZ_Wholesale_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1219,12 +847,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Wholesale_AY", "basePrice_CZ_Wholesale_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Wholesale_AY,
+									divisor: params.data.basePrice_CZ_Wholesale_AY,
+									originalDiffValue: params.data.discount_CZ_Wholesale_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1234,12 +869,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Eshop_LY", "basePrice_CZ_Eshop_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Eshop_LY,
+									divisor: params.data.basePrice_CZ_Eshop_LY,
+									originalDiffValue: params.data.discount_CZ_Eshop_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1249,12 +891,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Eshop_AY", "basePrice_CZ_Eshop_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Eshop_AY,
+									divisor: params.data.basePrice_CZ_Eshop_AY,
+									originalDiffValue: params.data.discount_CZ_Eshop_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1264,12 +913,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Retail_LY", "basePrice_CZ_Retail_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Retail_LY,
+									divisor: params.data.basePrice_CZ_Retail_LY,
+									originalDiffValue: params.data.discount_CZ_Retail_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1279,12 +935,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Retail_AY", "basePrice_CZ_Retail_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Retail_AY,
+									divisor: params.data.basePrice_CZ_Retail_AY,
+									originalDiffValue: params.data.discount_CZ_Retail_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 			],
@@ -1299,12 +962,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_RetailBakery_LY", "basePrice_CZ_RetailBakery_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_RetailBakery_LY,
+									divisor: params.data.basePrice_CZ_RetailBakery_LY,
+									originalDiffValue: params.data.discount_CZ_RetailBakery_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1314,12 +984,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_RetailBakery_AY", "basePrice_CZ_RetailBakery_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_RetailBakery_AY,
+									divisor: params.data.basePrice_CZ_RetailBakery_AY,
+									originalDiffValue: params.data.discount_CZ_RetailBakery_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -1334,12 +1011,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_EshopKinoko_LY", "basePrice_CZ_EshopKinoko_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_EshopKinoko_LY,
+									divisor: params.data.basePrice_CZ_EshopKinoko_LY,
+									originalDiffValue: params.data.discount_CZ_EshopKinoko_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1349,12 +1033,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_EshopKinoko_AY", "basePrice_CZ_EshopKinoko_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_EshopKinoko_AY,
+									divisor: params.data.basePrice_CZ_EshopKinoko_AY,
+									originalDiffValue: params.data.discount_CZ_EshopKinoko_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1364,12 +1055,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_RetailKinoko_LY", "basePrice_CZ_RetailKinoko_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_RetailKinoko_LY,
+									divisor: params.data.basePrice_CZ_RetailKinoko_LY,
+									originalDiffValue: params.data.discount_CZ_RetailKinoko_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1379,12 +1077,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_RetailKinoko_AY", "basePrice_CZ_RetailKinoko_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+						// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_RetailKinoko_AY,
+									divisor: params.data.basePrice_CZ_RetailKinoko_AY,
+									originalDiffValue: params.data.discount_CZ_RetailKinoko_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -1399,12 +1104,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_LY", "basePrice_SK_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_LY,
+									divisor: params.data.basePrice_SK_LY,
+									originalDiffValue: params.data.discount_SK_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1414,12 +1126,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_AY", "basePrice_SK_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_AY,
+									divisor: params.data.basePrice_SK_AY,
+									originalDiffValue: params.data.discount_SK_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1429,12 +1148,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_Wholesale_LY", "basePrice_SK_Wholesale_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Wholesale_LY,
+									divisor: params.data.basePrice_SK_Wholesale_LY,
+									originalDiffValue: params.data.discount_SK_Wholesale_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1444,12 +1170,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_Wholesale_AY", "basePrice_SK_Wholesale_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Wholesale_AY,
+									divisor: params.data.basePrice_SK_Wholesale_AY,
+									originalDiffValue: params.data.discount_SK_Wholesale_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1459,12 +1192,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_Eshop_LY", "basePrice_SK_Eshop_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Eshop_LY,
+									divisor: params.data.basePrice_SK_Eshop_LY,
+									originalDiffValue: params.data.discount_SK_Eshop_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1474,12 +1214,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_Eshop_AY", "basePrice_SK_Eshop_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Eshop_AY,
+									divisor: params.data.basePrice_SK_Eshop_AY,
+									originalDiffValue: params.data.discount_SK_Eshop_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1489,12 +1236,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_Retail_LY", "basePrice_SK_Retail_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Retail_LY,
+									divisor: params.data.basePrice_SK_Retail_LY,
+									originalDiffValue: params.data.discount_SK_Retail_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1504,12 +1258,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_SK_Retail_AY", "basePrice_SK_Retail_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_SK_Retail_AY,
+									divisor: params.data.basePrice_SK_Retail_AY,
+									originalDiffValue: params.data.discount_SK_Retail_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 			],
@@ -1524,12 +1285,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_PL_LY", "basePrice_PL_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_LY,
+									divisor: params.data.basePrice_PL_LY,
+									originalDiffValue: params.data.discount_PL_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1539,12 +1307,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_PL_AY", "basePrice_PL_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_AY,
+									divisor: params.data.basePrice_PL_AY,
+									originalDiffValue: params.data.discount_PL_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1554,12 +1329,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_PL_Wholesale_LY", "basePrice_PL_Wholesale_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_Wholesale_LY,
+									divisor: params.data.basePrice_PL_Wholesale_LY,
+									originalDiffValue: params.data.discount_PL_Wholesale_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1569,12 +1351,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_PL_Wholesale_AY", "basePrice_PL_Wholesale_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_Wholesale_AY,
+									divisor: params.data.basePrice_PL_Wholesale_AY,
+									originalDiffValue: params.data.discount_PL_Wholesale_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1584,12 +1373,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_PL_Eshop_LY", "basePrice_PL_Eshop_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_Eshop_LY,
+									divisor: params.data.basePrice_PL_Eshop_LY,
+									originalDiffValue: params.data.discount_PL_Eshop_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1599,12 +1395,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_PL_Eshop_AY", "basePrice_PL_Eshop_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_PL_Eshop_AY,
+									divisor: params.data.basePrice_PL_Eshop_AY,
+									originalDiffValue: params.data.discount_PL_Eshop_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 			],
@@ -1619,12 +1422,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Export_LY", "basePrice_CZ_Export_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Export_LY,
+									divisor: params.data.basePrice_CZ_Export_LY,
+									originalDiffValue: params.data.discount_CZ_Export_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 
@@ -1634,12 +1444,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getDiffFromBasePrice("sales_CZ_Export_AY", "basePrice_CZ_Export_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.sales_CZ_Export_AY,
+									divisor: params.data.basePrice_CZ_Export_AY,
+									originalDiffValue: params.data.discount_CZ_Export_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 0);
-						}
+						...getTotalGenericDivisionPercentageAggObj(),
 					}
 				),
 			]
@@ -1653,12 +1470,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1667,12 +1479,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Wholesale_LY", "sales_Wholesale_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_Wholesale_LY,
+									divisor: params.data.sales_Wholesale_LY,
+									originalDiffValue: params.data.margin_Wholesale_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1681,12 +1500,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1695,12 +1509,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Wholesale_AY", "sales_Wholesale_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_Wholesale_AY,
+									divisor: params.data.sales_Wholesale_AY,
+									originalDiffValue: params.data.margin_Wholesale_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1709,12 +1530,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1723,12 +1539,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Eshop_LY", "sales_Eshop_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_Eshop_LY,
+									divisor: params.data.sales_Eshop_LY,
+									originalDiffValue: params.data.margin_Eshop_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1737,12 +1560,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1751,12 +1569,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Eshop_AY", "sales_Eshop_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_Eshop_AY,
+									divisor: params.data.sales_Eshop_AY,
+									originalDiffValue: params.data.margin_Eshop_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1765,12 +1590,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1779,12 +1599,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Retail_LY", "sales_Retail_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_Retail_LY,
+									divisor: params.data.sales_Retail_LY,
+									originalDiffValue: params.data.margin_Retail_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1793,12 +1620,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1807,12 +1629,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_Retail_AY", "sales_Retail_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_Retail_AY,
+									divisor: params.data.sales_Retail_AY,
+									originalDiffValue: params.data.margin_Retail_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1821,12 +1650,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1835,12 +1659,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailBakery_LY", "sales_RetailBakery_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_RetailBakery_LY,
+									divisor: params.data.sales_RetailBakery_LY,
+									originalDiffValue: params.data.margin_RetailBakery_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1849,12 +1680,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1863,12 +1689,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailBakery_AY", "sales_RetailBakery_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_RetailBakery_AY,
+									divisor: params.data.sales_RetailBakery_AY,
+									originalDiffValue: params.data.margin_RetailBakery_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1877,12 +1710,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1891,12 +1719,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailKinoko_LY", "sales_Kinoko_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_RetailKinoko_LY,
+									divisor: params.data.sales_Kinoko_LY,
+									originalDiffValue: params.data.margin_Kinoko_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1905,12 +1740,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1919,12 +1749,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_RetailKinoko_AY", "sales_Kinoko_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_RetailKinoko_AY,
+									divisor: params.data.sales_Kinoko_AY,
+									originalDiffValue: params.data.margin_Kinoko_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1933,12 +1770,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1947,12 +1779,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_WholesaleExport_LY", "sales_WholesaleExport_LY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_WholesaleExport_LY,
+									divisor: params.data.sales_WholesaleExport_LY,
+									originalDiffValue: params.data.margin_WholesaleExport_LY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 
@@ -1961,12 +1800,7 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					"number", 105,
 					false, false, false,
 					["text-right"],
-					{
-						aggFunc: "sum",
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatNumberToCzech(params.value);
-						}
-					}
+					{ ...getSumAggObj() },
 				),
 
 				getAgColumn(
@@ -1975,12 +1809,19 @@ export const SalesTotalByDivisionAgGridDef: GridOptions = {
 					false, false, false,
 					["text-right"],
 					{
-						aggFunc: (params: IAggFuncParams) => {
-							return getMargrinDiff("profit_WholesaleExport_AY", "sales_WholesaleExport_AY", params)
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_WholesaleExport_AY,
+									divisor: params.data.sales_WholesaleExport_AY,
+									originalDiffValue: params.data.margin_WholesaleExport_AY
+								};
+							}
+
+							return null;
 						},
-						valueFormatter: (params: ValueFormatterParams) => {
-							return formatPercentage(params.value, 2);
-						}
+						...getTotalDivisionAggObj(),
 					}
 				),
 			],

@@ -1,11 +1,23 @@
-import type {GridOptions} from "ag-grid-enterprise";
+import type {GridOptions, ValueGetterParams} from "ag-grid-enterprise";
 import * as m from '$lib/paraglide/messages.js';
 import { getAgColumn } from '$lib/utils/components/ag-grid/getAgColumn.svelte';
+import {getSumAggObj} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getSumAggObj";
+import {
+	totalGenericDivisionPercentageAggregator
+} from "$lib/utils/components/ag-grid/agg-functions/aggregators/totalGenericDivisionPercentageAggregator";
+import {
+	getTotalGenericDivisionPercentageAggObj
+} from "$lib/utils/components/ag-grid/agg-functions/agg-objects/getTotalGenericDivisionPercentageAggObj";
+import type {CellClassParams} from "ag-grid-community";
 
 
 export const SalesDocumentByCustomerorstoreAgGridDef: GridOptions = {
 	statusBar: undefined,
 	grandTotalRow: "bottom",
+
+	aggFuncs: {
+		totalGenericDivisionPercentageAgg: totalGenericDivisionPercentageAggregator,
+	},
 
 	rowSelection: {
 		mode: "singleRow",
@@ -15,38 +27,110 @@ export const SalesDocumentByCustomerorstoreAgGridDef: GridOptions = {
 	},
 
 	columnDefs: [
-		// Země
-		getAgColumn("salesCountryCode", "text", 100, false, false, false, []),
-		// Měna
-		getAgColumn("currency", "text", 100, false, false, false, []),
-		// Pův. měna
-		getAgColumn("isOriginalCurrency", "boolean", 120, false, false, false, []),
-		// Číslo faktury
-		getAgColumn("documentCode", "number", 150, false, false, false, []),
-		// Číslo zákazníka
-		getAgColumn("customerNodeCode", "number", 150, false, false, false, []),
-		// Číslo prodejny
-		getAgColumn("deliveryAddressCode", "number", 150, false, false, false, []),
-		// Zákazník
-		getAgColumn("customerName", "text", 200, false, false, false, []),
-		// Prodejna
-		getAgColumn("storeName", "text", 200, false, false, false, []),
-		// Ulice
-		getAgColumn("street", "text", 200, false, false, false, []),
-		// Město
-		getAgColumn("city", "text", 150, false, false, false, []),
-		// DUZP
-		getAgColumn("deliveryDate", "date", 120, false, false, false, []),
-		// ZC
-		getAgColumn("basePrice", "number", 150, false, false, false, []),
-		// Cena bez DPH po slevě
-		getAgColumn("sales", "number", 200, false, false, false, []),
-		// Sleva
-		getAgColumn("discount", "number", 120, false, false, false, []),
-		// Cena vč. DPH po slevě
-		getAgColumn("salesWithVat", "number", 200, false, false, false, []),
-		// Informace o úhradě
-		getAgColumn("paymentInfo", "text", 200, false, false, false, []),
+		getAgColumn( // Země
+			"salesCountryCode", "text", 70,
+			false, false, false, []
+		),
+
+		getAgColumn( // Měna
+			"currency", "text", 70,
+			false, false, false, []
+		),
+
+		getAgColumn( // Pův. měna
+			"isOriginalCurrency", "boolean", 70,
+			false, false, false, []
+		),
+
+		getAgColumn( // Číslo faktury
+			"documentCode", "number", 110,
+			false, false, false, []
+		),
+
+		getAgColumn( // Číslo zákazníka
+			"customerNodeCode", "number", 100,
+			false, false, false, []
+		),
+
+		getAgColumn( // Číslo prodejny
+			"deliveryAddressCode", "number", 100,
+			false, false, false, []
+		),
+
+		getAgColumn( // Zákazník
+			"customerName", "text", 220,
+			false, false, false, []
+		),
+
+		getAgColumn( // Prodejna
+			"storeName", "text", 220,
+			false, false, false, []
+		),
+
+		getAgColumn( // Ulice
+			"street", "text", 200,
+			false, false, false, []
+		),
+
+		getAgColumn( // Město
+			"city", "text", 200,
+			false, false, false, []
+		),
+
+		getAgColumn( // DUZP
+			"deliveryDate", "date", 110,
+			false, false, false, ["text-right"],
+			{ aggFunc: () => null }
+		),
+
+		getAgColumn( // ZC
+			"basePrice", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Cena bez DPH po slevě
+			"sales", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Sleva
+			"discount", "number", 70,
+			false, false, false, ["text-right"],
+			{
+				valueGetter: (params: ValueGetterParams) => {
+					// @ts-ignore
+					if (params.data && !params.node.group) {
+						return {
+							dividend: params.data.sales,
+							divisor: params.data.basePrice,
+							originalDiffValue: params.data.discount
+						};
+					}
+
+					return null;
+				},
+				...getTotalGenericDivisionPercentageAggObj()
+			}
+		),
+
+		getAgColumn( // Cena vč. DPH po slevě
+			"salesWithVat", "number", 110,
+			false, false, false, ["text-right"],
+			{ ...getSumAggObj() }
+		),
+
+		getAgColumn( // Informace o úhradě
+			"paymentInfo", "text", 140,
+			false, false, false, [],
+			{
+				cellClassRules: {
+					"text-amber-500": (params: CellClassParams) => params.value ?params.value.startsWith("Před") : false,
+					"text-red-600": (params: CellClassParams) =>  params.value ? params.value.startsWith("Po") : false,
+				}
+			}
+		),
 	]
 }
 
