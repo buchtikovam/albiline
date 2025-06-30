@@ -41,7 +41,7 @@
 
 
 	beforeNavigate(() => {
-		table.openInputParams = false;
+		if (table) table.openInputParams = false;
 	});
 
 

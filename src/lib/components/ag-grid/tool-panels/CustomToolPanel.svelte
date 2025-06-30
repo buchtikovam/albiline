@@ -1,18 +1,13 @@
 <script lang="ts">
-	import {agGridTables, pageKeys, sideTableRowData} from "$lib/runes/table.svelte.js";
+	import {sideTableRowData} from "$lib/runes/table.svelte.js";
+	import {Label} from "$lib/components/ui/label";
 	import {
 		productStockInventoryDetailGridOptions,
 		productStockInventoryDetailHeaderTranslations
 	} from "$lib/definitions/routes/sklad/stav-skladu/ag-grid-cs/productStockInventoryAgGridDef.svelte.js";
-	import {Label} from "$lib/components/ui/label";
 	import {onNavigate} from "$app/navigation";
-	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import AgGridCSSecondaryWrapper from "$lib/components/ag-grid/clientside-secondary/AgGridCSSecondaryWrapper.svelte";
 	import * as RadioGroup from "$lib/components/ui/radio-group";
-
-
-	// export let toolPanelParams;
-	let table: AgGridTableType = agGridTables.value[pageKeys.value.value[pageKeys.value.index]];
 
 
 	let mainRowData = $derived.by(() => {

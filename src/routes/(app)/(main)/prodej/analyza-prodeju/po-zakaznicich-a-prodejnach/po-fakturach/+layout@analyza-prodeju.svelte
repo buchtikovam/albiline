@@ -19,7 +19,14 @@
 
 
 	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
-	let title = $derived(getPageTitleSalesDocumentByCustomerorstore(table.loadedInputParams.inputs))
+	let title = $derived.by(() => {
+		if (table) {
+			return getPageTitleSalesDocumentByCustomerorstore(table.loadedInputParams.inputs);
+
+		}
+
+		return "";
+	})
 </script>
 
 
@@ -28,12 +35,14 @@
 	<TabFulltextWrapper>
 		<PageTitle {title}/>
 
-		<FilterAndPresetButtons
-			bind:table
-			routeId="/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp"
-		/>
+		{#if table}
+			<FilterAndPresetButtons
+				bind:table
+				routeId="/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp"
+			/>
 
-		<Fulltext bind:table />
+			<Fulltext bind:table />
+		{/if}
 	</TabFulltextWrapper>
 
 	<MainContentWrapper >

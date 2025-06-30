@@ -15,6 +15,7 @@
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import {Button} from "$lib/components/ui/button";
 	import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
+	import Fulltext from "$lib/components/form/Fulltext.svelte";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -116,22 +117,13 @@
 				</Button>
 			{/if}
 
-			<FilterAndPresetButtons
-				bind:table={table}
-				routeId="/(app)/(main)/prodej/zakaznici"
-			/>
+			{#if table}
+				<FilterAndPresetButtons
+					bind:table={table}
+					routeId="/(app)/(main)/prodej/zakaznici"
+				/>
 
-			{#if showFulltextSearch.value === true}
-				<div
-					class="hidden md:flex items-center h-8"
-				>
-					<Input
-						class="xl:w-80 lg:w-60 w-40 h-8  border border-slate-300 focus-visible:border-albi-500"
-						placeholder={m.components_header_search_placeholder()}
-						type="text"
-						bind:value={table.fulltextFilterValue}
-					/>
-				</div>
+				<Fulltext bind:table />
 			{/if}
 		</div>
 	</TabFulltextWrapper>

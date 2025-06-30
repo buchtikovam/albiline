@@ -69,8 +69,8 @@ export async function loadInputParamsInTable(
 			}
 		)
 
-		if (response.success) {
-			table.areInputParamsLoading = false;
+		if (response) {
+			if (response.success) table.areInputParamsLoading = false;
 		}
 	}
 }

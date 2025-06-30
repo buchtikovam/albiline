@@ -104,7 +104,7 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 		// // Číslo zákazníka
 		// getAgColumn("customerNodeCode", "number", 150, false, false, false, []),
 		// // Číslo prodejny
-		// getAgColumn("deliveryAddressCode", "number", 150, false, false, false, []),
+		getAgColumn("deliveryAddressCode", "number", 150, false, false, false, []),
 		// // Zákazník
 		// getAgColumn("customerNodeName", "text", 200, false, false, false, []),
 		// // Prodejna
@@ -1037,7 +1037,7 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 		//
 		// 					return null;
 		// 				},
-		// 				// ...getDivisionObj(),
+		// 				...getDivisionObj(),
 		// 			}
 		// 		),
 		// 	]
@@ -1045,92 +1045,391 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 		{
 			field: "group_kouzelne_cteni",
 			children: [
-				getAgColumn("profit_8_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_8_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_8_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_8_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_8_AY,
+									divisor: params.data.sales_8_AY,
+									originalDiffValue: params.data.margin_8_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_kvido_a_skoly",
 			children: [
-				getAgColumn("profit_10_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_10_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_10_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_10_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_10_AY,
+									divisor: params.data.sales_10_AY,
+									originalDiffValue: params.data.margin_10_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_science",
 			children: [
-				getAgColumn("profit_6_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_6_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_6_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_6_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_6_AY,
+									divisor: params.data.sales_6_AY,
+									originalDiffValue: params.data.margin_6_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_darky",
 			children: [
-				getAgColumn("profit_1_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_1_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_1_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_1_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_1_AY,
+									divisor: params.data.sales_1_AY,
+									originalDiffValue: params.data.margin_1_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_stationery",
 			children: [
-				getAgColumn("profit_7_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_7_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_7_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_7_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_7_AY,
+									divisor: params.data.sales_7_AY,
+									originalDiffValue: params.data.margin_7_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_pdo",
 			children: [
-				getAgColumn("profit_0_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_0_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_0_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_0_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_0_AY,
+									divisor: params.data.sales_0_AY,
+									originalDiffValue: params.data.margin_0_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_mementerra",
 			children: [
-				getAgColumn("profit_11_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_11_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_11_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_11_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_11_AY,
+									divisor: params.data.sales_11_AY,
+									originalDiffValue: params.data.margin_11_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_baleni_darku",
 			children: [
-				getAgColumn("profit_2_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_2_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_2_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_2_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_2_AY,
+									divisor: params.data.sales_2_AY,
+									originalDiffValue: params.data.margin_2_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_party",
 			children: [
-				getAgColumn("profit_5_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_5_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_5_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_5_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_5_AY,
+									divisor: params.data.sales_5_AY,
+									originalDiffValue: params.data.margin_5_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_prodejny_mo",
 			children: [
-				getAgColumn("profit_4_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_4_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_4_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_4_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_4_AY,
+									divisor: params.data.sales_4_AY,
+									originalDiffValue: params.data.margin_4_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_knihy",
 			children: [
-				getAgColumn("profit_12_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_12_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_12_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_12_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_12_AY,
+									divisor: params.data.sales_12_AY,
+									originalDiffValue: params.data.margin_12_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_posli_prani",
 			children: [
-				getAgColumn("profit_13_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_13_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_13_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_13_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_13_AY,
+									divisor: params.data.sales_13_AY,
+									originalDiffValue: params.data.margin_13_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 		{
 			field: "group_ostatni",
 			children: [
-				getAgColumn("profit_9_AY", "number", 120, false, false, false, []), // Marže letos
-				getAgColumn("margin_9_AY", "number", 100, false, false, false, []), // %
+				getAgColumn( // Marže letos
+					"profit_9_AY", "number", 110,
+					false, false, false, ["text-right"],
+					{ ...getSumObj() }
+				),
+
+				getAgColumn( // %
+					"margin_9_AY", "number", 70,
+					false, false, false, ["text-right"],
+					{
+						valueGetter: (params: ValueGetterParams) => {
+							// @ts-ignore
+							if (params.data && !params.node.group) {
+								return {
+									dividend: params.data.profit_9_AY,
+									divisor: params.data.sales_9_AY,
+									originalDiffValue: params.data.margin_9_AY
+								};
+							}
+
+							return null;
+						},
+						// ...getDivisionObj(),
+					}
+				),
 			]
 		},
 

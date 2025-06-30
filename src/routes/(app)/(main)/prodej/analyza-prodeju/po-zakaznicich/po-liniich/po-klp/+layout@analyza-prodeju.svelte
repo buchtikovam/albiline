@@ -9,6 +9,7 @@
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import {Input} from "$lib/components/ui/input";
 	import PageTitle from "$lib/components/page/PageTitle.svelte";
+	import Fulltext from "$lib/components/form/Fulltext.svelte";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -19,16 +20,18 @@
 	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 
 	let title = $derived.by(() => {
-		if (table.loadedInputParams.inputs) {
-			const inputs = table.loadedInputParams.inputs;
+		if (table) {
+			if (table.loadedInputParams.inputs) {
+				const inputs = table.loadedInputParams.inputs;
 
-			const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
-			const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
+				const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
+				const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
 
-			return `
+				return `
 				Prodeje po KLP v rámci linie <b>${inputs.find(f => f.field === 'productLineName')?.value || ''}</b> za období
 				<b>${dateFrom.toString().replace(" 00:00:00:000", "")}-${dateTo.toString().replace(" 00:00:00:000", "")}</b>,
 				za <b>${inputs.find(f => f.field === 'customernodename')?.value || ''}</b>`;
+			}
 		}
 
 		return "";
@@ -44,23 +47,13 @@
 		</div>
 
 
-		<FilterAndPresetButtons
-			bind:table={table}
-			routeId="/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp"
-		/>
+		{#if table}
+			<FilterAndPresetButtons
+				bind:table
+				routeId="/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich/po-liniich/po-klp"
+			/>
 
-
-		{#if showFulltextSearch.value === true}
-			<div
-				class="hidden md:flex items-center h-8"
-			>
-				<Input
-					class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
-					placeholder={m.components_header_search_placeholder()}
-					type="text"
-					bind:value={table.fulltextFilterValue}
-				/>
-			</div>
+			<Fulltext bind:table />
 		{/if}
 	</TabFulltextWrapper>
 

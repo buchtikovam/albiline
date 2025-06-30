@@ -61,14 +61,24 @@
 
 	// state for tables and UI
 	let salesTotalByStoreTable: AgGridTableType = $state(agGridTables.value['SalesTotalByStore'])
+
 	let salesTotalByStoreDetailTable: AgGridTableType = $state(agGridTables.value['SalesTotalByStoreDetail'])
 	let clearSalesTotalByStoreDetailTable = $state(false);
+
 	let clearsalesSubdetailByCostLevelTable = $state(false);
 	let salesSubdetailByCostLevelTable: AgGridTableType = $state(agGridTables.value['SalesSubdetailByCostlevel'])
+
 	let activeTable: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 
+
 	//  Reactive page title based on salesTotalByStore table inputParams
-	let title = $derived(getPageTitleSalesTotalByStore(salesTotalByStoreTable.loadedInputParams.inputs))
+	let title = $derived.by(() => {
+		if (salesTotalByStoreTable) {
+			return getPageTitleSalesTotalByStore(salesTotalByStoreTable.loadedInputParams.inputs)
+		}
+
+		return "";
+	})
 
 
 	// initialize the state for current page if it doesn't exist
@@ -82,6 +92,7 @@
 			}
 		};
 	}
+
 
 	// Derived rune for easy, reactive access to the current page's sections state
 	let sections = $derived.by(() => {
@@ -296,12 +307,15 @@
 		{/if}
 
 
-		<FilterAndPresetButtons
-			bind:table={activeTable}
-			{routeId}
-		/>
+		{#if activeTable}
+			<FilterAndPresetButtons
+				bind:table={activeTable}
+				{routeId}
+			/>
 
-		<Fulltext bind:table={activeTable} />
+			<Fulltext bind:table={activeTable} />
+		{/if}
+
 	</TabFulltextWrapper>
 
 
@@ -330,11 +344,13 @@
 					} bg-white rounded-lg border`}
 					onclick={() => setPaneFocus(sections, routeId, 'salesTotalByStoreSection')}
 				>
-					<AgGridCSWrapper
-						table={salesTotalByStoreTable}
-						gridOptionsCustom={{...salesTotalByStoreCustomGridOptions, ...SalesTotalByStoreAgGridDef}}
-						headerTranslations={SalesTotalByStoreHeaderTranslations}
-					/>
+					{#if salesTotalByStoreTable}
+						<AgGridCSWrapper
+							table={salesTotalByStoreTable}
+							gridOptionsCustom={{...salesTotalByStoreCustomGridOptions, ...SalesTotalByStoreAgGridDef}}
+							headerTranslations={SalesTotalByStoreHeaderTranslations}
+						/>
+					{/if}
 				</Pane>
 
 
@@ -365,12 +381,14 @@
 								} bg-white rounded-lg border`}
 								onclick={() => setPaneFocus(sections, routeId, 'salesTotalByStoreDetailSection')}
 							>
-								<AgGridCSWrapper
-									table={salesTotalByStoreDetailTable}
-									gridOptionsCustom={{...salesTotalByStoreDetailCustomGridOptions, ...SalesTotalByStoreDetailAgGridDef}}
-									headerTranslations={SalesTotalByStoreDetailHeaderTranslations}
-									clearRowData={clearSalesTotalByStoreDetailTable}
-								/>
+								{#if salesTotalByStoreDetailTable}
+									<AgGridCSWrapper
+										table={salesTotalByStoreDetailTable}
+										gridOptionsCustom={{...salesTotalByStoreDetailCustomGridOptions, ...SalesTotalByStoreDetailAgGridDef}}
+										headerTranslations={SalesTotalByStoreDetailHeaderTranslations}
+										clearRowData={clearSalesTotalByStoreDetailTable}
+									/>
+								{/if}
 							</Pane>
 
 							<PaneResizer class="bg-slate-100 h-1" />
@@ -385,12 +403,14 @@
 								} bg-white rounded-lg border`}
 								onclick={() => setPaneFocus(sections, routeId, 'salesSubdetailByCostlevelSection')}
 							>
-								<AgGridCSWrapper
-									table={salesSubdetailByCostLevelTable}
-									gridOptionsCustom={SalesSubdetailByCostlevelAgGridDef}
-									headerTranslations={SalesSubdetailByCostlevelHeaderTranslations}
-									clearRowData={clearsalesSubdetailByCostLevelTable}
-								/>
+								{#if salesSubdetailByCostLevelTable}
+									<AgGridCSWrapper
+										table={salesSubdetailByCostLevelTable}
+										gridOptionsCustom={SalesSubdetailByCostlevelAgGridDef}
+										headerTranslations={SalesSubdetailByCostlevelHeaderTranslations}
+										clearRowData={clearsalesSubdetailByCostLevelTable}
+									/>
+								{/if}
 							</Pane>
 						</PaneGroup>
 					</Pane>

@@ -21,6 +21,7 @@
 
 	let { data }: Props = $props();
 
+
 	pageKeys.value = {
 		value: ["ProductStockInventory"],
 		index: 0,
@@ -29,21 +30,24 @@
 	activeTabIndex.value = 0;
 	showFulltextSearch.value = true;
 
+
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let open = $state(false);
 	let destroy = $state(false);
 
+
 	$effect(() => {
-		open = table.openInputParams;
+		if (table) open = table.openInputParams;
 	})
+
 
 	onMount(() => {
-		open = !table.hasInputParams;
+		if (table) open = !table.hasInputParams;
 	})
 
+
 	beforeNavigate(() => {
-		table.openInputParams = false;
-		destroy = true;
+		if (table) table.openInputParams = false;
 	})
 </script>
 

@@ -13,6 +13,7 @@
 	import type {AgGridTableType} from "$lib/types/components/table/table";
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import PageTitle from "$lib/components/page/PageTitle.svelte";
+	import Fulltext from "$lib/components/form/Fulltext.svelte";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -23,19 +24,21 @@
 	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 
 	let title = $derived.by(() => {
-		if (table.loadedInputParams.inputs) {
-			const inputs = table.loadedInputParams.inputs;
+		if (table) {
+			if (table.loadedInputParams.inputs) {
+				const inputs = table.loadedInputParams.inputs;
 
-			const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
-			const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
+				const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
+				const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
 
-			return `
+				return `
 				Detail pro: období <b>${dateFrom.toString().replace(" 00:00:00:000", "")}-${dateTo.toString().replace(" 00:00:00:000", "")}</b>,
 				země = <b>${inputs.find(f => f.field === 'salescountrycode')?.value || 'vše'}</b>,
 				prodejní kanál = <b>${inputs.find(f => f.field === 'saleschannel')?.value || 'vše'}</b>,
 				divize = <b>${inputs.find(f => f.field === 'divisionid')?.value || ""}</b>,
 				linie = <b>${inputs.find(f => f.field === 'productlineid')?.value === -1 ? 'vše' : inputs.find(f => f.field === 'productlineid')?.value || ""}</b>,
 				KLP = <b>${inputs.find(f => f.field === 'costlevelcode')?.value || 'vše'}</b>`;
+			}
 		}
 
 		return "";
@@ -62,23 +65,13 @@
 		</div>
 
 
-		<FilterAndPresetButtons
-			bind:table={table}
-			routeId="/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich"
-		/>
+		{#if table}
+			<FilterAndPresetButtons
+				bind:table={table}
+				routeId="/(app)/(main)/prodej/analyza-prodeju/po-zakaznicich"
+			/>
 
-
-		{#if showFulltextSearch.value === true}
-			<div
-				class="hidden md:flex items-center h-8"
-			>
-				<Input
-					class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
-					placeholder={m.components_header_search_placeholder()}
-					type="text"
-					bind:value={table.fulltextFilterValue}
-				/>
-			</div>
+			<Fulltext bind:table />
 		{/if}
 	</TabFulltextWrapper>
 

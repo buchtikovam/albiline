@@ -12,6 +12,7 @@
 </script>
 
 
+
 <div class="flex-1 flex justify-between items-center mr-2">
 	{#if title.length > 0}
 		<Popover.Root>

@@ -62,9 +62,6 @@
 	beforeNavigate(() => {
 		table.openInputParams = false;
 	})
-
-	console.log("page", ribbonAction.value);
-
 </script>
 
 
@@ -77,25 +74,26 @@
 
 
 
-{#if open}
-	<InputParams
-		bind:open
-		type={table.type}
-		defaultInputParams={InputParamsZakaznici}
-		selectOptions={InputParamsZakazniciSelectOptions}
-		restrictions={data.pageMetaData.inputs}
+{#if table}
+	{#if open}
+		<InputParams
+			bind:open
+			type={table.type}
+			defaultInputParams={InputParamsZakaznici}
+			selectOptions={InputParamsZakazniciSelectOptions}
+			restrictions={data.pageMetaData.inputs}
+		/>
+	{/if}
+
+	<AgGridSSWrapper
+		gridOptionsCustom={customerGridOptions}
+		url="customers"
+		headerTranslations={customerHeaderTranslations}
+		customRibbonActions={[
+			RibbonActionEnum.NEW,
+		]}
 	/>
+
+	<NewCustomerOrAddressDecisionDialog />
 {/if}
 
-
-<AgGridSSWrapper
-	gridOptionsCustom={customerGridOptions}
-	url="customers"
-	headerTranslations={customerHeaderTranslations}
-	customRibbonActions={[
-		RibbonActionEnum.NEW,
-	]}
-/>
-
-
-<NewCustomerOrAddressDecisionDialog />

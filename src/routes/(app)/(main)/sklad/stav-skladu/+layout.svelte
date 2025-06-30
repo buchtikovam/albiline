@@ -14,6 +14,7 @@
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import * as m from "$lib/paraglide/messages";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import Fulltext from "$lib/components/form/Fulltext.svelte";
 
 
 	interface Props {
@@ -27,7 +28,8 @@
 		index: 0,
 	}
 
-	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+	// let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+	let table: AgGridTableType = $state(agGridTables.value["blabla"]);
 	let activeTab = $derived(activeTabIndex.value.toString());
 </script>
 
@@ -54,41 +56,32 @@
 
 
 		<div class="flex items-center">
-			{#if table.showRefreshDataButton}
-				<Button
-					variant="outline"
-					class="h-8 text-xs mr-2"
-					onclick={() => {
-					loadInputParamsInTable(
-						table,
-						table.loadedInputParams,
-						"clientSide",
-						{columnFiltersEnabled: true, fulltextEnabled: true}
-					);
+			{#if table}
+				{#if table.showRefreshDataButton}
+					<Button
+						variant="outline"
+						class="h-8 text-xs mr-2"
+						onclick={() => {
+						loadInputParamsInTable(
+							table,
+							table.loadedInputParams,
+							"clientSide",
+							{columnFiltersEnabled: true, fulltextEnabled: true}
+						);
 
-					table.showRefreshDataButton = false;
-				}}
-				>
-					Přenačíst data
-				</Button>
-			{/if}
+						table.showRefreshDataButton = false;
+					}}
+					>
+						Přenačíst data
+					</Button>
+				{/if}
 
-			<FilterAndPresetButtons
-				bind:table={table}
-				routeId="/(app)/(main)/sklad/stav-skladu"
-			/>
+				<FilterAndPresetButtons
+					bind:table={table}
+					routeId="/(app)/(main)/sklad/stav-skladu"
+				/>
 
-			{#if showFulltextSearch.value === true}
-				<div
-					class="hidden md:flex items-center h-8"
-				>
-					<Input
-						class="xl:w-80 lg:w-60 w-40 h-8 border border-slate-300 focus-visible:border-albi-500"
-						placeholder={m.components_header_search_placeholder()}
-						type="text"
-						bind:value={table.fulltextFilterValue}
-					/>
-				</div>
+				<Fulltext bind:table />
 			{/if}
 		</div>
 	</TabFulltextWrapper>
