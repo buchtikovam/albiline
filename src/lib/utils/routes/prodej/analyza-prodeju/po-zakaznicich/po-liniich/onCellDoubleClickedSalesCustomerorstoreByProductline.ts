@@ -1,8 +1,8 @@
 import type {InputParamsType} from "$lib/types/components/input-params/inputParams";
 import {loadInputParamsInTable} from "$lib/utils/components/input-params/loadInputParamsInTable";
-import {agGridTables} from "$lib/runes/table.svelte";
+import {agGridTables} from "$lib/runes/table.svelte.js";
 import {goto} from "$app/navigation";
-import {localizeHref} from "$lib/paraglide/runtime";
+import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 import type {AgGridTableType} from "$lib/types/components/table/table";
 import type {CellDoubleClickedEvent} from "ag-grid-enterprise";
 
@@ -82,7 +82,18 @@ export function onCellDoubleClickedSalesCustomerorstoreByProductline(
 			salesCustomerorstoreByProductlineInputParams,
 			"clientSide",
 			{fulltextEnabled: true, columnFiltersEnabled: true}
-		).then(r => r)
+		).then(r => r);
+
+		handleTabClick(
+			{
+				field: 'analyza-prodeju-po-zakaznicich-a-liniich',
+				href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
+				open: false, hide: false,
+				translation: () => "Po zákaznících a liniích",
+				disabled: false, popoverOpen: false, icon: null, children: [],
+			},
+			3
+		);
 
 		goto("/prodej/analyza-prodeju/po-zakaznicich/po-liniich").then(r => r);
 	}

@@ -97,7 +97,7 @@
 		}
 	});
 
-
+;
 	$effect(() => {
 		if (table.selectedFilters) {
 			gridApi.setFilterModel(table.selectedFilters.filters);
@@ -115,6 +115,15 @@
 	$effect(() => {
 		if (table.selectedPreset) {
 			onCSPresetSelected(gridApi, table);
+		}
+	})
+
+	$effect(() => {
+		if (table.presetToSave.length > 0 && !isInitial) {
+			gridApi.applyColumnState({
+				state: table.presetToSave,
+				applyOrder: true,
+			});
 		}
 	})
 

@@ -1,11 +1,9 @@
 <script lang="ts">
-	import {showFulltextSearch} from "$lib/runes/page.svelte.js";
 	import * as m from "$lib/paraglide/messages.js";
 	import PageWrapper from "$lib/components/wrapper/PageWrapper.svelte";
 	import Info from "lucide-svelte/icons/info";
 	import MainContentWrapper from "$lib/components/wrapper/MainContentWrapper.svelte";
 	import {Checkbox} from "$lib/components/ui/checkbox/index.js";
-	import {Input} from "$lib/components/ui/input/index.js";
 	import FilterAndPresetButtons from "$lib/components/button/FilterAndPresetButtons.svelte";
 	import TabFulltextWrapper from "$lib/components/wrapper/TabFulltextWrapper.svelte";
 	import * as Popover from "$lib/components/ui/popover/index.js";
@@ -14,6 +12,10 @@
 	import {agGridTables, pageKeys} from "$lib/runes/table.svelte";
 	import PageTitle from "$lib/components/page/PageTitle.svelte";
 	import Fulltext from "$lib/components/form/Fulltext.svelte";
+	import {
+		getPageTitleSalesCustomdetailByCustomers
+	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/getPageTitleSalesCustomdetailByCustomers";
+	import type {ColState} from "ag-grid-enterprise/dist/types/src/charts/chartComp/model/chartDataModel";
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -21,27 +23,41 @@
 
 	let { children }: Props = $props();
 
-	let table: AgGridTableType = $derived(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
+	let showReturns = $state(false);
 
 	let title = $derived.by(() => {
 		if (table) {
-			if (table.loadedInputParams.inputs) {
-				const inputs = table.loadedInputParams.inputs;
-
-				const dateFrom = inputs.find(f => f.field === 'datefrom')?.value || '';
-				const dateTo = inputs.find(f => f.field === 'dateto')?.value || '';
-
-				return `
-				Detail pro: období <b>${dateFrom.toString().replace(" 00:00:00:000", "")}-${dateTo.toString().replace(" 00:00:00:000", "")}</b>,
-				země = <b>${inputs.find(f => f.field === 'salescountrycode')?.value || 'vše'}</b>,
-				prodejní kanál = <b>${inputs.find(f => f.field === 'saleschannel')?.value || 'vše'}</b>,
-				divize = <b>${inputs.find(f => f.field === 'divisionid')?.value || ""}</b>,
-				linie = <b>${inputs.find(f => f.field === 'productlineid')?.value === -1 ? 'vše' : inputs.find(f => f.field === 'productlineid')?.value || ""}</b>,
-				KLP = <b>${inputs.find(f => f.field === 'costlevelcode')?.value || 'vše'}</b>`;
-			}
+			return getPageTitleSalesCustomdetailByCustomers(table.loadedInputParams.inputs);
 		}
 
 		return "";
+	})
+
+	$effect(() => {
+		if (showReturns) {
+			const columns = table.presetToSave.length > 0 ? table.presetToSave : table.defaultColState;
+
+			columns.forEach((column: ColState) => {
+				if (column.colId.includes("return")) {
+					column.hide = false;
+				}
+			})
+
+			table.presetToSave = columns;
+		}
+
+		if (!showReturns) {
+			const columns = table.presetToSave.length > 0 ? table.presetToSave : table.defaultColState;
+
+			columns.forEach((column: ColState) => {
+				if (column.colId.includes("return")) {
+					column.hide = true;
+				}
+			})
+
+			table.presetToSave = columns;
+		}
 	})
 </script>
 
@@ -55,6 +71,7 @@
 
 			<div class="flex min-w-[126px] items-center gap-1 h-8 bg-white px-2 rounded-md border border-slate-300">
 				<Checkbox
+					bind:checked={showReturns}
 					class="size-4"
 				/>
 

@@ -7,21 +7,12 @@
 		SalesCustomdetailByCustomersAgGridDefSvelte,
 		SalesCustomdetailByCustomersHeaderTranslations
 	} from "$lib/definitions/routes/prodej/analyza-prodeju/po-zakaznicich/ag-grid-cs/salesCustomdetailByCustomersAgGridDef.svelte";
-	import type {
-		CellDoubleClickedEvent,
-		FilterChangedEvent,
-		GridApi,
-		GridOptions, GridReadyEvent, IAggFuncParams,
-		IRowNode,
-		ModelUpdatedEvent, RowDataUpdatedEvent
-	} from "ag-grid-enterprise";
+	import type {CellDoubleClickedEvent, GridApi, GridOptions, IRowNode, ModelUpdatedEvent} from "ag-grid-enterprise";
 	import {
 		onCellDoubleClickedSalesCustomerorstoreByProductline
-	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/onCellDoubleClickedSalesCustomerorstoreByProductline";
+	} from "$lib/utils/routes/prodej/analyza-prodeju/po-zakaznicich/po-liniich/onCellDoubleClickedSalesCustomerorstoreByProductline";
 	import {beforeNavigate} from "$app/navigation";
-	import {handleTabClick} from "$lib/utils/components/sidebar/handleTabClick";
 	import {page} from "$app/state";
-	import {setContext} from "svelte";
 
 	pageKeys.value = {
 		value: pageCodes.value.get(page.route.id||"")||[],
@@ -33,16 +24,15 @@
 
 	let table: AgGridTableType = $state(agGridTables.value[pageKeys.value.value[pageKeys.value.index]]);
 	let destroy = $state(false);
-	let refresh = $state(true);
+
+	beforeNavigate(() => {
+		if (table) table.openInputParams = false;
+	});
+
 
 	let gridContext = $state({
 		totalSalesLY: 0,
 		totalSalesAY: 0
-	});
-
-
-	beforeNavigate(() => {
-		if (table) table.openInputParams = false;
 	});
 
 
@@ -73,8 +63,6 @@
 			columns: ['_computedColumn1', '_computedColumn2'],
 			force: true
 		});
-
-		let cells = Array.from(document.getElementsByClassName("computed2"))
 	}
 
 	// These options are merged with the base grid definition.
@@ -82,24 +70,13 @@
 		context: gridContext,
 
 		onModelUpdated: (event: ModelUpdatedEvent) => {
-			// if (refresh) {
-				calculateAndRefreshTotals(event.api);
-			// }
+			calculateAndRefreshTotals(event.api);
 		},
 
 		// --- Cell Click Handler for Navigation ---
 		onCellDoubleClicked(event: CellDoubleClickedEvent<any>) {
 			onCellDoubleClickedSalesCustomerorstoreByProductline(table, event);
-			handleTabClick(
-				{
-					field: 'analyza-prodeju-po-zakaznicich-a-liniich',
-					href: '/prodej/analyza-prodeju/po-zakaznicich/po-liniich',
-					open: false, hide: false,
-					translation: () => "Po zákaznících a liniích",
-					disabled: false, popoverOpen: false, icon: null, children: [],
-				},
-				3
-			);
+
 		},
 	};
 </script>

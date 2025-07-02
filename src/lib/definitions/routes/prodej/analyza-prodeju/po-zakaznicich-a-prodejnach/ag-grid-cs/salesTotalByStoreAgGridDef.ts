@@ -149,7 +149,7 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 			'_computedColumn1', 'number', 90,
 			false, false, false, ['text-right'],
 			{
-				aggFunc: 'sum',
+				aggFunc: () => null, // todo: finish agg func
 				valueGetter: (params: ValueGetterParams) => {
 					const totalSalesLY = params.context?.totalSalesLY;
 
@@ -173,7 +173,7 @@ export const SalesTotalByStoreAgGridDef: GridOptions = {
 			'_computedColumn2', 'number', 90,
 			false, false, false, ['text-right'],
 			{
-				aggFunc: 'sum',
+				aggFunc: () => null, // todo: finish agg func
 				valueGetter: (params: ValueGetterParams) => {
 					const totalSalesAY = params.context?.totalSalesAY;
 

@@ -183,6 +183,58 @@ export const SalesCustomerorstoreByProductlineByCostLevelAgGridDef: GridOptions 
 			false, false, false, ["text-right"],
 			{ ...getSumAggObj() }
 		),
+
+		getAgColumn( // % z obratu letos
+			"_computedColumn1", "number", 90,
+			false, false, false, ["text-right"],
+			{
+				aggFunc: () => {
+					return null; // todo: finish agg func
+				},
+				valueGetter: (params: ValueGetterParams) => {
+					const totalSalesLY = params.context?.totalSalesLY;
+
+					if (!params.data || typeof params.data.sales_LY !== 'number' || typeof totalSalesLY !== 'number') {
+						return null;
+					}
+
+					const currentRowSalesLY: number = params.data.sales_LY;
+
+					if (totalSalesLY === 0) {
+						return currentRowSalesLY === 1;
+					}
+
+					return currentRowSalesLY / totalSalesLY;
+				},
+				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+			}
+		),
+
+		getAgColumn( // % z obratu vloni
+			"_computedColumn2", "number", 90,
+			false, false, false, ["text-right", "computed2"],
+			{
+				aggFunc: () => {
+					return null; // todo: finish agg func
+				},
+				valueGetter: (params: ValueGetterParams) => {
+					const totalSalesAY = params.context?.totalSalesAY;
+
+					if (!params.data || typeof params.data.sales_AY !== 'number' || typeof totalSalesAY !== 'number') {
+						return null;
+					}
+
+					const currentRowSalesAY: number = params.data.sales_AY;
+
+					if (totalSalesAY === 0) {
+						return null;
+					}
+
+					return currentRowSalesAY / totalSalesAY;
+				},
+				valueFormatter: (params: ValueFormatterParams) => formatPercentage(params.value, 0),
+			}
+		),
 	]
 }
 
@@ -207,5 +259,7 @@ export const SalesCustomerorstoreByProductlineByCostLevelHeaderTranslations = {
 	discount_LY: m.routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_discount_LY,
 	discount_AY: m.routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_discount_AY,
 	storageBasePriceCurrency: m.routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageBasePriceCurrency,
-	storageQuantity: m.routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageQuantity
+	storageQuantity: m.routes_prodej_analyza_prodeju_po_zakaznicich_po_liniich_table_column_storageQuantity,
+	_computedColumn1: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn1,
+	_computedColumn2: m.routes_prodej_analyza_prodeju_po_zakaznicich_table_column_computedColumn2,
 }
